@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "twitch-messaging-mcp",
+ "display_name": "Twitch MCP",
+ "version": "0.1.0",
+ "description": "Twitch (messaging): me, send, reply. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/twitch"
+   ],
+   "env": {
+    "PLATFORM_MCP_TWITCH_CLIENT_ID": "${user_config.platform_mcp_twitch_client_id}",
+    "PLATFORM_MCP_TWITCH_CLIENT_SECRET": "${user_config.platform_mcp_twitch_client_secret}",
+    "PLATFORM_MCP_TWITCH_REFRESH_TOKEN": "${user_config.platform_mcp_twitch_refresh_token}",
+    "PLATFORM_MCP_TWITCH_SENDER_ID": "${user_config.platform_mcp_twitch_sender_id}",
+    "PLATFORM_MCP_TWITCH_BROADCASTER_ID": "${user_config.platform_mcp_twitch_broadcaster_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_twitch_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_CLIENT_ID",
+   "description": "Twitch app client id (dev.twitch.tv console); also sent as the Client-Id header on every Helix call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_CLIENT_SECRET",
+   "description": "Twitch app client secret (form body of the refresh request to https://id.twitch.tv/oauth2/token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_REFRESH_TOKEN",
+   "description": "User refresh token from the authorization-code flow with scopes user:manage:whispers and user:write:chat. Twitch may return a new refresh token: the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/twitch.json (mode 0600). The state file is keyed by platform id, so it is shared with social/twitch: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent / refresh token) so the two never race on one single-use refresh token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_sender_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_SENDER_ID",
+   "description": "User id of the token's user (GET /helix/users with the token): from_user_id of whispers and sender_id of chat replies. It 'must match the user ID in the user access token'; the account needs a verified phone number to whisper.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_twitch_broadcaster_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_BROADCASTER_ID",
+   "description": "User id of the channel whose chat reply posts into (needed only for reply).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Get Users without ids returns the token's user (account.data[0]: id, login, display_name)."
+  },
+  {
+   "name": "send",
+   "description": "Send Whisper: `to` is the recipient's Twitch user id (not a login). 204 on success - 'The API may silently drop whispers that it suspects of violating Twitch policies ... it returns a 204 status code as if it succeeded', so status 'sent' is not a delivery receipt. Max 500 characters to a user who has not whispered you before (10,000 otherwise; longer is truncated). No message id is returned; `subject` and `channel` are ignored."
+  },
+  {
+   "name": "reply",
+   "description": "Replies in config broadcaster_id's chat to the chat message `thread_id` (reply_parent_message_id); `channel` is ignored. A message blocked by AutoMod or chat settings answers 200 with raw.is_sent=false and raw.drop_reason - check is_sent."
+  }
+ ]
+}

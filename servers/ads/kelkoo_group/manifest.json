@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "kelkoo_group-mcp",
+ "display_name": "Kelkoo Group MCP",
+ "version": "0.1.0",
+ "description": "Kelkoo Group (ads): me, list_campaigns, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kelkoo_group"
+   ],
+   "env": {
+    "PLATFORM_MCP_KELKOO_GROUP_JWT": "${user_config.platform_mcp_kelkoo_group_jwt}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kelkoo_group_jwt": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KELKOO_GROUP_JWT",
+   "description": "Merchant Statistics API token (Kelkoo Merchant Center > API Credentials > Create new token; the JWT is shown once), sent as `Authorization: Bearer`. It reaches every campaign managed by the login.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account resource; the probe is GET /my-campaigns (the campaigns the token's login manages)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /my-campaigns: [{campaignId, campaignName, websiteUrl, country}] for every campaign (one merchant site per country) the token's login manages. Kelkoo campaigns carry no status or budget in this API; `account_id`, `status`, `page` and `limit` are not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /category/{campaign_id}?startDate&endDate (both included, up to two years back): clicks and cost per day, category and device for one campaign; campaign_id is REQUIRED. sales and order_value are filled only with Kelkoo Sales Tracking. Yesterday's data may still be compiling. `account_id` is not sent."
+  }
+ ]
+}

@@ -1,0 +1,300 @@
+{
+ "id": "discord",
+ "category": "messaging",
+ "label": "Discord",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.discord.com/developers/intro",
+ "url": "https://discord.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Bot accounts in guilds the bot was invited to. Global 50 requests / second per bot; per-route buckets (X-RateLimit-Limit / -Remaining / -Reset-After / -Bucket / -Scope), 429 with retry_after; 10,000 invalid requests (401 / 403 / 429) per 10 minutes → temporary Cloudflare ban. Privileged intents GUILD_PRESENCES, GUILD_MEMBERS, MESSAGE_CONTENT need review once the app is in 100+ servers / 10,000+ unique users; message content is always available for the bot's own messages, DMs with the bot, messages mentioning it, and context-menu targets. DMs: POST /users/@me/channels {recipient_id} — 'you should not use this endpoint to DM everyone in a server about something'; DMs must stem from user actions, mass DMs → rate limiting or bot removal; group DMs need OAuth2 gdm.join (effectively unavailable). Threads: from a message (PUBLIC_THREAD), without message (PRIVATE_THREAD in GUILD_TEXT), forum / media posts via POST /channels/{id}/threads with a message; auto_archive_duration 60 / 1440 / 4320 / 10080 min; channel rate_limit_per_user 0-21,600 s.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "gateway",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "bot_token",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "forum_posts",
+   "group_admin",
+   "reactions",
+   "media",
+   "dm_shared_guild",
+   "moderation"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Community libraries (discord.js, discord.py, JDA, …); REST is plain HTTPS with Authorization: Bot (docs.discord.com)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /channels/{channel.id}/messages?after=",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /channels/{channel.id}/messages",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (read state is a user-token/client concept, not a bot one)",
+   "docs": "https://docs.discord.com/developers/resources/channel"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://discord.com/api/v10/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /channels/{id}/messages` `{content ≤ 2000, embeds ≤ 10, message_reference{message_id}, attachments (multipart)}",
+    "purpose": "send / reply",
+    "notes": "`SEND_MESSAGES` (+ `_IN_THREADS`, `ATTACH_FILES`)"
+   },
+   {
+    "call": "GET /channels/{id}/messages?limit≤100&after=",
+    "purpose": "read inbox",
+    "notes": "content needs `MESSAGE_CONTENT` except own messages, DMs with the bot, mentions, context-menu targets"
+   },
+   {
+    "call": "POST /channels/{id}/messages/{id}/threads` (PUBLIC_THREAD) · `POST /channels/{id}/threads` (PRIVATE_THREAD in GUILD_TEXT; forum / media posts with `message`)",
+    "purpose": "threads / forum posts",
+    "notes": "`auto_archive_duration` 60 / 1440 / 4320 / 10080"
+   },
+   {
+    "call": "PUT /channels/{c}/messages/{m}/reactions/{emoji}/@me",
+    "purpose": "reactions",
+    "notes": ""
+   },
+   {
+    "call": "POST /users/@me/channels {recipient_id}` → DM channel",
+    "purpose": "DM",
+    "notes": "only users sharing a guild who allow DMs; \"you should not use this endpoint to DM everyone in a server\" — user-initiated only, mass DMs → rate limit / removal"
+   },
+   {
+    "call": "PUT /guilds/{g}/bans/{u}` · `DELETE /guilds/{g}/members/{u}` · `PATCH …/members/{u}` (timeout, roles) · `PATCH /channels/{id}` (`rate_limit_per_user` 0-21600 s)",
+    "purpose": "moderation / group admin",
+    "notes": "matching guild permissions"
+   },
+   {
+    "call": "Gateway events `MESSAGE_CREATE`, `MESSAGE_REACTION_ADD`, `THREAD_CREATE` (intents `GUILD_MESSAGES`, `DIRECT_MESSAGES`, `MESSAGE_CONTENT`)",
+    "purpose": "inbound push",
+    "notes": "heartbeat per `heartbeat_interval` × jitter"
+   }
+  ],
+  "limits": " - Global **50 requests / second per bot**; per-route buckets via `X-RateLimit-Limit` / `-Remaining` / `-Reset-After` / `-Bucket` / `-Scope`; 429 → `retry_after`; **10,000 invalid requests (401 / 403 / 429) per 10 minutes → temporary IP ban**. - Group DMs need OAuth2 `gdm.join` (legacy GameBridge) — effectively unavailable. Developer Terms / Policy forbid unsolicited mass DMs.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.discord.com/developers/topics/rate-limits",
+   "https://docs.discord.com/developers/topics/gateway#privileged-intents",
+   "https://docs.discord.com/developers/resources/user#create-dm",
+   "https://docs.discord.com/developers/resources/channel#start-thread-from-message"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://discord.com/api/v10",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "Bot ",
+   "field": "bot_token",
+   "fields": [
+    {
+     "name": "bot_token",
+     "required": true,
+     "help": "Bot token from the app's Bot page in the Developer Portal, pasted WITHOUT the 'Bot ' prefix: the runtime adds it and sends 'Authorization: Bot <token>' ('authentication is performed with the Authorization HTTP header in the format Authorization: TOKEN_TYPE TOKEN', https://docs.discord.com/developers/reference#authentication). Channel permissions needed: VIEW_CHANNEL + READ_MESSAGE_HISTORY (list_inbound, get_thread), SEND_MESSAGES (send, reply); the MESSAGE_CONTENT privileged intent to read other users' message content."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "'All bots can make up to 50 requests per second to our API' globally, plus per-route buckets announced in X-RateLimit-Limit / -Remaining / -Reset / -Reset-After / -Bucket and enforced with 429 + Retry-After (https://docs.discord.com/developers/topics/rate-limits). Per-route numbers are not published, so the client bucket stays at the runtime default 2/s.",
+  "user_agent_note": "Discord asks HTTP clients for a User-Agent 'in the following format: DiscordBot ($url, $versionNumber)' (https://docs.discord.com/developers/reference#user-agent); the runtime sends its own 'platform-mcp/discord (+url)' User-Agent, which is a valid but non-canonical value (UNCONFIRMED whether Discord ever rejects it).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/@me",
+    "docs": "https://docs.discord.com/developers/resources/user#get-current-user",
+    "note": "'Returns the user object of the requester's account' — for a bot token the bot's own user (id, username, discriminator, global_name, bot: true)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/channels/{to}/messages",
+    "body": {
+     "content": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#create-message",
+    "note": "`to` is a CHANNEL id (snowflake), not a user or address: 'Post a message to a guild text or DM channel' — to reach a user, first open a DM channel with POST /users/@me/channels (not offered) and pass that channel id. `text` is `content`, 'Message contents (up to 2000 characters)'; `subject` and `channel` are ignored. Needs SEND_MESSAGES in the channel. message_id is the created message's id."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/channels/{channel}/messages",
+    "body": {
+     "content": "text",
+     "message_reference.message_id": "thread_id"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#create-message",
+    "note": "A Discord reply is a message carrying a message_reference to the parent: 'Replies are created by including a message_reference when sending a message. When sending, only message_id is required'. `thread_id` is that parent message id and `channel` (the channel the parent lives in) is REQUIRED — without it the runtime reports missing argument 'channel'. Needs READ_MESSAGE_HISTORY as well as SEND_MESSAGES ('The referenced message must exist and cannot be a system message')."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/channels/{channel}/messages",
+    "params": {
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "$",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "channel_id",
+      "from": "author.id",
+      "text": "content",
+      "sent_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#get-channel-messages",
+    "note": "Lists ONE channel: `channel` (a channel or thread id) is REQUIRED — bots have no cross-channel inbox endpoint (inbound push is the Gateway). 'Returns an array of message objects from newest to oldest'; Discord pages by message id (before / after / around), so `page` is ignored and only the newest `limit` (1-100, Discord default 50) messages are returned; `since` is not sent. 'If the current user is missing the READ_MESSAGE_HISTORY permission in the channel, then no messages will be returned', and other users' `content` is empty without the MESSAGE_CONTENT intent. `from` is author.id (username under raw.author); `thread_id` is the channel id; `sent_at` is the ISO-8601 `timestamp`."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/channels/{thread_id}/messages",
+    "params": {
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "$",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "channel_id",
+      "from": "author.id",
+      "text": "content",
+      "sent_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#get-channel-messages",
+    "note": "A Discord thread is itself a channel, so `thread_id` is the thread's channel id (a message's `thread.id`, or the id from a THREAD_CREATE event) and the same Get Channel Messages endpoint lists it; the vocabulary's `channel` is ignored. Same newest-first / id-cursor caveats as list_inbound (`page` ignored, newest `limit` messages only)."
+   }
+  },
+  "not_offered": {
+   "mark_read": "Read state is a user-client concept; the bot-facing Channel and Message resources document no endpoint that marks a channel or message as read (https://docs.discord.com/developers/resources/channel, https://docs.discord.com/developers/resources/message)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host discord.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/huawei_ads-mcp",
+ "description": "鲸鸿动能 Petal Ads (Huawei Ads) (ads): me, list_accounts, list_campaigns, get_report, update_budget, pau",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api02-0000001058566534",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "huawei_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_HUAWEI_ADS_CLIENT_ID",
+     "description": "Your Marketing API client ID (华为开发者联盟 → 申请客户端ID).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HUAWEI_ADS_CLIENT_SECRET",
+     "description": "The client secret shown for that client ID in the developer alliance.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HUAWEI_ADS_REFRESH_TOKEN",
+     "description": "refresh_token from the authorization-code login (authorize with access_type=offline and the ads scopes, then exchange the code at /oauth2/v2/token), see ads_api09.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HUAWEI_ADS_ADVERTISER_ID",
+     "description": "Advertiser ID; required when the authorizing Huawei ID is a manager (经理) account, a service-provider account or linked to several sub-client advertisers.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "id": "cneq",
+ "category": "trading",
+ "label": "China A-shares",
+ "lane": "planned",
+ "kind": "equity",
+ "docs_url": null,
+ "url": null,
+ "verified_at": null,
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": false,
+ "base_urls": {},
+ "notes": "No broker adapter yet. Accounts cannot be verified or armed on this venue."
+}

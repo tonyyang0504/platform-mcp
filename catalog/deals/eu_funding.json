@@ -1,0 +1,230 @@
+{
+ "id": "eu_funding",
+ "category": "deals",
+ "label": "EU Funding & Tenders Portal",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis",
+ "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+ "verified_at": "2026-09-25",
+ "terms_note": "EU open data; public apiKey SEDIA; proposals submitted only through the Funding & Tenders Portal with EU Login.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (public SEDIA search key)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (SEDIA search API). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://api.tech.ec.europa.eu/search-api/prod/rest/search?apiKey=SEDIA"
+  ],
+  "auth": [
+   "1. None beyond the public key."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /search?apiKey=SEDIA&text=&pageSize=&pageNumber=` (body: query JSON)",
+    "purpose": "search",
+    "notes": "results[]: reference, title, metadata (callIdentifier, deadlineDate, status, frameworkProgramme)"
+   }
+  ],
+  "limits": " - Submission only via the portal (EU Login). - EU open data; public apiKey SEDIA; proposals submitted only through the Funding & Tenders Portal with EU Login.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.tech.ec.europa.eu/search-api/prod/rest/search?apiKey=SEDIA&text=software&pageSize=1&pageNumber=1",
+   "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.tech.ec.europa.eu/search-api/prod/rest",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/search?apiKey=SEDIA&text=***",
+    "fixed_params": {
+     "pageSize": "1",
+     "pageNumber": "1"
+    },
+    "body_format": "multipart",
+    "body": {
+     "query": "jsonpart:json:{\"bool\":{\"must\":[{\"terms\":{\"type\":[\"0\",\"1\",\"2\",\"8\"]}},{\"terms\":{\"status\":[\"31094501\",\"31094502\"]}}]}}",
+     "languages": "jsonpart:json:[\"en\"]"
+    },
+    "docs": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis",
+    "note": "Public SEDIA search with the open/forthcoming filter, one result: checks the API is reachable (no credentials; the public apiKey is SEDIA)."
+   },
+   "search_postings": {
+    "method": "POST",
+    "path": "/search?apiKey=SEDIA",
+    "params": {
+     "text": "query",
+     "pageSize": "limit",
+     "pageNumber": "page"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "body_format": "multipart",
+    "body": {
+     "query": "jsonpart:json:{\"bool\":{\"must\":[{\"terms\":{\"type\":[\"0\",\"1\",\"2\",\"8\"]}},{\"terms\":{\"status\":[\"31094501\",\"31094502\"]}}]}}",
+     "languages": "jsonpart:json:[\"en\"]"
+    },
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "total": "totalResults",
+     "fields": {
+      "id": "metadata.identifier.0",
+      "title": "metadata.title.0",
+      "summary": "summary",
+      "call": "metadata.callTitle.0",
+      "call_id": "metadata.callIdentifier.0",
+      "status": "metadata.status.0",
+      "type": "metadata.type.0",
+      "posted_at": "metadata.startDate.0",
+      "deadline": "metadata.deadlineDate.0",
+      "description": "metadata.descriptionByte.0"
+     }
+    },
+    "docs": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis",
+    "note": "POST /search?apiKey=SEDIA&text=… with the documented 'query' form part (typed application/json) restricting to tenders (type 0), call topics (1, 2) and cascade-funding calls (8) whose status is forthcoming (31094501) or open (31094502), English records only (languages part). `query` is required by the API — pass *** for everything. Ids are topic/tender identifiers (e.g. HORIZON-CL4-2024-DIGITAL-EMERGING-01-22). `category`/`min_budget` are not applied; the status in the index can lag the topic page."
+   },
+   "get_posting": {
+    "method": "POST",
+    "path": "/search?apiKey=SEDIA",
+    "params": {
+     "text": "fmt:\"{id}\"",
+     "pageSize": "=1",
+     "pageNumber": "=1"
+    },
+    "body_format": "multipart",
+    "body": {
+     "query": "jsonpart:json:{\"bool\":{\"must\":[{\"terms\":{\"type\":[\"0\",\"1\",\"2\",\"8\"]}}]}}",
+     "languages": "jsonpart:json:[\"en\"]"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "id": "metadata.identifier.0",
+      "title": "metadata.title.0",
+      "summary": "summary",
+      "call": "metadata.callTitle.0",
+      "call_id": "metadata.callIdentifier.0",
+      "status": "metadata.status.0",
+      "type": "metadata.type.0",
+      "posted_at": "metadata.startDate.0",
+      "deadline": "metadata.deadlineDate.0",
+      "description": "metadata.descriptionByte.0",
+      "budget_overview": "metadata.budgetOverview.0"
+     }
+    },
+    "docs": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis",
+    "note": "Topic Details service: search with text=\"<identifier>\" (quoted, as documented) limited to tenders and calls in English; returns the best match's metadata (description HTML, deadline, call, budget overview JSON string, conditions under raw.metadata)."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "The portal APIs are read-only search services ('retrieve the full list of Call of Proposals - Topics / Call for Tenders', https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis); proposals and tenders are submitted in the Funding & Tenders Portal with EU Login.",
+   "withdraw_bid": "No submission API exists (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis lists only search services); withdrawals happen in the portal's submission system.",
+   "bid_status": "Submission status is only visible in the logged-in portal (My Proposals); the public APIs listed at https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis are search services only.",
+   "list_messages": "No messaging API: the public services are Grants & Tenders, Topic Details, Grant Updates, FAQ, Organisation Public Data, Partner Search and Projects & Results searches (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis).",
+   "send_message": "No messaging API: the public services are search services only (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis).",
+   "credits": "The portal has no credits or paid quota; the search API is public with apiKey=SEDIA (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis)."
+  },
+  "terms": "EU Funding & Tenders Portal public SEDIA Search API (apiKey=SEDIA, https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis). Search criteria are sent as a JSON 'query' form part, reference codes (type 0 = tenders; status 31094501 forthcoming, 31094502 open, 31094503 closed) come from the Facet API. Applications go through the portal with EU Login."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

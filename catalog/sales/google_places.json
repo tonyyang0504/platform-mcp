@@ -1,0 +1,36 @@
+{
+ "id": "google_places",
+ "category": "sales",
+ "label": "Google Maps Platform",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/maps/documentation/places/web-service/overview",
+ "url": "https://mapsplatform.google.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Text Search / Place Details on a Google Cloud API key (pay-as-you-go, monthly credit) → platform-key SALES_GOOGLE_PLACES_API_KEY or the user's key; Places data may be cached only per the Platform Terms (place IDs indefinitely, other fields 30 days).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

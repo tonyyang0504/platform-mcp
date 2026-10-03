@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/poe-mcp",
+ "description": "Poe (Quora) (marketplaces): me, list_products. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://creator.poe.com/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "poe"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_POE_API_KEY",
+     "description": "Poe API key (poe.com/api_key).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

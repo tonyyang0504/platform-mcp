@@ -1,0 +1,123 @@
+{
+ "id": "kraken",
+ "category": "trading",
+ "label": "Kraken (spot)",
+ "lane": "api",
+ "docs_url": "https://docs.kraken.com/api-reference/market-data/get-ticker-information",
+ "url": "https://www.kraken.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only (no API key). Spec: https://docs.kraken.com/openapi/spot-rest.yaml (OpenAPI 3.0). Every response is HTTP 200 {\"error\": [...], \"result\": {...}}; failures are a non-empty error list (live 2026-10-01: pair=NOPEUSD -> 200 {\"error\":[\"EQuery:Unknown asset pair\"]}). Ticker and OHLC results are keyed by Kraken's internal pair name (XBTUSD -> XXBTZUSD), not the requested one. OHLC ignores any count and answers up to 720 candles; the server keeps the newest `limit`.",
+ "adapter": {
+  "base_url": "https://api.kraken.com/0",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "envelope": {
+   "fail_if_present": [
+    "error.0"
+   ],
+   "error_field": "error.0"
+  },
+  "error_kinds": [
+   {
+    "status": 200,
+    "match": "Unknown asset pair",
+    "kind": "not_found",
+    "note": "an unknown pair is a 200 envelope failure"
+   }
+  ],
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/public/AssetPairs",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result",
+     "items_are_values": true,
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "raw.wsname",
+        "base",
+        "quote"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "altname",
+      "base": "base",
+      "quote": "quote",
+      "type": "aclass_base"
+     }
+    },
+    "docs": "https://docs.kraken.com/api-reference/market-data/get-tradable-asset-pairs",
+    "note": "Every tradable pair (altname such as XBTUSD, wsname XBT/USD, Kraken base/quote asset codes such as XXBT/ZUSD); sorted and paged locally; `query` is a case-insensitive substring of the pair names."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/public/Ticker",
+    "params": {
+     "pair": "symbol"
+    },
+    "result": {
+     "root": "result.*",
+     "fields": {
+      "symbol": "arg:symbol",
+      "last": "num:c.0",
+      "bid": "num:b.0",
+      "ask": "num:a.0",
+      "volume": "num:v.1"
+     }
+    },
+    "docs": "https://docs.kraken.com/api-reference/market-data/get-ticker-information",
+    "note": "symbol is a pair altname such as XBTUSD or ETHEUR (list_markets). volume is the rolling 24h base volume (v[1])."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/public/OHLC",
+    "params": {
+     "pair": "symbol",
+     "interval": "map:interval:1m=1,5m=5,15m=15,30m=30,1h=60,4h=240,1d=1440,1w=10080,15d=21600"
+    },
+    "default_limit": 100,
+    "max_limit": 720,
+    "result": {
+     "items": "result.*",
+     "key": "candles",
+     "cap": "tail",
+     "fields": {
+      "time": "iso:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:6"
+     }
+    },
+    "docs": "https://docs.kraken.com/api-reference/market-data/get-ohlc-data",
+    "note": "interval: 1m, 5m, 15m, 30m, 1h, 4h, 1d, 1w, 15d. Kraken answers up to 720 candles whatever is asked; the newest `limit` are returned (oldest first)."
+   }
+  },
+  "not_offered": {
+   "me": "Account endpoints (/private/*) need API-Key + API-Sign (HMAC-SHA512 over nonce and payload); public-data entry only.",
+   "get_balances": "POST /private/Balance needs an API key with 'Funds permissions - Query'; public-data entry only.",
+   "list_orders": "POST /private/OpenOrders needs an API key; public-data entry only.",
+   "place_order": "POST /private/AddOrder needs an API key and spends money; not mapped in this public-data entry.",
+   "cancel_order": "POST /private/CancelOrder needs an API key; not mapped in this public-data entry."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

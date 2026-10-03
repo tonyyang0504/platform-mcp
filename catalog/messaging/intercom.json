@@ -1,0 +1,324 @@
+{
+ "id": "intercom",
+ "category": "messaging",
+ "label": "Intercom",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.intercom.com/",
+ "url": "https://www.intercom.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed with an access token (private app) or OAuth (public app): base https://api.intercom.io (EU https://api.eu.intercom.io, AU https://api.au.intercom.io), Authorization: Bearer, Intercom-Version header (2.16 documented). Rate limits: 10,000 API calls per minute per app and 25,000 per minute per workspace, distributed into 10-second windows; X-RateLimit-Limit / -Remaining / -Reset (epoch); HTTP 429. Reply: POST /conversations/{id}/reply {message_type comment, type admin|user, admin_id, body (HTML for notes), attachment_urls ≤10, attachment_files ≤10, reply_options, created_at, skip_notifications}. Search: POST /conversations/search (operators = != IN NIN > < ~ !~ ^ $, ≤2 nesting levels, ≤15 filters per group, per_page ≤150, starting_after cursor). Webhook topics conversation.user.created / conversation.user.replied / conversation.admin.replied.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2_or_token",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "search",
+   "assign_close_snooze",
+   "notes",
+   "media",
+   "webhooks",
+   "quick_replies"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "intercom-node, intercom-python, intercom-java, intercom-ruby (official) — developers.intercom.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 20000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /conversations · POST /conversations/search",
+   "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /messages (new outbound conversation, in_app or email)",
+   "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/messages"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "PUT /conversations/{id} {read: true}",
+   "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/updateconversation"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.intercom.io",
+   "https://api.eu.intercom.io",
+   "https://api.au.intercom.io"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /conversations/{id}/reply` `{message_type: comment, type: admin, admin_id, body, attachment_urls[≤10], attachment_files[≤10], reply_options, created_at, skip_notifications}",
+    "purpose": "reply (public)",
+    "notes": "`id` may be `last`; body HTML allowed for notes"
+   },
+   {
+    "call": "same with `message_type: note",
+    "purpose": "internal note",
+    "notes": ""
+   },
+   {
+    "call": "POST /conversations/search` `{query{operator AND",
+    "purpose": "OR, value[{field, operator, value}]}, pagination{per_page ≤150, starting_after}}`",
+    "notes": "read inbox"
+   },
+   {
+    "call": "GET /conversations` · `GET /conversations/{id}",
+    "purpose": "list / retrieve (with parts)",
+    "notes": ""
+   },
+   {
+    "call": "POST /conversations/{id}/parts` `{message_type: assignment",
+    "purpose": "close",
+    "notes": "snooze"
+   },
+   {
+    "call": "POST /messages` `{message_type: inapp",
+    "purpose": "email, from{type: admin}, to{type: user",
+    "notes": "contact}, body}`"
+   },
+   {
+    "call": "Webhooks: `conversation.user.created`, `conversation.user.replied`, `conversation.admin.replied`, …",
+    "purpose": "inbound push",
+    "notes": "signed (`X-Hub-Signature`)"
+   },
+   {
+    "call": "GET /contacts` · `POST /contacts/search` · `/tags",
+    "purpose": "contacts",
+    "notes": ""
+   }
+  ],
+  "limits": " - **10,000 API calls / minute per app**, **25,000 / minute per workspace**, enforced in 10-second windows; `X-RateLimit-Limit` / `-Remaining` / `-Reset` (epoch); HTTP 429 with `Remaining: 0`. - Errors `{type: error.list, errors[{code, message}]}`. Automation is the product's purpose (support inbox); Intercom Developer Terms.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation",
+   "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/searchconversations",
+   "https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.intercom.io",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Access Token of the app (Developer Hub > Configure > Authentication, or an OAuth install), sent as 'Authorization: Bearer <access_token>' (https://developers.intercom.com/docs/build-an-integration/learn-more/authentication). Workspaces hosted in the EU / AU are served from https://api.eu.intercom.io / https://api.au.intercom.io (OpenAPI servers list), which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "admin_id",
+    "required": true,
+    "help": "Intercom id of the admin (teammate) who authors replies and outbound messages — 'admin_id: The id of the admin who is authoring the comment' (https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation); GET /me (the `me` tool) shows the token's own admin id. Env: PLATFORM_MCP_INTERCOM_ADMIN_ID."
+   }
+  ],
+  "headers_note": "The optional Intercom-Version header is not sent: 'By default, it's equal to the version set in the app package' (https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation); mappings follow API version 2.16.",
+  "rate_per_second": 10,
+  "rate_note": "'10,000 API calls per minute per app' and '25,000 API calls per minute per workspace', spread over 10-second windows and reported in X-RateLimit-Limit / -Remaining / -Reset; HTTP 429 when exceeded (https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting). Client bucket kept at a conservative 10/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/admins/identifyadmin",
+    "note": "'You can view the currently authorised admin along with the embedded app object' — account carries type admin, id, name, email, email_verified and app{id_code, name, region}."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/messages",
+    "body": {
+     "message_type": "=in_app",
+     "body": "text",
+     "from.type": "=admin",
+     "from.id": "@admin_id",
+     "to.type": "=user",
+     "to.id": "to"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/messages/createmessage",
+    "note": "Admin-initiated in-app message ('You can create a message that has been initiated by an admin'): `to` is the contact's Intercom id ('The identifier for the contact which is given by Intercom') with role `user` — leads (recipient type lead) cannot be addressed; `from` is the per-install admin_id; message_type is fixed to in_app, so `subject` and `channel` are ignored (email messages also need template + subject). `text` is `body`, 'HTML and plaintext are supported'. UNCONFIRMED: the OpenAPI types from.id as an integer while the runtime sends the config value as a string. The result is the Message (id, conversation_id, body under raw); 'there will be no conversation present until the contact responds'."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/conversations/{thread_id}/reply",
+    "body": {
+     "message_type": "=comment",
+     "type": "=admin",
+     "admin_id": "@admin_id",
+     "body": "text"
+    },
+    "result": {
+     "fields": {
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation",
+    "note": "Public admin comment (message_type comment, type admin, admin_id from the per-install config): `thread_id` is the conversation id 'or the string \"last\" to reply to the last part of the conversation'; `channel` is ignored. The response is the whole Conversation (under raw); message_id is not set because the new part is only identifiable as the last entry of raw.conversation_parts.conversation_parts."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/conversations",
+    "params": {
+     "per_page": "limit"
+    },
+    "max_limit": 150,
+    "default_limit": 20,
+    "result": {
+     "items": "conversations",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "id",
+      "from": "source.author.email",
+      "text": "source.body"
+     }
+    },
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/listconversations",
+    "note": "'You can fetch a list of all conversations' — one row per conversation: `id` = `thread_id` = conversation id, `text` is the source (opening) message body (HTML), `from` its author's email (author object under raw.source.author). Intercom pages by cursor (pages.next.starting_after), so `page` is ignored and only the first `limit` (per_page, 'default 20', max 150) conversations are returned — next_page is not meaningful; `since` and `channel` are not sent (filters need POST /conversations/search, not offered). created_at / updated_at are Unix seconds under raw; total is raw.total_count on the response (not mapped)."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/conversations/{thread_id}",
+    "fixed_params": {
+     "display_as": "plaintext"
+    },
+    "result": {
+     "items": "conversation_parts.conversation_parts",
+     "key": "messages",
+     "total": "conversation_parts.total_count",
+     "fields": {
+      "id": "id",
+      "from": "author.email",
+      "text": "body"
+     }
+    },
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/retrieveconversation",
+    "note": "'You can fetch the details of a single conversation' with display_as=plaintext ('Set to plaintext to retrieve conversation messages in plain text'): rows are the conversation parts (comments, notes, assignments... — part_type under raw), `from` is the part author's email (author under raw.author). The opening message is NOT a part (it is the conversation's source, see list_inbound). The endpoint has no paging parameters, so `limit`, `page` and `channel` are ignored; Intercom returns at most the 500 most recent parts. created_at is Unix seconds under raw."
+   },
+   "mark_read": {
+    "method": "PUT",
+    "path": "/conversations/{thread_id}",
+    "body": {
+     "read": "json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=read"
+     }
+    },
+    "docs": "https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/updateconversation",
+    "note": "PUT /conversations/{id} with `read: true` — 'Mark a conversation as read within Intercom' (a JSON boolean, sent as such). `thread_id` is the conversation id and is required; `message_id` and `channel` are not used (Intercom tracks read state per conversation). The response is the updated Conversation (under raw)."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.intercom.io: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/intercom/Intercom-OpenAPI/main/descriptions/2.11/api.intercom.io.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

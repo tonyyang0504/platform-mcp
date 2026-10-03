@@ -1,0 +1,35 @@
+{
+ "id": "recycler",
+ "category": "automotive",
+ "label": "Cars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://cars.ksl.com",
+ "domain": "cars.ksl.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official KSL Cars API; only reverse-engineered/unofficial wrappers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cars.ksl.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

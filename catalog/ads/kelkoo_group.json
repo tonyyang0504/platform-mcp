@@ -1,0 +1,212 @@
+{
+ "id": "kelkoo_group",
+ "category": "ads",
+ "label": "Kelkoo Group",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "eu",
+  "gb",
+  "fr",
+  "de",
+  "it",
+  "es",
+  "nl"
+ ],
+ "docs_url": "https://docs.kelkoogroup.com/",
+ "url": "https://www.kelkoogroup.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Merchant Center account; Merchant Statistics API token; product feed spec. Free API; CPC billing.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed",
+   "reporting_only"
+  ],
+  "auth": "token (Kelkoo Merchant Center API token)",
+  "access": "signup",
+  "capabilities": [
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Merchant Statistics API + product feed; no campaign API) Confidence: **high**.",
+  "base_urls": [],
+  "auth": [
+   "1. Kelkoo Merchant Center account.",
+   "2. Generate the Merchant Statistics API token in Merchant Center (TODO(verify)).",
+   "3. Submit the product feed (Product data)."
+  ],
+  "endpoints": [
+   {
+    "call": "Merchant Statistics API",
+    "purpose": "reports (clicks, cost, leads by day / product)",
+    "notes": "token, date range"
+   },
+   {
+    "call": "Product data feed",
+    "purpose": "catalog",
+    "notes": "feed URL"
+   },
+   {
+    "call": "campaigns / bids",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free API; CPC contract terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.kelkoogroup.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.kelkoogroup.net/merchant/statistics/v1",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "bearer",
+   "field": "jwt",
+   "fields": [
+    {
+     "name": "jwt",
+     "required": true,
+     "help": "Merchant Statistics API token (Kelkoo Merchant Center > API Credentials > Create new token; the JWT is shown once), sent as `Authorization: Bearer`. It reaches every campaign managed by the login."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/my-campaigns",
+    "docs": "https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources",
+    "note": "There is no account resource; the probe is GET /my-campaigns (the campaigns the token's login manages)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/my-campaigns",
+    "result": {
+     "items": "$",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "campaignName",
+      "country": "country",
+      "website": "websiteUrl"
+     }
+    },
+    "docs": "https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources",
+    "note": "GET /my-campaigns: [{campaignId, campaignName, websiteUrl, country}] for every campaign (one merchant site per country) the token's login manages. Kelkoo campaigns carry no status or budget in this API; `account_id`, `status`, `page` and `limit` are not sent."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/category/{campaign_id}",
+    "params": {
+     "startDate": "date:date_from",
+     "endDate": "date:date_to"
+    },
+    "result": {
+     "items": "$",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "campaignId",
+      "date": "date",
+      "category": "catName",
+      "device": "deviceType",
+      "currency": "currency",
+      "clicks": "clicks",
+      "spend": "cost",
+      "sales": "sales",
+      "order_value": "orderValue"
+     }
+    },
+    "docs": "https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources",
+    "note": "GET /category/{campaign_id}?startDate&endDate (both included, up to two years back): clicks and cost per day, category and device for one campaign; campaign_id is REQUIRED. sales and order_value are filled only with Kelkoo Sales Tracking. Yesterday's data may still be compiling. `account_id` is not sent."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The token is tied to one login and the API exposes only /my-campaigns, /category, /product and /sales (https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources).",
+   "update_budget": "The Merchant Statistics API is read-only statistics; budgets are managed in the Merchant Center (https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources).",
+   "pause_resume": "No write resource in the Merchant Statistics API (https://docs.kelkoogroup.com/for-advertisers/merchant-statistics-api/merchant-statistics-resources)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.kelkoogroup.net: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "id": "anthropic_directory",
+ "category": "marketplaces",
+ "label": "Claude connectors directory",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://support.anthropic.com/",
+ "url": "https://claude.ai/directory",
+ "verified_at": null,
+ "terms_note": "Free listing; remote MCP servers are submitted ONLY through the in-app portal claude.ai/admin-settings/directory/submissions/new (Team/Enterprise org, Owner or Directory/Libraries role); desktop extensions via a form (clau.de/desktop-extention-submission); plugins via claude.ai or platform.claude.com/plugins/submit (public GitHub repo, updates auto-mirrored); human review, queue-dependent; OAuth 2.0 + title/readOnlyHint/destructiveHint on every tool + privacy policy mandatory; no money-moving, media-generation or ad-vehicle software; developer must own the API it connects to.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "apply",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/modelcontextprotocol/mcpb (MCPB bundle format for desktop extensions)",
+   "https://github.com/modelcontextprotocol/registry (the SEPARATE official MCP Registry: mcp-publisher CLI + POST /v0/publish)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "team_org_owner"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

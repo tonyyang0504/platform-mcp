@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/digistore24-mcp",
+ "description": "Digistore24 (marketplaces): me, list_products, get_product, create_product, update_price, list_sales",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://dev.digistore24.com",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "digistore24"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DIGISTORE24_API_KEY",
+     "description": "Digistore24 API key (vendor view > Settings > Account access > API keys; a writable / Full access key for create_product, update_price and refund, read-only suffices for the rest) sent as the X-DS-API-KEY header. The staging host https://www.digitest24.de/api/call is not switched to.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

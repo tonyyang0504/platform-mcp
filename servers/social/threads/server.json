@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/threads-mcp",
+ "description": "Threads (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics_p",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/threads/posts",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "threads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_THREADS_ACCESS_TOKEN",
+     "description": "Threads user access token (long-lived, 60 days; refresh with GET /refresh_access_token) of the Threads profile, from an app with the Threads use case; scopes threads_basic, threads_content_publish, threads_read_replies, threads_manage_replies, threads_manage_mentions, threads_manage_insights, threads_delete. Sent as the access_token query parameter, as every Threads example does (https://developers.facebook.com/docs/threads/posts).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

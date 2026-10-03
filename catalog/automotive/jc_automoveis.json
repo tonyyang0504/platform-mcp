@@ -1,0 +1,35 @@
+{
+ "id": "jc_automoveis",
+ "category": "automotive",
+ "label": "Jcautomoveis",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://jcautomoveis.pt",
+ "domain": "jcautomoveis.pt",
+ "country": "Portugal",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). No developer/API/partner-feed pages found on the site (homepage 429, /developers /api /docs /partners probes empty) and no official API in search results. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jcautomoveis.pt/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

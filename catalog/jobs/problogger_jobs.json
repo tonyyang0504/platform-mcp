@@ -1,0 +1,136 @@
+{
+ "id": "problogger_jobs",
+ "category": "jobs",
+ "label": "ProBlogger Job Board",
+ "lane": "assist",
+ "kind": "creative",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://problogger.com/jobs/wpjobboard/xml/rss/?filter=active",
+ "url": "https://problogger.com/jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Content-writing gigs; external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the WPJobBoard RSS (active listings) / FeedBlitz feed is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. WordPress WPJobBoard site with a public RSS of active jobs; no developer API; robots.txt 5 rules; no terms page linked.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://problogger.com/jobs/",
+   "https://problogger.com/robots.txt",
+   "https://problogger.com/jobs/wpjobboard/xml/rss/?filter=active",
+   "http://feeds.feedblitz.com/Problogger/Jobs"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://problogger.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobs/wpjobboard/xml/rss/",
+    "params": {
+     "query": "query",
+     "location": "location"
+    },
+    "fixed_params": {
+     "filter": "active"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://problogger.com/jobs/wpjobboard/xml/rss/?filter=active",
+    "note": "ProBlogger Job Board RSS (WPJobBoard, RSS 2.0) of active postings. query and location are the board's search parameters carried into the feed (checked 2026-09-25: ?query=writer and ?location=remote narrow it). The feed is one list, so page and limit are not sent (ignore next_page). category (job type and category) stays in raw. id is the posting link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

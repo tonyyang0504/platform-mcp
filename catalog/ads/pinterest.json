@@ -1,0 +1,351 @@
+{
+ "id": "pinterest",
+ "category": "ads",
+ "label": "Pinterest Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.pinterest.com/docs/api/v5/",
+ "url": "https://business.pinterest.com/advertise/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Pinterest API v5 ads endpoints require app approval and ads scopes; console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "bulk_csv"
+  ],
+  "auth": "oauth2 authorization code (https://www.pinterest.com/oauth/ → https://api.pinterest.com/v5/oauth/token; scopes ads:read, ads:write) + client-credentials for some flows",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "catalog_products",
+   "bulk",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/pinterest/api-description (official OpenAPI 3.0.3 bundle, JSON + YAML; Pinterest also publishes generated SDKs — pinterest-python-sdk etc., not opened)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Pinterest REST API v5 ads surface).",
+  "base_urls": [
+   "https://api.pinterest.com/v5"
+  ],
+  "auth": [
+   "1. Create an app at developers.pinterest.com (Trial access by default).",
+   "2. OAuth 2.0 authorization code: `https://www.pinterest.com/oauth/` → `POST https://api.pinterest.com/v5/oauth/token` (Basic auth with app id / secret; `grant_type=authorization_code` / `refresh_token`). Scopes: `ads:read` (\"See all of your advertising data\"), `ads:write` (\"Create, update, or delete",
+   "3. Request Standard access (\"To ask for a rate limit change, file a ticket with our support team\") once the integration is built."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /ad_accounts` · `POST /ad_accounts` · `GET /ad_accounts/{ad_account_id}",
+    "purpose": "accounts",
+    "notes": "`id, name, owner, country, currency, permissions[]`"
+   },
+   {
+    "call": "GET/POST/PATCH /ad_accounts/{id}/campaigns` · `GET …/campaigns/{campaign_id}",
+    "purpose": "campaigns",
+    "notes": "`name, status ACTIVE/PAUSED/ARCHIVED, objective_type, daily_spend_cap / lifetime_spend_cap (micro-currency), start_time, end_time, is_flexible_daily_budgets`"
+   },
+   {
+    "call": "GET/POST/PATCH /ad_accounts/{id}/ad_groups` · `POST …/ad_groups/audience_sizing",
+    "purpose": "ad groups: budget, bid, targeting",
+    "notes": "`campaign_id, name, status, budget_in_micro_currency, bid_in_micro_currency, bid_strategy_type, budget_type, targeting_spec{}, placement_group, billable_event`"
+   },
+   {
+    "call": "GET/POST/PATCH /ad_accounts/{id}/ads` · `POST /ad_accounts/{id}/ad_previews",
+    "purpose": "ads (promoted Pins)",
+    "notes": "`ad_group_id, pin_id, creative_type, destination_url, name, status, tracking_urls`"
+   },
+   {
+    "call": "POST /media` → `POST /pins` (media_source)",
+    "purpose": "creative upload (video / image → Pin)",
+    "notes": "`media_type video`, `upload_url, upload_parameters`; pin `board_id, media_source{source_type, url / media_id}, title, link`"
+   },
+   {
+    "call": "GET/POST/PATCH /ad_accounts/{id}/keywords` · `GET …/keywords/metrics",
+    "purpose": "keywords",
+    "notes": "`parent_id, value, match_type BROAD/PHRASE/EXACT/EXACT_NEGATIVE, bid`"
+   },
+   {
+    "call": "POST/GET /ad_accounts/{id}/audiences` · `POST …/customer_lists` · `POST …/customer_lists/{id}/uploads` → `…/run",
+    "purpose": "audiences (customer lists, engagement, visitor, actalike)",
+    "notes": "`name, rule{}, audience_type; list_type EMAIL / MAID …, records`"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/events` (Conversions API) · `POST/GET …/conversion_tags",
+    "purpose": "conversions upload + tags",
+    "notes": "`data[]{event_name, action_source, event_time, user_data{em[], hashed}, custom_data{value, currency}}`"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/reports` → `GET …/reports?token=` · `GET …/analytics` · `…/campaigns/analytics` · `…/ad_groups/analytics` · `…/ads/analytics",
+    "purpose": "reports (async) + analytics",
+    "notes": "`start_date, end_date, granularity DAY, columns[], level CAMPAIGN…, campaign_ids`"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/bulk/upsert` · `POST …/bulk/download` · `GET …/bulk/{bulk_request_id}",
+    "purpose": "bulk",
+    "notes": "`create_data / update_data {campaigns[], ad_groups[], ads[], keywords[]}`"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/bid_floor` · `POST …/campaigns/delivery_estimates",
+    "purpose": "bid guidance",
+    "notes": "`bid_floor_specs[]`, `targeting_spec`"
+   },
+   {
+    "call": "DELETE /ad_accounts/{id}/sandbox",
+    "purpose": "sandbox reset",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Trial: 1,000 requests/day per app for all endpoints, **ads_write 300/day**, org_write 300/day. Standard: 100 requests/second per user per app; per minute per user per app — ads_read 1,000, ads_write 400, ads_analytics 300, ads_conversions 120,000 (per ad account), advanced_auction_read 50 / write 25, catalogs 100. - Free API; Pinterest Developer Guidelines and Advertising Guidelines apply; Standard access is granted through support review.",
+  "mcp_sdk": [
+   "Official: OpenAPI bundle (github.com/pinterest/api-description, MIT) and Pinterest-generated SDKs (Python `pinterest-python-sdk`, others — not opened). No official MCP server."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.json",
+   "https://raw.githubusercontent.com/pinterest/api-description/main/README.md",
+   "https://developers.pinterest.com/docs/reference/rate-limits/",
+   "https://developers.pinterest.com/docs/api/v5/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.pinterest.com/v5",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.pinterest.com/v5/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Pinterest app id; HTTP Basic username on POST https://api.pinterest.com/v5/oauth/token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Pinterest app secret key; HTTP Basic password on the token request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (starts with `pinr`) from the authorization-code flow with scopes user_accounts:read, ads:read and ads:write. Continuous refresh tokens last 60 days and every refresh returns a new one: the runtime keeps the rotated token in memory, and when PLATFORM_MCP_STATE_DIR is set it saves it to <dir>/pinterest.json (mode 0600) and prefers it over this variable on the next start."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user_account",
+    "docs": "https://developers.pinterest.com/docs/api/v5/user_account-get",
+    "note": "GET /v5/user_account: the account behind the token (username, account_type, business_name, ...)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/ad_accounts",
+    "params": {
+     "page_size": "limit"
+    },
+    "default_limit": 250,
+    "max_limit": 250,
+    "result": {
+     "items": "items",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/ad_accounts-list",
+    "note": "GET /v5/ad_accounts?page_size=250 (the maximum; list_accounts takes no paging arguments; shared accounts included by default). Paging is by `bookmark`; only the first page is returned."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/ad_accounts/{account_id}/campaigns",
+    "params": {
+     "page_size": "limit",
+     "entity_statuses": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 250,
+    "result": {
+     "items": "items",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/campaigns-list",
+    "note": "GET /v5/ad_accounts/{ad_account_id}/campaigns. `status` is sent as entity_statuses (ACTIVE, PAUSED, ARCHIVED, DRAFT, DELETED_DRAFT; default ACTIVE+PAUSED). Budgets (daily_spend_cap, lifetime_spend_cap) are micro-currency integers and start_time/end_time Unix seconds, left in raw. Paging is by `bookmark`; only the first page is returned."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/ad_accounts/{account_id}/campaigns/analytics",
+    "params": {
+     "start_date": "date_from",
+     "end_date": "date_to",
+     "campaign_ids": "campaign_id"
+    },
+    "fixed_params": {
+     "columns": "SPEND_IN_DOLLAR,IMPRESSION_1,CLICKTHROUGH_1,TOTAL_IMPRESSION,TOTAL_CLICKTHROUGH",
+     "granularity": "DAY"
+    },
+    "result": {
+     "items": "$",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "CAMPAIGN_ID",
+      "date": "DATE",
+      "spend": "SPEND_IN_DOLLAR",
+      "impressions": "IMPRESSION_1",
+      "clicks": "CLICKTHROUGH_1"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/campaigns-analytics",
+    "note": "GET /v5/ad_accounts/{ad_account_id}/campaigns/analytics?start_date&end_date&campaign_ids&columns&granularity=DAY (dates YYYY-MM-DD, up to 90 days back). campaign_ids is REQUIRED by Pinterest, so pass campaign_id. Returns one object per campaign per day."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/ad_accounts/{ad_account_id}/campaigns",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "result": {
+     "root": "items.0.data",
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/campaigns-update",
+    "body": {
+     "0.id": "campaign_id",
+     "0.daily_spend_cap": "int:daily_budget"
+    },
+    "note": "PATCH /v5/ad_accounts/{ad_account_id (config)}/campaigns [{id, daily_spend_cap}]. daily_spend_cap is an integer in MICRO-currency of the advertiser's currency (e.g. 25000000 = 25.00) and applies to campaign-budget-optimization campaigns (ad-group budgets must stay 0/unset). `currency` is ignored. A rejected item (exceptions, no data) is reported as invalid_input."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/ad_accounts/{ad_account_id}/campaigns",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "result": {
+     "root": "items.0.data",
+     "fields": {
+      "campaign_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/campaigns-update",
+    "body": {
+     "0.id": "campaign_id",
+     "0.status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "note": "PATCH /v5/ad_accounts/{ad_account_id (config)}/campaigns [{id, status: PAUSED|ACTIVE}]. Returns the updated campaign's status; a rejected item (exceptions, no data) is reported as invalid_input."
+   }
+  },
+  "config_fields": [
+   {
+    "name": "ad_account_id",
+    "required": false,
+    "help": "Ad account id (digits) that update_budget and pause_resume PATCH (PATCH /v5/ad_accounts/{ad_account_id}/campaigns); those verbs take only a campaign id."
+   }
+  ]
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.pinterest.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token api.pinterest.com/v5/oauth/token: 500 12",
+   "authorize https://www.pinterest.com/oauth/: 302",
+   "spec https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "POST /v5/oauth/token answered 500 code 12 for a numeric dummy client id and 401 'Authentication failed' for a non-numeric one (checked by hand), so the token endpoint is live; the 500 is Pinterest's handling of an unknown app id. get_report: spec says \"response path fields.spend='SPEND_IN_DOLLAR' is not in the response schema\"; waived: the analytics rows carry one key per requested `columns` value (SPEND_IN_DOLLAR, IMPRESSION_1, CLICKTHROUGH_1 are sent in columns); the schema lists only CAMPAIGN_ID and DATE get_report: spec says \"response path fields.impressions='IMPRESSION_1' is not in the response schema\"; waived: the analytics rows carry one key per requested `columns` value (SPEND_IN_DOLLAR, IMPRESSION_1, CLICKTHROUGH_1 are sent in columns); the schema lists only CAMPAIGN_ID and DATE get_report: spec says \"response path fields.clicks='CLICKTHROUGH_1' is not in the response schema\"; waived: the analytics rows carry one key per requested `columns` value (SPEND_IN_DOLLAR, IMPRESSION_1, CLICKTHROUGH_1 are sent in columns); the schema lists only CAMPAIGN_ID and DATE"
+ }
+}

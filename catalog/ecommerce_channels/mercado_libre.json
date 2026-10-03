@@ -1,0 +1,320 @@
+{
+ "id": "mercado_libre",
+ "category": "ecommerce_channels",
+ "label": "Mercado Libre",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "br",
+  "mx",
+  "ar",
+  "cl",
+  "co",
+  "pe",
+  "uy"
+ ],
+ "docs_url": "https://developers.mercadolibre.com/en_us/authentication-and-authorization",
+ "url": "https://www.mercadolibre.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free developer app at developers.mercadolibre.com; only the seller's ADMIN account can authorise the app (operators cannot); tokens die on password / secret change or 4+ months inactivity; refresh token single-use; redirect URI must match exactly; test users for development; rate limits per app (403 / 429 — numbers not on the pages read); listing fees + sales commission per site and listing_type.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2 (app id + secret; authorization-code with PKCE; access 6 h, single-use refresh token 6 months; scopes offline_access read write)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "questions",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official SDKs per language linked from the developer portal"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.app_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.site_id",
+  "config.seller_id"
+ ],
+ "rate_limits": "1,500 requests/min per seller (429) — from search; auth page opened but JS-rendered",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opene",
+  "base_urls": [
+   "https://api.mercadolibre.com",
+   "https://auth.mercadolibre.com.<tld>/authorization"
+  ],
+  "auth": [
+   "1. Create the app on the developer portal → app id + secret key; register the exact redirect URI; enable notification topics.",
+   "2. Seller (admin account) authorises: authorization-code flow with PKCE (S256) → code → POST /oauth/token → access_token (6 h) + refresh_token (single-use, 6 months).",
+   "3. Refresh proactively; store the newest refresh token only (old ones are invalid)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /items",
+    "purpose": "publish an item",
+    "notes": "title, category_id (predict via /sites/{site}/domain_discovery/search), price, currency_id, available_quantity, buying_mode buy_it_now, listing_type_id, attributes (ITEM_CONDITION, BRAND, GTIN…), pictures ≤ 6, sale_terms, shipping"
+   },
+   {
+    "call": "PUT /items/{id}",
+    "purpose": "update price, available_quantity, status (paused / closed), pictures",
+    "notes": "sold/available quantities visible only with the owner token"
+   },
+   {
+    "call": "GET /orders/search?seller={id} · GET /orders/{id}",
+    "purpose": "orders",
+    "notes": "(Publishing audit; page not re-read)"
+   },
+   {
+    "call": "GET /shipments/{id} · Mercado Envíos labels · custom tracking update",
+    "purpose": "fulfilment",
+    "notes": "(Publishing audit)"
+   },
+   {
+    "call": "/post-purchase/v1/claims",
+    "purpose": "claims / returns",
+    "notes": "(Publishing audit)"
+   },
+   {
+    "call": "GET /questions/search · POST /answers",
+    "purpose": "buyer questions",
+    "notes": ""
+   },
+   {
+    "call": "Notifications (callback URL per app)",
+    "purpose": "topics orders_v2, shipments, items, questions, claims, messages",
+    "notes": "(Publishing audit)"
+   }
+  ],
+  "limits": " Per-app limits with 429 / 403 responses; numbers not published on the pages read. - Developer terms of the portal; seller authorises via OAuth (admin only). - Listing type sets fees + exposure; immediate-payment rules vary by site / category. - Refresh token is single-use — persist the newest one (our `_persist_refresh` path).",
+  "mcp_sdk": [
+   "SDK: official SDKs per language linked from the developer portal"
+  ],
+  "sources": [
+   "https://developers.mercadolibre.com.ar/en_us/authentication-and-authorization",
+   "https://developers.mercadolibre.com.ar/en_us/list-products",
+   "https://developers.mercadolibre.com.ar/en_us/manage-sales",
+   "https://developers.mercadolibre.com.ar/en_us/me1-order-states",
+   "https://developers.mercadolibre.com.ar/en_us/products-sync-listings",
+   "https://developers.mercadolibre.com/en_us/authentication-and-authorization",
+   "https://r.jina.ai/https://developers.mercadolibre.com.ar/es_ar/autenticacion-y-autorizacion",
+   "https://r.jina.ai/https://developers.mercadolibre.com.ar/es_ar/gestion-de-ordenes",
+   "https://r.jina.ai/https://developers.mercadolibre.com.ar/es_ar/publica-productos"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.mercadolibre.com",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://developers.mercadolivre.com.br/en_us/start-testing",
+    "verified_at": "2026-09-27",
+    "notes": "Mercado Libre has no sandbox: 'We do not have a test environment or sandbox to run tests: we make it possible to use test users for verification directly in production.' Create up to 10 test users with POST https://api.mercadolibre.com/users/test_user {site_id} using a production access token, save their credentials at once (they cannot be listed later), and authorize the app as a test seller; test users only transact with other test users' listings and expire after a while."
+   }
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.mercadolibre.com/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Secret Key of the same application; sent as client_secret in the token request body."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (TG-...) from a one-time authorization-code consent by the seller's ADMIN account (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "seller_id",
+    "required": true,
+    "help": "Numeric Mercado Libre user id of the seller (the `id` returned by GET /users/me); used as the seller filter of the order search."
+   }
+  ],
+  "rate_per_second": 10,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developers.mercadolibre.com.ar/en_us/authentication-and-authorization",
+    "note": "GET /users/me returns the authorised user {id, nickname, site_id, country_id, ...}; its id is the seller_id config value."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/items/{listing_id}",
+    "body": {
+     "title": "title",
+     "price": "price",
+     "available_quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/products-sync-listings",
+    "note": "PUT /items/{item_id} {title, price, available_quantity} with only the given fields (Sync and modify listings). The title can only change while sold_quantity = 0; `description` has its own endpoint (/items/{id}/description) and is not mapped. The listing guide points to the Prices API for price management. Returns the item; `status` is active|paused|closed|under_review..."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/items/{listing_id}",
+    "body": {
+     "status": "=paused"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/products-sync-listings",
+    "note": "PUT /items/{item_id} {status: paused} takes the listing off sale and out of view, reversible with status active. `closed` (final, can only be relisted) and the deleted flag are not used."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/items/{listing_id}",
+    "body": {
+     "available_quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/products-sync-listings",
+    "note": "PUT /items/{item_id} {available_quantity} sets stock; 0 auto-pauses the item (out_of_stock) on MLB, MLA, MLM, MLC, MPE and MLV, and a positive value reactivates it. `listing_id` (item id, e.g. MLA1136716168) is required; items are not addressed by SKU. Variation stock is per variation (not mapped)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders/search",
+    "params": {
+     "seller": "@seller_id",
+     "order.status": "status",
+     "order.date_created.from": "since",
+     "sort": "=date_desc",
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "results",
+     "total": "paging.total",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "total_amount",
+      "currency": "currency_id",
+      "created_at": "date_created"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/manage-sales",
+    "note": "GET /orders/search?seller={seller_id}&order.status(confirmed|payment_required|payment_in_process|partially_paid|paid|cancelled...; comma-separated)&order.date_created.from(ISO-8601, hour precision)&sort=date_desc&offset&limit (the documented page size is 50). Returns {results[{id, status, total_amount, currency_id, date_created, shipping{id}}], paging{total, offset, limit}}."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /items requires category_id (predicted per product), listing_type_id, currency_id, condition, buying_mode, pictures and the category's required attributes (BRAND, MODEL, GTIN, ...) — none of which the vocabulary carries; the category attributes differ per category.",
+   "mark_shipped": "Marking an ME1 (seller-shipped) order as dispatched is POST /shipments/{shipment_id}/seller_notifications {payload{service_id (per site), comment, date}, tracking_number, tracking_url, status: shipped, substatus: null}; the shipment id comes from GET /orders/{order_id}/shipments first (two calls). Mercado Envíos ME2 shipments are tracked by the carrier.",
+   "listing_metrics": "No per-item visits endpoint confirmed this pass (the visits documentation page did not load); not mapped."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.mercadolibre.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.mercadolibre.com/oauth/token: 400 invalid client_id or client_secret",
+   "authorize https://auth.mercadolibre.com.ar/authorization: 403",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

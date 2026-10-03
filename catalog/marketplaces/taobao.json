@@ -1,0 +1,231 @@
+{
+ "id": "taobao",
+ "category": "marketplaces",
+ "label": "Taobao",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.taobao.com",
+ "url": "https://www.taobao.com",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer registration needs a STORE (non-personal) Taobao account with Alipay bound; item/order scopes need enterprise real-name (营业执照 + 支付宝企业实名); 商家自研 apps are company-identity only, code must run on 聚石塔, 5-10 working-day review; ISV route = 服务商认证 + 聚石塔 + 软著 + ¥100-150k deposit; test env 5,000 calls/day, prod default 1M/day.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "set_price",
+   "publish",
+   "orders"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/alibaba/top (official Node client, archived 2019-03-15)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://gw.api.taobao.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error_response",
+   "ok_value": null,
+   "error_field": "error_response"
+  },
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key",
+    "session": "session"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent."
+    },
+    {
+     "name": "session",
+     "required": true,
+     "help": "The seller's authorised session (access_token) from the TOP user-authorisation flow (https://open.taobao.com/doc.htm?docId=102635&docType=1); sent as the `session` parameter. Update it when it expires — the runtime does not refresh it."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "encoding": "hex",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_fmt",
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+    "timestamp_offset": "+08:00",
+    "params": {
+     "v": "2.0",
+     "sign_method": "md5",
+     "format": "json"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.user.seller.get",
+     "fields": "user_id,nick,type,seller_credit,has_shop,status"
+    },
+    "kind": "probe",
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=21349",
+    "note": "taobao.user.seller.get: the authorised seller (user_id, nick, type B/C, seller_credit, status)."
+   },
+   "list_products": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.items.onsale.get",
+     "fields": "num_iid,title,price,approve_status,num,pic_url,cid,list_time,delist_time,modified"
+    },
+    "params": {
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "max_limit": 200,
+    "result": {
+     "items": "items_onsale_get_response.items.item",
+     "key": "products",
+     "total": "items_onsale_get_response.total_results",
+     "fields": {
+      "id": "num_iid",
+      "name": "title",
+      "price": "price",
+      "currency": "=CNY",
+      "status": "approve_status",
+      "created_at": "list_time",
+      "updated_at": "modified",
+      "quantity": "num",
+      "image_url": "pic_url"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=18",
+    "note": "taobao.items.onsale.get: the seller's items currently on sale (出售中), newest listing first; price in CNY (元). Items in the warehouse (instock) are not included, so the `status` input is not applied."
+   },
+   "get_product": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.item.seller.get",
+     "fields": "num_iid,title,price,approve_status,num,desc,detail_url,cid,pic_url,created,modified,list_time,sku,outer_id"
+    },
+    "params": {
+     "num_iid": "product_id"
+    },
+    "result": {
+     "root": "item_seller_get_response.item",
+     "fields": {
+      "id": "num_iid",
+      "name": "title",
+      "description": "desc",
+      "price": "price",
+      "currency": "=CNY",
+      "status": "approve_status",
+      "url": "detail_url",
+      "created_at": "created",
+      "updated_at": "modified"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=24625",
+    "note": "taobao.item.seller.get: one of the seller's items by num_iid with its SKUs (skus.sku) and description HTML."
+   },
+   "list_sales": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.trades.sold.get",
+     "fields": "tid,status,payment,total_fee,created,pay_time,buyer_nick,orders"
+    },
+    "params": {
+     "start_created": "datefmt:%Y-%m-%d %H:%M:%S:since",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "trades_sold_get_response.trades.trade",
+     "key": "sales",
+     "total": "trades_sold_get_response.total_results",
+     "fields": {
+      "id": "tid",
+      "product_id": "orders.order.0.num_iid",
+      "product_name": "orders.order.0.title",
+      "amount": "payment",
+      "currency": "=CNY",
+      "status": "status",
+      "created_at": "created",
+      "customer": "buyer_nick"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=46",
+    "note": "taobao.trades.sold.get: trades sold in the last three months, newest first (status WAIT_BUYER_PAY, WAIT_SELLER_SEND_GOODS, TRADE_FINISHED, …; payment in CNY). `since` (ISO date/datetime) is sent as start_created in yyyy-MM-dd HH:mm:ss and is read by Taobao as GMT+8. The product fields are the first order line; `product_id` input is not applied."
+   },
+   "list_refunds": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.refunds.receive.get",
+     "fields": "refund_id,tid,oid,num_iid,title,total_fee,refund_fee,status,created,modified,reason"
+    },
+    "params": {
+     "start_modified": "datefmt:%Y-%m-%d %H:%M:%S:since",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "refunds_receive_get_response.refunds.refund",
+     "key": "refunds",
+     "total": "refunds_receive_get_response.total_results",
+     "fields": {
+      "id": "refund_id",
+      "sale_id": "tid",
+      "amount": "refund_fee",
+      "currency": "=CNY",
+      "reason": "reason",
+      "status": "status",
+      "created_at": "created"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=52",
+    "note": "taobao.refunds.receive.get: refunds buyers requested from the seller (WAIT_SELLER_AGREE, WAIT_BUYER_RETURN_GOODS, WAIT_SELLER_CONFIRM_GOODS, SELLER_REFUSE_BUYER, CLOSED, SUCCESS); `since` filters start_modified (GMT+8)."
+   }
+  },
+  "not_offered": {
+   "create_product": "Publishing needs the category-specific schema flow (alibaba.item.publish.schema.get → alibaba.item.publish.submit, listed in the 商品API group of https://open.taobao.com/api.htm?docId=18&docType=2) with category, properties, SKUs and images; a name + price + currency cannot form a valid item.",
+   "update_price": "The 商品API group (https://open.taobao.com/api.htm?docId=18&docType=2) offers taobao.item.sku.price.update (needs the SKU properties/sku_id) and tmall.item.price.update (Tmall stores only); there is no plain item-price call for a Taobao item id.",
+   "get_sales_stats": "No aggregated sales-statistics API is in the TOP 交易API / 商品API groups (https://open.taobao.com/api.htm?docId=46&docType=2); revenue must be summed from trades.",
+   "refund": "TOP refunds are buyer-initiated: taobao.refunds.receive.get (https://open.taobao.com/api.htm?docId=52&docType=2) lists requests such as 'WAIT_SELLER_AGREE(买家已经申请退款，等待卖家同意)' that the seller answers; there is no call for a seller to refund an arbitrary amount on a trade."
+  },
+  "terms": "Taobao Open Platform (TOP) calling convention (https://open.taobao.com/doc.htm?docId=101617&docType=1): https://gw.api.taobao.com/router/rest with method, app_key, session, timestamp (yyyy-MM-dd HH:mm:ss, GMT+8, ±10 min), v=2.0, sign_method=md5, format=json and sign. Seller apps need enterprise real-name verification and, for 商家自研 apps, 聚石塔 hosting; buyer personal data is masked."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, session; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

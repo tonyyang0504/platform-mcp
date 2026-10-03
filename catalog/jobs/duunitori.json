@@ -1,0 +1,65 @@
+{
+ "id": "duunitori",
+ "category": "jobs",
+ "label": "Duunitori",
+ "lane": "assist",
+ "kind": "aggregator",
+ "regions": [
+  "fi"
+ ],
+ "docs_url": "https://duunitori.fi/",
+ "url": "https://duunitori.fi/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Finland's job search; apply on employer site.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "unknown",
+  "access": "partner_only",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

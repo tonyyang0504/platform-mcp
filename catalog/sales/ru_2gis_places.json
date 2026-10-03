@@ -1,0 +1,37 @@
+{
+ "id": "ru_2gis_places",
+ "category": "sales",
+ "label": "2GIS Places API",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "ru",
+  "ae"
+ ],
+ "docs_url": "https://docs.2gis.com/en/api/search/places/overview",
+ "url": "https://2gis.ru/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Places API on the user's 2GIS key (paid); 2GIS is a Russian company — sanctions / export-control screening in sales_policy before enabling for a tenant.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

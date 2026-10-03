@@ -1,0 +1,36 @@
+{
+ "id": "fiata_members",
+ "category": "sales",
+ "label": "FIATA member directory",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://fiata.org/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Association member lists public; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

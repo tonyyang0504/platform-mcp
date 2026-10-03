@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/resend-mcp",
+ "description": "Resend (messaging): me, send, list_inbound. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://resend.com/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "resend"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_RESEND_API_KEY",
+     "description": "Resend team API key (re_…), sent as 'Authorization: Bearer re_xxxxxxxxx' (https://resend.com/docs/api-reference/introduction).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_RESEND_SENDER",
+     "description": "Verified-domain sender address used as `from` on every send ('Sender email address', 'Name <email@domain>' allowed; https://resend.com/docs/api-reference/emails/send-email). Env: PLATFORM_MCP_RESEND_SENDER.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

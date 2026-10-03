@@ -1,0 +1,37 @@
+{
+ "id": "alibaba_com",
+ "category": "sales",
+ "label": "Alibaba.com suppliers",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.alibaba.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (43 Disallow) blocks /trade/ (search) for every agent; supplier storefronts live on <shop>.en.alibaba.com (robots not checked this pass); contact / RFQ needs the tenant account. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

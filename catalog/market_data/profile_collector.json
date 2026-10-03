@@ -1,0 +1,15 @@
+{
+ "id": "profile_collector",
+ "category": "market_data",
+ "label": "Company profiles (Yahoo quoteSummary)",
+ "provider": "Yahoo Finance",
+ "lane": "api",
+ "base_urls": [
+  "https://query1.finance.yahoo.com/v10/finance/quoteSummary/"
+ ],
+ "data_kinds": [
+  "reference data: sector/industry/country per symbol"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

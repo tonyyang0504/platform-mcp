@@ -1,0 +1,38 @@
+{
+ "id": "world_health_expo_dubai",
+ "category": "sales",
+ "label": "World Health Expo Dubai exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "ae",
+  "mena",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.arabhealthonline.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Redirects to worldhealthexpo.com; exhibitor list public; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

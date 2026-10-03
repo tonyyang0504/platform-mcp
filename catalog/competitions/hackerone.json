@@ -1,0 +1,179 @@
+{
+ "id": "hackerone",
+ "category": "competitions",
+ "label": "HackerOne",
+ "lane": "api",
+ "kind": "bounty",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.hackerone.com/hacker-resources/",
+ "url": "https://hackerone.com",
+ "verified_at": "2026-09-24",
+ "terms_note": "HackerOne Hacker API v1 (HTTP Basic with an API token identifier and value). Rate limits: 600 reads per minute; programs are the bounty programs you can see.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "basic (API token identifier + token)",
+  "access": "self-serve",
+  "capabilities": [
+   "programs",
+   "reports",
+   "submit_report",
+   "balance"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.hackerone.com",
+  "auth": {
+   "type": "basic",
+   "username_field": "api_username",
+   "password_field": "api_token",
+   "fields": [
+    {
+     "name": "api_username",
+     "required": true,
+     "help": "API token identifier from https://hackerone.com/settings/api_token/edit (used as the Basic auth username)."
+    },
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "API token value generated on the same page (used as the Basic auth password)."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "rate_note": "Docs: 'Read operations: 600 requests per minute'. Five requests per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/hackers/payments/balance",
+    "docs": "https://api.hackerone.com/hacker-resources/#balance-get-balance",
+    "note": "There is no profile endpoint in the Hacker API; GET /hackers/payments/balance verifies the credentials and returns {data: {balance}}."
+   },
+   "discover": {
+    "method": "GET",
+    "path": "/v1/hackers/programs",
+    "params": {
+     "page[number]": "page",
+     "page[size]": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "competitions",
+     "fields": {
+      "id": "attributes.handle",
+      "title": "attributes.name",
+      "status": "attributes.submission_state",
+      "starts_at": "attributes.started_accepting_at"
+     }
+    },
+    "docs": "https://api.hackerone.com/hacker-resources/#programs-get-programs",
+    "note": "GET /hackers/programs (page[number], page[size] ≤ 100): the programs visible to you. `id` is the program handle that get_competition takes. No text or status filter, so `query`, `kind` and `status` are not sent; no total in the response. offers_bounties, currency, state and your report counts stay in `raw`."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/v1/hackers/programs/{competition_id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "attributes.handle",
+      "title": "attributes.name",
+      "status": "attributes.submission_state",
+      "starts_at": "attributes.started_accepting_at",
+      "description": "attributes.policy"
+     }
+    },
+    "docs": "https://api.hackerone.com/hacker-resources/#programs-get-program",
+    "note": "GET /hackers/programs/{handle}. `description` is the program policy (markdown). Scope lives at /hackers/programs/{handle}/structured_scopes (not mapped)."
+   },
+   "my_entries": {
+    "method": "GET",
+    "path": "/v1/hackers/me/reports",
+    "params": {
+     "page[number]": "page",
+     "page[size]": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "entries",
+     "fields": {
+      "id": "id",
+      "competition_id": "relationships.program.data.attributes.handle",
+      "status": "attributes.state",
+      "submitted_at": "attributes.created_at"
+     }
+    },
+    "docs": "https://api.hackerone.com/hacker-resources/#reports-get-reports",
+    "note": "GET /hackers/me/reports: your reports across programs (no program filter, so `competition_id` is not sent). Title, weakness and bounty timestamps stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "standings": "No leaderboard endpoint in the Hacker API (hacktivity is a disclosed-report feed, not a ranking).",
+   "enter": "No join endpoint: public programs accept reports directly and private programs are invitation-only.",
+   "submit": "POST /hackers/reports requires 'team_handle', 'title', 'vulnerability_information' and 'impact' (all required); the submit vocabulary has no title/impact fields, so it is not mapped."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.hackerone.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

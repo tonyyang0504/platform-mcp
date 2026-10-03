@@ -1,0 +1,104 @@
+{
+ "id": "torre",
+ "category": "jobs",
+ "label": "Torre",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "latam",
+  "global"
+ ],
+ "docs_url": "https://torre.ai/apiforprofessionals",
+ "url": "https://torre.ai/",
+ "verified_at": "2026-09-04",
+ "terms_note": "AI-matching talent network; profile apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "unknown",
+  "access": "apply",
+  "capabilities": [
+   "job_search",
+   "alerts",
+   "apply_submit (Torre's own AI agent, private beta)",
+   "salary_data"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Torre API / MCP server for professionals (official, private beta — torre.ai/apiforprofessionals)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep assist today — request access to the private-beta 'Torre API for professionals' (endpoints + MCP server to query the job database, receive webhook pings on matches and let Torre's AI apply on the",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Pricing, rate limits and auth are not published. Terms of Service forbid users 'to spider, crawl, or scrape the Content of the Product' and reverse engineering; the API itself is the sanctioned automation path: 'The backend to automate your job hunt — Endpoints and MCP server to discover jobs and let AI apply on your behalf … Torre API is in private beta — REQUEST ACCESS'. Pricing, rate limits and auth are not published. robots.txt disallows /api/ and has Disallow: / for unlisted agents.",
+  "mcp_sdk": [
+   "Torre API / MCP server for professionals (official, private beta — torre.ai/apiforprofessionals)"
+  ],
+  "sources": [
+   "https://torre.ai/",
+   "https://torre.ai/robots.txt",
+   "https://torre.ai/api",
+   "https://torre.ai/apiforprofessionals",
+   "https://torre.ai/apiforcompanies",
+   "https://torre.ai/developer",
+   "https://torre.ai/docs",
+   "https://torre.ai/en/terms"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Login-gated private beta (re-checked 2026-09-25 in headless Chromium): https://torre.ai/apiforprofessionals and https://torre.ai/apiforcompanies render marketing copy only and state 'Torre API is in private beta' with a REQUEST ACCESS button (https://torre.ai/request-api-professionals); https://torre.ai/api links only to those two pages; the 'API/MCP' developer link https://torre.ai/developer/api-keys redirects to the accounts.torre.ai sign-in form. No endpoint, auth scheme or response shape is published outside the account, so the reference cannot be read without logging in."
+}

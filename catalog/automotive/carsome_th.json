@@ -1,0 +1,37 @@
+{
+ "id": "carsome_th",
+ "category": "automotive",
+ "label": "Carsome",
+ "vertical": "dealer",
+ "lane": "browser",
+ "url": "https://www.carsome.co.th",
+ "domain": "carsome.co.th",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Carsome has no public developer program.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.carsome.co.th/"
+  ],
+  "unofficial": [
+   "https://providers.apievangelist.com/providers/carsome/"
+  ]
+ },
+ "official_mcp": []
+}

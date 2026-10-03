@@ -1,0 +1,36 @@
+{
+ "id": "ae_dubai_chamber",
+ "category": "sales",
+ "label": "Dubai Chamber of Commerce member directory",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "ae"
+ ],
+ "docs_url": null,
+ "url": "https://www.dubaichamber.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Redirects to dubaichambercommerce.com; member directory public; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

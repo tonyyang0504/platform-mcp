@@ -1,0 +1,316 @@
+{
+ "id": "newegg",
+ "category": "ecommerce_channels",
+ "label": "Newegg Marketplace",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "us",
+  "ca"
+ ],
+ "docs_url": "https://developer.newegg.com/newegg_marketplace_api/",
+ "url": "https://www.newegg.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "portal terms",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "datafeeds",
+   "sdk"
+  ],
+  "auth": "api_key (developer-level API key in `Authorization` + seller-level `SecretKey` header, `?sellerid=` in the URL; keys issued by the integration team after approval)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official SDK / client libraries listed on the developer portal (create-your-own-client-library guide)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "secret",
+  "config.seller_id",
+  "config.storefront"
+ ],
+ "rate_limits": "per-seller per-minute buckets, datafeeds hourly + size caps; headers X-RateLimit-Limit/Remaining/ResetTime, X-RecordCount-*; 429",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by",
+  "base_urls": [
+   "https://api.newegg.com/marketplace/…"
+  ],
+  "auth": [
+   "1. Platform registers as a third-party developer (e-mail Datafeeds@newegg.com) → developer API key.",
+   "2. Each tenant (seller) gets its Secret Key from Seller Portal / integration team and gives it + seller id to the platform.",
+   "3. Every call: developer key in Authorization, seller Secret Key in SecretKey, sellerid in the query string."
+  ],
+  "endpoints": [
+   {
+    "call": "Item management: create / update item, inventory + price update (single) + batch datafeeds",
+    "purpose": "listings, stock, price",
+    "notes": "manufacturer lookup, volume discounts, warranty"
+   },
+   {
+    "call": "Order management: get order information (US / B2B / CA), confirm order, ship order (tracking), cancel",
+    "purpose": "orders + fulfilment",
+    "notes": ""
+   },
+   {
+    "call": "RMA: submit / edit / process RMA, issue courtesy refund, RMA status",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "Reports: order list, settlement summary, RMA report, inventory / price snapshot, item ranking",
+    "purpose": "reports (submit → check → get)",
+    "notes": ""
+   },
+   {
+    "call": "Datafeeds: item creation, inventory/price update, order shipment notice (XML)",
+    "purpose": "bulk",
+    "notes": "hourly limits + size caps"
+   }
+  ],
+  "limits": " Per seller: per-function limits in one-minute windows (X-RateLimit-Limit / Remaining / ResetTime); datafeeds hourly with record-count limits (X-RecordCount-*); HTTP 429 'Too many request', datafeed error DF012. - Seller agreement + API access approval; third-party developer registration for platforms. - Never share the seller's original key pair (Newegg guidance).",
+  "mcp_sdk": [
+   "SDK: official SDK / client libraries listed on the developer portal (create-your-own-client-library guide)"
+  ],
+  "sources": [
+   "https://developer.newegg.com/newegg_marketplace_api/",
+   "https://developer.newegg.com/newegg_marketplace_api/newegg_marketplace_api_authentication/",
+   "https://developer.newegg.com/newegg_marketplace_api/throttling/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.newegg.com/marketplace",
+  "headers": {
+   "Accept": "application/json",
+   "Content-Type": "application/json"
+  },
+  "auth": {
+   "type": "header",
+   "headers": {
+    "Authorization": "api_key",
+    "SecretKey": "secret_key"
+   },
+   "params": {
+    "sellerid": "seller_id"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Newegg Marketplace API key assigned by the Newegg integration team (or your third-party developer key); sent verbatim as the Authorization header."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The seller's Secret Key (assigned to you, or to your third-party developer on the seller's authorization); sent as the SecretKey header."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "seller_id",
+    "required": true,
+    "help": "Your Newegg seller ID (e.g. A006); sent as ?sellerid= on every call."
+   },
+   {
+    "name": "country_code",
+    "required": true,
+    "help": "ISO 3-letter ship-to country your prices target, e.g. USA; used in PriceList.Price[].CountryCode by update_listing/end_listing."
+   },
+   {
+    "name": "currency",
+    "required": true,
+    "help": "Currency matching country_code, e.g. USD for USA (wrong combinations are rejected)."
+   },
+   {
+    "name": "warehouse_location",
+    "required": true,
+    "help": "ISO 3-letter country of the warehouse whose stock set_inventory writes, e.g. USA."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Newegg.com (US) Marketplace API over JSON; Newegg Business (/b2b) and Newegg.ca (/can) use different item endpoints and are not covered by this adapter. Rate limits are per seller and per function (per minute).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sellermgmt/seller/accountstatus",
+    "fixed_params": {
+     "version": "307"
+    },
+    "docs": "https://developer.newegg.com/newegg_marketplace_api/seller_management/seller_status_check/",
+    "note": "Seller Status Check: {IsSuccess, SellerID, SellerName, Status (Active|Suspended|InActive|Terminated|Closed), Membership, WarehouseLocation...}."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/contentmgmt/item/international/price",
+    "body": {
+     "Type": "=1",
+     "Value": "listing_id",
+     "PriceList.Price.0.CountryCode": "@country_code",
+     "PriceList.Price.0.Currency": "@currency",
+     "PriceList.Price.0.SellingPrice": "str:price"
+    },
+    "result": {
+     "fields": {
+      "status": "=price_updated"
+     }
+    },
+    "docs": "https://developer.newegg.com/newegg_marketplace_api/item_management/update_item_price/",
+    "note": "Update Item Price (Type 1 = Seller Part #): sets the LIVE selling price for the configured country/currency. `listing_id` is your Seller Part #. Only the price is applied: stock is set_inventory; title/description are item content (datafeeds). Returns the item's PriceList in raw."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/contentmgmt/item/international/price",
+    "body": {
+     "Type": "=1",
+     "Value": "listing_id",
+     "PriceList.Price.0.CountryCode": "@country_code",
+     "PriceList.Price.0.Currency": "@currency",
+     "PriceList.Price.0.Active": "=0"
+    },
+    "result": {
+     "fields": {
+      "status": "=deactivated"
+     }
+    },
+    "docs": "https://developer.newegg.com/newegg_marketplace_api/item_management/update_item_price/",
+    "note": "Update Item Price with Active 0 deactivates the item for the configured country (reversible with Active 1; while deactivated, price and inventory updates are disregarded)."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/contentmgmt/item/international/inventory",
+    "body": {
+     "Type": "=1",
+     "Value": "sku",
+     "InventoryList.Inventory.0.WarehouseLocation": "@warehouse_location",
+     "InventoryList.Inventory.0.AvailableQuantity": "str:quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=inventory_updated"
+     }
+    },
+    "docs": "https://developer.newegg.com/newegg_marketplace_api/item_management/update_item_inventory/",
+    "note": "Update Item Inventory (Type 1 = Seller Part #): sets AvailableQuantity in the configured warehouse country; `sku` is your Seller Part # (required). SBN (Shipped by Newegg) items cannot be updated."
+   },
+   "list_orders": {
+    "method": "PUT",
+    "path": "/ordermgmt/order/orderinfo",
+    "fixed_params": {
+     "version": "304"
+    },
+    "body": {
+     "OperationType": "=GetOrderInfoRequest",
+     "RequestBody.PageIndex": "page",
+     "RequestBody.PageSize": "limit",
+     "RequestBody.RequestCriteria.Status": "int:status",
+     "RequestBody.RequestCriteria.OrderDateFrom": "since"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "ResponseBody.OrderInfoList",
+     "key": "orders",
+     "total": "ResponseBody.PageInfo.TotalCount",
+     "fields": {
+      "id": "OrderNumber",
+      "status": "OrderStatusDescription",
+      "total": "OrderTotalAmount",
+      "currency": "CurrencyCode",
+      "created_at": "OrderDate"
+     }
+    },
+    "docs": "https://developer.newegg.com/newegg_marketplace_api/order_management/get_order_information/",
+    "note": "Get Order Information (GetOrderInfoRequest): `status` is the numeric order status (0 Unshipped, 1 Partially Shipped, 2 Shipped, 3 Invoiced, 4 Voided, 5 Payment Pending); since = OrderDateFrom in Pacific time, e.g. '2026-09-01 00:00:00'; PageSize max 100. 1000 requests/hour. Items (ItemInfoList) and ship-to address are in raw."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Item creation goes through datafeeds (Item Creation feed with subcategory properties, manufacturer, UPC/MPN) — an asynchronous file submission, not a single call with the vocabulary's fields.",
+   "mark_shipped": "Ship Order (PUT /ordermgmt/orderstatus/orders/{ordernumber}) requires per package ShipCarrier, ShipService and an ItemList of SellerPartNumber + ShippedQty; items and ship service are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.newegg.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

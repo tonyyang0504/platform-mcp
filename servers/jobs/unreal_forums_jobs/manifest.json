@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "unreal_forums_jobs-jobs-mcp",
+ "display_name": "Unreal Engine forums: Job Offerings MCP",
+ "version": "0.1.0",
+ "description": "Unreal Engine forums: Job Offerings (jobs): search, get_posting. Every tool maps to a documented end",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/unreal_forums_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "The forum runs Discourse, whose public API (https://docs.discourse.org) serves GET /search.json?q=… without a key for public categories. The query is scoped to the Job Offerings category with Discourse's '#<category>' option ('#got-skills-looking-for-talent:job-offerings', category id 76) and ordered newest first ('order:latest'); page pages the results (Discourse returns up to 50 per page and sets grouped_search_result.more_full_page_results when there are more). Postings are community forum topics (paid, royalty and unpaid offers mixed; the title usually carries a [PAID]/[UNPAID] tag), id is the topic id (use it with get_posting), and the topic URL is https://forums.unrealengine.com/t/{slug}/{id}. Matching posts' blurbs and authors are in the response's posts[] (not mapped). Keep polling gentle; this is a community forum."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /t/{id}.json 'Get a single topic'; description is the opening post's HTML (post_stream.posts[0].cooked, where the poster describes the role and how to contact them); slug, category_id, tags and the reply posts are in raw."
+  }
+ ]
+}

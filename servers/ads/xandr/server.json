@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/xandr-mcp",
+ "description": "Microsoft Invest (Xandr DSP, discontinued) (ads): me, list_accounts, list_campaigns, pause_resume. E",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/api-getting-started",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "xandr"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_XANDR_USERNAME",
+     "description": "Xandr / Microsoft Advertising platform API user name (an API-enabled user created through the API Onboarding Process).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XANDR_PASSWORD",
+     "description": "Password of that API user. POST /auth {auth: {username, password}} returns a token valid for 2 hours after the last call (24-hour hard expiry); the runtime re-authenticates on expiry or 401 (the API allows 10 successful logins per 5 minutes).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XANDR_ADVERTISER_ID",
+     "description": "Advertiser id that owns the line items; required for pause_resume (PUT /line-item?id=…&advertiser_id=…).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

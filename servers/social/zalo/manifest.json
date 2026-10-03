@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "zalo-social-mcp",
+ "display_name": "Zalo MCP",
+ "version": "0.1.0",
+ "description": "Zalo (social): me, publish_text, publish_image, delete. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/zalo"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZALO_APP_ID": "${user_config.platform_mcp_zalo_app_id}",
+    "PLATFORM_MCP_ZALO_SECRET_KEY": "${user_config.platform_mcp_zalo_secret_key}",
+    "PLATFORM_MCP_ZALO_REFRESH_TOKEN": "${user_config.platform_mcp_zalo_refresh_token}",
+    "PLATFORM_MCP_ZALO_AUTHOR": "${user_config.platform_mcp_zalo_author}",
+    "PLATFORM_MCP_ZALO_COVER_PHOTO_URL": "${user_config.platform_mcp_zalo_cover_photo_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zalo_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_APP_ID",
+   "description": "ID of your Zalo app (developers.zalo.me > app > Thông tin ứng dụng).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalo_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_SECRET_KEY",
+   "description": "The app's secret key (Khóa bí mật của ứng dụng); sent only as the secret_key header of the token request.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalo_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_REFRESH_TOKEN",
+   "description": "OA refresh_token from the OA authorisation (POST https://oauth.zaloapp.com/v4/oa/access_token with grant_type=authorization_code). Valid 3 months and single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set). Access tokens last 25 h.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalo_author": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_AUTHOR",
+   "description": "Author name shown on OA articles (≤50 characters).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_zalo_cover_photo_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_COVER_PHOTO_URL",
+   "description": "URL of the cover photo used for text articles (the article API requires a cover).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2.0/oa/getoa: the OA's id, name, description, is_verified, num_follower, package."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /v2.0/article/create (type normal, status show) publishes an OA article whose title, description and body are `text` — so `text` must be ≤150 characters (title limit; description ≤300) — with the configured author and cover photo. Creation is asynchronous: the returned `id` is the creation token; POST /v2.0/article/verify {token} gives the article id that delete takes. reply_to is ignored."
+  },
+  {
+   "name": "publish_image",
+   "description": "POST /v2.0/article/create: an OA article with `text` as title/description/first paragraph (≤150 characters; required here) and the FIRST of `image_urls` as both cover and image paragraph (further URLs are ignored: the adapter cannot emit a variable number of paragraphs). `id` is the creation token (resolve with /v2.0/article/verify)."
+  },
+  {
+   "name": "delete",
+   "description": "POST /v2.0/article/remove {id}: deletes an OA article by its article id (from /v2.0/article/verify or /v2.0/article/getslice)."
+  }
+ ]
+}

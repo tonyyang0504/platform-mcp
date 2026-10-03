@@ -1,0 +1,317 @@
+{
+ "id": "naver_search_ads",
+ "category": "ads",
+ "label": "네이버 검색광고 Naver Search Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://naver.github.io/searchad-apidoc/",
+ "url": "https://searchad.naver.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "'1. Sign up for NAVER SEARCH ADVERTISER's Center 2. Go to manage.searchad.naver.com 3. Go to Tools > API Manager 4. Create API license' — self-serve; HMAC-SHA256 signed requests (X-Signature). Rate limits: published in the API notice (not read). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "hmac (API license + secret key from 광고시스템 도구 > API 관리자; X-Timestamp / X-API-KEY / X-Customer / X-Signature headers)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/naver/searchad-apidoc (official samples: java-sample, php-sample, python-sample, csharp-sample)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Naver Search Ad API) Confidence: **high** — official GitHub repository read (Swagger UI itself is JS-only).",
+  "base_urls": [
+   "https://api.searchad.naver.com"
+  ],
+  "auth": [
+   "1. Sign up at searchad.naver.com; open manage.searchad.naver.com → Tools > API Manager → Create API license (API key + secret key); note the CUSTOMER_ID.",
+   "2. Sign every request: `X-Timestamp` (ms), `X-API-KEY`, `X-Customer`, `X-Signature` = base64(HMAC-SHA256(secret, `{timestamp}.{method}.{path}`)) — as in the official samples.",
+   "3. No OAuth; the license belongs to the advertiser (or agency with linked customers)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /customer-links` · `GET /ncc/managedCustomers",
+    "purpose": "linked customers / accounts",
+    "notes": "customerId, managerLoginId"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE /ncc/campaigns",
+    "purpose": "campaigns + daily budget",
+    "notes": "name, campaignTp WEB_SITE/SHOPPING/POWER_CONTENTS…, dailyBudget, useDailyBudget, userLock, periodStartDt/EndDt"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE /ncc/adgroups",
+    "purpose": "ad groups + bid + budget + targeting",
+    "notes": "name, nccCampaignId, pcChannelId, mobileChannelId, bidAmt, dailyBudget, useDailyBudget, targets[], userLock"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE /ncc/keywords",
+    "purpose": "keywords + bids",
+    "notes": "keyword, nccAdgroupId, bidAmt, useGroupBidAmt, userLock"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE /ncc/ads",
+    "purpose": "ads (text / shopping)",
+    "notes": "nccAdgroupId, type, ad{headline, description, pc{final}, mobile{final}}, userLock"
+   },
+   {
+    "call": "POST /stats` · `GET /stat-reports` · `POST /stat-reports` (report jobs) · `GET /master-reports",
+    "purpose": "reports",
+    "notes": "ids[], fields[], timeRange{since, until}, datePreset, reportTp"
+   },
+   {
+    "call": "GET /keywordstool",
+    "purpose": "keyword ideas / bids",
+    "notes": "hintKeywords, showDetail"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in the Search Ad API (conversion tracking via the site tag)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits published in the API notices (TODO(verify)); free; Naver Search Ad terms; agency licences can act on linked customers.",
+  "mcp_sdk": [
+   "Official samples: Java / PHP / Python / C# (github.com/naver/searchad-apidoc). No MCP found."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/naver/searchad-apidoc/master/README.md",
+   "https://api.github.com/repos/naver/searchad-apidoc/contents/",
+   "https://naver.github.io/searchad-apidoc/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.searchad.naver.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "header",
+   "headers": {
+    "X-API-KEY": "api_key",
+    "X-Customer": "customer_id"
+   },
+   "sign": {
+    "payload": "{timestamp}.{method}.{path}",
+    "key_field": "secret_key",
+    "algorithm": "sha256",
+    "encoding": "base64",
+    "headers": {
+     "X-Timestamp": "{timestamp}",
+     "X-Signature": "{signature}"
+    }
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "API license (access license) from NAVER Search Advertiser's Center > Tools > API Manager, sent as X-API-KEY."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The license's secret key; signs every request: X-Signature = base64(HMAC-SHA256(secret, \"<X-Timestamp ms>.<METHOD>.<path>\"))."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "customer_id",
+    "required": true,
+    "help": "Numeric advertiser customer id (shown in the Search Advertiser's Center), sent as X-Customer and as customerId in campaign updates."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/billing/bizmoney",
+    "docs": "https://naver.github.io/searchad-apidoc/#/tags/Bizmoney",
+    "note": "GET /billing/bizmoney: the advertiser's bizmoney (prepaid balance) record for the X-Customer account; verifies the license, secret and customer id."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/ncc/campaigns",
+    "params": {
+     "recordSize": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "campaigns",
+     "fields": {
+      "id": "nccCampaignId",
+      "name": "name",
+      "status": "status",
+      "budget": "dailyBudget",
+      "start": "periodStartDt",
+      "end": "periodEndDt"
+     }
+    },
+    "docs": "https://naver.github.io/searchad-apidoc/#/tags/Campaign",
+    "note": "GET /ncc/campaigns?recordSize=… (campaigns of the X-Customer account, a JSON array). `budget` is dailyBudget in KRW, applied only when useDailyBudget is true (in raw); userLock=true means paused. Paging is cursor-style (baseSearchId + selector), so only the first page is returned; `account_id` and `status` are not sent."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/stats",
+    "params": {
+     "id": "campaign_id",
+     "timeRange": "fmt:{\"since\":\"{date:date_from}\",\"until\":\"{date:date_to}\"}"
+    },
+    "fixed_params": {
+     "fields": "[\"impCnt\",\"clkCnt\",\"salesAmt\",\"ctr\",\"cpc\",\"ccnt\"]",
+     "timeIncrement": "1"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "date": "dateStart",
+      "impressions": "impCnt",
+      "clicks": "clkCnt",
+      "spend": "salesAmt",
+      "ctr": "ctr",
+      "cpc": "cpc",
+      "conversions": "ccnt"
+     }
+    },
+    "docs": "https://naver.github.io/searchad-apidoc/#/tags/Stat",
+    "note": "GET /stats?id=<campaign_id>&fields=[\"impCnt\",\"clkCnt\",\"salesAmt\",\"ctr\",\"cpc\",\"ccnt\"]&timeRange={\"since\",\"until\"}&timeIncrement=1: daily stats of one campaign (KST days). campaign_id is REQUIRED (the endpoint reports one entity). `spend` is salesAmt, the cost in KRW including VAT. `account_id` is not sent (X-Customer selects the account)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/ncc/campaigns/{campaign_id}",
+    "params": {
+     "fields": "=budget"
+    },
+    "body": {
+     "nccCampaignId": "campaign_id",
+     "customerId": "int:@customer_id",
+     "useDailyBudget": "json:true",
+     "dailyBudget": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "nccCampaignId",
+      "status": "=updated",
+      "daily_budget": "dailyBudget"
+     }
+    },
+    "docs": "https://naver.github.io/searchad-apidoc/#/tags/Campaign",
+    "note": "PUT /ncc/campaigns/{campaign_id}?fields=budget {nccCampaignId, customerId, useDailyBudget: true, dailyBudget} sets the campaign's daily budget in whole KRW (an integer; fractional values are refused) and switches the daily cap on. This spends money. `currency` is ignored (KRW)."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/ncc/campaigns/{campaign_id}",
+    "params": {
+     "fields": "=userLock"
+    },
+    "body": {
+     "nccCampaignId": "campaign_id",
+     "customerId": "int:@customer_id",
+     "userLock": "map:action:pause=json:true,resume=json:false"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "nccCampaignId",
+      "status": "=updated",
+      "user_lock": "userLock"
+     }
+    },
+    "docs": "https://naver.github.io/searchad-apidoc/#/tags/Campaign",
+    "note": "PUT /ncc/campaigns/{campaign_id}?fields=userLock {nccCampaignId, customerId, userLock}: userLock=true pauses (the advertiser's ON/OFF switch), false resumes. Naver's sample client (Campaigns.update) sends the Campaign object with fields=userLock."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "Requests are made for one advertiser selected by X-Customer; linked client accounts (GET /customer-links?type=MYCLIENTS, used in Naver's sample code) are an agency feature whose response fields the reference does not document (https://naver.github.io/searchad-apidoc/)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.searchad.naver.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 0/5 tool paths found verbatim on their docs pages; names not found on the page: get_report:fields, get_report:id, get_report:timeIncrement, get_report:timeRange, list_campaigns:recordSize, pause_resume:fields, update_budget:fields, pause_resume:customerId, pause_resume:nccCampaig"
+  ],
+  "notes": "-"
+ }
+}

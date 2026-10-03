@@ -1,0 +1,317 @@
+{
+ "id": "alibaba_1688_open",
+ "category": "ecommerce_suppliers",
+ "label": "1688 (Alibaba China wholesale) — 一件代发 / 跨境专供 + 1688 Open Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://open.1688.com/",
+ "url": "https://www.1688.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated on readable pages (developer agreement behind JS)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "app key + secret with per-member OAuth authorization (ISV 开发协议 / 技术服务协议 accepted at app creation); details behind the JS portal",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - ISV development agreement + technical service agreement accepted at app creation; app review by 1688; the dropship solution promises 一件代发包邮 / 48-hour dispatch / 7-day returns for downstream sellers (Taobao, Douyin, Kuaishou, Xiaohongshu, WeChat); rate limits not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://open.1688.com/",
+   "https://r.jina.ai/https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.trade:alibaba.trade.createCrossOrder-1",
+   "https://r.jina.ai/https://open.1688.com/api/apidoclist.htm?ns=com.alibaba.trade"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://gw.open.1688.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error_code",
+   "ok_value": null,
+   "error_field": "error_message"
+  },
+  "config_fields": [
+   {
+    "name": "language",
+    "required": true,
+    "help": "Language of translated titles for search and product detail (country: en, ja, ko, es, …; see the API's developer reference)."
+   },
+   {
+    "name": "order_flow",
+    "required": true,
+    "help": "fastCreateOrder flow: general (wholesale order), saleproxy / fenxiao (一件代发 dropshipping order; the seller must have authorised proxy sales), boutiquefenxiao, …"
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://gw.open.1688.com/openapi/http/1/system.oauth2/getToken/{client_id}",
+   "client_auth": "body",
+   "token_param": "access_token",
+   "token_ttl_seconds": 35000,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "appKey of your 1688 Open Platform app (it is also the last URL path segment of every call)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "appSecret of the same app; signs every call (_aop_signature = uppercase hex HMAC-SHA1 over the urlPath from 'param2' + sorted name+value, https://open.1688.com/doc/signature.htm) and refreshes tokens."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from the OAuth getToken exchange (need_refresh_token=true, https://open.1688.com/doc/apiAuth.htm); valid for the service subscription period (up to half a year). Access tokens (10 hours) are minted from it."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha1",
+    "key_field": "client_secret",
+    "case": "upper",
+    "path_strip": "/openapi/",
+    "payload": "{path}{sorted_params}",
+    "timestamp_param": "_aop_timestamp",
+    "timestamp_value": "timestamp",
+    "signature_param": "_aop_signature"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/openapi/param2/1/system/currentTime/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "docs": "https://open.1688.com/doc/signature.htm",
+    "note": "system/currentTime (the signing example API): verifies the appKey, signature and that an access token can be minted from the refresh token."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "/openapi/param2/1/com.alibaba.fenxiao.crossborder/product.search.keywordQuery/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "offerQueryParam": "jsonstr:{\"keyword\": {query}, \"beginPage\": {page}, \"pageSize\": {limit}, \"country\": {@language}}"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "result.result.data",
+     "key": "products",
+     "total": "result.result.totalRecords",
+     "fields": {
+      "id": "offerId",
+      "title": "subjectTrans",
+      "title_zh": "subject",
+      "price": "priceInfo.price",
+      "currency": "=CNY",
+      "image_url": "imageUrl",
+      "dropship_price": "priceInfo.consignPrice",
+      "month_sold": "monthSold"
+     }
+    },
+    "docs": "https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.fenxiao.crossborder:product.search.keywordQuery-1",
+    "note": "多语言关键词搜索 (cross-border keyword search): `query` is required and may be in the configured language (keywordTranslate); prices are CNY strings (price = wholesale, dropship_price = consignPrice for 一件代发). `id` is the offerId for get_product."
+   },
+   "get_product": {
+    "method": "POST",
+    "path": "/openapi/param2/1/com.alibaba.fenxiao.crossborder/product.search.queryProductDetail/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "offerDetailParam": "jsonstr:{\"offerId\": {int:id}, \"country\": {@language}}"
+    },
+    "result": {
+     "root": "result.result",
+     "fields": {
+      "id": "offerId",
+      "title": "subjectTrans",
+      "title_zh": "subject",
+      "price": "productSkuInfos.0.price",
+      "currency": "=CNY",
+      "sku": "productSkuInfos.0.specId",
+      "image_url": "productImage.images.0",
+      "stock": "productSaleInfo.amountOnSale",
+      "dropship_price": "productSaleInfo.fenxiaoSaleInfo.onePiecePrice",
+      "min_order": "productSaleInfo.fenxiaoSaleInfo.startQuantity"
+     }
+    },
+    "docs": "https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.fenxiao.crossborder:product.search.queryProductDetail-1",
+    "note": "多语言商品详情: translated title, images, attributes, productSkuInfos[{skuId, specId, price, consignPrice, amountOnSale, skuAttributes}], productSaleInfo (price ranges, 一件代发 fenxiaoSaleInfo) and shipping info. `sku` is the FIRST SKU's specId, which create_order's items take."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/openapi/param2/1/com.alibaba.trade/alibaba.trade.fastCreateOrder/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "flow": "@order_flow",
+     "addressParam": "jsonstr:{shipping_address}",
+     "cargoParamList": "jsonstr:{items}",
+     "outOrderId": "uuid"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "orderId",
+      "total": "totalSuccessAmount",
+      "currency": "=CNY",
+      "status": "=created"
+     }
+    },
+    "docs": "https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.trade:alibaba.trade.fastCreateOrder-1",
+    "note": "快速创建订单 (fastCreateOrder) with the configured flow. `items` are cargoParamList [{offerId, specId, quantity}] and `shipping_address` is 1688's addressParam {fullName, mobile, phone, postCode, provinceText, cityText, areaText, townText, address} with Chinese region names (a mainland China / consolidation-warehouse address). The order is unpaid (支付宝担保交易 by default); outOrderId is a fresh UUID for idempotency."
+   },
+   "get_order": {
+    "method": "POST",
+    "path": "/openapi/param2/1/com.alibaba.trade/alibaba.trade.get.buyerView/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "webSite": "=1688",
+     "orderId": "int:id"
+    },
+    "result": {
+     "root": "result.baseInfo",
+     "fields": {
+      "id": "idOfStr",
+      "status": "status",
+      "total": "totalAmount",
+      "currency": "=CNY",
+      "created_at": "createTime",
+      "shipping_fee": "shippingFee"
+     }
+    },
+    "docs": "https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.trade:alibaba.trade.get.buyerView-1",
+    "note": "订单详情 (buyer view): status (waitbuyerpay, waitsellersend, waitbuyerreceive, success, cancel, …), totalAmount in CNY, createTime like '20170913231708000-0700'; products, nativeLogistics and invoice in raw.result."
+   },
+   "track": {
+    "method": "POST",
+    "path": "/openapi/param2/1/com.alibaba.logistics/alibaba.trade.getLogisticsTraceInfo.buyerView/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "webSite": "=1688",
+     "orderId": "int:order_id"
+    },
+    "result": {
+     "items": "logisticsTrace",
+     "key": "events",
+     "fields": {
+      "tracking_number": "logisticsBillNo",
+      "logistics_id": "logisticsId",
+      "steps": "logisticsSteps"
+     }
+    },
+    "docs": "https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.logistics:alibaba.trade.getLogisticsTraceInfo.buyerView-1",
+    "note": "物流跟踪 (buyer view): one row per logistics order with the waybill number (logisticsBillNo) and logisticsSteps[{acceptTime, remark}] in time order (Chinese carrier scans)."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "Freight is computed inside order preview (alibaba.createOrder.preview) from a full receiver address and cargo list; there is no per-product/country freight quote in the cross-border product or trade APIs (https://open.1688.com/api/apidocdetail.htm?id=com.alibaba.trade:alibaba.trade.fastCreateOrder-1: '系统默认选择最优惠下单方式')."
+  },
+  "terms": "1688 Open Platform: https://gw.open.1688.com/openapi/param2/1/{namespace}/{api}/{appKey}?…&access_token&_aop_signature; buyer-side cross-border and ordering APIs require an ISV agreement, enrolment in the matching solution (跨境ERP/独立站SaaS, 采购解决方案 …) and the member's authorisation (https://open.1688.com/doc/apiAuth.htm)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host gw.open.1688.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 302 (redirect), so the answers are path-specific",
+   "token gw.open.1688.com/openapi/http/1/system.oauth2/getToken/1234567: 400",
+   "HTML docs spot-check (render-doc): 0/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

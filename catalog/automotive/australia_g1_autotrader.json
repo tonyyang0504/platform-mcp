@@ -1,0 +1,37 @@
+{
+ "id": "australia_g1_autotrader",
+ "category": "automotive",
+ "label": "Autotrader",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.autotrader.com.au",
+ "domain": "autotrader.com.au",
+ "country": "Australia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Autotrader Australia publishes no developer API; dealer stock arrives via DMS feed providers, docs not public.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autotrader.com.au/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/fayoussef/autotrader-au-scraper/api/openapi"
+  ]
+ },
+ "official_mcp": []
+}

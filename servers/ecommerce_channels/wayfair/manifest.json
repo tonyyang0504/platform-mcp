@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "wayfair-mcp",
+ "display_name": "Wayfair (supplier) MCP",
+ "version": "0.1.0",
+ "description": "Wayfair (supplier) (ecommerce channels): me, list_orders, set_inventory, end_listing. Every tool map",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "wayfair"
+   ],
+   "env": {
+    "PLATFORM_MCP_WAYFAIR_CLIENT_ID": "${user_config.platform_mcp_wayfair_client_id}",
+    "PLATFORM_MCP_WAYFAIR_CLIENT_SECRET": "${user_config.platform_mcp_wayfair_client_secret}",
+    "PLATFORM_MCP_WAYFAIR_SUPPLIER_ID": "${user_config.platform_mcp_wayfair_supplier_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_wayfair_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WAYFAIR_CLIENT_ID",
+   "description": "Production Client ID of your application (Wayfair Developer Portal > Application Management; needs the 'API' role in Partner Home and a completed sandbox test).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wayfair_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WAYFAIR_CLIENT_SECRET",
+   "description": "Production Client Secret of the same application; exchanged at https://sso.auth.wayfair.com/oauth/token for a 24-hour bearer token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wayfair_supplier_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WAYFAIR_SUPPLIER_ID",
+   "description": "Numeric Wayfair supplier ID used in inventory feeds: your warehouse ID for a child-level feed, or the supplier account ID for a parent-level feed (Partner Home > Warehouse Management).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account query; the probe mints a token and runs getDropshipPurchaseOrders(limit: 1)."
+  },
+  {
+   "name": "list_orders",
+   "description": "getDropshipPurchaseOrders(limit ≤ 25, default 10; hasResponse; fromDate; sortOrder ASC by poDate) for drop-ship POs. status: `open` = POs you have not responded to (hasResponse false), `accepted` = POs already answered; omit for both. since = fromDate (ISO date-time, UTC). There are no pages: advance `since` to the last poDate. Rows carry poNumber, poDate, supplierId and products {partNumber, quantity, price} (in raw)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "inventory.save mutation with feedKind DIFFERENTIAL (a partial feed; production only) and one line {supplierId (config), supplierPartNumber = sku, quantityOnHand = quantity}. `sku` is required; `listing_id` is ignored. Processing is asynchronous: status starts as PROCESSING; per-item validation errors are in raw errors. The daily TRUE_UP full feed is not sent by this tool."
+  },
+  {
+   "name": "end_listing",
+   "description": "Discontinues a part: inventory.save with {supplierId, supplierPartNumber = listing_id, quantityOnHand 0, discontinued: true} (DIFFERENTIAL). 'To discontinue an item, send discontinued: true once'; it can be reversed within about 90 days. With a child-level feed every warehouse must be discontinued."
+  }
+ ]
+}

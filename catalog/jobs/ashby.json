@@ -1,0 +1,184 @@
+{
+ "id": "ashby",
+ "category": "jobs",
+ "label": "Ashby",
+ "lane": "api",
+ "kind": "ats",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.ashbyhq.com/reference/jobpostinglist",
+ "url": "https://www.ashbyhq.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Posting API: public job-board listings + public applicationForm.submit (multipart, resume file).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit (employer API key only)",
+   "cv_upload (employer API key only)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developers.ashbyhq.com/llms.txt (OpenAPI + markdown index for agents)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public per-board job feed; apply needs the employer's API key).",
+  "base_urls": [
+   "https://api.ashbyhq.com/posting-api/job-board/{JOB_BOARD_NAME}",
+   "https://api.ashbyhq.com/<resource>.<action>"
+  ],
+  "auth": [
+   "1. Public feed: no auth; the job-board name is the last path segment of `https://jobs.ashbyhq.com/<Name>`.",
+   "2. Authenticated API: HTTP Basic with an Ashby API key created by the company (permissions `jobsRead` for jobPosting.list/info, `candidatesWrite` for applicationForm.submit / application.create). A candidate tool has no way to obtain such a key."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /posting-api/job-board/{name}?includeCompensation=true",
+    "purpose": "list published jobs (public)",
+    "notes": "jobs[]: title, location, secondaryLocations[], department, team, isListed, isRemote, workplaceType, descriptionHtml/descriptionPlain, publishedAt, employmentType, address, jobUrl, applyUrl, compensation{compensationTierSummary, compensationTiers[], summaryComponents[]}"
+   },
+   {
+    "call": "POST /jobPosting.list` (Basic, jobsRead)",
+    "purpose": "list postings incl. ids",
+    "notes": "`listedOnly` (must be true for public display), `includeUnpublishedJobPostings`; results id, title, status, jobId, locationName, workplaceType, employmentType, isListed, publishedDate, externalLink, applyLink, compensationTierSummary"
+   },
+   {
+    "call": "POST /jobPosting.info` (Basic, jobsRead)",
+    "purpose": "posting + form",
+    "notes": "`applicationFormDefinition` (sections[].fields[] with path, type String"
+   },
+   {
+    "call": "POST /file.createFileUploadHandle` (Basic)",
+    "purpose": "presigned CV upload",
+    "notes": "`fileUploadContext: \"ApplicationForm\"`, filename, contentType, contentLength → url, fields, handle (10-minute expiry)"
+   },
+   {
+    "call": "POST /applicationForm.submit` (Basic, candidatesWrite)",
+    "purpose": "submit an application",
+    "notes": "JSON `{jobPostingId, applicationForm{fieldSubmissions[{path,value}]}, utmData}` or multipart with `applicationForm` as a JSON string and the file bytes as a part; response submittedFormInstance, formMessages.blocked"
+   },
+   {
+    "call": "POST /posting-api/job-board/{name}/application-form/submit` (client today)",
+    "purpose": "legacy public submit",
+    "notes": "NOT in the current docs — `reference/posting-api` returns 404; verify live before relying on it"
+   }
+  ],
+  "limits": " Not published on the pages opened. - The Job Postings API is documented for companies that host their own careers page; published, listed postings are public data. - applicationForm.submit and application.create require the company's API key — a third-party candidate tool is outside the documented use; no explicit prohibition text was found, but the apply lane cannot be `api` for a job seeker. - Registry `api.apply: true` presumes an employer key — contradiction recorded.",
+  "mcp_sdk": [
+   "https://developers.ashbyhq.com/llms.txt — markdown + OpenAPI index (\"for AI agents\"). No official MCP server or SDK found."
+  ],
+  "sources": [
+   "https://developers.ashbyhq.com/docs/public-job-posting-api.md",
+   "https://developers.ashbyhq.com/reference/jobpostinglist.md",
+   "https://developers.ashbyhq.com/reference/applicationformsubmit.md",
+   "https://developers.ashbyhq.com/docs/creating-a-custom-careers-page.md",
+   "https://developers.ashbyhq.com/llms.txt",
+   "https://developers.ashbyhq.com/reference/posting-api.md"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.ashbyhq.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "job_board_name",
+    "required": true,
+    "help": "The organisation's Ashby jobs page name: the last path segment of its hosted board, e.g. 'Ashby' in https://jobs.ashbyhq.com/Ashby."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/posting-api/job-board/{job_board_name}",
+    "path_params": {
+     "job_board_name": "@job_board_name"
+    },
+    "fixed_params": {
+     "includeCompensation": "true"
+    },
+    "default_limit": 1000,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "location": "location",
+      "url": "jobUrl",
+      "posted_at": "publishedAt",
+      "description": "descriptionPlain"
+     }
+    },
+    "docs": "https://developers.ashbyhq.com/docs/public-job-posting-api",
+    "note": "Public Job Postings API for ONE organisation's board (config job_board_name): GET https://api.ashbyhq.com/posting-api/job-board/{JOB_BOARD_NAME}?includeCompensation=true 'get[s] data for all currently published Job Postings for your organization'. It has no keyword, location or paging parameters, so query/location/page/limit are not sent: every published job comes back in one response — filter client-side and do not request further pages. Live responses carry a posting id (the UUID in jobUrl) that the docs' field table omits. company is null (it is the configured organisation); department, team, isRemote, workplaceType, employmentType, secondaryLocations[], applyUrl, descriptionHtml and compensation (compensationTierSummary, summaryComponents[] with minValue/maxValue/currencyCode) are in raw."
+   }
+  },
+  "not_offered": {
+   "me": "The posting API is public ('auth: none'); there is no account endpoint to verify.",
+   "get_posting": "The public board has no per-posting endpoint; jobPosting.info is on the authenticated API, which 'requires the jobsRead permission' on the employer's API key. Re-read the record from the search hit.",
+   "apply": "applicationForm.submit needs the employer's API key with candidatesWrite permission (https://developers.ashbyhq.com/reference/applicationformsubmit) and a multipart resume upload; candidates apply at the posting's applyUrl.",
+   "list_messages": "No candidate messaging API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; verified against the public board ashby; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,190 @@
+{
+ "id": "web3_career",
+ "category": "deals",
+ "label": "web3.career",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://web3.career/web3-jobs-api",
+ "url": "https://web3.career/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free API per the official page; token issuance and attribution terms are behind login (not read); the audit found the client's call redirected to the docs page — token handling unverified.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (per the client; the docs page text reads 'Free access … via a single API endpoint')",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — local token presence check)",
+   "docs": "https://web3.career/web3-jobs-api"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://web3.career/api/v1?token=&limit=&remote=true",
+   "docs": "https://web3.career/web3-jobs-api"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://web3.career/web3-jobs-api"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (search API, token behind login) Confidence high (official API page opened; token specifics behind the account).",
+  "base_urls": [
+   "https://web3.career/api/v1?token=…"
+  ],
+  "auth": [
+   "1. Log in → API page → token (page behind login)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v1?token=&limit=1..100&tag=&remote=true&show_description=true",
+    "purpose": "search",
+    "notes": "listings with technology / role / location filters (page text)"
+   }
+  ],
+  "limits": " - Free per the page; attribution terms not visible anonymously. - Audit: client received a 302 to the docs page → treat non-JSON as an error, not []. - Free API per the official page; token issuance and attribution terms are behind login (not read); the audit found the client's call redirected to the docs page — token handling unverified.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://web3.career/web3-jobs-api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://web3.career/api",
+  "auth": {
+   "type": "query",
+   "params": {
+    "token": "token"
+   },
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Web3.career API token generated at https://web3.career/web3-jobs-api after signing in ('Your token is for your use only … Do not share it'), sent as the token query parameter."
+    }
+   ]
+  },
+  "rate_per_second": 0.2,
+  "rate_note": "Rate limited ('429 responses when exceeded'; back off exponentially); no figure is published. One request every five seconds.",
+  "terms": "Mandatory link attribution: link to each job with its apply_url as a follow link and do not modify apply_url (https://docs.bondex.app/api-reference/web3-career-jobs-api). Keep the token private.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/v1",
+    "params": {
+     "tag": "category",
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "show_description": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "2",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "buyer": "company",
+      "skills": "tags",
+      "url": "apply_url",
+      "posted_at": "postedAt",
+      "description": "description"
+     }
+    },
+    "docs": "https://docs.bondex.app/api-reference/openapi-documentation/web3.career-jobs-api",
+    "note": "GET https://web3.career/api/v1?token=&tag=&limit=&show_description=true (the single documented endpoint). `category` → tag, which must be ONE exact slug from the documented list (solidity, rust, defi, engineering, marketing, …) — 'Invalid tags silently return empty results'. There is no free-text, budget or offset parameter, so query and min_budget are not sent and page is ignored (limit 1–100). The body is a mixed array '[string, string, Job[]]'; jobs are read from element 2 ('typically'). url is apply_url — the required attribution link, never modify it; salary is free text in raw.salary; location/remote in raw."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint; the token is only a query parameter of /v1.",
+   "get_posting": "Single endpoint (/v1); no per-id lookup is documented — re-read the record from the search hit.",
+   "submit_bid": "No application endpoint; apply_url sends the applicant to the posting.",
+   "withdraw_bid": "No application endpoint (see submit_bid).",
+   "bid_status": "No application endpoint (see submit_bid).",
+   "list_messages": "No messaging API is documented.",
+   "send_message": "No messaging API is documented.",
+   "credits": "Free API; no credit or quota endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host web3.career: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 0/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "An invalid token gets a 302 to https://web3.career/web3-jobs-api, so the path cannot be confirmed without a token. inconclusive: search_postings: redirect 302"
+ }
+}

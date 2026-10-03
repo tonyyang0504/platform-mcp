@@ -1,0 +1,158 @@
+{
+ "id": "kling",
+ "category": "builder_tools",
+ "label": "Kling AI",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://kling.ai/document-api",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "paid",
+  "capabilities": [
+   "text_to_video",
+   "image_to_video",
+   "multi_image_to_video",
+   "video_extend",
+   "lip_sync",
+   "video_effects",
+   "image_generation",
+   "virtual_try_on",
+   "account_costs"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api-singapore.klingai.com",
+  "rate_per_second": 1,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Kling AI API key (kling.ai/dev console > '+ Create a new API Key'; shown once), sent as Authorization: Bearer. The legacy AccessKey/SecretKey JWT scheme is not needed."
+    }
+   ]
+  },
+  "terms": "Generated images/videos are deleted after 30 days; save results promptly. Concurrency is limited per account (Concurrency Rules).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/account/costs",
+    "params": {
+     "start_time": "epoch_ms:days_ago:30",
+     "end_time": "now_epoch_ms"
+    },
+    "docs": "https://kling.ai/document-api/api/assets/account-usage",
+    "note": "GET /account/costs?start_time&end_time (ms, the last 30 days): resource packages with remaining quantity; used as the credential check (no user endpoint)."
+   },
+   "generate_image": {
+    "method": "POST",
+    "path": "/v1/images/generations",
+    "body": {
+     "model_name": "model",
+     "prompt": "prompt",
+     "negative_prompt": "negative_prompt",
+     "image": "image_url",
+     "aspect_ratio": "aspect_ratio"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "job_id": "task_id",
+      "status": "task_status"
+     }
+    },
+    "docs": "https://kling.ai/document-api/api/image/3-0-omni",
+    "note": "POST /v1/images/generations {model_name (kling-v3 default, kling-v2-1), prompt, negative_prompt (text-to-image only), image (reference URL/base64), aspect_ratio (16:9 default, 9:16, 1:1 …)} -> data {task_id, task_status}; poll with get_job."
+   },
+   "generate_video": {
+    "method": "POST",
+    "path": "/text-to-video/{model}",
+    "path_params": {
+     "model": "=kling-3.0"
+    },
+    "body": {
+     "prompt": "prompt",
+     "settings.aspect_ratio": "aspect_ratio",
+     "settings.duration": "int:duration_seconds"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "job_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://kling.ai/document-api/api/video/3-0-omni",
+    "note": "POST /text-to-video/{model} (default kling-3.0) {prompt, settings: {aspect_ratio 16:9|9:16|1:1, duration 3–15}} -> data {id, status}; poll with get_job. image_url is not sent (image-to-video is a separate endpoint)."
+   },
+   "get_job": {
+    "method": "GET",
+    "path": "/tasks",
+    "params": {
+     "task_ids": "job_id"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "job_id": "id",
+      "status": "status",
+      "error": "message",
+      "output_url": "outputs.0.url"
+     }
+    },
+    "docs": "https://kling.ai/document-api/api/video/3-0-omni",
+    "note": "GET /tasks?task_ids={id} ('Query Task (By task ID)'): status submitted|processing|succeeded|failed, message on failure, outputs[] with url/watermark_url per image/video/audio (all in raw.outputs). URLs expire after 30 days."
+   }
+  },
+  "not_offered": {
+   "list_items": "No content-item resource; task listings (POST /tasks by cursor) are generation history, not items.",
+   "get_item": "No content-item resource.",
+   "create_item": "No content-item resource.",
+   "update_item": "No content-item resource.",
+   "delete_item": "No content-item resource."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api-singapore.klingai.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/4 tool paths found verbatim on their docs pages; names not found on the page: get_job:task_ids, generate_video:prompt, generate_video:settings"
+  ],
+  "notes": "-"
+ }
+}

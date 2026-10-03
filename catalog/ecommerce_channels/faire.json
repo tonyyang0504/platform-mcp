@@ -1,0 +1,287 @@
+{
+ "id": "faire",
+ "category": "ecommerce_channels",
+ "label": "Faire",
+ "lane": "assist",
+ "kind": "b2b",
+ "regions": [
+  "eu",
+  "gb",
+  "us",
+  "ca",
+  "au"
+ ],
+ "docs_url": "https://developers.faire.com/docs",
+ "url": "https://www.faire.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Brand (wholesale seller) account on Faire; API key self-generated in Settings › Integrations; integration partners use OAuth 2 (authorization-code) and register an app; per-token rate limiting with 429; commercial terms are Faire's brand agreement (commission on wholesale orders) — the docs and help pages were bot-walled in this pass.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "oauth"
+  ],
+  "auth": "token (brand API key generated in Faire › Settings › Integrations, sent as X-FAIRE-ACCESS-TOKEN) or OAuth 2 authorization-code for integration partners (X-FAIRE-APP-CREDENTIALS)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "webhooks"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "config.currency"
+ ],
+ "rate_limits": "per-token throttling with HTTP 429 (numeric limit not stated); offset pagination beyond page 1 is rate limited, use the cursor",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official developer portal and help article returned a bo",
+  "base_urls": [
+   "https://www.faire.com/external-api/v2/…"
+  ],
+  "auth": [
+   "1. Brand logs in to Faire → Settings › Integrations › Generate API key.",
+   "2. Send it as `X-FAIRE-ACCESS-TOKEN` on every call (single-brand use).",
+   "3. Multi-brand integration partners register an app and use OAuth 2 authorization-code (app credentials header) to obtain per-brand tokens."
+  ],
+  "endpoints": [
+   {
+    "call": "products (create / update) + product variants",
+    "purpose": "wholesale catalogue",
+    "notes": "wholesale price, retail price, options, images"
+   },
+   {
+    "call": "inventory levels",
+    "purpose": "stock per variant",
+    "notes": ""
+   },
+   {
+    "call": "orders (list / accept)",
+    "purpose": "retailer purchase orders",
+    "notes": "state filter"
+   },
+   {
+    "call": "shipments (ship with tracking)",
+    "purpose": "fulfilment",
+    "notes": "carrier + tracking code"
+   },
+   {
+    "call": "returns",
+    "purpose": "retailer returns",
+    "notes": ""
+   },
+   {
+    "call": "webhooks",
+    "purpose": "order / product events",
+    "notes": ""
+   }
+  ],
+  "limits": " Per-token throttle; honour 429 (third-party profile) — numeric limit not read. - Brand account required; API key is the brand's own. - Partner apps: OAuth 2 + app registration. - Commercial terms per Faire brand agreement (not read in this pass).",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developers.faire.com/docs",
+   "https://www.faire.com/support/articles/37632363832091",
+   "https://github.com/api-evangelist/faire"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.faire.com/external-api/v2",
+  "headers": {
+   "Accept": "application/json",
+   "Content-Type": "application/json"
+  },
+  "auth": {
+   "type": "header",
+   "headers": {
+    "X-FAIRE-OAUTH-ACCESS-TOKEN": "access_token",
+    "X-FAIRE-APP-CREDENTIALS": "app_credentials"
+   },
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Faire OAuth access token for the brand (Authorization Code Grant: POST https://www.faire.com/api/external-api-oauth2/token), sent as X-FAIRE-OAUTH-ACCESS-TOKEN. Scopes: READ_BRAND, READ_PRODUCTS, WRITE_PRODUCTS, READ_ORDERS, WRITE_ORDERS, WRITE_INVENTORIES."
+    },
+    {
+     "name": "app_credentials",
+     "required": true,
+     "help": "Base64 of applicationId:applicationSecret from the Faire Developer Portal, sent as X-FAIRE-APP-CREDENTIALS (required together with the OAuth access token)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "Faire External API v2 (brands). OAuth tokens only work on External API V2+; both X-FAIRE-OAUTH-ACCESS-TOKEN and X-FAIRE-APP-CREDENTIALS are required on every call. Faire answers 429 when throttled.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/brands/profile",
+    "docs": "https://developers.faire.com/docs#/paths/brands-profile/get",
+    "note": "GET /brands/profile: the brand of the current session {brand_id, name, currency, locale}."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/products/{listing_id}",
+    "body": {
+     "name": "title",
+     "description": "description"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.faire.com/docs#/paths/products-product_id/patch",
+    "note": "PATCH /products/{product_id} (listing_id = the product id, p_…) with name and description. `price` and `quantity` are ignored here: prices are per variant and region (PATCH /product-prices/by-skus) and stock is set with set_inventory."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/products/{listing_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.faire.com/docs#/paths/products-product_id/delete",
+    "note": "DELETE /products/{product_id}: sets the product's lifecycle_state to DELETED so it is no longer visible on Faire."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/product-inventory/by-skus",
+    "body": {
+     "inventories.0.sku": "sku",
+     "inventories.0.on_hand_quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.faire.com/docs#/paths/product-inventory-by-skus/patch",
+    "note": "PATCH /product-inventory/by-skus {inventories: [{sku, on_hand_quantity}]} sets the on-hand units of one variant by its SKU (`sku` required; `listing_id` is ignored). All-or-nothing: an unknown SKU fails the request. Returns the resulting on_hand/committed/available quantities keyed by SKU."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "limit": "limit",
+     "cursor": "cursor",
+     "updated_at_min": "since"
+    },
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "next_cursor": "cursor",
+     "fields": {
+      "id": "id",
+      "status": "state",
+      "created_at": "created_at",
+      "tracking_number": "shipments.0.tracking_code"
+     }
+    },
+    "docs": "https://developers.faire.com/docs#/paths/orders/get",
+    "note": "GET /orders?limit&cursor&updated_at_min, ascending by updated_at; pass next_cursor back as `cursor` (page numbers are not sent: Faire rate-limits offset paging). `since` = updated_at_min (ISO 8601). `status` is ignored (Faire only filters with excluded_states). state is NEW|PROCESSING|PRE_TRANSIT|IN_TRANSIT|DELIVERED|CANCELED|BACKORDERED|PENDING_RETAILER_CONFIRMATION; items, address and payout_costs are in raw."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/orders/{order_id}/shipments",
+    "body": {
+     "shipments.0.order_id": "order_id",
+     "shipments.0.carrier": "carrier",
+     "shipments.0.tracking_code": "tracking_number",
+     "shipments.0.shipping_type": "=SHIP_ON_YOUR_OWN"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://developers.faire.com/docs#/paths/orders-order_id--shipments/post",
+    "note": "POST /orders/{order_id}/shipments {shipments: [{order_id, carrier, tracking_code, shipping_type: SHIP_ON_YOUR_OWN}]} adds a shipment and moves the order to PRE_TRANSIT (IN_TRANSIT once the carrier accepts it). carrier: CANADA_POST, DHL_ECOMMERCE, DHL_EXPRESS, FEDEX, PUROLATOR, UPS, USPS, POSTNL, CANPAR, INTERLINK_EXPRESS, GSO, ROYAL_MAIL, DPD, DPDUK, PARCELFORCE, AUSTRALIA_POST, EVRI, LA_POSTE (case-insensitive). The shipping cost (maker_cost) is not sent."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /products needs a taxonomy_type, variants with per-region prices (wholesale and retail), unit_multiplier and minimum_order_quantity to publish ('saved as a draft with publicationWarnings when it does not' meet Faire's publication requirements, https://developers.faire.com/docs#/paths/products/post); the vocabulary has one price and no category."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.faire.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/6 tool paths found verbatim on their docs pages, 1 by their last segments; names not found on the page: list_orders:limit, list_orders:updated_at_min"
+  ],
+  "notes": "-"
+ }
+}

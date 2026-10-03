@@ -1,0 +1,39 @@
+{
+ "id": "metacar_pk",
+ "category": "automotive",
+ "label": "Metacar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://metacar.pk",
+ "domain": "metacar.pk",
+ "country": "Pakistan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Pakistan); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://metacar.pk/"
+  ],
+  "unofficial": [
+   "https://github.com/thibo73800/metacar",
+   "https://github.com/thibo73800/metacar/blob/master/README.md",
+   "https://github.com/scottpletcher/metacar_fork/blob/master/README.md"
+  ]
+ },
+ "official_mcp": []
+}

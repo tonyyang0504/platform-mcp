@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "facebook-mcp",
+ "display_name": "Facebook MCP",
+ "version": "0.1.0",
+ "description": "Facebook (social): me, publish_text, publish_image, read_comments, reply_comment, read_mentions, del",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "facebook"
+   ],
+   "env": {
+    "PLATFORM_MCP_FACEBOOK_PAGE_ACCESS_TOKEN": "${user_config.platform_mcp_facebook_page_access_token}",
+    "PLATFORM_MCP_FACEBOOK_PAGE_ID": "${user_config.platform_mcp_facebook_page_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_facebook_page_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FACEBOOK_PAGE_ACCESS_TOKEN",
+   "description": "Page access token of the Facebook Page (Facebook Login for Business: a person who can perform the CREATE_CONTENT, MANAGE and MODERATE tasks on the Page grants pages_manage_posts, pages_manage_engagement, pages_read_engagement, pages_read_user_engagement and, for read_mentions, pages_read_user_content + pages_show_list; exchange for a long-lived token, then GET /me/accounts for the Page token). 'you will need to implement Facebook Login to ask for the following permissions and receive a Page access token' (https://developers.facebook.com/docs/pages-api/posts); sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_facebook_page_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FACEBOOK_PAGE_ID",
+   "description": "Numeric id of the Facebook Page that posts (the Page the token belongs to); publish_text, publish_image, read_mentions and me call /<page_id>/... Env: PLATFORM_MCP_FACEBOOK_PAGE_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /{page_id}?fields=id,name,link: the configured Page as the Page token sees it."
+  },
+  {
+   "name": "publish_text",
+   "description": "'To publish a post to a Page, send a POST request to the /page_id/feed endpoint ... message set to the text for your post'; answers {id: page_post_id}. The permalink is https://www.facebook.com/<page_post_id>. `reply_to` is not used by /feed (reply to a comment with reply_comment)."
+  },
+  {
+   "name": "publish_image",
+   "description": "'To publish a photo to a Page, send a POST request to the /page_id/photos endpoint ... with the url parameter set to the photo'; `text` goes to `caption` (https://developers.facebook.com/docs/graph-api/reference/page/photos/). Answers {id: photo_id, post_id: page_post_id}; `id` here is the post_id. ONLY the first image URL is published: a multi-photo post needs unpublished photo uploads plus a /feed call with attached_media (several calls)."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /{page_post_id}/comments?fields=id,from,message,created_time&summary=true: top-level comments (filter=toplevel is the default) with summary.total_count. Paging is cursor-based (paging.cursors.after), so `page` is not sent and only the first `limit` comments are returned."
+  },
+  {
+   "name": "reply_comment",
+   "description": "Comment on a comment as the Page: POST /{comment_id}/comments {message}; answers {id: comment_id}. Posting as a User fails with error 1705. `comment_id` may also be a page_post_id to comment on the post itself."
+  },
+  {
+   "name": "read_mentions",
+   "description": "'All public posts in which the page has been tagged' (needs pages_read_user_content + pages_show_list; the Page Public Content Access feature 'may be required'). 'For user posts, the from field will only be returned if the user making the request is the same user who created the post', so `author` is often null. `since` is not sent; paging is cursor-based, so `page` is ignored."
+  },
+  {
+   "name": "delete",
+   "description": "'To delete a Page post, send a DELETE request to the /page_post_id endpoint'; answers {success: true}."
+  },
+  {
+   "name": "analytics_post",
+   "description": "One read of the Post with field expansion (https://developers.facebook.com/docs/graph-api/guides/field-expansion): `shares` ('struct with keys: count'), comments and reactions edges with summary total_count. The runtime cannot compose a nested `metrics` object, so counts are top-level fields. Reach/impression metrics live under GET /{post_id}/insights (read_insights); several post_impressions* metrics are 'Deprecated above Graph API v25' (https://developers.facebook.com/docs/graph-api/reference/insights), so they are not used."
+  }
+ ]
+}

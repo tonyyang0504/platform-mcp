@@ -1,0 +1,306 @@
+{
+ "id": "binance",
+ "category": "trading",
+ "label": "Binance USD-M Futures",
+ "lane": "api",
+ "kind": "perp_linear",
+ "docs_url": "https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info",
+ "url": "https://www.binance.com/",
+ "verified_at": "2026-09-24",
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://fapi.binance.com",
+  "ccxt_exchange_id": "binanceusdm",
+  "demo_trading": "ccxt enable_demo_trading (demo-fapi hosts)"
+ },
+ "notes": "apiRestrictions: withdrawals OFF and futures trading ON.",
+ "regions": [
+  "global"
+ ],
+ "terms_note": "Signed REST API (HMAC-SHA256 over the query string, X-MBX-APIKEY header). Leveraged derivatives: place_order and cancel_order move real funds. Futures market-data endpoints accept the extra timestamp/signature parameters (checked live 2026-09-24).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "HMAC-SHA256 signed query (api_key + api_secret)",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "candles",
+   "balances",
+   "orders",
+   "trading"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "adapter": {
+  "base_url": "https://fapi.binance.com",
+  "auth": {
+   "type": "header",
+   "header": "X-MBX-APIKEY",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Binance API key (sent as X-MBX-APIKEY). Create it under API Management with withdrawals OFF; restrict it to your IP. Futures testnet: create a key at https://testnet.binancefuture.com and point adapter.base_url there (testnet keys only work on the testnet host)."
+    },
+    {
+     "name": "api_secret",
+     "required": true,
+     "help": "The key's HMAC secret: signs every request (HMAC-SHA256 hex over the exact query string, appended as `signature` after `timestamp`). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{query}",
+    "key_field": "api_secret",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "timestamp_param": "timestamp",
+    "signature_param": "signature"
+   }
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/fapi/v1/accountConfig",
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api",
+    "note": "Signed GET /fapi/v1/accountConfig (weight 5): canTrade, canWithdraw, dualSidePosition (Hedge mode), multiAssetsMargin, feeTier."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/fapi/v1/exchangeInfo",
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "symbols",
+     "key": "markets",
+     "fields": {
+      "symbol": "symbol",
+      "base": "baseAsset",
+      "quote": "quoteAsset",
+      "type": "contractType",
+      "status": "status",
+      "margin_asset": "marginAsset"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api",
+    "note": "Every contract in one response (no pagination; `query` is not sent). `raw` carries filters and precisions."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/fapi/v1/ticker/24hr",
+    "params": {
+     "symbol": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "symbol",
+      "last": "lastPrice",
+      "volume": "volume",
+      "change_percent": "priceChangePercent",
+      "high": "highPrice",
+      "low": "lowPrice"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api",
+    "note": "24h rolling statistics; decimal strings passed through. Futures tickers carry no bid/ask (that is /ticker/bookTicker, not mapped)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/fapi/v1/klines",
+    "params": {
+     "symbol": "symbol",
+     "interval": "interval",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "str:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api",
+    "note": "Intervals 1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M. Rows are positional arrays (oldest first); `time` is the open time in ms and prices are decimal strings. Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+   },
+   "get_balances": {
+    "method": "GET",
+    "path": "/fapi/v3/balance",
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "balances",
+     "fields": {
+      "asset": "asset",
+      "balance": "balance",
+      "available": "availableBalance",
+      "cross_wallet": "crossWalletBalance",
+      "unrealized_pnl": "crossUnPnl"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api",
+    "note": "Per-asset futures wallet balances (decimal strings)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/fapi/v1/openOrders",
+    "params": {
+     "symbol": "symbol"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "clientOrderId",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "status": "status",
+      "price": "price",
+      "quantity": "origQty",
+      "filled": "executedQty",
+      "time": "time",
+      "position_side": "positionSide",
+      "reduce_only": "reduceOnly"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api",
+    "note": "Open orders only; without `symbol` the call is heavy (weight 40). `status` is not sent."
+   },
+   "place_order": {
+    "method": "POST",
+    "path": "/fapi/v1/order",
+    "params": {
+     "symbol": "symbol",
+     "side": "map:side:buy=BUY,sell=SELL",
+     "type": "map:type:market=MARKET,limit=LIMIT",
+     "timeInForce": "map:type:limit=GTC,market=",
+     "quantity": "str:quantity",
+     "price": "str:price"
+    },
+    "result": {
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "clientOrderId",
+      "status": "status",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "price": "price",
+      "quantity": "origQty",
+      "filled": "executedQty",
+      "position_side": "positionSide"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api",
+    "note": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the futures testnet https://testnet.binancefuture.com first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. This opens or adds to a LEVERAGED position at the account's current leverage. `quantity` is in the base asset (e.g. BTC for BTCUSDT). Limit orders are sent with timeInForce=GTC and need `price`; omit `price` for market orders. positionSide is not sent (One-way mode); an account in Hedge mode rejects the order."
+   },
+   "cancel_order": {
+    "method": "DELETE",
+    "path": "/fapi/v1/order",
+    "params": {
+     "symbol": "symbol",
+     "orderId": "order_id"
+    },
+    "result": {
+     "fields": {
+      "order_id": "orderId",
+      "status": "status",
+      "symbol": "symbol"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api",
+    "note": "Binance requires `symbol` together with the order id."
+   }
+  },
+  "not_offered": {}
+ },
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://fapi.binance.com",
+   "https://testnet.binancefuture.com"
+  ],
+  "auth": [
+   "X-MBX-APIKEY header; TRADE/USER_DATA endpoints take `timestamp` and an HMAC-SHA256 hex `signature` over the full query string (same scheme as spot)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /fapi/v1/exchangeInfo",
+    "purpose": "contracts",
+    "notes": "symbols[{symbol, pair, contractType, baseAsset, quoteAsset, marginAsset, status}]"
+   },
+   {
+    "call": "GET /fapi/v1/ticker/24hr",
+    "purpose": "24h ticker",
+    "notes": "lastPrice, priceChangePercent, highPrice, lowPrice, volume"
+   },
+   {
+    "call": "GET /fapi/v1/klines",
+    "purpose": "candles",
+    "notes": "limit default 500, max 1500; 12-element positional rows"
+   },
+   {
+    "call": "GET /fapi/v3/balance",
+    "purpose": "balances",
+    "notes": "array of {asset, balance, crossWalletBalance, crossUnPnl, availableBalance, ...}"
+   },
+   {
+    "call": "GET /fapi/v1/openOrders",
+    "purpose": "open orders",
+    "notes": "weight 1 with symbol, 40 without"
+   },
+   {
+    "call": "POST /fapi/v1/order",
+    "purpose": "new order",
+    "notes": "LIMIT: timeInForce, quantity, price; MARKET: quantity"
+   },
+   {
+    "call": "DELETE /fapi/v1/order",
+    "purpose": "cancel",
+    "notes": "symbol plus orderId or origClientOrderId"
+   }
+  ],
+  "limits": "IP request weight per minute (2400 on USD-M) plus 10s/1min order-count limits; see exchangeInfo.rateLimits.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api",
+   "https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api",
+   "https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api"
+  ]
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host fapi.binance.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 8/8 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: list_markets returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

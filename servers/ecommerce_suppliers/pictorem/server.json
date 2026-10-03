@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/pictorem-mcp",
+ "description": "Pictorem PRO (white-label dropship + API Print on Demand) (ecommerce suppliers): me, list_products, ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.pictorem.com/apiprintondemand",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "pictorem"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_PICTOREM_ARTFLOW_KEY",
+     "description": "Your ArtFlowKey, issued on request through your Pictorem account (can be a test-mode key).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

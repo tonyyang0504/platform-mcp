@@ -1,0 +1,111 @@
+{
+ "id": "naver_smartstore_commerce_api",
+ "category": "ecommerce_suppliers",
+ "label": "Naver Smart Store + Naver Commerce API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "korea"
+ ],
+ "docs_url": "https://apicenter.commerce.naver.com/docs/introduction",
+ "url": "https://sell.smartstore.naver.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "application registration + 인증 (auth) + 제약 사항 (constraints) sections in docs",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth"
+  ],
+  "auth": "application registered in the 커머스API센터 → 인증 via the 커머스플랫폼 API 게이트웨이 (client credentials)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - API centre membership + application review; constraints page; Korean sellers.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://apicenter.commerce.naver.com/docs/introduction"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "Naver Commerce API for Smart Store sellers (https://apicenter.commerce.naver.com/docs/auth, re-opened 2026-09-25): the only token grant is POST https://api.commerce.naver.com/external/v1/oauth2/token (client_credentials, type SELF/SELLER) with client_secret_sign = Base64(BCrypt.hashpw(client_id + \"_\" + <ms timestamp>, salt = client_secret)) and that same millisecond timestamp as a form field. Token requests can carry templated/signed fields (token_sign, token_body_extra) and JWT assertions (token_jwt), but their digests are HMAC, plain hash, RSA or JWT. Remaining runtime gap: bcrypt hashing (hashpw with the client_secret as the bcrypt salt) for the token request."
+}

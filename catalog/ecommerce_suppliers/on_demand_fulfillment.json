@@ -1,0 +1,83 @@
+{
+ "id": "on_demand_fulfillment",
+ "category": "ecommerce_suppliers",
+ "label": "On Demand Fulfillment",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://ondemandfulfillment.com/white-label-supplements-dropshipping/",
+ "url": "https://ondemandfulfillment.com/",
+ "verified_at": null,
+ "terms_note": "n/s",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "app"
+  ],
+  "auth": "none",
+  "access": "signup",
+  "capabilities": [
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

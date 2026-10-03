@@ -1,0 +1,95 @@
+{
+ "id": "jolpica_f1",
+ "category": "competitions",
+ "label": "Jolpica F1 (Ergast-compatible Formula 1 data)",
+ "lane": "api",
+ "docs_url": "https://github.com/jolpica/jolpica-f1/blob/main/docs/README.md",
+ "url": "https://jolpi.ca",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "The community successor of the Ergast API (same /ergast/f1/... paths), docs as Markdown on GitHub, no key. The docs' rate limits: 4 requests per second burst, 500 per hour sustained. Paging is limit/offset with MRData.total - every number in MRData is a JSON string. A round that does not exist answers 200 with an empty Races list; a malformed path answers a 404 HTML page.",
+ "adapter": {
+  "base_url": "https://api.jolpi.ca/ergast/f1",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.13,
+  "tools": {
+   "discover": {
+    "method": "GET",
+    "path": "/current/races.json",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "MRData.RaceTable.Races",
+     "key": "competitions",
+     "total": "MRData.total",
+     "fields": {
+      "id": "fmt:{season}/{round}",
+      "title": "raceName",
+      "url": "url",
+      "kind": "=Formula 1 Grand Prix",
+      "starts_at": "fmt:{date}T{time}"
+     }
+    },
+    "docs": "https://github.com/jolpica/jolpica-f1/blob/main/docs/endpoints/races.md",
+    "note": "The current season's Grands Prix in calendar order (id 'season/round', e.g. 2026/5). No search: query, kind and status are not applied."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/{competition_id}/races.json",
+    "result": {
+     "root": "MRData.RaceTable.Races.0",
+     "fields": {
+      "id": "fmt:{season}/{round}",
+      "title": "raceName",
+      "url": "url",
+      "kind": "=Formula 1 Grand Prix",
+      "starts_at": "fmt:{date}T{time}",
+      "description": "fmt:{Circuit.circuitName}, {Circuit.Location.locality}, {Circuit.Location.country}"
+     }
+    },
+    "docs": "https://github.com/jolpica/jolpica-f1/blob/main/docs/endpoints/races.md",
+    "note": "competition_id is 'season/round' (2026/5), as discover returns it."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/{competition_id}/results.json",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 30,
+    "max_limit": 100,
+    "result": {
+     "items": "MRData.RaceTable.Races.0.Results",
+     "key": "standings",
+     "total": "MRData.total",
+     "fields": {
+      "rank": "num:position",
+      "team": "fmt:{Driver.givenName} {Driver.familyName} ({Constructor.name})",
+      "score": "num:points"
+     }
+    },
+    "docs": "https://github.com/jolpica/jolpica-f1/blob/main/docs/endpoints/results.md",
+    "note": "Race classification of one Grand Prix ('season/round'): finishing position, driver (constructor), points; status and laps in raw. Empty before the race is run."
+   }
+  },
+  "not_offered": {
+   "me": "No accounts.",
+   "my_entries": "Not a participation platform.",
+   "enter": "Not a participation platform.",
+   "submit": "Not a participation platform."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

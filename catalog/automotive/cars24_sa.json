@@ -1,0 +1,39 @@
+{
+ "id": "cars24_sa",
+ "category": "automotive",
+ "label": "Cars24",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.cars24.sa",
+ "domain": "cars24.sa",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Saudi Arabia); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cars24.sa/"
+  ],
+  "unofficial": [
+   "https://apify.com/stealth_mode/cars24-used-cars-search-scraper/api",
+   "https://github.com/rishita0706/Cars24",
+   "https://docs.carapis.com/platforms/south-asia/cars24-india"
+  ]
+ },
+ "official_mcp": []
+}

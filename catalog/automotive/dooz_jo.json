@@ -1,0 +1,35 @@
+{
+ "id": "dooz_jo",
+ "category": "automotive",
+ "label": "Dooz",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://dooz.com",
+ "domain": "dooz.com",
+ "country": "Jordan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Front-end JSON only; no documented public or partner API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dooz.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

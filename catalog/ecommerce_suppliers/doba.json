@@ -1,0 +1,314 @@
+{
+ "id": "doba",
+ "category": "ecommerce_suppliers",
+ "label": "Doba",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://open.doba.com/apidoc/retailer/",
+ "url": "https://www.doba.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "not readable this pass (Retailer API keys per the vendor's notes)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Paid plans (Standard+ for API per earlier research); not readable this pass.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.doba.com/apidoc/retailer/",
+   "https://www.doba.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi.doba.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "responseCode",
+   "ok_value": "000000",
+   "error_field": "responseMessage"
+  },
+  "config_fields": [
+   {
+    "name": "platform_id",
+    "required": true,
+    "help": "Doba dsPlatformId of the marketplace your orders come from (Import Order): 1 Amazon, 2 eBay, 3 Shopify, 7 BigCommerce, 8 WooCommerce, 13 Walmart, 19 TikTok Shop, 26 Etsy, 99 Others (https://open.doba.com/apidoc/retailer)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "appKey assigned by Doba (Retailer API > Generate Key, https://open.doba.com/apidoc/retailer/developer/key); sent as the appKey header."
+    },
+    {
+     "name": "private_key",
+     "required": true,
+     "help": "Your RSA private key from the same page, as PEM: '-----BEGIN PRIVATE KEY-----' + the base64 PKCS#8 key Doba shows + '-----END PRIVATE KEY-----' (newlines may be written as \\n). Signs 'appKey=…&signType=rsa2&timestamp=…' with SHA256withRSA; never sent on the wire."
+    }
+   ],
+   "sign": {
+    "mode": "rsa_sha256",
+    "key_field": "private_key",
+    "payload": "appKey={@app_key}&signType=rsa2&timestamp={timestamp}",
+    "encoding": "base64",
+    "headers": {
+     "appKey": "{@app_key}",
+     "signType": "rsa2",
+     "timestamp": "{timestamp}",
+     "sign": "{signature}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/pay/payManage/doba/queryPrepayBalance",
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "PrePay Balance Check (GET /api/pay/payManage/doba/queryPrepayBalance): businessData.data[{paymentMethodCode (7 = PrePay), remainingBalance}]. Verifies the appKey and RSA signature (requests older than 1 minute are rejected)."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/api/goods/doba/spu/list",
+    "params": {
+     "keyword": "query",
+     "catId": "category",
+     "pageNumber": "page",
+     "pageSize": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "businessData.data.goodsList",
+     "key": "products",
+     "total": "businessData.data.totalQuantity",
+     "fields": {
+      "id": "spuId",
+      "title": "title",
+      "price": "minPrice",
+      "max_price": "maxPrice",
+      "currency": "=USD",
+      "url": "storeUrl",
+      "image_url": "pictureUrl",
+      "stock": "inventory",
+      "supplier": "sellerName",
+      "supplier_id": "busiId"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Query SPU List (GET /api/goods/doba/spu/list): keyword search of the Doba catalogue; `category` is a Doba catId (Query Category List). Prices are USD strings (min/max over the SPU's variants); `url` is the supplier's store page; `id` is the spuId for get_product."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/api/goods/doba/spu/detail",
+    "params": {
+     "spuId": "id"
+    },
+    "result": {
+     "root": "businessData.data.0",
+     "fields": {
+      "id": "spuId",
+      "title": "title",
+      "price": "children.0.stocks.0.sellingPrice",
+      "currency": "children.0.currencyId",
+      "sku": "children.0.stocks.0.itemNo",
+      "url": "children.0.skuUrl",
+      "image_url": "children.0.skuPicList.0",
+      "stock": "children.0.stocks.0.availableNum",
+      "brand": "brand",
+      "processing_days": "processingTime"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Query SPU Detail (GET /api/goods/doba/spu/detail): full SPU with children[] variants, each with stocks[] per warehouse {itemNo, availableNum, sellingPrice, regionId} and shipMethods. The mapped price/sku/stock are the FIRST variant's first warehouse; `sku` is the itemNo that create_order and quote_shipping take."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/api/shipping/doba/cost/goods",
+    "body": {
+     "shipToCountry": "country",
+     "goods.0.itemNo": "product_id",
+     "goods.0.quantity": "int:quantity"
+    },
+    "result": {
+     "items": "businessData.0.data.costs",
+     "key": "options",
+     "fields": {
+      "id": "shippingMethodId",
+      "name": "shipName",
+      "fee": "shipFee",
+      "currency": "currencyId",
+      "days": "shipTime",
+      "ship_id": "shipId"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Product Shipping Rate Estimate (POST /api/shipping/doba/cost/goods): `product_id` is an itemNo (get_product's `sku`), `quantity` is required. Each option's `id` (shippingMethodId) is what create_order's items take as shippingMethodId; `days` is the transit time range."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/api/order/doba/importOrder",
+    "body": {
+     "billingAddress": "shipping_address",
+     "openApiImportDSOrderList.0.orderNumber": "=1",
+     "openApiImportDSOrderList.0.dsPlatformId": "@platform_id",
+     "openApiImportDSOrderList.0.shippingAddress": "shipping_address",
+     "openApiImportDSOrderList.0.goodsDetailDTOList": "items"
+    },
+    "result": {
+     "root": "businessData.data.orderSuccessResList.0",
+     "fields": {
+      "id": "ordBusiId",
+      "total": "totalPay",
+      "currency": "currency",
+      "batch_id": "ordBatchId",
+      "pay_url": "orderPayURL",
+      "pay_deadline": "payDeadlineTime"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Import Order (POST /api/order/doba/importOrder) creates one UNPAID order; pay it at `pay_url` or with Doba's Order Payment API. Pass `items` in Doba form: [{itemNo (get_product's sku), quantityOrdered, shippingMethodId (from quote_shipping)}] and `shipping_address` as {name, addr1, addr2, city, provinceCode (e.g. NY), countryCode (e.g. US), zip, telephone}; it is also sent as the billing address. When nothing succeeds (address invalid, out of stock, shipping method unavailable) the call reports 'platform returned no record'. Order ids are 18-digit numbers."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/api/order/doba/queryOrder",
+    "params": {
+     "ordBusiId": "id"
+    },
+    "result": {
+     "root": "businessData.0.data.orderBatchList.0",
+     "fields": {
+      "id": "ordBatchId",
+      "status": "paidOrderList.0.ordStatusName",
+      "total": "totalPay",
+      "currency": "paidOrderList.0.currency",
+      "created_at": "paidOrderList.0.ordPalceTime",
+      "tracking_number": "paidOrderList.0.orderLogisDetails.0.waybillId",
+      "order_id": "paidOrderList.0.ordBusiId",
+      "unpaid_status": "waitingPayOrderList.0.ordStatusName",
+      "pay_url": "orderPayURL"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Get Order Detail (GET /api/order/doba/queryOrder?ordBusiId=): returns the order's batch. `id` is the order BATCH id (ordBatchId); a paid order's status (Awaiting Payment, Pending, Unshipped, In Transit, Completed), placed time and waybill come from paidOrderList, while an order still awaiting payment appears only under `unpaid_status` / raw.waitingPayOrderList."
+   },
+   "track": {
+    "method": "POST",
+    "path": "/api/order/doba/queryLogisTrack",
+    "body": {
+     "ordBusiId": "order_id"
+    },
+    "result": {
+     "items": "businessData.0.data",
+     "key": "events",
+     "fields": {
+      "order_id": "ordBusiId",
+      "tracking_number": "waybillId",
+      "carrier": "logisComNameEn",
+      "method": "logisShippingMethodNameEn",
+      "details": "logisTrackDetails"
+     }
+    },
+    "docs": "https://open.doba.com/apidoc/retailer/guide",
+    "note": "Get Order Shipment Information (POST /api/order/doba/queryLogisTrack): one row per shipment with the waybill, carrier and logisTrackDetails[{code, desc, occurTime}]. Empty until the supplier ships."
+   }
+  },
+  "terms": "Doba Retailer API (https://open.doba.com/apidoc/retailer/instruction): every request carries appKey, signType=rsa2, timestamp (ms) and sign = Base64(SHA256withRSA('appKey=…&signType=rsa2&timestamp=…')) headers; the server rejects requests older than 1 minute. Endpoint reference: the Retailer API console (Product / Order / Shipping / Payment Management)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, private_key, platform_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

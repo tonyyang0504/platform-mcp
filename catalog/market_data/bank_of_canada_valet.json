@@ -1,0 +1,80 @@
+{
+ "id": "bank_of_canada_valet",
+ "category": "market_data",
+ "label": "Bank of Canada Valet",
+ "lane": "api",
+ "country": "CA",
+ "docs_url": "https://www.bankofcanada.ca/valet/docs",
+ "url": "https://www.bankofcanada.ca",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Open data under the Bank of Canada terms (https://www.bankofcanada.ca/terms/), no key. The docs page is a Swagger UI whose OpenAPI 3 YAML is chosen in JavaScript by language: https://www.bankofcanada.ca/valet/static/swagger/api-en.yml (English) and api-fr.yml (French); the forge's link finder cannot see that URL (it is built from a template in swagger-initializer.js). Observations are keyed by series name: {\"d\": date, \"<series>\": {\"v\": value}}. Unknown series: 404 {\"message\":\"Series NOPEX not found.\"} (live 2026-10-01).",
+ "adapter": {
+  "base_url": "https://www.bankofcanada.ca/valet",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search_symbols": {
+    "method": "GET",
+    "path": "/lists/series/json",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "series",
+     "items_are_values": true,
+     "slice": true,
+     "sort": "symbol",
+     "key": "results",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "name",
+        "raw.description"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "_key",
+      "name": "label",
+      "type": "=series"
+     }
+    },
+    "docs": "https://www.bankofcanada.ca/valet/docs#/Lists/get_lists__type___format_",
+    "note": "Every Valet series (about 15,000: exchange rates FX..., bond yields, BCPI ...); query matches the name, label or description; paged locally from one cached download."
+   },
+   "get_series": {
+    "method": "GET",
+    "path": "/observations/{series_id}/json",
+    "params": {
+     "start_date": "date:start",
+     "end_date": "date:end"
+    },
+    "result": {
+     "items": "observations",
+     "key": "points",
+     "fields": {
+      "time": "d",
+      "value": "num:{series_id}.v"
+     }
+    },
+    "docs": "https://www.bankofcanada.ca/valet/docs#/Observations/get_observations__seriesNames___format_",
+    "note": "series_id is one Valet series name, e.g. FXUSDCAD (daily USD/CAD), V39079 (overnight target rate). start/end are YYYY-MM-DD; without them the whole history is returned."
+   }
+  },
+  "not_offered": {
+   "me": "Open data: no accounts.",
+   "get_candles": "No OHLC data (daily averages only).",
+   "get_news": "Only an FX RSS feed (/fx_rss), not news; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

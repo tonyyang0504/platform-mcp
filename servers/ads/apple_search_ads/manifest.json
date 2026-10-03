@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "apple_search_ads-mcp",
+ "display_name": "Apple Ads (formerly Apple Search Ads) MCP",
+ "version": "0.1.0",
+ "description": "Apple Ads (formerly Apple Search Ads) (ads): me, list_accounts, list_campaigns, get_report, update_b",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "apple_search_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_ID": "${user_config.platform_mcp_apple_search_ads_client_id}",
+    "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_SECRET": "${user_config.platform_mcp_apple_search_ads_client_secret}",
+    "PLATFORM_MCP_APPLE_SEARCH_ADS_AP_CONTEXT": "${user_config.platform_mcp_apple_search_ads_ap_context}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_apple_search_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_ID",
+   "description": "Apple Ads API clientId (SEARCHADS.…) shown after uploading your public key under Account Settings > API (https://developer.apple.com/documentation/apple-ads-platform-api/implementing-oauth-for-the-apple-ads-platform-api).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_apple_search_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_SECRET",
+   "description": "The client secret JWT you sign yourself with your ES256 private key (header kid=keyId; claims sub=clientId, iss=teamId, aud=https://appleid.apple.com, exp at most 180 days after iat). The runtime does not sign it: regenerate and replace it before it expires.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_apple_search_ads_ap_context": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLE_SEARCH_ADS_AP_CONTEXT",
+   "description": "The full X-AP-Context header value for ad-account-scoped calls, exactly `adAccountId=<ad account id>` (ids from GET /v1/acls, i.e. list_accounts).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/me: {result: {userId, orgId}} of the API user."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v1/acls: ad accounts the token can manage with the user's roles (raw.roles). Put the chosen id in the ap_context config as adAccountId=<id>."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /v1/campaigns/query {pagination: {offset, pageSize, fetchTotalCount: true}} in the ad account named by the ap_context config (X-AP-Context header); account_id is not sent and `status` is not applied (filter raw.status: ENABLED / PAUSED). `budget` is the daily budget amount (a decimal string)."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /v1/reports/apps/campaigns/query {filters: [{field: campaignId, operator: EQUALS, value}], timeRange: {start, end, timeZone: ORTZ}}: App Store campaign totals over the range. Apple requires a campaignId filter on every apps report, so pass campaign_id. Daily granularMetrics are not requested (DAILY needs a start within the last 90 days)."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /v1/campaigns/{id} {dailyBudget: {value: {amount, currency}}} (partial update): changes the daily spend limit of a live campaign. Pass `currency` (the ad account currency)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /v1/campaigns/{id} {status: PAUSED|ENABLED}. Resuming restarts spending."
+  }
+ ]
+}

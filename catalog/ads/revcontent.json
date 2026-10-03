@@ -1,0 +1,284 @@
+{
+ "id": "revcontent",
+ "category": "ads",
+ "label": "Revcontent",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": "https://api.revcontent.io/docs/stats/index.html",
+ "url": "https://www.revcontent.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access is switched on by the account representative; OAuth client credentials from Account Settings.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 client credentials (client_id / client_secret under Account Settings → 'Stats API Credentials' → POST https://api.revcontent.io/oauth/token)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "budgets_bids",
+   "targeting_search",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Revcontent Native API, OAuth2 client credentials).",
+  "base_urls": [
+   "https://api.revcontent.io/…"
+  ],
+  "auth": [
+   "1. Ask the Revcontent account representative to enable API access.",
+   "2. Account Settings → Stats API Credentials → client_id / client_secret.",
+   "3. `POST /oauth/token` grant_type=client_credentials → bearer."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /stats/api/v1.0/boosts` · `POST /stats/api/v1.0/boosts` (TODO(verify))",
+    "purpose": "campaigns (boosts) + budget + bid",
+    "notes": "name, budget, bid_amount, targeting, enabled"
+   },
+   {
+    "call": "targeting endpoints (countries, devices, widgets)",
+    "purpose": "targeting",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "GET /stats/api/v1.0/boosts/performance` (TODO(verify))",
+    "purpose": "reports",
+    "notes": "date range, boost ids"
+   },
+   {
+    "call": "creatives upload · audiences · conversions",
+    "purpose": "TODO(verify)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Enabled per account; free; Revcontent terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://help.revcontent.com/knowledge/publisher-advertiser-api-requests"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.revcontent.io",
+  "rate_per_second": 1,
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.revcontent.io/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "client_id under Account Settings > 'Stats API Credentials' (API access is enabled by your Revcontent representative)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "client_secret from the same section; access tokens last 24 hours and are re-requested automatically."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/stats/api/v1.0/boosts",
+    "fixed_params": {
+     "limit": "1"
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Campaigns-GetAllBoosts",
+    "note": "GET /stats/api/v1.0/boosts?limit=1: confirms the Stats API credentials (Revcontent has no who-am-i call)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/stats/api/v1.0/sub_accounts/list_accounts",
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "user_id",
+      "name": "user_email",
+      "status": "status"
+     }
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Sub_Accounts-ListAccounts",
+    "note": "GET /stats/api/v1.0/sub_accounts/list_accounts: the sub accounts of the credential's account (user_id, email, status, permissions); the main account itself is not listed."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/stats/api/v1.0/boosts",
+    "params": {
+     "enabled": "status",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "enabled",
+      "budget": "budget",
+      "currency": "=USD",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Campaigns-GetAllBoosts",
+    "note": "GET /stats/api/v1.0/boosts (limit/offset; `status` filters the user status `enabled`: active or inactive). Campaigns of the credential's own account (account_id is not sent). `budget` is the daily budget in USD as a string (or 'unlimited'); raw.status is the system status and raw carries month-to-date cost, clicks and impressions."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/stats/api/v1.0/boosts/performance",
+    "params": {
+     "boost_id": "campaign_id",
+     "date_from": "date:date_from",
+     "date_to": "date:date_to"
+    },
+    "fixed_params": {
+     "limit": "1000"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "cost",
+      "ctr": "ctr",
+      "avg_cpc": "avg_cpc",
+      "conversions": "conversions"
+     }
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Campaigns-GetBoostPerformance",
+    "note": "GET /stats/api/v1.0/boosts/performance?date_from&date_to[&boost_id]: daily rows for one campaign, or aggregated over all campaigns when campaign_id is omitted. Values are strings; cost is USD."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/stats/api/v1.0/boosts/{campaign_id}/settings",
+    "body": {
+     "budget_type": "=daily",
+     "budget_amount": "daily_budget"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated",
+      "budget": "budget"
+     }
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Campaigns-PostBoostSettings",
+    "note": "POST /stats/api/v1.0/boosts/{id}/settings {budget_type: daily, budget_amount}: daily budget in USD, minimum 50 (`currency` is ignored); spends money. Pacing defaults to on for daily budgets."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/stats/api/v1.0/boosts",
+    "body": {
+     "id": "int:campaign_id",
+     "enabled": "map:action:pause=off,resume=on"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "enabled",
+      "system_status": "status"
+     }
+    },
+    "docs": "https://api.revcontent.io/docs/stats/index.html#api-Campaigns-PostBoostsStatus",
+    "note": "POST /stats/api/v1.0/boosts {id, enabled: off|on}. Resuming restarts spending."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.revcontent.io: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.revcontent.io/oauth/token: 400 invalid_client",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,110 @@
+{
+ "id": "ebay",
+ "category": "ecommerce_suppliers",
+ "label": "eBay",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.edp.ebay.com/api-docs/buy/static/buy-requirements.html",
+ "url": "https://www.ebay.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "eBay Drop Shipping Policy: \"Dispatching orders directly from wholesale suppliers is permitted on eBay\" but \"listing products on eBay and purchasing them from other retailers or marketplaces to ship di",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "oauth2 (eBay developer keyset; Buy APIs in production only for approved eBay Partner Network partners)",
+  "access": "partner_only",
+  "capabilities": [
+   "catalog",
+   "price_feed",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "eBay API MCP Server (github.com/eBay/npm-public-api-mcp, npm package; OAuth client credentials / user refresh token)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high** — official developer documentation opened by th",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Buy APIs Limited Release: EPN application, business-model review, formal agreement; no guarantee of approval; eBay Drop Shipping Policy allows wholesale-supplier fulfilment only.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.edp.ebay.com/api-docs/buy/static/buy-requirements.html"
+  ]
+ },
+ "adapter_status": "official_mcp",
+ "reason": "eBay publishes its own MCP server, github.com/eBay/npm-public-api-mcp ('eBay API MCP Server': discovers eBay REST OpenAPI specs and calls them with application or user OAuth tokens minted from a Client ID/Secret; production is GET-only, i.e. Browse item search/get for buying-side reads). The Buy API reference itself (https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search) still answers 403 'Something went wrong on our end' to plain HTTP and to headless Chromium on 2026-09-25, and the server's spec search (https://api.ebay.com/developer/mcp/v1/search) needs an eBay token, so no endpoint is wrapped here; the Buy Order API stays limited to approved eBay Partner Network partners and the seller side is ecommerce_channels/ebay."
+}

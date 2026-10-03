@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/reverb-mcp",
+ "description": "Reverb (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_shipp",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.reverb.com/page/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "reverb"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_REVERB_TOKEN",
+     "description": "Reverb Personal Access Token (My Profile > API & Integrations > Generate New Token) with scopes public, read_listings, write_listings, read_orders, write_orders; personal tokens do not expire. Sent as Authorization: Bearer.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REVERB_CURRENCY",
+     "description": "Currency of your listing prices, e.g. USD; required when update_listing sends a price.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

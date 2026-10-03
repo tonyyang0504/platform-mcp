@@ -1,0 +1,35 @@
+{
+ "id": "sieuthiotosaigon_vn",
+ "category": "automotive",
+ "label": "Sieuthiotosaigon",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://sieuthiotosaigon.vn",
+ "domain": "sieuthiotosaigon.vn",
+ "country": "Vietnam",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed link on homepage or common dev paths (/developers,/api,/api-docs,/docs,/partners); no official API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://sieuthiotosaigon.vn/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

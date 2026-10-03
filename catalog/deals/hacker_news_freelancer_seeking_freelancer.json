@@ -1,0 +1,172 @@
+{
+ "id": "hacker_news_freelancer_seeking_freelancer",
+ "category": "deals",
+ "label": "Hacker News — Freelancer? Seeking freelancer?",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://github.com/HackerNews/API",
+ "url": "https://news.ycombinator.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public API, no key, no rate limit; HN guidelines apply to posting (manual).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for reading (official Firebase API). Lane `human` → **api for search**, replies human. Confidence high.",
+  "base_urls": [
+   "https://hacker-news.firebaseio.com/v0/"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v0/user/whoishiring.json",
+    "purpose": "find the monthly threads",
+    "notes": "submitted[]"
+   },
+   {
+    "call": "GET /v0/item/{id}.json",
+    "purpose": "thread + comments",
+    "notes": "by, kids[], text, time"
+   },
+   {
+    "call": "GET /v0/item/{kid}.json",
+    "purpose": "each SEEKING WORK / SEEKING FREELANCER comment",
+    "notes": "text"
+   }
+  ],
+  "limits": " - No rate limit; no write API — replies are manual. - Public API, no key, no rate limit; HN guidelines apply to posting (manual).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://github.com/HackerNews/API"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://hacker-news.firebaseio.com/v0",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "The API README states no rate limit. Two requests per second.",
+  "tools": {
+   "get_posting": {
+    "method": "GET",
+    "path": "/item/{id}.json",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "text",
+      "buyer": "by",
+      "description": "text"
+     }
+    },
+    "docs": "https://github.com/HackerNews/API#items",
+    "note": "GET /v0/item/<id>.json for one 'Freelancer? Seeking freelancer?' comment (ids are the monthly thread's kids[]). Comments have no title, so title and description both carry the HTML text; buyer is the poster's HN username; time (Unix) stays in raw. A missing item answers null (invalid_input)."
+   }
+  },
+  "not_offered": {
+   "search_postings": "Listing a month's posts takes two calls (GET /v0/user/whoishiring.json → submitted[] thread id, then GET /v0/item/<thread>.json → kids[]) plus one per comment; the API has no search endpoint and the adapter maps one call per verb.",
+   "me": "No credentials and no account endpoint (read-only public API).",
+   "submit_bid": "Replies are manual (HN has no write API).",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "HN has no private messaging.",
+   "send_message": "HN has no write API.",
+   "credits": "No account or credit endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

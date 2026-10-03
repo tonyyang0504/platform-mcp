@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "adform-mcp",
+ "display_name": "Adform FLOW MCP",
+ "version": "0.1.0",
+ "description": "Adform FLOW (ads): me, list_accounts, list_campaigns. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "adform"
+   ],
+   "env": {
+    "PLATFORM_MCP_ADFORM_CLIENT_ID": "${user_config.platform_mcp_adform_client_id}",
+    "PLATFORM_MCP_ADFORM_CLIENT_SECRET": "${user_config.platform_mcp_adform_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_adform_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADFORM_CLIENT_ID",
+   "description": "Client id of an Adform API client enabled for the client-credentials flow (requested from Adform support; https://api.adform.com/help/guides/getting-started/authorization-guide).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_adform_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADFORM_CLIENT_SECRET",
+   "description": "The client's secret, sent in the form body of POST https://id.adform.com/sts/connect/token; the client must be granted the buyer.advertisers.readonly and buyer.campaigns.api.readonly scopes. Tokens last about an hour and are re-requested automatically.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/buyer/advertisers?limit=1: confirms the client credentials and scopes (Adform has no who-am-i endpoint)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v1/buyer/advertisers (offset/limit): the advertisers the client can access, active and inactive ({id, name, timeZone, status}); no currency on this record."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v1/buyer/campaigns?advertisers={account_id} (offset/limit). `status` is Active or Inactive; without it Adform returns only active campaigns. `budget` is the campaign's planning budget (total, not daily) in `currency`."
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "induseasywheels_indusind_bank_in_wl",
+ "category": "automotive",
+ "label": "Indus EasyWheels (IndusInd Bank)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://induseasywheels.indusind.bank.in",
+ "domain": "induseasywheels.indusind.bank.in",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). IndusInd EasyWheels repo-auction portal has partner services but no API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://induseasywheels.indusind.bank.in/partner-services",
+   "https://induseasywheels.indusind.bank.in/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

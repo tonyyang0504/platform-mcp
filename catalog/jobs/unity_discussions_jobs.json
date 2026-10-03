@@ -1,0 +1,67 @@
+{
+ "id": "unity_discussions_jobs",
+ "category": "jobs",
+ "label": "Unity Discussions: Collaboration",
+ "lane": "human",
+ "kind": "gaming",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://discussions.unity.com/c/collaboration/46",
+ "url": "https://discussions.unity.com/c/collaboration/46",
+ "verified_at": "2026-09-04",
+ "terms_note": "Forum posts; contact by DM — human lane.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

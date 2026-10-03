@@ -1,0 +1,113 @@
+{
+ "id": "faire",
+ "category": "ecommerce_suppliers",
+ "label": "Faire",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.faire.com/docs",
+ "url": "https://www.faire.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks"
+  ],
+  "auth": "brand API key (X-FAIRE-ACCESS-TOKEN) or OAuth for integration partners — per the sales-channel audit; portal unreadable headless",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itse",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Brand account; API key self-issued; retailer purchasing is UI-only.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://developers.faire.com/docs",
+   "https://faire.github.io/external-api-v2-docs/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "The reference now renders in headless Chromium (https://developers.faire.com/docs, Stoplight, 2026-09-25): base https://www.faire.com/external-api/v2, X-FAIRE-OAUTH-ACCESS-TOKEN + X-FAIRE-APP-CREDENTIALS, endpoints for Brands, Inventory, Orders, Prepacks, Product Variants, Products, Retailers. It is the BRAND (wholesale seller) side only: 'allows brands and integration partners to programmatically access and manage their data on Faire'; there is no retailer catalogue search or retailer ordering endpoint, so this category's supplier verbs (buying from Faire) have no counterpart; the brand side is ecommerce_channels/faire."
+}

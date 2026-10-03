@@ -1,0 +1,6704 @@
+{
+ "jobs": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "search": {
+   "title": "Search job postings",
+   "description": "Search the platform's job postings. Returns normalised postings plus the raw record.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string",
+      "description": "Keywords."
+     },
+     "location": {
+      "type": "string"
+     },
+     "remote": {
+      "type": "boolean"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code, for platforms that partition results by country."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "query"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "postings": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "company": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "location": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "posted_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "salary_min": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "salary_max": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "description": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "title"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "postings"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_posting": {
+   "title": "Get a job posting",
+   "description": "Fetch one posting by the id returned from search.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "company": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "location": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "posted_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "salary_min": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "salary_max": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "title"
+    ]
+   },
+   "idempotent": true
+  },
+  "apply": {
+   "title": "Apply to a posting",
+   "description": "Submit an application. Only offered where the platform documents an application API.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "cover_letter": {
+      "type": "string"
+     },
+     "resume_url": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "application_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "list_messages": {
+   "title": "List messages",
+   "description": "Read the inbox or a thread on the platform.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "messages": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "thread_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "from": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "to": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sent_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "messages"
+    ]
+   },
+   "idempotent": true
+  }
+ },
+ "deals": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "search_postings": {
+   "title": "Search postings",
+   "description": "Search open projects, gigs, tenders or bounties.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "min_budget": {
+      "type": "number"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "postings": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "buyer": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "budget_min": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "budget_max": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "skills": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "posted_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "deadline": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "description": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "title"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "postings"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_posting": {
+   "title": "Get a posting",
+   "description": "Fetch one posting by id.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "buyer": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "budget_min": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "budget_max": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "skills": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "posted_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "deadline": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "title"
+    ]
+   },
+   "idempotent": true
+  },
+  "submit_bid": {
+   "title": "Submit a bid or proposal",
+   "description": "Place a bid / proposal on a posting. Spends bid credits on some platforms.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "posting_id": {
+      "type": "string"
+     },
+     "amount": {
+      "type": "number"
+     },
+     "currency": {
+      "type": "string"
+     },
+     "period_days": {
+      "type": "integer"
+     },
+     "message": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "posting_id",
+     "amount"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "bid_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": false
+  },
+  "withdraw_bid": {
+   "title": "Withdraw a bid",
+   "description": "Retract a previously submitted bid.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "bid_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "bid_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  },
+  "bid_status": {
+   "title": "Bid status",
+   "description": "Current status of a bid.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "bid_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "bid_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "bid_id": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "bid_id",
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "list_messages": {
+   "title": "List messages",
+   "description": "Read a thread or the inbox.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "messages": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "thread_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "from": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "to": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sent_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "messages"
+    ]
+   },
+   "idempotent": true
+  },
+  "send_message": {
+   "title": "Send a message",
+   "description": "Send a message in a thread.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "thread_id",
+     "text"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "message_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "credits": {
+   "title": "Credits and quotas",
+   "description": "Remaining bids, connects or credits on the account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "remaining": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "unit": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  }
+ },
+ "messaging": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "list_inbound": {
+   "title": "List inbound messages",
+   "description": "New or recent inbound messages across conversations.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "since": {
+      "type": "string",
+      "description": "ISO-8601 timestamp."
+     },
+     "channel": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "messages": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "thread_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "from": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "to": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sent_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "messages"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_thread": {
+   "title": "Get a thread",
+   "description": "Messages of one conversation.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "channel": {
+      "type": "string",
+      "description": "Channel or chat id, where the platform threads inside channels (Slack)."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "thread_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "messages": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "thread_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "from": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "to": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sent_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "messages"
+    ]
+   },
+   "idempotent": true
+  },
+  "send": {
+   "title": "Send a message",
+   "description": "Send a new message to a recipient or channel.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "to": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     },
+     "subject": {
+      "type": "string"
+     },
+     "channel": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "to",
+     "text"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "message_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "reply": {
+   "title": "Reply in a thread",
+   "description": "Reply to an existing conversation.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     },
+     "channel": {
+      "type": "string",
+      "description": "Channel or chat id, where the platform threads inside channels (Slack)."
+     }
+    },
+    "required": [
+     "thread_id",
+     "text"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "message_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "mark_read": {
+   "title": "Mark as read",
+   "description": "Mark a thread or message as read.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "thread_id": {
+      "type": "string"
+     },
+     "message_id": {
+      "type": "string"
+     },
+     "channel": {
+      "type": "string"
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": true
+  }
+ },
+ "social": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "publish_text": {
+   "title": "Publish a text post",
+   "description": "Create a public text post.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "text": {
+      "type": "string"
+     },
+     "reply_to": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "text"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "publish_image": {
+   "title": "Publish an image post",
+   "description": "Create a post with one or more images (URLs).",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "text": {
+      "type": "string"
+     },
+     "image_urls": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "image_urls"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "read_comments": {
+   "title": "Read comments",
+   "description": "Comments or replies on a post.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "post_id": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "post_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "comments": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "author": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "comments"
+    ]
+   },
+   "idempotent": true
+  },
+  "reply_comment": {
+   "title": "Reply to a comment",
+   "description": "Post a reply to a comment.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "comment_id": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "comment_id",
+     "text"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "read_mentions": {
+   "title": "Read mentions",
+   "description": "Recent mentions of the account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "since": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "mentions": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "author": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "text": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "mentions"
+    ]
+   },
+   "idempotent": true
+  },
+  "delete": {
+   "title": "Delete a post",
+   "description": "Delete one of the account's posts.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "post_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "post_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  },
+  "analytics_post": {
+   "title": "Post analytics",
+   "description": "Impressions, engagement and similar metrics for a post.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "post_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "post_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "post_id": {
+      "type": "string"
+     },
+     "metrics": {
+      "type": "object"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "post_id"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  }
+ },
+ "ecommerce_suppliers": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "list_products": {
+   "title": "List products",
+   "description": "Search the supplier catalogue.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "category": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "products": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "price": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sku": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "image_url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "stock": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "title"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "products"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_product": {
+   "title": "Get a product",
+   "description": "One product with variants and stock.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "price": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sku": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "image_url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "stock": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "title"
+    ]
+   },
+   "idempotent": true
+  },
+  "quote_shipping": {
+   "title": "Quote shipping",
+   "description": "Shipping options and cost for a destination.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "product_id": {
+      "type": "string"
+     },
+     "country": {
+      "type": "string"
+     },
+     "quantity": {
+      "type": "integer",
+      "default": 1
+     }
+    },
+    "required": [
+     "product_id",
+     "country"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "options": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "options"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "create_order": {
+   "title": "Create an order",
+   "description": "Place a supplier order. Spends money.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "shipping_address": {
+      "type": "object"
+     },
+     "shipping_option": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "items",
+     "shipping_address"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "tracking_number": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "destructive": true,
+   "idempotent": false
+  },
+  "get_order": {
+   "title": "Get an order",
+   "description": "Order status and totals.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "tracking_number": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "idempotent": true
+  },
+  "track": {
+   "title": "Track a shipment",
+   "description": "Tracking events for an order.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "order_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "order_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "events": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "events"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  }
+ },
+ "ecommerce_channels": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "create_listing": {
+   "title": "Create a listing",
+   "description": "Publish a product listing on the channel.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "title": {
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     },
+     "price": {
+      "type": "number"
+     },
+     "currency": {
+      "type": "string"
+     },
+     "sku": {
+      "type": "string"
+     },
+     "quantity": {
+      "type": "integer"
+     },
+     "image_urls": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "title",
+     "price"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "listing_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": false
+  },
+  "update_listing": {
+   "title": "Update a listing",
+   "description": "Change price, stock or text of a listing.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "listing_id": {
+      "type": "string"
+     },
+     "price": {
+      "type": "number"
+     },
+     "quantity": {
+      "type": "integer"
+     },
+     "title": {
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "listing_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": true
+  },
+  "end_listing": {
+   "title": "End a listing",
+   "description": "Take a listing down.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "listing_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "listing_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  },
+  "set_inventory": {
+   "title": "Set inventory",
+   "description": "Set stock for a SKU or listing.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "sku": {
+      "type": "string"
+     },
+     "listing_id": {
+      "type": "string"
+     },
+     "quantity": {
+      "type": "integer"
+     }
+    },
+    "required": [
+     "quantity"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": true
+  },
+  "list_orders": {
+   "title": "List orders",
+   "description": "Orders on the channel.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "since": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "orders": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "total": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "tracking_number": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "orders"
+    ]
+   },
+   "idempotent": true
+  },
+  "mark_shipped": {
+   "title": "Mark shipped",
+   "description": "Record shipment and tracking for an order.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "order_id": {
+      "type": "string"
+     },
+     "carrier": {
+      "type": "string"
+     },
+     "tracking_number": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "order_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": false,
+   "idempotent": true
+  }
+ },
+ "sales": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "search": {
+   "title": "Search companies",
+   "description": "Find companies or organisations by name, terms, country or industry.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2."
+     },
+     "industry": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "query"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "companies": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "website": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "domain": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "country": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "address": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "industry": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "size": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "founded": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "name"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "companies"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_company": {
+   "title": "Get a company",
+   "description": "One company record by id.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "website": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "domain": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "country": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "address": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "industry": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "size": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "founded": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "name"
+    ]
+   },
+   "idempotent": true
+  }
+ },
+ "ads": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "list_accounts": {
+   "title": "List ad accounts",
+   "description": "Ad accounts the credentials can access.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "accounts": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "accounts"
+    ]
+   },
+   "idempotent": true
+  },
+  "list_campaigns": {
+   "title": "List campaigns",
+   "description": "Campaigns in an ad account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "account_id": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "account_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "campaigns": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "budget": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "start": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "end": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "name"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "campaigns"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_report": {
+   "title": "Get a report",
+   "description": "Spend and performance metrics over a date range.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "account_id": {
+      "type": "string"
+     },
+     "campaign_id": {
+      "type": "string"
+     },
+     "date_from": {
+      "type": "string"
+     },
+     "date_to": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "account_id",
+     "date_from",
+     "date_to"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "rows": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "rows"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "update_budget": {
+   "title": "Update a budget",
+   "description": "Change a campaign's daily or lifetime budget. Spends money.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "campaign_id": {
+      "type": "string"
+     },
+     "daily_budget": {
+      "type": "number"
+     },
+     "currency": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "campaign_id",
+     "daily_budget"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  },
+  "pause_resume": {
+   "title": "Pause or resume",
+   "description": "Pause or resume a campaign.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "campaign_id": {
+      "type": "string"
+     },
+     "action": {
+      "type": "string",
+      "enum": [
+       "pause",
+       "resume"
+      ]
+     }
+    },
+    "required": [
+     "campaign_id",
+     "action"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  }
+ },
+ "trading": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "list_markets": {
+   "title": "List markets",
+   "description": "Tradeable instruments on the venue.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "markets": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "symbol": {
+         "type": "string"
+        },
+        "base": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "quote": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "type": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "symbol"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "markets"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_ticker": {
+   "title": "Get a ticker",
+   "description": "Last price and 24h stats for a symbol.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "symbol"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     },
+     "last": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "bid": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "ask": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "volume": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "symbol"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "get_candles": {
+   "title": "Get candles",
+   "description": "OHLCV candles for a symbol and interval.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     },
+     "interval": {
+      "type": "string",
+      "description": "e.g. 1m, 1h, 1d"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000,
+      "default": 100
+     }
+    },
+    "required": [
+     "symbol",
+     "interval"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "candles": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "time": {
+         "type": "string"
+        },
+        "open": {
+         "type": "number"
+        },
+        "high": {
+         "type": "number"
+        },
+        "low": {
+         "type": "number"
+        },
+        "close": {
+         "type": "number"
+        },
+        "volume": {
+         "type": [
+          "number",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "time",
+        "open",
+        "high",
+        "low",
+        "close"
+       ]
+      }
+     }
+    },
+    "required": [
+     "candles"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "get_balances": {
+   "title": "Get balances",
+   "description": "Account balances per asset.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "balances": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "balances"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "list_orders": {
+   "title": "List orders",
+   "description": "Open or recent orders.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "orders": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "orders"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "place_order": {
+   "title": "Place an order",
+   "description": "Submit an order. Moves real money; only offered where the catalog marks trading as consented.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     },
+     "side": {
+      "type": "string",
+      "enum": [
+       "buy",
+       "sell"
+      ]
+     },
+     "type": {
+      "type": "string",
+      "enum": [
+       "market",
+       "limit"
+      ]
+     },
+     "quantity": {
+      "type": "number"
+     },
+     "price": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "symbol",
+     "side",
+     "type",
+     "quantity"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "order_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": false
+  },
+  "cancel_order": {
+   "title": "Cancel an order",
+   "description": "Cancel an open order.",
+   "read_only": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "order_id": {
+      "type": "string"
+     },
+     "symbol": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "order_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "additionalProperties": true
+   },
+   "destructive": true,
+   "idempotent": true
+  }
+ },
+ "market_data": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_candles": {
+   "title": "Get candles",
+   "description": "OHLCV candles for a symbol and interval.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "symbol": {
+      "type": "string"
+     },
+     "interval": {
+      "type": "string"
+     },
+     "start": {
+      "type": "string"
+     },
+     "end": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000,
+      "default": 500
+     }
+    },
+    "required": [
+     "symbol",
+     "interval"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "candles": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "time": {
+         "type": "string"
+        },
+        "open": {
+         "type": "number"
+        },
+        "high": {
+         "type": "number"
+        },
+        "low": {
+         "type": "number"
+        },
+        "close": {
+         "type": "number"
+        },
+        "volume": {
+         "type": [
+          "number",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "time",
+        "open",
+        "high",
+        "low",
+        "close"
+       ]
+      }
+     }
+    },
+    "required": [
+     "candles"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "get_series": {
+   "title": "Get a data series",
+   "description": "A named time series (macro indicator, funding rate, open interest, index).",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "series_id": {
+      "type": "string"
+     },
+     "start": {
+      "type": "string"
+     },
+     "end": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "series_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "points": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "time": {
+         "type": "string"
+        },
+        "value": {
+         "type": [
+          "number",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "time"
+       ]
+      }
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "points"
+    ],
+    "additionalProperties": true
+   },
+   "idempotent": true
+  },
+  "search_symbols": {
+   "title": "Search symbols",
+   "description": "Look up instruments or series by name.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "query"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "results": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "symbol": {
+         "type": "string"
+        },
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "type": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "symbol"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "results"
+    ]
+   },
+   "idempotent": true
+  },
+  "get_news": {
+   "title": "Get news",
+   "description": "Recent headlines for a query or symbol.",
+   "read_only": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "since": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "articles": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "published_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "source": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "title"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "articles"
+    ]
+   },
+   "idempotent": true
+  }
+ },
+ "marketplaces": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   }
+  },
+  "list_products": {
+   "title": "List products",
+   "description": "List the seller's products or listings.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Platform status filter, e.g. active, draft, archived."
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "products": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "description": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "updated_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "products"
+    ]
+   }
+  },
+  "get_product": {
+   "title": "Get product",
+   "description": "One product with its price and status.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "product_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "product_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "price": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "updated_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "create_product": {
+   "title": "Create product",
+   "description": "Create a product or listing (draft unless the platform publishes immediately; see the tool note).",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "price": {
+      "type": "number",
+      "description": "Unit price in major currency units."
+     },
+     "currency": {
+      "type": "string",
+      "description": "ISO 4217."
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Product page or content URL when the platform takes one."
+     }
+    },
+    "required": [
+     "name",
+     "price",
+     "currency"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "price": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "updated_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "update_price": {
+   "title": "Update price",
+   "description": "Change a product's price (and currency when the platform allows it).",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "product_id": {
+      "type": "string"
+     },
+     "price": {
+      "type": "number"
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "product_id",
+     "price"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "price": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "updated_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "list_sales": {
+   "title": "List sales",
+   "description": "Orders or sales, newest first, optionally since a date or for one product.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "product_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "since": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "ISO 8601 date or datetime."
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "sales": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "product_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "product_name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "amount": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "customer_email": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "refunded": {
+         "type": [
+          "boolean",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "sales"
+    ]
+   }
+  },
+  "get_sales_stats": {
+   "title": "Sales stats",
+   "description": "Revenue and sale counts over a period.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "since": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "ISO 8601 date."
+     },
+     "until": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "product_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "revenue": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sales": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "refunds": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "period": {
+      "type": "object"
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "raw"
+    ]
+   }
+  },
+  "list_refunds": {
+   "title": "List refunds",
+   "description": "Refunds and chargebacks, newest first.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "since": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "refunds": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "sale_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "amount": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "reason": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "created_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "refunds"
+    ]
+   }
+  },
+  "refund": {
+   "title": "Refund a sale",
+   "description": "Refund one sale in full (partial amount only when the platform supports it).",
+   "read_only": false,
+   "destructive": true,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "sale_id": {
+      "type": "string"
+     },
+     "amount": {
+      "type": [
+       "number",
+       "null"
+      ],
+      "description": "Partial amount in major units; omit for a full refund."
+     },
+     "reason": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "sale_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "sale_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "amount": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "created_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  }
+ },
+ "competitions": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   }
+  },
+  "discover": {
+   "title": "Discover competitions",
+   "description": "List open competitions, challenges, hackathons or contests, optionally filtered by text or kind.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "kind": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Platform category, e.g. data_science, coding, design, writing."
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "open, upcoming or completed."
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "competitions": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "kind": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "prize": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "deadline": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "starts_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "tags": {
+         "type": [
+          "array",
+          "null"
+         ],
+         "items": {
+          "type": "string"
+         }
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id",
+        "title"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "competitions"
+    ]
+   }
+  },
+  "get_competition": {
+   "title": "Get competition",
+   "description": "One competition with rules, prize, timeline and submission format.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "competition_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "competition_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "kind": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "prize": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "deadline": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "starts_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "tags": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "string"
+      }
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "rules_url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "submission_format": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "title"
+    ]
+   }
+  },
+  "standings": {
+   "title": "Standings",
+   "description": "The leaderboard or results of a competition.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "competition_id": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [
+     "competition_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "standings": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "rank": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "team": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "score": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "entries": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "updated_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": []
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "standings"
+    ]
+   }
+  },
+  "my_entries": {
+   "title": "My entries",
+   "description": "The account's entries or submissions, with status and score.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "competition_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "entries": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "competition_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "score": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "rank": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "submitted_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Pass back as cursor to get the next page (cursor-paginated platforms only)."
+     }
+    },
+    "required": [
+     "entries"
+    ]
+   }
+  },
+  "enter": {
+   "title": "Enter a competition",
+   "description": "Register the account for a competition (accepting its rules where the API requires it).",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "competition_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "competition_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "competition_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "submit": {
+   "title": "Submit an entry",
+   "description": "Submit an entry by URL or text content; binary uploads are not offered through this vocabulary (see the tool note).",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "competition_id": {
+      "type": "string"
+     },
+     "content": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Text or JSON payload when the platform takes inline content."
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Publicly reachable file, repository or notebook URL when the platform takes a link."
+     },
+     "message": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "competition_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "competition_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "score": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "submitted_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  }
+ },
+ "builder_tools": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   }
+  },
+  "generate_image": {
+   "title": "Generate an image",
+   "description": "Start (or run) an image generation from a text prompt; returns the image URLs, or a job id to poll with get_job.",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "prompt": {
+      "type": "string"
+     },
+     "negative_prompt": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "aspect_ratio": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "e.g. 16:9, 1:1"
+     },
+     "size": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "e.g. 1024x1024"
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "seed": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "image_url": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Reference or source image for edit/variation models."
+     }
+    },
+    "required": [
+     "prompt"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "job_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "output_urls": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "string"
+      }
+     },
+     "error": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "raw"
+    ]
+   }
+  },
+  "generate_video": {
+   "title": "Generate a video",
+   "description": "Start a video generation from a prompt and/or an image; returns a job id to poll with get_job.",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "prompt": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "image_url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "duration_seconds": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "aspect_ratio": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "job_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "output_urls": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "string"
+      }
+     },
+     "error": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "raw"
+    ]
+   }
+  },
+  "get_job": {
+   "title": "Get a generation job",
+   "description": "Status and output URLs of an image/video generation job.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "job_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "job_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "job_id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "output_urls": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "string"
+      }
+     },
+     "error": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "raw"
+    ]
+   }
+  },
+  "list_items": {
+   "title": "List items",
+   "description": "List the platform's content items (posts, pages, CMS items, rows, records) in a collection.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Collection, table, sheet range or content type, as the platform names it."
+     },
+     "query": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "updated_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "items"
+    ]
+   }
+  },
+  "get_item": {
+   "title": "Get an item",
+   "description": "One content item with its content.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "item_id": {
+      "type": "string"
+     },
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "item_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "updated_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "content": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "create_item": {
+   "title": "Create an item",
+   "description": "Create a content item (post, page, CMS item, row). Drafts unless the platform publishes on create — see the tool note.",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": false,
+   "input": {
+    "type": "object",
+    "properties": {
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "title": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "content": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "fields": {
+      "type": [
+       "object",
+       "null"
+      ],
+      "description": "Additional platform fields as documented (key → value)."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "update_item": {
+   "title": "Update an item",
+   "description": "Change a content item's title, content or fields.",
+   "read_only": false,
+   "destructive": false,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "item_id": {
+      "type": "string"
+     },
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "title": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "content": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "fields": {
+      "type": [
+       "object",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "item_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "delete_item": {
+   "title": "Delete an item",
+   "description": "Delete (or trash, where the platform only trashes) a content item.",
+   "read_only": false,
+   "destructive": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "item_id": {
+      "type": "string"
+     },
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "item_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  }
+ },
+ "automotive": {
+  "me": {
+   "title": "Who am I",
+   "description": "Verify the credentials and describe the connected account.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "account": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "ok"
+    ]
+   }
+  },
+  "search_listings": {
+   "title": "Search vehicle listings",
+   "description": "Search cars for sale (or lease/rent) by make, model, year, price, mileage, condition and location.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "make": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "year_min": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "year_max": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "price_min": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "price_max": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "mileage_max": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "condition": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "new, used or certified, as the platform names it"
+     },
+     "location": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "City, region, postcode or country as the platform accepts it"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "listings": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "make": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "model": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "year": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "mileage": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "mileage_unit": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "condition": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "location": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "dealer": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "posted_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "listings"
+    ]
+   }
+  },
+  "get_listing": {
+   "title": "Get a listing",
+   "description": "One vehicle listing with its details.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "listing_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "listing_id"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "make": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "year": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "price": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "mileage": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "mileage_unit": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "condition": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "location": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "dealer": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "posted_at": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "description": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "vin": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "images": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "id"
+    ]
+   }
+  },
+  "decode_vin": {
+   "title": "Decode a VIN",
+   "description": "Vehicle attributes for a VIN (make, model, year, trim, body, engine).",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "vin": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "vin"
+    ],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "vin": {
+      "type": "string"
+     },
+     "make": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "year": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "trim": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "body": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "engine": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "fuel": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "vin"
+    ]
+   }
+  },
+  "get_valuation": {
+   "title": "Get a valuation",
+   "description": "Market value estimate for a vehicle.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "make": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "year": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "mileage": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "trim": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "vin": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "location": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "low": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "mid": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "high": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "currency": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "raw"
+    ]
+   }
+  },
+  "list_dealers": {
+   "title": "List dealers",
+   "description": "Dealers or sellers, optionally by location or make.",
+   "read_only": true,
+   "idempotent": true,
+   "input": {
+    "type": "object",
+    "properties": {
+     "location": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "make": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Result page (1-based)."
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 25,
+      "description": "Results per page."
+     },
+     "cursor": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Opaque cursor from a previous result's next_cursor (cursor-paginated platforms); when given, page is ignored."
+     }
+    },
+    "required": [],
+    "additionalProperties": false
+   },
+   "output": {
+    "type": "object",
+    "properties": {
+     "dealers": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "location": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "url": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "phone": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "raw": {
+         "type": "object"
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "next_page": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "total": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "next_cursor": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "dealers"
+    ]
+   }
+  }
+ }
+}

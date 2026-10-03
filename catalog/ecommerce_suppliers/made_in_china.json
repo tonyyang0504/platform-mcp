@@ -1,0 +1,79 @@
+{
+ "id": "made_in_china",
+ "category": "ecommerce_suppliers",
+ "label": "Made-in-China.com",
+ "lane": "manual",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://www.made-in-china.com/",
+ "url": "https://www.made-in-china.com/",
+ "verified_at": null,
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

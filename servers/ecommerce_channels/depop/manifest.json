@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "depop-mcp",
+ "display_name": "Depop MCP",
+ "version": "0.1.0",
+ "description": "Depop (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Every tool ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "depop"
+   ],
+   "env": {
+    "PLATFORM_MCP_DEPOP_API_KEY": "${user_config.platform_mcp_depop_api_key}",
+    "PLATFORM_MCP_DEPOP_API_HOST": "${user_config.platform_mcp_depop_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_depop_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DEPOP_API_KEY",
+   "description": "Depop Partner API key (issued by Depop to approved enterprise partners; API-key tokens carry every scope); sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_depop_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DEPOP_API_HOST",
+   "description": "partnerapi.depop.com (production) or partnerapi-staging.depop.com (staging).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getSellerDetails: {id, username, country_code} of your Depop shop."
+  },
+  {
+   "name": "update_listing",
+   "description": "patchProduct PATCH /api/v1/products/by-sku/{sku}/ {price_amount, quantity} changes the LIVE price (a decimal string in the listing's currency) and/or quantity of an ON SALE product; `listing_id` is your SKU. Title/description changes need the full PUT (all product fields) and are not done here."
+  },
+  {
+   "name": "set_inventory",
+   "description": "patchProduct {quantity} sets the quantity of an ON SALE product by SKU (`sku` required). Restocking a sold-out product requires the full PUT createOrUpdateProduct, which this tool does not send."
+  },
+  {
+   "name": "end_listing",
+   "description": "deleteProduct DELETE /api/v1/products/by-sku/{sku}/ DELETES the listing from Depop; `listing_id` is your SKU."
+  },
+  {
+   "name": "list_orders",
+   "description": "getAllOrders ?limit(max 200)&from(ISO date-time): {meta: {cursor, has_more}, data: [{purchase_id, status (SHIPPING_PENDING|SHIPPED|REFUNDED|CANCELLED|COMPLETED), currency, buyer_pays_amount, seller_receives_amount, line_items[{parcel_id...}]}]}. No status filter; pagination is by meta.cursor, so only the first page is returned. Amounts are decimal strings."
+  }
+ ]
+}

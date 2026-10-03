@@ -1,0 +1,245 @@
+{
+ "id": "impact_com",
+ "category": "ads",
+ "label": "impact.com",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "us",
+  "gb",
+  "de",
+  "fr",
+  "jp",
+  "cn"
+ ],
+ "docs_url": "https://integrations.impact.com/",
+ "url": "https://impact.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Brand API documented publicly; credentials are generated inside the account per the API Quick Start.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "basic (Account SID + Auth Token; Brand API v14)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "reports",
+   "conversions_upload",
+   "ads",
+   "webhooks",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "impact.com MCP server (official — Integrations Hub → AI Solutions → MCP Quick Start / MCP Tools / MCP Skills)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Brand API v14 + official MCP) Confidence: **high** — official reference read.",
+  "base_urls": [
+   "https://api.impact.com/Advertisers/{AccountSID}/…"
+  ],
+  "auth": [
+   "1. Brand account → Settings → Technical → API Access → Account SID + Auth Token.",
+   "2. HTTP Basic auth (SID : token); `Accept: application/json`.",
+   "3. Partners → Contracts → Tracking Links / Ads → Actions → Reports."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /Advertisers/{sid}/Accounts",
+    "purpose": "account",
+    "notes": "name, website, contacts"
+   },
+   {
+    "call": "GET/POST /Advertisers/{sid}/Programs` · `Contracts` · `Partners` · `PartnerGroups",
+    "purpose": "programme + partner contracts (commission terms, approvals)",
+    "notes": "program id, partner id, contract terms"
+   },
+   {
+    "call": "GET/POST /Advertisers/{sid}/Ads` · `TrackingLinks` · `PromoCodes` · `Deals",
+    "purpose": "creatives / links / codes",
+    "notes": "ad type, landing page, code"
+   },
+   {
+    "call": "POST /Advertisers/{sid}/Conversions` · `Actions` · `ActionInquiries` · `ActionUpdates",
+    "purpose": "conversions upload + validation",
+    "notes": "ActionTrackerId, OrderId, Amount, EventDate, CustomerId"
+   },
+   {
+    "call": "GET /Advertisers/{sid}/Reports` · `ReportExport` · `Invoices` · `Clicks",
+    "purpose": "reports",
+    "notes": "report id, dates, subaid"
+   },
+   {
+    "call": "Webhooks` · `Catalogs` · `RoutingRules` · `ExceptionLists",
+    "purpose": "webhooks / catalogs / rules",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits + versioning pages (TODO(verify) values); subscription pricing; impact.com API terms.",
+  "mcp_sdk": [
+   "Official MCP server (Integrations Hub AI Solutions), llms.txt, Postman."
+  ],
+  "sources": [
+   "https://integrations.impact.com/impact-brand/reference/introduction",
+   "https://integrations.impact.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.impact.com/Advertisers/{account_sid}",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "basic",
+   "username_field": "account_sid",
+   "password_field": "auth_token",
+   "fields": [
+    {
+     "name": "account_sid",
+     "required": true,
+     "help": "Account SID of a Brand API access token (impact.com > user profile > Settings > Technical > API > Create Access Token); the HTTP Basic username and the {AccountSID} in every path."
+    },
+    {
+     "name": "auth_token",
+     "required": true,
+     "help": "The token's Auth Token, the HTTP Basic password. Needs read scope for programs and reports."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "report_id",
+    "required": false,
+    "help": "Report handle for get_report, taken from GET /Advertisers/{AccountSID}/Reports (Id of a report with ApiAccessible=true, e.g. a performance-by-day report); its columns are listed by /Reports/{ReportId}/MetaData."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/CompanyInformation",
+    "docs": "https://integrations.impact.com/brand-api-reference/reference/accounts/company-information",
+    "note": "GET /Advertisers/{AccountSID}/CompanyInformation: the brand account's company details."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/Campaigns",
+    "params": {
+     "State": "status"
+    },
+    "result": {
+     "items": "Campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "Id",
+      "name": "Name",
+      "status": "State"
+     }
+    },
+    "docs": "https://integrations.impact.com/brand-api-reference/reference/programs/programs",
+    "note": "GET /Advertisers/{AccountSID}/Campaigns: the account's programs (impact.com calls programs 'Campaigns'); status filters State (ACTIVE, AWAITING_REVIEW, CANCELLED, CLOSED, DEACTIVATED, DELINQUENT, REJECTED, SETUP, SETUP_COMPLETE). Programs carry no budget; Type (Performance, Retail Media, Creator …) is in raw. `account_id` is not sent (the Account SID selects the account); `page`/`limit` are not sent (only the first page is returned)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/Reports/{report_id}",
+    "path_params": {
+     "report_id": "@report_id"
+    },
+    "params": {
+     "StartDate": "date:date_from",
+     "EndDate": "date:date_to",
+     "SUBAID": "campaign_id"
+    },
+    "result": {
+     "items": "Records",
+     "key": "rows",
+     "fields": {}
+    },
+    "docs": "https://integrations.impact.com/brand-api-reference/reference/report-export/reports-legacy",
+    "note": "GET /Advertisers/{AccountSID}/Reports/{report_id}?StartDate&EndDate&SUBAID=<campaign_id> (Run a Report, synchronous legacy endpoint with pagination limits): the configured report's Records, with the report's own columns (see /Reports/{report_id}/MetaData) left as returned in each row's raw. campaign_id is the program id (SUBAID), 'required for most reports'. Needs the report_id config field. `account_id` is not sent."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "API tokens are per account: every path is /Advertisers/{AccountSID}/… and the Brand API has no account list (https://integrations.impact.com/brand-api-reference/readme/authentication).",
+   "update_budget": "impact.com programs are pay-per-action and have no budget attribute (Program schema, https://integrations.impact.com/brand-api-reference/reference/programs/programs).",
+   "pause_resume": "The Programs API is read-only (List All Programs, Get Program Details); program State cannot be changed through the Brand API (https://integrations.impact.com/brand-api-reference/reference/programs/programs)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.impact.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

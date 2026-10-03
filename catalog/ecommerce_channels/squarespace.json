@@ -1,0 +1,235 @@
+{
+ "id": "squarespace",
+ "category": "ecommerce_channels",
+ "label": "Squarespace Commerce",
+ "lane": "api",
+ "kind": "storefront_platform",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.squarespace.com/commerce-apis/overview",
+ "url": "https://www.squarespace.com/ecommerce-website",
+ "verified_at": "2026-09-24",
+ "terms_note": "Requires the Commerce Advanced plan to create Developer API Keys (per-API read / read-write permissions; keys never expire while the site is active); third-party commercial apps must use OAuth as a Squarespace Extension; rate limit not on the pages read (FAQ 404); credentials only reach the owning site's data.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key (Developer API Key from Settings › Advanced on Commerce Advanced sites, non-expiring; OAuth for Squarespace Extensions / third-party apps)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "config.store_page_id",
+  "config.currency",
+  "config.inventory_op"
+ ],
+ "rate_limits": "300 requests/min (5 rps); Create Order 100/h per site with API key",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentati",
+  "base_urls": [
+   "https://api.squarespace.com/1.0/commerce/…"
+  ],
+  "auth": [
+   "1. Tenant on Commerce Advanced opens Settings › Advanced › Developer API Keys and creates a key with Products, Inventory and Orders read-write.",
+   "2. Paste the key; the platform sends it as a bearer token.",
+   "3. (Extensions path: OAuth app at account.squarespace.com/developer-apps — needed only for webhooks / multi-site distribution.)"
+  ],
+  "endpoints": [
+   {
+    "call": "POST /1.0/commerce/products · PUT /products/{id} · GET · DELETE",
+    "purpose": "physical / service products with variants (pricing per variant), images",
+    "notes": "v2; categories not exposed"
+   },
+   {
+    "call": "POST /1.0/commerce/inventory/adjustments · GET /inventory",
+    "purpose": "stock adjustments per variant",
+    "notes": ""
+   },
+   {
+    "call": "GET /1.0/commerce/orders · GET /orders/{id}",
+    "purpose": "orders (paymentState filter)",
+    "notes": "one-time + subscription orders"
+   },
+   {
+    "call": "POST /1.0/commerce/orders/{id}/fulfillments",
+    "purpose": "shipments: carrierName, trackingNumber, trackingUrl, shouldSendNotification",
+    "notes": ""
+   },
+   {
+    "call": "GET /1.0/commerce/transactions",
+    "purpose": "financial records (reports)",
+    "notes": ""
+   },
+   {
+    "call": "Webhook Subscriptions API",
+    "purpose": "order.create etc.",
+    "notes": "OAuth apps only"
+   }
+  ],
+  "limits": " Not on the pages read (FAQ page 404); handle 429 with back-off. - Commerce Advanced plan required for API keys. - Third-party commercial integrations must be OAuth Extensions.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developers.squarespace.com/commerce-apis/overview",
+   "https://developers.squarespace.com/commerce-apis/authentication-and-permissions",
+   "https://developers.squarespace.com/commerce-apis/orders-overview",
+   "https://developers.squarespace.com/commerce-apis/products-overview",
+   "https://developers.squarespace.com/commerce-apis/faq-and-troubleshooting"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.squarespace.com",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Developer API key (Commerce Advanced plan: Settings > Advanced > Developer API Keys; Orders read, Products read) sent as `Authorization: Bearer`; the docs also require a descriptive User-Agent, which the runtime sends."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/commerce/products",
+    "docs": "https://developers.squarespace.com/commerce-apis/products-overview",
+    "note": "GET /v2/commerce/products (Products read) lists up to 50 products {products[{id, name, type, storePageId, isVisible, url, ...}], pagination}; verifies the key and shows the store's products."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/v2/commerce/products/{listing_id}",
+    "body": {
+     "isVisible.present": "json:true",
+     "isVisible.value": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "=hidden"
+     }
+    },
+    "docs": "https://developers.squarespace.com/commerce-apis/update-product",
+    "note": "POST /v2/commerce/products/{productId} {isVisible: {present: true, value: false}} (the Update product endpoint's ChangeBoolean wrapper) hides the product; reversible with value=true. Returns the updated ProductV2. DELETE /v2/commerce/products/{productId} (204, irreversible) is not used."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/1.0/commerce/orders",
+    "params": {
+     "fulfillmentStatus": "status"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "fulfillmentStatus",
+      "total": "grandTotal.value",
+      "currency": "grandTotal.currency",
+      "created_at": "createdOn",
+      "tracking_number": "fulfillments.0.trackingNumber"
+     }
+    },
+    "docs": "https://developers.squarespace.com/commerce-apis/retrieve-all-orders",
+    "note": "GET /1.0/commerce/orders?fulfillmentStatus(PENDING|FULFILLED|CANCELED) returns up to 50 orders by modification date {result[{id, orderNumber, createdOn, fulfillmentStatus, grandTotal{value, currency}, fulfillments[{trackingNumber, carrierName}]}], pagination{hasNextPage, nextPageCursor}}. Pagination is cursor-based, so `page`/`limit` are not sent (first page only); `since` is not sent because modifiedAfter is only accepted together with modifiedBefore."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /v2/commerce/products requires `storePageId` and a `variants[{sku, pricing{basePrice{value, currency}}, stock{quantity}}]` array of objects — the price lives inside the array, which the flat/dotted body cannot express.",
+   "update_listing": "POST /v2/commerce/products/{productId} takes every field as a {present: true, value} change object (ChangeString / ChangeUpdateProductPricing); `present` would have to be sent only for the arguments actually given, but the body form sends literals unconditionally, so a partial update (e.g. description only) would also send name/pricing wrappers without a value, whose effect is undocumented.",
+   "set_inventory": "POST /1.0/commerce/inventory/adjustments takes setFiniteOperations[{variantId, quantity}] (an array of objects, not expressible) and answers 204 No Content.",
+   "mark_shipped": "POST /1.0/commerce/orders/{id}/fulfillments takes shouldSendNotification (boolean) and shipments[{carrierName, trackingNumber, trackingUrl, shipDate}] (an array of objects) and answers 204 No Content — not expressible in the flat/dotted body.",
+   "listing_metrics": "The Commerce APIs expose Transactions (financial records) but no per-product views or conversion metrics."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.squarespace.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

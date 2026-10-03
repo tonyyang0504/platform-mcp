@@ -1,0 +1,294 @@
+{
+ "id": "yandex_direct",
+ "category": "ads",
+ "label": "Yandex Direct (Яндекс Директ)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "ru",
+  "kz",
+  "by"
+ ],
+ "docs_url": "https://yandex.com/dev/direct/doc/en/",
+ "url": "https://direct.yandex.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access requires an app registered with Yandex OAuth and an approved access request; sandbox testing before production (read on the API page).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "sandbox"
+  ],
+  "auth": "oauth2 (Yandex OAuth app registration + Direct API access application; Authorization: Bearer, Client-Login for agencies)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "creatives_upload",
+   "recommendations",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (API Директа v5) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.direct.yandex.com/json/v5/{service}",
+   "https://api-sandbox.direct.yandex.com/json/v5/{service}"
+  ],
+  "auth": [
+   "1. Register the application at oauth.yandex.ru and file the Direct API access application (заявка на доступ); wait for approval.",
+   "2. The Direct user grants the app an OAuth token; agencies add `Client-Login: <client>` to act on a client account.",
+   "3. Headers `Authorization: Bearer <token>`, `Accept-Language`, `Use-Operator-Units` (spend points from the agency); JSON `{method, params}` body."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /json/v5/agencyclients` · `/clients` (get)",
+    "purpose": "accounts / clients",
+    "notes": "Logins, ClientInfo, Currency"
+   },
+   {
+    "call": "campaigns` add / update / get / suspend / resume / archive / delete",
+    "purpose": "campaigns + DailyBudget + strategy",
+    "notes": "Name, StartDate, DailyBudget{Amount, Mode}, TextCampaign{BiddingStrategy}, NegativeKeywords, TimeTargeting"
+   },
+   {
+    "call": "adgroups` add / update / get / delete",
+    "purpose": "ad groups + regions",
+    "notes": "Name, CampaignId, RegionIds, NegativeKeywords"
+   },
+   {
+    "call": "ads` add / update / get / moderate / suspend / resume · `adimages` add · `creatives",
+    "purpose": "ads + image / creative upload",
+    "notes": "TextAd{Title, Title2, Text, Href, AdImageHash}, ImageData base64"
+   },
+   {
+    "call": "keywords` add / update / get · `bids` set / get · `keywordbids` set / setAuto",
+    "purpose": "keywords + bids",
+    "notes": "Keyword, AdGroupId, Bid, ContextBid, StrategyPriority; Bids[{KeywordId, Bid}]"
+   },
+   {
+    "call": "reports` (POST, TSV) — CAMPAIGN_PERFORMANCE_REPORT, CUSTOM_REPORT …",
+    "purpose": "reports",
+    "notes": "SelectionCriteria{DateFrom, DateTo}, FieldNames[], ReportType, DateRangeType"
+   },
+   {
+    "call": "retargetinglists` · `audiencetargets",
+    "purpose": "audiences (Metrica goals / Яндекс Аудитории segments)",
+    "notes": "Rules[], AudienceTarget{AdGroupId, RetargetingListId, ContextBid}"
+   },
+   {
+    "call": "offline conversions",
+    "purpose": "uploaded to Яндекс Метрика (not Direct API)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Points (баллы) quota per user per day, 'Ограничения, баллы' page; sandbox with test data; access application review; free API; Direct API terms of use.",
+  "mcp_sdk": [
+   "Official examples + client libraries listed on the landing page (Примеры); no MCP found."
+  ],
+  "sources": [
+   "https://yandex.ru/dev/direct/",
+   "https://yandex.ru/dev/direct/doc/dg/concepts/about.html",
+   "https://yandex.ru/dev/direct/doc/dg/concepts/access.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.direct.yandex.com/json/v5",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": null,
+   "error_field": "error"
+  },
+  "headers": {
+   "Accept-Language": "en"
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "extra_headers": {
+    "Client-Login": "client_login"
+   },
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Yandex OAuth token of the Direct user (app registered at oauth.yandex.com with Direct API access approved; https://yandex.com/dev/direct/doc/en/concepts/auth-token), sent as Authorization: Bearer."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "client_login",
+    "required": false,
+    "help": "Advertiser login to act for, sent as the Client-Login header (required for agency and representative tokens; omit for a direct advertiser)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/clients",
+    "body": {
+     "method": "=get",
+     "params.FieldNames": "json:[\"ClientId\",\"Login\",\"Currency\",\"ClientInfo\"]"
+    },
+    "docs": "https://yandex.com/dev/direct/doc/en/clients/get",
+    "note": "POST /json/v5/clients {method: get}: the advertiser the token (or Client-Login) acts for ({result: {Clients: [{ClientId, Login, Currency}]}})."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "/clients",
+    "body": {
+     "method": "=get",
+     "params.FieldNames": "json:[\"ClientId\",\"Login\",\"Currency\",\"ClientInfo\"]"
+    },
+    "result": {
+     "items": "result.Clients",
+     "key": "accounts",
+     "fields": {
+      "id": "Login",
+      "name": "ClientInfo",
+      "currency": "Currency"
+     }
+    },
+    "docs": "https://yandex.com/dev/direct/doc/en/clients/get",
+    "note": "POST /json/v5/clients {method: get}: the advertiser the token acts for (agencies list clients through the AgencyClients service instead). `id` is the Login usable as the client_login config."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/campaigns",
+    "body": {
+     "method": "=get",
+     "params.SelectionCriteria": "json:{}",
+     "params.SelectionCriteria.States.0": "status",
+     "params.FieldNames": "json:[\"Id\",\"Name\",\"State\",\"Status\",\"Currency\",\"DailyBudget\",\"StartDate\",\"EndDate\"]",
+     "params.Page.Limit": "limit",
+     "params.Page.Offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 10000,
+    "result": {
+     "items": "result.Campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "Id",
+      "name": "Name",
+      "status": "State",
+      "currency": "Currency",
+      "budget_micros": "DailyBudget.Amount",
+      "start": "StartDate",
+      "end": "EndDate"
+     }
+    },
+    "docs": "https://yandex.com/dev/direct/doc/en/campaigns/get",
+    "note": "POST /json/v5/campaigns {method: get, params: {SelectionCriteria: {States: [status]}, FieldNames, Page: {Limit, Offset}}} for the token's advertiser (account_id is not sent; set client_login for agencies). `status` filters State: ON, OFF, SUSPENDED, ENDED, ARCHIVED. budget_micros is DailyBudget.Amount, the currency amount multiplied by 1,000,000."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/campaigns",
+    "body": {
+     "method": "map:action:pause=suspend,resume=resume",
+     "params.SelectionCriteria.Ids.0": "int:campaign_id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "status": "=submitted",
+      "suspend_result": "SuspendResults.0",
+      "resume_result": "ResumeResults.0"
+     }
+    },
+    "docs": "https://yandex.com/dev/direct/doc/en/campaigns/suspend",
+    "note": "POST /json/v5/campaigns {method: suspend|resume, params: {SelectionCriteria: {Ids: [campaign_id]}}}. Per-campaign problems come back inside suspend_result/resume_result.Errors (Yandex's operation-array pattern), so check it; request-level errors are reported as failures. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "get_report": "Yandex Direct statistics come from the Reports service, which returns TSV text (not JSON) and may answer 201/202 while a report is built offline (https://yandex.com/dev/direct/doc/reports/reports); the runtime maps JSON only and has no report polling.",
+   "update_budget": "Campaign daily budgets are micro-units (\"DailyBudget.Amount (long)\" in the currency multiplied by 1,000,000, POST /json/v5/campaigns method update, https://yandex.com/dev/direct/doc/en/campaigns/update); the adapter cannot scale a daily_budget into micros."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.direct.yandex.com: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

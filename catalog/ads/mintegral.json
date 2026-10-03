@@ -1,0 +1,273 @@
+{
+ "id": "mintegral",
+ "category": "ads",
+ "label": "Mintegral",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global",
+  "cn"
+ ],
+ "docs_url": "https://adv-new.mintegral.com/doc/en/guide/introduction/quickStart.html",
+ "url": "https://www.mintegral.com/en/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "Mintegral advertiser account; Open API credentials from the platform (TODO(verify)); tracking via MMP / S2S / pixel. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Mintegral advertiser Open API key + token — TODO(verify))",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "creatives_upload",
+   "reports",
+   "conversions_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Open API listed in the advertiser docs; content unreadable this pass) Confidence: **medium**.",
+  "base_urls": [
+   "https://ss-api.mintegral.com/api/open/v1/…"
+  ],
+  "auth": [
+   "1. Mintegral advertiser account.",
+   "2. Open API key + token from the platform (TODO(verify)).",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "Open API campaign endpoints",
+    "purpose": "campaigns",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "creative endpoints",
+    "purpose": "creatives",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "report endpoints",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "S2S postback",
+    "purpose": "conversions",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Unknown.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://adv-new.mintegral.com/doc/en/guide/introduction/quickStart",
+   "https://adv-new.mintegral.com/doc/en/guide/openApi/introduction"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ss-api.mintegral.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 200,
+   "error_field": "msg"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "Access Key from Mintegral AppGrowth > Account Management > Basic Information; sent as the access-key header of every Open API call."
+    },
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "API Key from the same Basic Information page; never sent, only used to compute the per-request token = md5(api_key + md5(timestamp))."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "pre": [
+     {
+      "name": "ts_md5",
+      "mode": "hash",
+      "algorithm": "md5",
+      "payload": "{timestamp_s}"
+     }
+    ],
+    "payload": "{@api_key}{ts_md5}",
+    "headers": {
+     "access-key": "{@access_key}",
+     "token": "{signature}",
+     "timestamp": "{timestamp_s}"
+    }
+   }
+  },
+  "terms": "Mintegral Open API (https://adv-new.mintegral.com/doc/en/guide/introduction/token.html): every call carries the headers access-key, timestamp (seconds) and token = Md5(API key.md5(timestamp)) ('$token = md5($api_key.md5($timestamp))'); answers {code (200 = success), msg, data}. API access is self-serve for registered AppGrowth advertisers; offers maintained by an account manager (maintain_by = AM) are read-only.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/open/v1/account/balance",
+    "docs": "https://adv-new.mintegral.com/doc/en/guide/account/getAccountBalance.html",
+    "note": "GET /api/open/v1/account/balance verifies the key pair and answers data.list [{user_id, username, currency, balance}]."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/api/open/v1/account/balance",
+    "result": {
+     "items": "data.list",
+     "key": "accounts",
+     "total": "data.total",
+     "fields": {
+      "id": "user_id",
+      "name": "username",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://adv-new.mintegral.com/doc/en/guide/account/getAccountBalance.html",
+    "note": "The only account-level call is Get Account Balance: data.list holds the account(s) the key belongs to with {user_id, username, currency, balance}."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/open/v1/offers",
+    "params": {
+     "page": "page",
+     "limit": "limit",
+     "status": "status"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "data.list",
+     "key": "campaigns",
+     "total": "data.total",
+     "fields": {
+      "id": "offer_id",
+      "name": "offer_name",
+      "status": "status",
+      "currency": "currency",
+      "start": "start_time",
+      "end": "end_time"
+     }
+    },
+    "docs": "https://adv-new.mintegral.com/doc/en/guide/offer/getOffer.html",
+    "note": "Lists offers (GET /api/open/v1/offers, at most 50 per page): in Mintegral the offer is the unit that carries budget, bid and RUNNING/STOPPED status, while a 'campaign' is the promoted app; so campaign ids used by update_budget and pause_resume are offer_ids. status filters by offer status (e.g. RUNNING, STOPPED). Budgets are per-region arrays (raw.budget: [{country_code, total_budget, daily_cap_type, daily_cap}]) and are not flattened. account_id is not sent: the access key selects the account. Parameters are sent as a query string (the reference's GET example shows them as a JSON object; the same API's audience list documents them in the query)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/api/open/v1/offer/budget",
+    "body": {
+     "offer_id": "int:campaign_id",
+     "budget.0.country_code": "=ALL",
+     "budget.0.daily_cap_type": "=BUDGET",
+     "budget.0.daily_cap": "int:daily_budget",
+     "budget.0.total_budget": "=OPEN"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://adv-new.mintegral.com/doc/en/guide/offer/updateBudget.html",
+    "note": "PUT /api/open/v1/offer/budget {offer_id, budget: [{country_code: ALL, daily_cap_type: BUDGET, daily_cap, total_budget: OPEN}]} sets one daily spend cap (whole units of the account currency, minimum 50) for all regions of the offer; this spends money, replaces any per-region budgets and leaves the total budget open ('\"OPEN\" means no budget'). daily_budget must be a whole number; currency is ignored."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/api/open/v1/offer/status",
+    "body": {
+     "offer_id": "int:campaign_id",
+     "status": "map:action:pause=STOPPED,resume=RUNNING"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://adv-new.mintegral.com/doc/en/guide/offer/updateStatus.html",
+    "note": "PUT /api/open/v1/offer/status {offer_id, status: RUNNING|STOPPED} starts or pauses one offer (pause → STOPPED, resume → RUNNING). Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "get_report": "The only performance report is asynchronous and returns a file: 'Calling this interface is divided into two steps: First you need to set the parameter type = 1 … The system will generate data asynchronously … After the data is generated, set the parameter type = 2 … will directly return the file byte stream (Content-Type: application / octet-stream) … separated by \"\\t\" as columns' (https://adv-new.mintegral.com/doc/en/guide/report/advancedPerformanceReport.html)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key, api_key; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

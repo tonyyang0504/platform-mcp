@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/marktplaats-mcp",
+ "description": "Marktplaats (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.marktplaats.nl/docs/v1/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "marktplaats"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MARKTPLAATS_CLIENT_ID",
+     "description": "Client id assigned by Marktplaats (API clients are registered by the platform for business/advertiser use); grant_type=client_credentials at https://auth.marktplaats.nl/accounts/oauth/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MARKTPLAATS_CLIENT_SECRET",
+     "description": "Client secret assigned with it. A client token reaches public resources (categories, search, advertisements) only.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MARKTPLAATS_CATEGORY_ID",
+     "description": "Category id to restrict searches to (e.g. the cars category id from GET /v1/categories); without it `query` is mandatory.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

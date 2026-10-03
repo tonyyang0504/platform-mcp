@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "allegro-marketplaces-mcp",
+ "display_name": "Allegro MCP",
+ "version": "0.1.0",
+ "description": "Allegro (marketplaces): me, list_products, get_product, update_price, list_sales, list_refunds. Ever",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "marketplaces/allegro"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALLEGRO_CLIENT_ID": "${user_config.platform_mcp_allegro_client_id}",
+    "PLATFORM_MCP_ALLEGRO_CLIENT_SECRET": "${user_config.platform_mcp_allegro_client_secret}",
+    "PLATFORM_MCP_ALLEGRO_REFRESH_TOKEN": "${user_config.platform_mcp_allegro_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_allegro_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_CLIENT_ID",
+   "description": "Client ID of your app registered at apps.developer.allegro.pl; sent with the secret as HTTP Basic on the token call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_allegro_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_CLIENT_SECRET",
+   "description": "Client Secret of the same app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_allegro_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code (or device-flow) consent of the seller account (valid 3 months). It is SINGLE-USE: every refresh returns a new pair (access token 12 h + new refresh token) and the old refresh token stops working 60 seconds after its first use. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token. The state file is keyed by platform id, so it is shared with ecommerce_channels/allegro: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent / refresh token) so the two never race on one single-use refresh token.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me (scope allegro:api:profile:read) returns the authorised user {id, login, firstName, lastName, email, baseMarketplace, company}."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /sale/offers?offset&limit(1-1000)&publication.status (INACTIVE|ACTIVE|ACTIVATING|ENDED; scope allegro:api:sale:offers:read) lists the seller's offers: {offers[{id, name, sellingMode.price {amount (decimal string), currency}, stock, stats, publication.status, primaryImage ...}], count, totalCount}. There is no description or URL in the list (see raw / get_product)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /sale/product-offers/{offerId} returns all data of the offer; `description` is a structured sections object (raw.description) and is not flattened, so the mapped description is null."
+  },
+  {
+   "name": "update_price",
+   "description": "CHANGES THE LIVE PRICE: PATCH /sale/product-offers/{offerId} {sellingMode: {price: {amount (sent as the documented decimal string), currency}}} edits only the price; pass `currency` (PLN on allegro.pl). Answers 200 (edited, offer in the body) or 202 (accepted, still processing - the body may be empty and GET /sale/product-offers/{offerId}/operations/{operationId} tracks it)."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /order/checkout-forms?offset&limit(1-100)&lineItems.boughtAt.gte=`since` (ISO-8601 date-time) sorted newest first (scope allegro:api:orders:read). `amount` is summary.totalToPay (decimal string, whole order incl. delivery), product_id / product_name are the FIRST line item's offer; `status` is the purchase status (BOUGHT|FILLED_IN|READY_FOR_PROCESSING|CANCELLED). Orders cannot be filtered by offer: `product_id` is not sent."
+  },
+  {
+   "name": "list_refunds",
+   "description": "GET /payments/refunds?offset&limit(1-100)&occurredAt.gte=`since` (ISO-8601 date-time; scope allegro:api:payments:read): refunds {id, payment.id, order.id, reason, status (WAITING|IN_PROGRESS|SUCCESS|CANCELED|...), totalValue {amount, currency}, lineItems, createdAt}. sale_id is the order (checkout form) id."
+  }
+ ]
+}

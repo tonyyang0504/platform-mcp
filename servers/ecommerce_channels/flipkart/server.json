@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/flipkart-mcp",
+ "description": "Flipkart (ecommerce channels): me, list_orders. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://seller.flipkart.com/api-docs/FMSAPI.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "flipkart"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FLIPKART_ACCESS_TOKEN",
+     "description": "Seller API access token of your Self Access Application (Seller Dashboard > Manage Profile > Developer Access): obtain it with GET https://api.flipkart.net/oauth-service/oauth/token?grant_type=client_credentials&scope=Seller_Api,Default using HTTP Basic appId:appSecret. It is valid about 60 days; replace it when calls start failing with 401 (the runtime cannot run Flipkart's GET token call itself).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "in_exportersindia",
+ "category": "sales",
+ "label": "ExportersIndia",
+ "lane": "public",
+ "kind": "marketplace",
+ "regions": [
+  "in"
+ ],
+ "docs_url": null,
+ "url": "https://www.exportersindia.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (24 Disallow) blocks session-parameter URLs only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

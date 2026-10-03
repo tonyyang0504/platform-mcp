@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/instagram-mcp",
+ "description": "Instagram (social): me, read_comments, reply_comment, read_mentions, analytics_post. Every tool maps",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/instagram-platform/comment-moderation",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "instagram"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_INSTAGRAM_ACCESS_TOKEN",
+     "description": "Instagram API with Facebook Login (host graph.facebook.com): a User or Page access token from Facebook Login for Business for a person with a role on the Facebook Page linked to the Instagram professional (Business or Creator) account, with instagram_basic, instagram_manage_comments, pages_read_engagement (and pages_show_list); sent as `Authorization: Bearer` (https://developers.facebook.com/docs/instagram-platform/comment-moderation).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_INSTAGRAM_IG_USER_ID",
+     "description": "Instagram professional account id (IG User id, e.g. 17841405822304914) - GET /{page_id}?fields=instagram_business_account returns it. me and read_mentions call /<ig_user_id>. Env: PLATFORM_MCP_INSTAGRAM_IG_USER_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

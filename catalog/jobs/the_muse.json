@@ -1,0 +1,195 @@
+{
+ "id": "the_muse",
+ "category": "jobs",
+ "label": "The Muse",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://www.themuse.com/developers/api/v2",
+ "url": "https://www.themuse.com/jobs",
+ "verified_at": "2026-09-04",
+ "terms_note": "Public Jobs API v2 (optional api_key raises the rate limit). Apply links go to the employer.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "company_info"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (public Jobs API v2, apply off-platform).",
+  "base_urls": [
+   "https://www.themuse.com/api/public",
+   "https://api-v2.themuse.com"
+  ],
+  "auth": [
+   "1. No key needed for testing (500 requests/hour).",
+   "2. Register the app at /developers/api/v2 → `api_key`, passed as a query parameter → 3,600 requests/hour and change notifications.",
+   "3. No user context; search only."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/public/jobs",
+    "purpose": "job search",
+    "notes": "`page` (required, 20 per page; response `page`, `page_count`, `results`), `category`, `level`, `location`, `company`, `descending`; each job: id, name, contents (HTML), publication_date, locations[], categories[], levels[], company{id,name,short_name}, refs.landing_page"
+   },
+   {
+    "call": "GET /api/public/jobs/:id",
+    "purpose": "job details",
+    "notes": "same object as the list entry"
+   },
+   {
+    "call": "GET /api/public/companies`, `/companies/:id",
+    "purpose": "company info",
+    "notes": "industries, locations, size, description, refs"
+   },
+   {
+    "call": "GET /api/public/coaches`, `/coaches/:id",
+    "purpose": "coaching listings",
+    "notes": "not relevant to the suite"
+   }
+  ],
+  "limits": " 500 requests/hour without a key, 3,600/hour with a registered `api_key`; `X-RateLimit-Remaining`, `X-RateLimit-Limit`, `X-RateLimit-Reset` headers; 403 when exceeded. - API Terms (3.3 – 3.4): do not replicate Muse products, sublicense / redistribute the API or Platform, circumvent protections, or clone Muse content; content shown must link back to themuse.com; respect the rate limits (4.2). - Nothing in the API touches a job seeker's account — no automated-application clause needed.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.themuse.com/developers/api/v2",
+   "https://www.themuse.com/developers/api/v2/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.themuse.com/api/public",
+  "auth": {
+   "type": "query",
+   "param": "api_key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": false,
+     "help": "Optional: register the app at https://www.themuse.com/developers/api/v2 to get an api_key (sent as the api_key query parameter), raising the limit from 500 to 3,600 requests/hour."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/jobs",
+    "fixed_params": {
+     "page": 1
+    },
+    "docs": "https://www.themuse.com/developers/api/v2",
+    "note": "Verified with a one-page jobs request (The Muse has no account endpoint; works without a key at the lower rate limit)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/jobs",
+    "params": {
+     "page": "page",
+     "location": "location"
+    },
+    "default_limit": 20,
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "company.name",
+      "location": "locations.0.name",
+      "url": "refs.landing_page",
+      "posted_at": "publication_date",
+      "description": "contents"
+     }
+    },
+    "docs": "https://www.themuse.com/developers/api/v2",
+    "note": "No keyword parameter is documented (filters are category, level, location, company), so query is not sent — filter client-side. page is required and pages hold 20 results (do not pass limit). Rate limit 500 requests/hour without a key, 3,600 with one (X-RateLimit-* headers); the platform answers 403 when exceeded, which surfaces here as auth_error. Content shown must link back to themuse.com."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/jobs/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "company.name",
+      "location": "locations.0.name",
+      "url": "refs.landing_page",
+      "posted_at": "publication_date",
+      "description": "contents"
+     }
+    },
+    "docs": "https://www.themuse.com/developers/api/v2",
+    "note": "Same object as a search hit."
+   }
+  },
+  "not_offered": {
+   "apply": "Page: 'not offered — refs.landing_page leads to The Muse job page, then the employer'.",
+   "list_messages": "Page: 'apply / status / messaging' are 'not offered'."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host www.themuse.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: search returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

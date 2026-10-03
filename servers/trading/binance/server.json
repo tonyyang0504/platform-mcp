@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/binance-mcp",
+ "description": "Binance USD-M Futures (trading): me, list_markets, get_ticker, get_candles, get_balances, list_order",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "binance"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BINANCE_API_KEY",
+     "description": "Binance API key (sent as X-MBX-APIKEY). Create it under API Management with withdrawals OFF; restrict it to your IP. Futures testnet: create a key at https://testnet.binancefuture.com and point adapter.base_url there (testnet keys only work on the testnet host).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BINANCE_API_SECRET",
+     "description": "The key's HMAC secret: signs every request (HMAC-SHA256 hex over the exact query string, appended as `signature` after `timestamp`). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

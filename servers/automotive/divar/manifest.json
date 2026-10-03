@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "divar-mcp",
+ "display_name": "Divar MCP",
+ "version": "0.1.0",
+ "description": "Divar (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "divar"
+   ],
+   "env": {
+    "PLATFORM_MCP_DIVAR_API_KEY": "${user_config.platform_mcp_divar_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_divar_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DIVAR_API_KEY",
+   "description": "API key of a Kenar app (https://kenar.divar.dev/management/api-keys); search needs the SEARCH_POST permission.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "QUOTA: Divar allows this search only 100 times IN TOTAL per app (even published apps) — use sparingly. POST /v2/open-platform/finder/post {category: light (cars), city, query: {brand_model: [model], production_year {min,max}, usage {max}}}; no pagination (up to 100 newest posts). location is a Divar city slug (e.g. tehran); model is a Divar brand_model value (e.g. 'Pride 111 EX'); years are Solar Hijri (e.g. 1400–1403); mileage in km. price.value and vehicles_fields.usage are strings and stay in raw."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /v1/open-platform/finder/post/{post token} with the API key only (no OAuth needed): category, city, district and data {title, description, price {mode, value}, images, brand_model, …}; absent fields mean zero/false. Prices in rials."
+  }
+ ]
+}

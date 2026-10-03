@@ -1,0 +1,252 @@
+{
+ "id": "vinted_pro",
+ "category": "ecommerce_channels",
+ "label": "Vinted Pro",
+ "lane": "assist",
+ "kind": "niche",
+ "regions": [
+  "eu",
+  "gb"
+ ],
+ "docs_url": "https://pro-docs.svc.vinted.com/",
+ "url": "https://www.vinted.co.uk/pro/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Vinted Pro business account that Vinted has allow-listed for integrations; keys from the Integrations Portal; initial 500 active items per API user (raise after a 30-day performance review); batch ≤ 100 items; markets AT / BE / DE / ES / FR / IT / LU / NL / PT / UK; second-hand / resale focus.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "hmac (access keys from the Vinted Pro Integrations Portal; HMAC-SHA256 request signing; allow-listed businesses only)",
+  "access": "partner_only",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "sandbox",
+   "price_suggestions"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.market",
+  "config.sandbox"
+ ],
+ "rate_limits": "not stated",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://pro.svc.vinted.com",
+   "https://pro-public-sandbox.svc.vinted.com"
+  ],
+  "auth": [
+   "1. Business is allow-listed by Vinted for the Pro Integrations programme.",
+   "2. Generate access keys in the Vinted Pro Integrations Portal; sign every request (HMAC-SHA256).",
+   "3. Register webhooks (signature-verified) for item + order events."
+  ],
+  "endpoints": [
+   {
+    "call": "POST items (batch ≤ 100) · PUT · DELETE",
+    "purpose": "create / update / delete items using Vinted ontologies",
+    "notes": "category, brand, colour, size, condition, price, photos"
+   },
+   {
+    "call": "POST items/validate",
+    "purpose": "validate before creating",
+    "notes": ""
+   },
+   {
+    "call": "GET price suggestions",
+    "purpose": "max recommended price by category / brand / condition",
+    "notes": ""
+   },
+   {
+    "call": "GET orders (sold) · cancel · relist",
+    "purpose": "orders with buyer / seller addresses; cancel; relist cancelled escrow orders",
+    "notes": ""
+   },
+   {
+    "call": "GET shipments · POST shipping labels",
+    "purpose": "shipment details + label generation (tracking)",
+    "notes": ""
+   },
+   {
+    "call": "webhooks (16+ events)",
+    "purpose": "item created / updated / deleted, sold, order status, auth failures",
+    "notes": "HMAC-SHA256 signature"
+   }
+  ],
+  "limits": " Not numeric on the page; 500 active-item allocation per API user (review after 30 days); batch 100. - Allow-listed Vinted Pro businesses only. - Item cap 500 until reviewed.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://pro-docs.svc.vinted.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "auth": {
+   "type": "header",
+   "header": "X-Vpi-Access-Key",
+   "field": "access_key",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "Access key: the part BEFORE the comma of the access token generated in the Vinted Pro Integrations Portal (tokens are shown only once; production and dev mode have separate tokens); sent as X-Vpi-Access-Key."
+    },
+    {
+     "name": "signing_key",
+     "required": true,
+     "help": "Signing key: the part AFTER the comma of the same access token. Signs every request (hex HMAC-SHA256 over '<unix seconds>.<METHOD>.<path+query>.<access key>.<body>', sent as X-Vpi-Hmac-Sha256: t=<ts>,v1=<hash>); never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{timestamp_s}.{method}.{path}{query_q}.{@access_key}.{body}",
+    "key_field": "signing_key",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "X-Vpi-Hmac-Sha256": "t={timestamp_s},v1={signature}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "pro.svc.vinted.com (production) or pro-public-sandbox.svc.vinted.com (dev mode)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Vinted Pro Integrations is available only to allow-listed Vinted Pro businesses; each API user starts with 500 active item slots. Item writes are asynchronous (202; results via webhooks or GetItemStatus).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v1/items",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://pro-docs.svc.vinted.com/#getitems",
+    "note": "No account endpoint; the probe lists one item created through the integration ({items[]}) to verify the access key and signature."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/api/v1/items",
+    "body": {
+     "item_ids.0": "listing_id"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "status": "=delete_requested"
+     }
+    },
+    "docs": "https://pro-docs.svc.vinted.com/#deleteitems",
+    "note": "DeleteItems DELETE /api/v1/items {item_ids: [uuid]} DELETES the item from Vinted asynchronously (202); `listing_id` is the VPI item_id (uuid). raw.accepted is false (with a reason) when the item cannot be deleted, e.g. still IN_PROGRESS."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/api/v1/orders",
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://pro-docs.svc.vinted.com/#getorders",
+    "note": "GetOrders returns {orders: [{id, status, created_at}]} (status CREATED|READY_TO_BE_SHIPPED|SHIPPED|DELIVERED|LOST|RETURN_*|...). Paging is by the after-id cursor, and there are no status/date filters, so `status`, `since` and page numbers are not applied; amounts and items are in GetOrder."
+   }
+  },
+  "not_offered": {
+   "create_listing": "CreateItems requires brand, catalog_id, package_size_id, currency, photo_urls and the category's item attributes resolved from GetOntologies; the vocabulary has no catalogue, brand or package size.",
+   "update_listing": "UpdateItems replaces the whole item: brand, catalog_id, currency, description, package_size_id, photo_urls, price, title and is_draft are all required for every update, so a price-only change is not possible.",
+   "set_inventory": "Vinted items are single second-hand listings without a stock quantity; there is no stock endpoint.",
+   "mark_shipped": "Shipping uses the Vinted-issued label (GetOrderShipmentLabel) and the carrier's own tracking; there is no call to submit a carrier and tracking number."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host pro.svc.vinted.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

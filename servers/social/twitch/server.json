@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/twitch-social-mcp",
+ "description": "Twitch (social): me, publish_text, reply_comment, delete. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://dev.twitch.tv/docs/chat/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/twitch"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TWITCH_CLIENT_ID",
+     "description": "Twitch app client id (dev.twitch.tv console); also sent as the Client-Id header required on every Helix call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_CLIENT_SECRET",
+     "description": "Twitch app client secret (form body of the refresh request to https://id.twitch.tv/oauth2/token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_REFRESH_TOKEN",
+     "description": "User refresh token from the authorization-code flow with scopes user:write:chat and moderator:manage:chat_messages. 'Because refresh tokens may change, your app should safely store the new refresh token': the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/twitch.json (mode 0600).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_BROADCASTER_ID",
+     "description": "User id of the channel whose chat is used (GET /helix/users?login=…).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_SENDER_ID",
+     "description": "User id of the token's user (GET /helix/users with the token); sender of messages and moderator for delete.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

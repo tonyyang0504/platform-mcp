@@ -1,0 +1,195 @@
+{
+ "id": "greenhouse",
+ "category": "jobs",
+ "label": "Greenhouse",
+ "lane": "api",
+ "kind": "ats",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.greenhouse.io/job-board.html",
+ "url": "https://www.greenhouse.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Job Board API: public GET boards/<token>/jobs; POST application needs the board's Job Board API key (account-provided). CV: pdf, doc, docx, txt, rtf.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit (employer Job Board API key only)",
+   "cv_upload (employer key only)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public Job Board API for jobs; apply POST needs the board's secret key).",
+  "base_urls": [
+   "https://boards-api.greenhouse.io/v1/boards/{board_token}"
+  ],
+  "auth": [
+   "1. All GET endpoints are public — no authentication.",
+   "2. `POST /v1/boards/{token}/jobs/{id}` (submit an application) requires HTTP Basic with the **Job Board API key** from the company's API Credentials page (user name = key, no password, Base64). The docs call it a secret that must be proxied through the company's own servers — a candidate tool cannot"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/boards/{token}",
+    "purpose": "board info",
+    "notes": "name, content"
+   },
+   {
+    "call": "GET /v1/boards/{token}/jobs?content=true",
+    "purpose": "list jobs",
+    "notes": "jobs[]: id, internal_job_id, title, updated_at, requisition_id, location.name, absolute_url, metadata, content (HTML), departments[], offices[], data_compliance[]"
+   },
+   {
+    "call": "GET /v1/boards/{token}/jobs/{id}?questions=true",
+    "purpose": "job details + form",
+    "notes": "content, questions[] {required, label, fields[{name,type,values}]} incl. resume_text / resume_content, location_questions, demographic_questions, compliance[], data_compliance"
+   },
+   {
+    "call": "GET …/offices`, `…/departments`, `…/sections`, `…/education/{degrees,disciplines,schools}",
+    "purpose": "reference lists",
+    "notes": "ids + names for select fields"
+   },
+   {
+    "call": "POST /v1/boards/{token}/jobs/{id}` (Basic, board key)",
+    "purpose": "submit application",
+    "notes": "first_name, last_name, email, phone, location, resume_content (base64) + resume_content_filename or resume_text, cover_letter*, question ids (`question_123`), education/employment blocks, data_compliance[gdpr_processing_consent_given"
+   }
+  ],
+  "limits": " Not published on the Job Board API page. - Job data is public by design (\"Job Board data is publicly available\"). - Applications through the API are a feature for the company's own careers site (secret key, GDPR consent handling is the company's configuration). From the candidate side apply is the hosted form → assist. Registry `api.apply: true` presumes an employer key.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.greenhouse.io/job-board.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://boards-api.greenhouse.io/v1",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "board_token",
+    "required": true,
+    "help": "The company's Greenhouse Job Board URL token, e.g. 'vaulttec' in https://boards.greenhouse.io/vaulttec."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/boards/{board_token}/jobs",
+    "path_params": {
+     "board_token": "@board_token"
+    },
+    "fixed_params": {
+     "content": "true"
+    },
+    "default_limit": 1000,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "meta.total",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company_name",
+      "location": "location.name",
+      "url": "absolute_url",
+      "posted_at": "first_published",
+      "description": "content"
+     }
+    },
+    "docs": "https://developers.greenhouse.io/job-board.html#list-jobs",
+    "note": "Job Board API for ONE company's board (config board_token): GET https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs?content=true 'Returns the list of all job posts' — 'Job Board data is publicly available, so authentication is not required for any GET endpoints'. There are no keyword, location or paging parameters, so query/location/page/limit are not sent and every post comes back in one response (total = meta.total): filter client-side and do not request further pages. id is the job post id (use it with get_posting); content is the description as entity-encoded HTML; departments[], offices[], updated_at, application_deadline and metadata are in raw."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/boards/{board_token}/jobs/{id}",
+    "path_params": {
+     "board_token": "@board_token"
+    },
+    "fixed_params": {
+     "pay_transparency": "true"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company_name",
+      "location": "location.name",
+      "url": "absolute_url",
+      "posted_at": "first_published",
+      "salary_min": "pay_input_ranges.0.min_cents",
+      "salary_max": "pay_input_ranges.0.max_cents",
+      "currency": "pay_input_ranges.0.currency_type",
+      "description": "content"
+     }
+    },
+    "docs": "https://developers.greenhouse.io/job-board.html#retrieve-a-job",
+    "note": "GET /v1/boards/{board_token}/jobs/{job_id} 'Returns a job post'; pay_transparency=true adds pay_input_ranges[] when the employer publishes them. salary_min/salary_max are the FIRST range's min_cents/max_cents — amounts in cents, not units — and further ranges (e.g. per location) are in raw.pay_input_ranges."
+   }
+  },
+  "not_offered": {
+   "me": "'authentication is not required for any GET endpoints'; there is no account endpoint to verify.",
+   "apply": "'Only the application submission endpoint (POST https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs/{id}) requires Basic Auth' with the employer's Job Board API key, and resumes are multipart file uploads; candidates apply at absolute_url.",
+   "list_messages": "No candidate messaging in the Job Board API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; verified against the public board gitlab; all read tools answered, schema-valid"
+ }
+}

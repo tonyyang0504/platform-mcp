@@ -1,0 +1,109 @@
+{
+ "id": "dsers",
+ "category": "ecommerce_suppliers",
+ "label": "DSers",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.dsers.com/developers/",
+ "url": "https://www.dsers.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "DSers app credentials after app review (Supplier App / Channel App)",
+  "access": "apply",
+  "capabilities": [
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "DSers Official MCP Server (https://ai.dsers.com/mcp, github.com/dsers/dsers-mcp-server; OAuth 2.1 + PKCE)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - App review by DSers; merchant plans for Shopify / Wix / Woo.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.dsers.com/developers/",
+   "https://www.dsers.com/developers/api-overview/"
+  ]
+ },
+ "adapter_status": "official_mcp",
+ "reason": "DSers publishes an official hosted MCP server (github.com/dsers/dsers-mcp-server, 'DSers Official MCP Server'; endpoint https://ai.dsers.com/mcp, OAuth 2.1 + PKCE, verified 2026-09-25: https://ai.dsers.com/.well-known/oauth-protected-resource lists scopes such as supplier:read, product:read, order:write, tracking:read) covering supplier/product search, freight quotes, order placement/payment and tracking. There is still no merchant REST reference to wrap: https://www.dsers.com/developers/ (rendered 2026-09-25) documents only Supplier/Channel apps that DSers calls, built after joining the program at dsers.dev."
+}

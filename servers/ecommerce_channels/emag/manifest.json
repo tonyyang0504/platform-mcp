@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "emag-mcp",
+ "display_name": "eMAG Marketplace MCP",
+ "version": "0.1.0",
+ "description": "eMAG Marketplace (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "emag"
+   ],
+   "env": {
+    "PLATFORM_MCP_EMAG_USERNAME": "${user_config.platform_mcp_emag_username}",
+    "PLATFORM_MCP_EMAG_PASSWORD": "${user_config.platform_mcp_emag_password}",
+    "PLATFORM_MCP_EMAG_API_HOST": "${user_config.platform_mcp_emag_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_emag_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EMAG_USERNAME",
+   "description": "Username of the API user created in your eMAG Marketplace seller account (the user must be granted API rights, and eMAG only accepts calls from the IPs you whitelisted with them); sent as HTTP Basic.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_emag_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EMAG_PASSWORD",
+   "description": "Password of that API user; sent as HTTP Basic.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_emag_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EMAG_API_HOST",
+   "description": "API host of your platform: marketplace-api.emag.ro (eMAG RO), marketplace-api.emag.bg (BG), marketplace-api.emag.hu (HU), marketplace-ro-api.fashiondays.com or marketplace-bg-api.fashiondays.com (Fashion Days); calls go to https://<api_host>/api-3/...",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe reads the platform's VAT rates ({isError, messages, results[]}) to verify the API user, its API rights and the IP whitelist."
+  },
+  {
+   "name": "update_listing",
+   "description": "Light offer API POST /offer/save {data: [{id, sale_price}]}: changes the LIVE sale price of an existing offer. `listing_id` is your seller internal product id; `price` is the sale price WITHOUT VAT in the platform currency. Only the price is applied: use set_inventory for stock; title and description are product data (product_offer/save) and are not changed here."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PATCH /offer_stock/{resourceId} {data: {stock: [{warehouse_id: 1, value}]}} sets the available quantity of one offer (listing_id = seller internal product id, required; offers are not addressed by SKU). Uses warehouse_id 1, which the docs prescribe for sellers with a single warehouse."
+  },
+  {
+   "name": "end_listing",
+   "description": "POST /offer/save {data: [{id, status: 0}]} makes the offer inactive (reversible with status 1; status 2 = End of Life is not used)."
+  },
+  {
+   "name": "list_orders",
+   "description": "POST /order/read with top-level filters: status is the numeric order status (1 New, 2 In progress, 3 Prepared, 4 Finalized, 0 Canceled, 5 Returned), since = createdAfter in 'YYYY-mm-dd HH:ii:ss', itemsPerPage max 100. Orders carry no order total field; products (sale_price without VAT, quantity), customer and shipping_tax are in raw. New orders must be acknowledged (POST /order/acknowledge/{id}), which this tool does not do."
+  }
+ ]
+}

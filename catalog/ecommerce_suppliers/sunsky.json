@@ -1,0 +1,387 @@
+{
+ "id": "sunsky",
+ "category": "ecommerce_suppliers",
+ "label": "SUNSKY (Shenzhen wholesaler with EU/HK/US overseas warehouses) + SUNSKY Open API",
+ "lane": "api",
+ "kind": "regional",
+ "regions": [
+  "europe"
+ ],
+ "docs_url": "https://doc.sunsky-online.com/",
+ "url": "https://www.sunsky-online.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "signature required on every call; key from sales manager",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key + signature — `key` from the sales manager + `secret`; signature = hash over sorted parameter values + key, '@' + secret (POST recommended)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Open a SUNSKY account and ask the sales manager for `key` + `secret`",
+   "2. Sort parameter values by name, concatenate with the key, append '@' + secret, hash → `signature`",
+   "3. Send `key` + `signature` with every call"
+  ],
+  "endpoints": [
+   {
+    "call": "Category: children of a category",
+    "purpose": "taxonomy",
+    "notes": ""
+   },
+   {
+    "call": "Product: search, details, download images, image changelist",
+    "purpose": "catalogue + images",
+    "notes": ""
+   },
+   {
+    "call": "Order: country list, prices + shipping costs, create order, order details, search orders, labels",
+    "purpose": "quote + order lifecycle",
+    "notes": ""
+   },
+   {
+    "call": "Account: balance, balance history",
+    "purpose": "prepaid purse",
+    "notes": ""
+   },
+   {
+    "call": "Callback Hooks",
+    "purpose": "order event notifications",
+    "notes": ""
+   },
+   {
+    "call": "Stats hot items · Coupon list",
+    "purpose": "merchandising",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Key issued by the sales manager - Prepaid balance",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "http://doc.sunsky-online.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://open.sunsky-online.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "result",
+   "ok_value": "success",
+   "error_field": "messages"
+  },
+  "config_fields": [
+   {
+    "name": "language",
+    "required": false,
+    "help": "Product text language code (Appendix E), e.g. en, fr, de, es, it, zh_CN; default en."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "key",
+     "required": true,
+     "help": "SUNSKY Open API key, issued by your SUNSKY sales manager (https://doc.sunsky-online.com/)."
+    },
+    {
+     "name": "secret",
+     "required": true,
+     "help": "SUNSKY Open API secret issued with the key; signs every call (MD5 of the parameter values sorted by name, then '@' + secret) and is never sent."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "encoding": "hex",
+    "payload": "{sorted_values}@{@secret}",
+    "params": {
+     "key": "{@key}"
+    },
+    "signature_param": "signature"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/openapi/order!getBalance.do",
+    "docs": "https://doc.sunsky-online.com/check-your-balance-on-sunsky-425439187e0",
+    "note": "order!getBalance.do: your prepaid SUNSKY balance ({result: 'success', data: '1200.00'}); NO_PERMISSION_DUE_TO_SIGNATURE means the key/secret pair is wrong."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "/openapi/product!search.do",
+    "params": {
+     "categoryId": "category",
+     "page": "page",
+     "pageSize": "limit",
+     "lang": "@language"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "data.result",
+     "key": "products",
+     "total": "data.total",
+     "fields": {
+      "id": "itemNo",
+      "title": "name",
+      "price": "price",
+      "sku": "itemNo",
+      "stock": "stock",
+      "product_id": "id",
+      "group_item_no": "groupItemNo",
+      "category_id": "categoryId",
+      "status": "status",
+      "moq": "moq",
+      "warehouse": "warehouse",
+      "modified_at": "gmtModified"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/search-products-425439176e0",
+    "note": "product!search.do lists SUNSKY products (40 per page by default, max 100) filtered by `category` (a SUNSKY categoryId from category!getChildren.do, subcategories included). The API has NO keyword search, so `query` is ignored. `id` is the item # (itemNo) used by get_product, quote_shipping and create_order; prices are USD strings; priceList (quantity tiers), modelList and specs are in `raw`."
+   },
+   "get_product": {
+    "method": "POST",
+    "path": "/openapi/product!detail.do",
+    "params": {
+     "itemNo": "id",
+     "lang": "@language"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "itemNo",
+      "title": "name",
+      "price": "price",
+      "sku": "itemNo",
+      "stock": "stock",
+      "product_id": "id",
+      "status": "status",
+      "moq": "moq",
+      "warehouse": "warehouse",
+      "description": "description"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/get-the-product-details-425439177e0",
+    "note": "product!detail.do by item # (itemNo): full product with priceList tiers, modelList, dimensions, packing, battery flag, specs (paramsTable) in `raw`. Prices are USD."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/openapi/order!getPricesAndFreights.do",
+    "params": {
+     "countryId": "country",
+     "items.1.itemNo": "product_id",
+     "items.1.qty": "str:quantity"
+    },
+    "result": {
+     "items": "data.freightList",
+     "key": "options",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "cost": "shippingCost",
+      "transit_days": "transitTime",
+      "website": "website"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/get-the-prices-and-the-shipping-costs-for-the-items-425439181e0",
+    "note": "order!getPricesAndFreights.do. `country` must be SUNSKY's numeric countryId (from order!getCountries.do, e.g. 41 = U.S.A.), not an ISO code; `product_id` is the item # (itemNo); always pass `quantity`. Each option's `id` is the shippingWayId that create_order takes as shipping_option; the item prices (priceList) are in `raw`."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/openapi/order!createOrder.do",
+    "params": {
+     "items.1.itemNo": "items.0.itemNo",
+     "items.1.qty": "str:items.0.qty",
+     "items.1.remark": "items.0.remark",
+     "items.2.itemNo": "items.1.itemNo",
+     "items.2.qty": "str:items.1.qty",
+     "items.2.remark": "items.1.remark",
+     "items.3.itemNo": "items.2.itemNo",
+     "items.3.qty": "str:items.2.qty",
+     "items.3.remark": "items.2.remark",
+     "items.4.itemNo": "items.3.itemNo",
+     "items.4.qty": "str:items.3.qty",
+     "items.4.remark": "items.3.remark",
+     "items.5.itemNo": "items.4.itemNo",
+     "items.5.qty": "str:items.4.qty",
+     "items.5.remark": "items.4.remark",
+     "items.6.itemNo": "items.5.itemNo",
+     "items.6.qty": "str:items.5.qty",
+     "items.6.remark": "items.5.remark",
+     "items.7.itemNo": "items.6.itemNo",
+     "items.7.qty": "str:items.6.qty",
+     "items.7.remark": "items.6.remark",
+     "items.8.itemNo": "items.7.itemNo",
+     "items.8.qty": "str:items.7.qty",
+     "items.8.remark": "items.7.remark",
+     "items.9.itemNo": "items.8.itemNo",
+     "items.9.qty": "str:items.8.qty",
+     "items.9.remark": "items.8.remark",
+     "items.10.itemNo": "items.9.itemNo",
+     "items.10.qty": "str:items.9.qty",
+     "items.10.remark": "items.9.remark",
+     "deliveryAddress.countryId": "str:shipping_address.countryId",
+     "deliveryAddress.state": "shipping_address.state",
+     "deliveryAddress.city": "shipping_address.city",
+     "deliveryAddress.company": "shipping_address.company",
+     "deliveryAddress.address": "shipping_address.address",
+     "deliveryAddress.address2": "shipping_address.address2",
+     "deliveryAddress.postcode": "shipping_address.postcode",
+     "deliveryAddress.receiver": "shipping_address.receiver",
+     "deliveryAddress.telephone": "shipping_address.telephone",
+     "deliveryAddress.email": "shipping_address.email",
+     "deliveryAddress.shipment": "shipping_address.shipment",
+     "deliveryAddress.shippingWayId": "shipping_option",
+     "siteNumber": "shipping_address.siteNumber",
+     "vatNumber": "shipping_address.vatNumber",
+     "eoriNumber": "shipping_address.eoriNumber",
+     "iossNumber": "shipping_address.iossNumber",
+     "coupon": "shipping_address.coupon"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "number",
+      "status": "status",
+      "total": "totalAmount",
+      "created_at": "gmtCreated",
+      "tracking_number": "trackingNumber",
+      "amount": "amount",
+      "shipping_cost": "shippingCost",
+      "carrier": "shippingWay.name",
+      "site_number": "siteNumber"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/create-an-order-425439182e0",
+    "note": "order!createOrder.do. `items`: up to 10 rows [{itemNo, qty, remark?}]; `shipping_address` in SUNSKY form {countryId (numeric, order!getCountries.do), state (state code), city, address, address2?, postcode, receiver, telephone?, email?, company?, shipment: 'drop' (dropshipping) | 'wholesale'} plus optional order-level siteNumber (your reference, ≤32 chars), vatNumber, eoriNumber, iossNumber, coupon; `shipping_option` is the shippingWayId from quote_shipping. The order is created UNPAID (useBalanceOnly defaults to false); `id` is the SUNSKY order number."
+   },
+   "get_order": {
+    "method": "POST",
+    "path": "/openapi/order!getOrderDetails.do",
+    "params": {
+     "number": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "number",
+      "status": "status",
+      "total": "totalAmount",
+      "created_at": "gmtCreated",
+      "tracking_number": "trackingNumber",
+      "amount": "amount",
+      "shipping_cost": "shippingCost",
+      "carrier": "shippingWay.name",
+      "site_number": "siteNumber"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/get-the-order-details-425439184e0",
+    "note": "order!getOrderDetails.do by SUNSKY order number. `status` is the numeric order status of Appendix C (https://doc.sunsky-online.com/appendixes-8295235m0); detailList (items) and deliveryAddress are in `raw`."
+   },
+   "track": {
+    "method": "POST",
+    "path": "/openapi/order!getOrderDetails.do",
+    "params": {
+     "number": "order_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "status",
+      "tracking_number": "trackingNumber",
+      "carrier": "shippingWay.name",
+      "tracking_url": "shippingWay.queryUrl",
+      "shipped_at": "gmtShipped"
+     }
+    },
+    "docs": "https://doc.sunsky-online.com/get-the-order-details-425439184e0",
+    "note": "SUNSKY has no tracking-events API: this reads the order's trackingNumber, shipping way and its tracking query URL (append the number, e.g. https://t.17track.net/en#nums=) from order!getOrderDetails.do; `status` is the Appendix C order status."
+   }
+  },
+  "not_offered": {},
+  "terms": "SUNSKY Open API common calling convention (https://doc.sunsky-online.com/): every call carries `key` and `signature` = MD5(values of all other parameters and key, sorted by parameter name, + '@' + secret); failures are {result: 'error', messages: [...]} in 200 bodies. Parameters travel in the query string of the documented POST (the server reads them there; checked 2026-09-25)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires key, secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

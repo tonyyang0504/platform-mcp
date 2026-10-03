@@ -1,0 +1,89 @@
+{
+ "id": "openligadb",
+ "category": "competitions",
+ "label": "OpenLigaDB (Fußball-Bundesliga und weitere Ligen)",
+ "lane": "api",
+ "country": "DE",
+ "docs_url": "https://api.openligadb.de/index.html",
+ "url": "https://www.openligadb.de",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Free sports data, no key (OpenAPI 3.0.4 at https://api.openligadb.de/swagger/v1/swagger.json, descriptions in German). The spec's own description: 'Es gilt ein Limit von 60 Anfragen pro Minute und IP' and 'Bitte sparsam abrufen' (poll /getlastchangedate first). The spec lists no servers (the API host is the default) and text/plain before application/json; the API answers JSON. An unknown league or season answers 200 [] (no error). Tables have no rank field: rows come in table order.",
+ "adapter": {
+  "base_url": "https://api.openligadb.de",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "discover": {
+    "method": "GET",
+    "path": "/getavailableleagues",
+    "default_limit": 25,
+    "max_limit": 100,
+    "cache_ttl": 600,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "id",
+     "key": "competitions",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "title",
+        "id",
+        "kind"
+       ]
+      },
+      {
+       "arg": "kind",
+       "fields": [
+        "kind"
+       ]
+      }
+     ],
+     "fields": {
+      "id": "fmt:{leagueShortcut}/{leagueSeason}",
+      "title": "leagueName",
+      "kind": "sport.sportName",
+      "starts_at": "leagueSeason"
+     }
+    },
+    "docs": "https://api.openligadb.de/index.html#/Liga/get_getavailableleagues",
+    "note": "Every league-season OpenLigaDB carries (about 830: Bundesliga 'bl1/2025', 2. Bundesliga 'bl2/2025', DFB-Pokal, also other sports); id is 'leagueShortcut/season'. query matches the name, id or sport; kind the sport name (Fußball ...)."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/getbltable/{competition_id}",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "key": "standings",
+     "fields": {
+      "team": "teamName",
+      "score": "points",
+      "entries": "matches"
+     }
+    },
+    "docs": "https://api.openligadb.de/index.html#/Tabelle/get_getbltable__leagueShortcut___leagueSeason_",
+    "note": "League table in table order (first row = first place; rank is not given by the API). competition_id is 'leagueShortcut/season' (bl1/2025). goals, goalDiff, won/draw/lost in raw."
+   }
+  },
+  "not_offered": {
+   "me": "No accounts.",
+   "get_competition": "There is no endpoint for one league-season's details (only the full list in discover and match data per matchday).",
+   "my_entries": "Not a participation platform.",
+   "enter": "Not a participation platform.",
+   "submit": "Not a participation platform."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

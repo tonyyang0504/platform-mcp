@@ -1,0 +1,36 @@
+{
+ "id": "hk_yp",
+ "category": "sales",
+ "label": "Hong Kong Yellow Pages",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "hk"
+ ],
+ "docs_url": null,
+ "url": "https://www.yp.com.hk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (3 Disallow) blocks .txt files only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

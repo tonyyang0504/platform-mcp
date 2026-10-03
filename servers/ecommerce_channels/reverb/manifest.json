@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "reverb-mcp",
+ "display_name": "Reverb MCP",
+ "version": "0.1.0",
+ "description": "Reverb (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_shipp",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "reverb"
+   ],
+   "env": {
+    "PLATFORM_MCP_REVERB_TOKEN": "${user_config.platform_mcp_reverb_token}",
+    "PLATFORM_MCP_REVERB_CURRENCY": "${user_config.platform_mcp_reverb_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_reverb_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REVERB_TOKEN",
+   "description": "Reverb Personal Access Token (My Profile > API & Integrations > Generate New Token) with scopes public, read_listings, write_listings, read_orders, write_orders; personal tokens do not expire. Sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reverb_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REVERB_CURRENCY",
+   "description": "Currency of your listing prices, e.g. USD; required when update_listing sends a price.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/my/account: your Reverb account/shop details."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /api/listings/{listing_id} with the create parameters you want to change (title, description, price {amount, currency}, inventory). Live listings change immediately. `listing_id` is the Reverb listing id (find it by SKU with GET /api/my/listings?sku=…&state=all)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /api/listings/{listing_id} {has_inventory: true, inventory} sets the stock of a listing that tracks inventory; `listing_id` is required (Reverb listings are addressed by id). With inventory 0 a listing shows as a draft until stock is added."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /api/my/listings/{id}/state/end {reason: not_sold} transitions a live listing to ended (the reverb_sale reason, which bills a selling fee for an in-person sale, is not used)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /api/my/orders/selling/{all|unpaid|awaiting_shipment}: `status` selects that list (default all); since = updated_start_date (ISO-8601). Rows carry order_number, status (unpaid|payment_pending|pending_review|blocked|paid|shipped|picked_up|received|refunded|cancelled), total {amount, currency}; addresses and links in raw. `page` follows Reverb's page numbering."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "POST /api/my/orders/selling/{order_number}/ship {provider, tracking_number, send_notification: true} marks the order shipped and e-mails the buyer. `carrier` must be a provider from GET /api/shipping/providers (e.g. USPS, UPS, FedEx, DHL)."
+  }
+ ]
+}

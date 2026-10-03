@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "yandex_direct-mcp",
+ "display_name": "Yandex Direct (Яндекс Директ) MCP",
+ "version": "0.1.0",
+ "description": "Yandex Direct (Яндекс Директ) (ads): me, list_accounts, list_campaigns, pause_resume. Every tool map",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "yandex_direct"
+   ],
+   "env": {
+    "PLATFORM_MCP_YANDEX_DIRECT_TOKEN": "${user_config.platform_mcp_yandex_direct_token}",
+    "PLATFORM_MCP_YANDEX_DIRECT_CLIENT_LOGIN": "${user_config.platform_mcp_yandex_direct_client_login}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_yandex_direct_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YANDEX_DIRECT_TOKEN",
+   "description": "Yandex OAuth token of the Direct user (app registered at oauth.yandex.com with Direct API access approved; https://yandex.com/dev/direct/doc/en/concepts/auth-token), sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yandex_direct_client_login": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YANDEX_DIRECT_CLIENT_LOGIN",
+   "description": "Advertiser login to act for, sent as the Client-Login header (required for agency and representative tokens; omit for a direct advertiser).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "POST /json/v5/clients {method: get}: the advertiser the token (or Client-Login) acts for ({result: {Clients: [{ClientId, Login, Currency}]}})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "POST /json/v5/clients {method: get}: the advertiser the token acts for (agencies list clients through the AgencyClients service instead). `id` is the Login usable as the client_login config."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /json/v5/campaigns {method: get, params: {SelectionCriteria: {States: [status]}, FieldNames, Page: {Limit, Offset}}} for the token's advertiser (account_id is not sent; set client_login for agencies). `status` filters State: ON, OFF, SUSPENDED, ENDED, ARCHIVED. budget_micros is DailyBudget.Amount, the currency amount multiplied by 1,000,000."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /json/v5/campaigns {method: suspend|resume, params: {SelectionCriteria: {Ids: [campaign_id]}}}. Per-campaign problems come back inside suspend_result/resume_result.Errors (Yandex's operation-array pattern), so check it; request-level errors are reported as failures. Resuming restarts spending."
+  }
+ ]
+}

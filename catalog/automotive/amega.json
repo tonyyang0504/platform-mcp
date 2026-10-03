@@ -1,0 +1,35 @@
+{
+ "id": "amega",
+ "category": "automotive",
+ "label": "Amega",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.amega.nl",
+ "domain": "amega.nl",
+ "country": "Netherlands",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Netherlands dealer with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://amega.nl/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

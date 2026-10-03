@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "us_treasury_fiscaldata-mcp",
+ "display_name": "U.S. Treasury Fiscal Data MCP",
+ "version": "0.1.0",
+ "description": "U.S. Treasury Fiscal Data (market data): get_series. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "us_treasury_fiscaldata"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "get_series",
+   "description": "Monthly average interest rate (percent) of one kind of Treasury security. series_id is the security description exactly as published, e.g. 'Treasury Bills', 'Treasury Notes', 'Treasury Bonds', 'Treasury Inflation-Protected Securities (TIPS)', 'Total Marketable'. start/end are YYYY-MM-DD."
+  }
+ ]
+}

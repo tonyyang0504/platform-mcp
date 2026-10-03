@@ -1,0 +1,36 @@
+{
+ "id": "fr_sirene",
+ "category": "sales",
+ "label": "INSEE Sirene API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "fr"
+ ],
+ "docs_url": "https://portail-api.insee.fr/",
+ "url": "https://portail-api.insee.fr/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Sirene V3 API with a free INSEE API token (30 req/min) → platform-key; the portal is a SPA ('Loading...' title, HTTP 200).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

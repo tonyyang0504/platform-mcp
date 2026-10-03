@@ -1,0 +1,35 @@
+{
+ "id": "autosel_lt",
+ "category": "automotive",
+ "label": "Autosel",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autosel.lt",
+ "domain": "autosel.lt",
+ "country": "Lithuania",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No API docs found on site or FAQ.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autosel.lt/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

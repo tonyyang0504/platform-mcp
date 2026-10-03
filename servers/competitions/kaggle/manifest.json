@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "kaggle-mcp",
+ "display_name": "Kaggle MCP",
+ "version": "0.1.0",
+ "description": "Kaggle (competitions): discover, get_competition, standings, my_entries. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kaggle"
+   ],
+   "env": {
+    "PLATFORM_MCP_KAGGLE_API_TOKEN": "${user_config.platform_mcp_kaggle_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kaggle_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAGGLE_API_TOKEN",
+   "description": "Kaggle API token from https://www.kaggle.com/settings/api ('Generate New Token'; the value the CLI reads from KAGGLE_API_TOKEN / ~/.kaggle/access_token). Sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "discover",
+   "description": "`kaggle competitions list` (ListCompetitions {search, page}); `id` is the competition ref (URL suffix, e.g. `titanic`) that the other tools take. The page size is the server default (20; `limit` is not sent) and the response has no total. `kind` and `status` are not sent (the CLI's group/category enums do not match the vocabulary). tags (objects), teamCount, userHasEntered and userRank stay in `raw`."
+  },
+  {
+   "name": "get_competition",
+   "description": "GetCompetition {competitionName: <ref>}. `submission_format` is the evaluation metric name; maxDailySubmissions, maxTeamSize, mergerDeadline and isKernelsSubmissionsOnly (code competition) stay in `raw`."
+  },
+  {
+   "name": "standings",
+   "description": "`kaggle competitions leaderboard -s` (GetLeaderboard, public leaderboard in rank order). Only the first page: the API pages with nextPageToken, which the vocabulary's `page` cannot carry. `score` is a string in the API, so it stays in `raw.score` (with teamId); there is no rank field, rows come in leaderboard order."
+  },
+  {
+   "name": "my_entries",
+   "description": "`kaggle competitions submissions <COMPETITION>` (ListSubmissions): your submissions for one competition, so `competition_id` is required in practice. publicScore/privateScore are strings in the API and stay in `raw`, with description, fileName and errorDescription."
+  }
+ ]
+}

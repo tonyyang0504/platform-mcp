@@ -1,0 +1,47 @@
+{
+ "id": "kbb",
+ "category": "automotive",
+ "label": "Kbb",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.kbb.com",
+ "domain": "kbb.com",
+ "country": "USA",
+ "official_api": true,
+ "docs_url": "https://developer.kbb.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key per B2B license",
+  "access": "paid",
+  "capabilities": [
+   "get_valuation",
+   "decode_vin",
+   "vehicle_specs"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). KBB Developer Portal documents InfoDriver Web Service (IDWS 4.0) REST for values/vehicle data, licensed via B2B agreements (paid, apply through b2b.kbb.com).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.kbb.com/",
+   "https://b2b.kbb.com/solutions/"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/kbb",
+   "https://www.vinaudit.com/kelley-blue-book-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "KBB Developer Portal (https://developer.kbb.com/, rendered 2026-09-25): API access is granted per B2B licence ('Kelley Blue Book will create a new account for you and provide you an API Key'), and the IDWS 4.0 and Batch VIN reference pages answer 'Unable to load webpage' in headless Chromium, so no endpoint could be read."
+}

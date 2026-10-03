@@ -1,0 +1,49 @@
+{
+ "id": "cargurus",
+ "category": "automotive",
+ "label": "Cargurus",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.cargurus.com",
+ "domain": "cargurus.com",
+ "country": "USA",
+ "official_api": true,
+ "docs_url": "https://www.cargurus.com/Cars/developers/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key for dealer accounts",
+  "access": "apply",
+  "capabilities": [
+   "dealer_reviews",
+   "dealer_stats",
+   "car_selector"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). CarGurus developer docs cover dealer-facing APIs (Dealer Reviews, Dealer Stats, Dealer SMS, Car Selector, SEM helpers); no public listings search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cargurus.com/Cars/developers/",
+   "https://www.cargurus.com/Cars/developers/docs/DealerReviews.html",
+   "https://www.cargurus.com/Cars/developers/docs/CarSelector.html"
+  ],
+  "unofficial": [
+   "https://rapidapi.com/collection/cargurus-api",
+   "https://github.com/api-evangelist/cargurus",
+   "https://www.carapis.com/platforms/north-america/cargurus"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "CarGurus developer docs (https://www.cargurus.com/Cars/developers/) cover dealer-facing APIs (Dealer Reviews, Dealer Stats, Dealer SMS, Car Selector widget, SEM URL helpers) issued to dealer accounts; there is no listings search, VIN or valuation operation in the automotive vocabulary to map."
+}

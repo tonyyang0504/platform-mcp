@@ -1,0 +1,37 @@
+{
+ "id": "ouedkniss_dz",
+ "category": "automotive",
+ "label": "Ouedkniss",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.ouedkniss.com",
+ "domain": "ouedkniss.com",
+ "country": "Algeria",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Front-end GraphQL (api.ouedkniss.com/graphql) is undocumented; no official developer program.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.ouedkniss.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/dadhalfdev/ouedkniss-scraper/api/python"
+  ]
+ },
+ "official_mcp": []
+}

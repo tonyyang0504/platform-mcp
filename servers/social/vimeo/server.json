@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/vimeo-mcp",
+ "description": "Vimeo (social): me, read_comments, delete, analytics_post. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.vimeo.com/api/upload/videos",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "vimeo"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_VIMEO_ACCESS_TOKEN",
+     "description": "Vimeo personal access token (developer.vimeo.com > My Apps > your app > Generate an access token, authenticated, scopes public private edit delete interact stats) or an OAuth authorization-code token; Vimeo access tokens do not expire unless revoked. Sent as 'Authorization: bearer <token>'.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

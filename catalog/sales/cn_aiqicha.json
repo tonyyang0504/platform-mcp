@@ -1,0 +1,36 @@
+{
+ "id": "cn_aiqicha",
+ "category": "sales",
+ "label": "爱企查",
+ "lane": "assist",
+ "kind": "data_vendor",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://aiqicha.baidu.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Every automated fetch is redirected to the site's own access-restriction page; needs a Baidu login → tenant session. robots.txt (6 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

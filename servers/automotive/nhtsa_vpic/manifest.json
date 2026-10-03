@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "nhtsa_vpic-mcp",
+ "display_name": "NHTSA vPIC (VIN decoder) MCP",
+ "version": "0.1.0",
+ "description": "NHTSA vPIC (VIN decoder) (automotive): decode_vin. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "nhtsa_vpic"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "decode_vin",
+   "description": "Decode VIN (flat format), GET /vehicles/DecodeVinValues/{vin}?format=json. Partial VINs are accepted with '*' for unknown characters. raw.ErrorCode/ErrorText carry NHTSA's decode notes ('0 - VIN decoded clean'); a VIN whose make cannot be decoded is an error with NHTSA's ErrorText."
+  }
+ ]
+}

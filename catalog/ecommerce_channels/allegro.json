@@ -1,0 +1,348 @@
+{
+ "id": "allegro",
+ "category": "ecommerce_channels",
+ "label": "Allegro",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "pl",
+  "cz",
+  "sk",
+  "hu"
+ ],
+ "docs_url": "https://developer.allegro.pl/documentation",
+ "url": "https://allegro.pl/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Any Allegro account with 2FA can register an app at apps.developer.allegro.pl (no approval workflow documented); REST API terms require a custom User-Agent 'AppName/Version (+docsURL)'; 9,000 requests / minute per client id (429 when exceeded, some resources stricter + leaky-bucket per user); sandbox at allegro.pl.allegrosandbox.pl.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2 (authorization code, device flow, DCR; client credentials for public data; access 12 h, refresh 3 months rolling)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox",
+   "messages",
+   "promotions"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI/Swagger spec published on developer.allegro.pl/documentation (client generation); no official SDK named on the pages opened"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.language",
+  "config.sandbox"
+ ],
+ "rate_limits": "requests-per-minute throttling, headers to monitor (numbers not on the page read)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the audit",
+  "base_urls": [
+   "https://api.allegro.pl",
+   "https://api.allegro.pl.allegrosandbox.pl"
+  ],
+  "auth": [
+   "1. Register the app at https://apps.developer.allegro.pl (account with 2FA; sandbox apps at apps.developer.allegro.pl.allegrosandbox.pl) → Client ID + Client Secret.",
+   "2. Authorization-code flow (redirect the seller to Allegro, exchange the code) or device flow for headless clients; Dynamic Client Registration for self-installed instances.",
+   "3. Access token 12 h; refresh token 3 months, rolling on every refresh; tokens die on password / e-mail change or account lockdown.",
+   "4. Scopes per resource, e.g. `allegro:api:sale:offers:write`, `allegro:api:orders:read`; client-credentials tokens only for public resources (categories)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /sale/product-offers",
+    "purpose": "create an offer bound to a catalogue product",
+    "notes": "product id / GTIN match, price, stock, delivery + return policies; async 202 with GET /commands/{id}"
+   },
+   {
+    "call": "PATCH /sale/product-offers/{offerId}",
+    "purpose": "edit an offer",
+    "notes": "same fields"
+   },
+   {
+    "call": "GET /sale/offers · GET /sale/product-offers/{offerId}",
+    "purpose": "list / read offers",
+    "notes": "filters by publication status"
+   },
+   {
+    "call": "PUT /sale/offers/{offerId}",
+    "purpose": "stock update",
+    "notes": "quantity"
+   },
+   {
+    "call": "PUT /sale/batch-offer-price-modification",
+    "purpose": "batch price change",
+    "notes": "offer ids + new prices; reports via commands"
+   },
+   {
+    "call": "GET /orders/events · GET /orders · GET /orders/{orderId}",
+    "purpose": "orders",
+    "notes": "checkout forms with buyer, delivery, payment"
+   },
+   {
+    "call": "PUT /orders/{orderId}/status",
+    "purpose": "set order fulfilment status",
+    "notes": "PROCESSING / SENT / …"
+   },
+   {
+    "call": "POST /orders/{orderId}/parcel-tracking · POST /shipments",
+    "purpose": "tracking push / create shipment",
+    "notes": "carrier id + waybill"
+   },
+   {
+    "call": "GET /orders/returns (beta) · POST /payments/{paymentId}/refund · GET /post-purchase-issues",
+    "purpose": "returns, refunds, disputes",
+    "notes": ""
+   },
+   {
+    "call": "GET /billing/entries · GET /orders/events/stats · GET /sale/offer-events",
+    "purpose": "reports / events",
+    "notes": "24 h offer-event history"
+   },
+   {
+    "call": "GET /messages/threads · POST /messages/threads",
+    "purpose": "buyer messages",
+    "notes": ""
+   }
+  ],
+  "limits": " 9,000 requests / minute per Client ID (Software Statement ID for DCR); 429 when exceeded, access restored after the window; some endpoints stricter; leaky-bucket throttling per user on selected resources (developer.allegro.pl/about). - Custom User-Agent header 'AppName/Version (+docsURL)' is mandatory for identification. - Sandbox use rules: no illegal content, no attacks (except Bug Bounty). - No formal app approval documented for private or public apps; seller consents through OAuth.",
+  "mcp_sdk": [
+   "SDK: OpenAPI/Swagger spec published on developer.allegro.pl/documentation (client generation); no official SDK named on the pages opened"
+  ],
+  "sources": [
+   "https://developer.allegro.pl/about",
+   "https://developer.allegro.pl/documentation",
+   "https://developer.allegro.pl/swagger.yaml",
+   "https://developer.allegro.pl/tutorials/basic-information-VL6YelvVKTn",
+   "https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.allegro.pl",
+  "headers": {
+   "Accept": "application/vnd.allegro.public.v1+json",
+   "Content-Type": "application/vnd.allegro.public.v1+json"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://allegro.pl/auth/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your app registered at apps.developer.allegro.pl; sent with the secret as HTTP Basic on the token call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret of the same app."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code (or device-flow) consent of the seller account (valid 3 months). It is SINGLE-USE: every refresh returns a new pair (access token 12 h + new refresh token) and the old refresh token stops working 60 seconds after its first use. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency of your offers' base marketplace, PLN for allegro.pl; used by update_listing for sellingMode.price {amount, currency}."
+   }
+  ],
+  "rate_per_second": 10,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developer.allegro.pl/documentation#operation/meGET",
+    "note": "GET /me (scope allegro:api:profile:read) returns the authorised user {id, login, firstName, lastName, email, baseMarketplace, company}."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/sale/product-offers/{listing_id}",
+    "body": {
+     "name": "title",
+     "sellingMode.price.amount": "str:price",
+     "sellingMode.price.currency": "@currency",
+     "stock.available": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=accepted"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/editProductOffers",
+    "note": "PATCH /sale/product-offers/{offerId} edits only the fields sent: name (12-75 characters, at least 3 words), sellingMode.price {amount as the documented string, currency from the config field — pass `price` whenever currency is configured}, stock.available. `description` is a structured sections object and is not mapped. Answers 200 (edited) or 202 (accepted, still processing; see GET /sale/product-offers/{offerId}/operations/{operationId}); the offer body is in raw."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/sale/offer-publication-commands/{command_id}",
+    "path_params": {
+     "command_id": "uuid"
+    },
+    "body": {
+     "offerCriteria.0.offers.0.id": "listing_id",
+     "offerCriteria.0.type": "=CONTAINS_OFFERS",
+     "publication.action": "=END"
+    },
+    "result": {
+     "fields": {
+      "status": "=end_requested"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/changePublicationStatusUsingPUT",
+    "note": "PUT /sale/offer-publication-commands/{commandId} with a fresh UUID command id and {offerCriteria: [{offers: [{id}], type: CONTAINS_OFFERS}], publication: {action: END}} ends the offer (reversible with action ACTIVATE). The command runs asynchronously: 201 returns {id, taskCount}; the result is at GET /sale/offer-publication-commands/{commandId}/tasks."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/sale/product-offers/{listing_id}",
+    "body": {
+     "stock.available": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=accepted"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/editProductOffers",
+    "note": "PATCH /sale/product-offers/{offerId} {stock: {available}} sets the offer's stock. `listing_id` (offer id) is required; Allegro offers are not addressed by SKU. An active offer needs stock > 0."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/order/checkout-forms",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "fulfillment.status": "status",
+     "lineItems.boughtAt.gte": "since"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "checkoutForms",
+     "total": "totalCount",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "fulfillment.status",
+      "total": "summary.totalToPay.amount",
+      "currency": "summary.totalToPay.currency",
+      "created_at": "lineItems.0.boughtAt"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/getListOfOrdersUsingGET",
+    "note": "GET /order/checkout-forms?offset&limit(1-100)&fulfillment.status(NEW|PROCESSING|READY_FOR_SHIPMENT|READY_FOR_PICKUP|SENT|PICKED_UP|CANCELLED|SUSPENDED|RETURNED)&lineItems.boughtAt.gte(ISO-8601) (scope allegro:api:orders:read). Returns {checkoutForms[], count, totalCount}; `status` is the seller fulfillment status (the purchase status BOUGHT|FILLED_IN|READY_FOR_PROCESSING|CANCELLED is raw.status), `total` is summary.totalToPay.amount (a decimal string), created_at the first line item's boughtAt."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/order/checkout-forms/{order_id}/shipments",
+    "body": {
+     "carrierId": "carrier",
+     "waybill": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=tracking_added"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/createOrderShipmentsUsingPOST",
+    "note": "POST /order/checkout-forms/{id}/shipments {carrierId, waybill} (scope allegro:api:orders:write) adds a parcel tracking number to every line item of the order (lineItems omitted = all items, as documented). `carrier` must be an Allegro carrier id from GET /order/carriers (e.g. INPOST, DPD, DHL, POCZTA_POLSKA); OTHER additionally needs carrierName, which is not mapped. The seller fulfillment status is a separate call (PUT /order/checkout-forms/{id}/fulfillment {status: SENT}) and is not changed here."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /sale/product-offers needs productSet[{product: {id, idType: GTIN|PRODUCT_ID}}] (an Allegro catalogue product, or a new product with category.id and the category's required parameters[]) plus delivery {shippingRates.id}, afterSalesServices policies and stock; the vocabulary has no product identifier, category or policy ids, and creation may finish asynchronously (202 + operation polling).",
+   "listing_metrics": "No per-offer visits or sales statistics call in the REST API reference (swagger.yaml has /sale/offer-events and classified-ad statistics only)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.allegro.pl: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token allegro.pl/auth/oauth/token: 401 Client authentication failed",
+   "authorize https://allegro.pl/auth/oauth/authorize: 403",
+   "spec https://developer.allegro.pl/swagger.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

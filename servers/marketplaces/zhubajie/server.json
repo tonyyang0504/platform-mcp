@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/zhubajie-mcp",
+ "description": "Zhubajie (猪八戒) (marketplaces): me, list_products, list_sales, list_refunds. Every tool maps to a doc",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.zbj.com/api/apiIndex",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "zhubajie"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ZHUBAJIE_APP_KEY",
+     "description": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZHUBAJIE_APP_SECRET",
+     "description": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + params sorted by name + secret (签名算法). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZHUBAJIE_ACCESS_TOKEN",
+     "description": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 服务商 account (https://open.zbj.com/wiki/getWikiCategoryAll?wikiId=8): valid 7 days by default (refresh at http://openapi.zbj.com/oauth2/refreshtoken), or for the purchase period for 工具市场 apps.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZHUBAJIE_OPENID",
+     "description": "Your 猪八戒 openid (用户唯一标识, returned with the access token by the ZOP OAuth2.0 authorisation); every service-provider method takes it.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

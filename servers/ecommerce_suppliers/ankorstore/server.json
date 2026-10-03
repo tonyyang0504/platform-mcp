@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ankorstore-mcp",
+ "description": "Ankorstore (ecommerce suppliers): me, list_products, get_product, get_order, track. Every tool maps ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.ankorstore.com/landings/integrations-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ankorstore"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ANKORSTORE_CLIENT_ID",
+     "description": "client_id of an application created under Account > Integrations (https://ankorstore.com/account/integrations) of an Ankorstore BRAND account; exchanged at POST https://www.ankorstore.com/oauth/token (grant_type=client_credentials, scope=*) for a 1-hour bearer token that is renewed automatically.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ANKORSTORE_CLIENT_SECRET",
+     "description": "client_secret of that application (sent in the form body of the token request).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,218 @@
+{
+ "id": "workable",
+ "category": "jobs",
+ "label": "Workable",
+ "lane": "api",
+ "kind": "ats",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://workable.readme.io/reference/job-board-api",
+ "url": "https://www.workable.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Job Board API: public GET <subdomain>.workable.com/api/v1/jobs; apply via the SPI with an account access token.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "webhooks",
+   "mcp"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit (account access token only)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://workable.readme.io/llms.txt"
+  ]
+ },
+ "official_mcp": [
+  "Workable MCP Server (official, listed in the API reference nav — account-token, employer side)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public per-account jobs endpoint; apply is an account-token SPI call).",
+  "base_urls": [
+   "https://www.workable.com/api/accounts/{subdomain}",
+   "https://{subdomain}.workable.com/spi/v3/…"
+  ],
+  "auth": [
+   "1. Public endpoints: no token — returns the account's public jobs.",
+   "2. SPI v3: Bearer access token generated in the company's Workable account (or a partner token / OAuth 2.0 for native partner integrations). A candidate cannot obtain one."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/accounts/{subdomain}",
+    "purpose": "public jobs of an account",
+    "notes": "jobs[]: title, shortcode, code, state, department, url, application_url, shortlink, location{country,region,city,telecommuting}, created_at, description/requirements/benefits (with details)"
+   },
+   {
+    "call": "GET /spi/v3/jobs`, `/jobs/:shortcode",
+    "purpose": "account jobs (token)",
+    "notes": "full job incl. employment_type, industry, function, experience, education, salary"
+   },
+   {
+    "call": "GET /spi/v3/jobs/:shortcode/application_form`, `/questions",
+    "purpose": "form definition (token)",
+    "notes": "form fields + custom questions"
+   },
+   {
+    "call": "POST /spi/v3/jobs/:shortcode/candidates",
+    "purpose": "create applied/sourced candidate (token)",
+    "notes": "candidate{name, firstname, lastname, email, headline, summary, address, phone, cover_letter, education_entries[], experience_entries[], skills[], tags[], social_profiles[], resume_url or resume (base64), answers[]}, `sourced`, stage"
+   }
+  ],
+  "limits": " A 'Rate limiting' page exists in the reference nav; the figure was not read. - Public jobs JSON is offered for careers-site embedding; everything that writes (candidates) is an employer-token API. Candidate-side apply → assist via `application_url`. Registry `api.apply: true` presumes the tenant owns the Workable account. - The registry `docs_url` (workable.readme.io/reference/job-board-api) is dead — use reference/accounts-1.",
+  "mcp_sdk": [
+   "Workable MCP Server (official, listed in the API reference navigation; account token).",
+   "https://workable.readme.io/llms.txt"
+  ],
+  "sources": [
+   "https://workable.readme.io/reference/jobs-1",
+   "https://workable.readme.io/reference/job-candidates-create",
+   "https://workable.readme.io/reference/job-board-api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://{subdomain}.workable.com/spi/v3",
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Workable API access token (Settings > Integrations > Apps / API access token) with the r_jobs scope; sent as `Authorization: Bearer`. It is the employer account's token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "subdomain",
+    "required": true,
+    "help": "The Workable account subdomain, e.g. 'groove-tech' in https://groove-tech.workable.com."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://workable.com/spi/v3/accounts/{subdomain}",
+    "path_params": {
+     "subdomain": "@subdomain"
+    },
+    "docs": "https://workable.readme.io/reference/accountssubdomain",
+    "note": "GET /spi/v3/accounts/:subdomain 'Returns the specified account' (id, name, subdomain, description, url). Required scope: r_jobs."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/jobs",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "state": "published",
+     "include_fields": "description"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "fields": {
+      "id": "shortcode",
+      "title": "title",
+      "location": "location.location_str",
+      "url": "url",
+      "posted_at": "created_at",
+      "salary_min": "salary.salary_from",
+      "salary_max": "salary.salary_to",
+      "currency": "salary.salary_currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://workable.readme.io/reference/jobs",
+    "note": "Employer ATS API: GET /spi/v3/jobs?state=published lists the account's OWN published jobs (not a cross-company search). There is no keyword or location filter, so query/location are not sent — filter client-side. limit: 'By default results are limited to 50 … cannot be more than 100'. Paging is a since_id cursor (paging.next URL), which this tool does not follow: page is not sent, so only the first page is returned — raise limit to 100 for larger accounts. id is the job shortcode (use it with get_posting); salary_currency is lower-case (e.g. 'eur'); department, workplace_type, application_url, shortlink and location parts are in raw."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/jobs/{id}",
+    "result": {
+     "fields": {
+      "id": "shortcode",
+      "title": "title",
+      "location": "location.location_str",
+      "url": "url",
+      "posted_at": "created_at",
+      "salary_min": "salary.salary_from",
+      "salary_max": "salary.salary_to",
+      "currency": "salary.salary_currency",
+      "description": "full_description"
+     }
+    },
+    "docs": "https://workable.readme.io/reference/jobsshortcode",
+    "note": "GET /spi/v3/jobs/:shortcode 'will return the full job JSON object'; description is full_description (HTML); requirements, benefits, employment_type and application_url are in raw."
+   }
+  },
+  "not_offered": {
+   "apply": "POST /jobs/:shortcode/candidates 'Creates a candidate at the specified job' with the employer's w_candidates token, i.e. an ATS import by the company, not a job seeker applying; candidates apply at the job's application_url.",
+   "list_messages": "The SPI v3 reference has no candidate messaging endpoints."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host groove-tech.workable.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

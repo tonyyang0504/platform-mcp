@@ -1,0 +1,384 @@
+{
+ "id": "facebook",
+ "category": "social",
+ "label": "Facebook",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/pages-api/posts",
+ "url": "https://www.facebook.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed for Pages the token holder manages (tasks CREATE_CONTENT / MANAGE / MODERATE); free; Advanced Access to pages_manage_posts etc. needs Meta App Review + business verification when acting for OTHER users' Pages (standard access covers the developer's own Pages); BUC rate limit = 4800 × engaged users per 24 h (X-Business-Use-Case-Usage), platform limit 200 calls × users per hour; scheduled posts must be 10 min – 30 days out. Caution (docs read 2026-09-24): the Pages API needs a Page access token with pages_manage_posts / pages_manage_engagement / pages_read_engagement / pages_read_user_engagement; 'If your app users do not own or manage the Page in the API requests, your app will need a User access token and the following features: Page Public Content Access' (https://developers.facebook.com/docs/pages-api/posts), which is granted through Meta App Review.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "schedule",
+   "reply",
+   "read_comments",
+   "delete",
+   "analytics",
+   "webhooks",
+   "inbox_dm"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "facebook-business-sdk (official, Python/PHP/Node/Java/Ruby)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 63206,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/feed (message, link)",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/photos (url, caption; published=false + attached_media for multi-photo)",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/videos (file_url, description)",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /{object-id}/comments (filter=stream|toplevel, order)",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{object-id}/comments (message) — on a post = top-level, on a comment = reply",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /{page-id}/tagged",
+   "docs": "https://developers.facebook.com/docs/pages-api/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/messages (recipient, message, messaging_type RESPONSE|UPDATE|MESSAGE_TAG)",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /{page-id}/conversations?platform=messenger → GET /{conversation-id}/messages",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/conversations/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE /{page-post-id}",
+   "docs": "https://developers.facebook.com/docs/pages-api/posts"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /{post-id}/insights?metric=…",
+   "docs": "https://developers.facebook.com/docs/platforminsights/page"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /{page-id}/insights?metric=&period=&since=&until=",
+   "docs": "https://developers.facebook.com/docs/platforminsights/page"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.facebook.com/v25.0/"
+  ],
+  "auth": [
+   "1. Meta app (Business type) → Facebook Login for Business → the tenant grants `pages_show_list`, `pages_manage_posts`,",
+   "2. Exchange the user token for a long-lived user token, then `GET /me/accounts` → a **Page access token** per Page",
+   "3. The app user must hold the `CREATE_CONTENT`, `MANAGE` and `MODERATE` tasks on the Page.",
+   "4. Standard access covers Pages the developer's own business administers; acting on OTHER users' Pages needs Advanced"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /{page_id}/feed",
+    "purpose": "`message`, `link`; returns `{id}`",
+    "notes": ""
+   },
+   {
+    "call": "POST /{page_id}/photos",
+    "purpose": "`url` or multipart `source`; `published=false` yields an unpublished photo to attach",
+    "notes": ""
+   },
+   {
+    "call": "Video API",
+    "purpose": "resumable upload then publish",
+    "notes": ""
+   },
+   {
+    "call": "same endpoints",
+    "purpose": "`published=false` + `scheduled_publish_time` (unix or ISO 8601); must be 10 min – 30 days out",
+    "notes": ""
+   },
+   {
+    "call": "GET /{post_id}/comments",
+    "purpose": "`pages_read_user_engagement`",
+    "notes": ""
+   },
+   {
+    "call": "POST /{comment_id}/comments` or `POST /{post_id}/comments",
+    "purpose": "`message`; `pages_manage_engagement`",
+    "notes": ""
+   },
+   {
+    "call": "POST /{comment_id}?is_hidden=true`, `DELETE /{post_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /{page_id}/insights",
+    "purpose": "`metric=…`, `period`, `since`, `until`",
+    "notes": ""
+   },
+   {
+    "call": "Messenger Platform (see `messenger.md`)",
+    "purpose": "same Page token",
+    "notes": ""
+   }
+  ],
+  "limits": " - Business Use Case limit: **4800 × engaged users per 24 h** per Page (header `X-Business-Use-Case-Usage`); platform limit 200 calls × daily active users per hour (`X-App-Usage`); throttling errors 4 / 17 / 32 / 80001+. - Free. Meta Platform Terms; App Review needed before non-tester users can grant the `pages_manage_*` permissions. - Automation of a Page the tenant administers is the intended use of the API.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.facebook.com/docs/pages-api/posts",
+   "https://developers.facebook.com/docs/graph-api/overview/rate-limiting",
+   "https://developers.facebook.com/docs/pages-api/comments"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v26.0",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "page_access_token",
+   "fields": [
+    {
+     "name": "page_access_token",
+     "required": true,
+     "help": "Page access token of the Facebook Page (Facebook Login for Business: a person who can perform the CREATE_CONTENT, MANAGE and MODERATE tasks on the Page grants pages_manage_posts, pages_manage_engagement, pages_read_engagement, pages_read_user_engagement and, for read_mentions, pages_read_user_content + pages_show_list; exchange for a long-lived token, then GET /me/accounts for the Page token). 'you will need to implement Facebook Login to ask for the following permissions and receive a Page access token' (https://developers.facebook.com/docs/pages-api/posts); sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "page_id",
+    "required": true,
+    "help": "Numeric id of the Facebook Page that posts (the Page the token belongs to); publish_text, publish_image, read_mentions and me call /<page_id>/... Env: PLATFORM_MCP_FACEBOOK_PAGE_ID."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/{page_id}",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "fixed_params": {
+     "fields": "id,name,link"
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/page/",
+    "note": "GET /{page_id}?fields=id,name,link: the configured Page as the Page token sees it."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/{page_id}/feed",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "body": {
+     "message": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "id"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/pages-api/posts",
+    "note": "'To publish a post to a Page, send a POST request to the /page_id/feed endpoint ... message set to the text for your post'; answers {id: page_post_id}. The permalink is https://www.facebook.com/<page_post_id>. `reply_to` is not used by /feed (reply to a comment with reply_comment)."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/{page_id}/photos",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "body": {
+     "url": "image_urls.0",
+     "caption": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "post_id",
+      "photo_id": "id"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/pages-api/posts",
+    "note": "'To publish a photo to a Page, send a POST request to the /page_id/photos endpoint ... with the url parameter set to the photo'; `text` goes to `caption` (https://developers.facebook.com/docs/graph-api/reference/page/photos/). Answers {id: photo_id, post_id: page_post_id}; `id` here is the post_id. ONLY the first image URL is published: a multi-photo post needs unpublished photo uploads plus a /feed call with attached_media (several calls)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/{post_id}/comments",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,from,message,created_time",
+     "summary": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "comments",
+     "total": "summary.total_count",
+     "fields": {
+      "id": "id",
+      "author": "from.name",
+      "author_id": "from.id",
+      "text": "message",
+      "created_at": "created_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/object/comments",
+    "note": "GET /{page_post_id}/comments?fields=id,from,message,created_time&summary=true: top-level comments (filter=toplevel is the default) with summary.total_count. Paging is cursor-based (paging.cursors.after), so `page` is not sent and only the first `limit` comments are returned."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/{comment_id}/comments",
+    "body": {
+     "message": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "id"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/pages-api/comments-mentions",
+    "note": "Comment on a comment as the Page: POST /{comment_id}/comments {message}; answers {id: comment_id}. Posting as a User fails with error 1705. `comment_id` may also be a page_post_id to comment on the post itself."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/{page_id}/tagged",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,message,from,tagged_time,permalink_url"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "mentions",
+     "fields": {
+      "id": "id",
+      "author": "from.name",
+      "text": "message",
+      "created_at": "tagged_time",
+      "url": "permalink_url"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/page/tagged/",
+    "note": "'All public posts in which the page has been tagged' (needs pages_read_user_content + pages_show_list; the Page Public Content Access feature 'may be required'). 'For user posts, the from field will only be returned if the user making the request is the same user who created the post', so `author` is often null. `since` is not sent; paging is cursor-based, so `page` is ignored."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/{post_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/pages-api/posts",
+    "note": "'To delete a Page post, send a DELETE request to the /page_post_id endpoint'; answers {success: true}."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/{post_id}",
+    "fixed_params": {
+     "fields": "id,permalink_url,created_time,shares,comments.limit(0).summary(true),reactions.limit(0).summary(true)"
+    },
+    "result": {
+     "fields": {
+      "post_id": "id",
+      "shares": "shares.count",
+      "comments": "comments.summary.total_count",
+      "reactions": "reactions.summary.total_count",
+      "url": "permalink_url",
+      "created_at": "created_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/post/",
+    "note": "One read of the Post with field expansion (https://developers.facebook.com/docs/graph-api/guides/field-expansion): `shares` ('struct with keys: count'), comments and reactions edges with summary total_count. The runtime cannot compose a nested `metrics` object, so counts are top-level fields. Reach/impression metrics live under GET /{post_id}/insights (read_insights); several post_impressions* metrics are 'Deprecated above Graph API v25' (https://developers.facebook.com/docs/graph-api/reference/insights), so they are not used."
+   }
+  },
+  "not_offered": {}
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 8/8 tool paths found verbatim on their docs pages; names not found on the page: publish_image:caption"
+  ],
+  "notes": "-"
+ }
+}

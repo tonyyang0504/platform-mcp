@@ -1,0 +1,37 @@
+{
+ "id": "adverts_ie",
+ "category": "automotive",
+ "label": "Adverts",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.adverts.ie",
+ "domain": "adverts.ie",
+ "country": "Ireland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official adverts.ie API; only an unofficial PyPI wrapper.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.adverts.ie/"
+  ],
+  "unofficial": [
+   "https://pypi.org/project/AdvertsAPI/"
+  ]
+ },
+ "official_mcp": []
+}

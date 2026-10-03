@@ -1,0 +1,108 @@
+{
+ "id": "printrove",
+ "category": "ecommerce_suppliers",
+ "label": "Printrove (POD, India)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "india"
+ ],
+ "docs_url": "https://docs.printrove.com/",
+ "url": "https://printrove.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Terms of service linked (not opened)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (docs host unreachable)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://docs.printrove.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-rendered the Printrove reference in headless Chromium (https://api.printrove.com/docs/, Scribe, 'Last updated: June 5 2021', 2026-09-25): it has exactly one 'Example response' (POST /api/external/token -> {access_token, expires_at}); every other endpoint (categories, products, variants, orders, serviceability) shows only the PHP request sample. Scribe's collection.json/openapi.yaml exports answer 404 and docs.printrove.com does not resolve, so no result field (ids, titles, prices, status, tracking) can be mapped without guessing."
+}

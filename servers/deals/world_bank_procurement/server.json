@@ -1,0 +1,33 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/world_bank_procurement-mcp",
+ "description": "World Bank Procurement Notices (deals): search_postings, get_posting. Every tool maps to a documente",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://search.worldbank.org/api/v2/procnotices?format=json",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "world_bank_procurement"
+    }
+   ],
+   "environmentVariables": []
+  }
+ ]
+}

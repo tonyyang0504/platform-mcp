@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bling_erp-mcp",
+ "description": "Bling ERP (BR integration hub — not a supplier) (ecommerce suppliers): me, list_products, get_produc",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.bling.com.br/home",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bling_erp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BLING_ERP_CLIENT_ID",
+     "description": "Client ID of your Bling app (Central de Extensões > Área do Integrador); sent with the client secret as HTTP Basic on the token request ('não é permitida a inserção destes parâmetros no body').",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BLING_ERP_CLIENT_SECRET",
+     "description": "Client Secret of the same Bling app.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BLING_ERP_REFRESH_TOKEN",
+     "description": "refresh_token from a one-time authorization-code exchange (the code expires in 1 minute); valid 30 days. Access tokens last 6 hours (expires_in 21600) and are re-minted from it; a new refresh_token returned by Bling replaces the old one in memory, and with PLATFORM_MCP_STATE_DIR set it is also saved and preferred on the next start.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

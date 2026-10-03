@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/temu-mcp",
+ "description": "Temu (ecommerce channels): me, list_orders, set_inventory, end_listing. Every tool maps to a documen",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://partner-us.temu.com/documentation",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "temu"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TEMU_APP_KEY",
+     "description": "app_key of your Temu Partner Platform app (issued after app review).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TEMU_APP_SECRET",
+     "description": "app_secret of the same app; signs every call: upper(MD5(app_secret + sorted key+value of all body fields + app_secret)). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TEMU_ACCESS_TOKEN",
+     "description": "The store's access_token, issued when the seller authorises your app in Seller Center (manual authorisation copies it; 'can be obtained from Seller Center', Common Parameters). Check its expiry with `me` (result.expiredTime).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TEMU_REGION",
+     "description": "Gateway of the seller's store: us (United States), eu (Germany, Italy, France, Spain, UK, …) or global (Mexico, Japan, …) → https://openapi-b-{region}.temu.com/openapi/router ('Endpoints and Request Method', Developer Guide).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

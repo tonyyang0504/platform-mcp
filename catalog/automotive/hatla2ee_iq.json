@@ -1,0 +1,35 @@
+{
+ "id": "hatla2ee_iq",
+ "category": "automotive",
+ "label": "Iraq",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://iraq.hatla2ee.com",
+ "domain": "iraq.hatla2ee.com",
+ "country": "Iraq",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Hatla2ee publishes no developer/API documentation; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://iraq.hatla2ee.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

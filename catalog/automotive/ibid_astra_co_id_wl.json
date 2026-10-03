@@ -1,0 +1,44 @@
+{
+ "id": "ibid_astra_co_id_wl",
+ "category": "automotive",
+ "label": "IBID (Astra)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.ibid.astra.co.id",
+ "domain": "ibid.astra.co.id",
+ "country": "Indonesia",
+ "official_api": true,
+ "docs_url": "https://developer.ibid.astra.co.id/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "portal account; partnership proposal via email",
+  "access": "apply",
+  "capabilities": [
+   "vehicle_data",
+   "get_valuation"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). IBID (Astra/PT Balai Lelang Serasi) API developer portal offers vehicle data and price-recommendation APIs to partners after sign-in/cooperation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.ibid.astra.co.id/",
+   "https://developer.ibid.astra.co.id/akses-portal",
+   "https://developer.ibid.astra.co.id/apis"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "IBID developer portal (https://developer.ibid.astra.co.id/) offers vehicle data and price recommendation APIs only after portal sign-in and a partnership agreement; the reference is not public."
+}

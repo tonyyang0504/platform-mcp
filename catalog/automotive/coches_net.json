@@ -1,0 +1,46 @@
+{
+ "id": "coches_net",
+ "category": "automotive",
+ "label": "Coches",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.coches.net",
+ "domain": "coches.net",
+ "country": "Spain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed",
+   "rest"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). coches.net (Adevinta) only has a legacy developer zone for embeddable search widgets; dealer stock enters via coches.net PRO and certified multipublisher integrations; no public API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.coches.net/servicios/desarrolladores/buscador-completo.aspx",
+   "https://pro.coches.net/ocasion.aspx"
+  ],
+  "unofficial": [
+   "Apify coches.net scrapers",
+   "inventario.pro multipublisher"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): coches.net (Adevinta) only has a legacy developer zone for embeddable search widgets; dealer stock enters via coches.net PRO and certified multipublisher integrations; no public API docs."
+}

@@ -1,0 +1,44 @@
+{
+ "id": "autoline",
+ "category": "automotive",
+ "label": "Autoline",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autoline.ee",
+ "domain": "autoline.ee",
+ "country": "Estonia",
+ "official_api": true,
+ "docs_url": "https://api-docs.linemedia.com/v5/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Client ID + Secret Key (OAuth-style)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "list_categories"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). autoline.ee is Linemedia's Autoline (Estonia); Linemedia API v5 lets registered API users publish/manage adverts on Autoline/Machineryline/Agroline; registration via support.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api-docs.linemedia.com/v5/",
+   "https://autoline.ee/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://api-docs.linemedia.com/v5/): autoline.ee is Linemedia's Autoline (Estonia); Linemedia API v5 lets registered API users publish/manage adverts on Autoline/Machineryline/Agroline; registration via support. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

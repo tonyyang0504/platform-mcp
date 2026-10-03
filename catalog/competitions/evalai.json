@@ -1,0 +1,201 @@
+{
+ "id": "evalai",
+ "category": "competitions",
+ "label": "EvalAI",
+ "lane": "api",
+ "kind": "data_science",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://eval.ai/api/docs/",
+ "url": "https://eval.ai",
+ "verified_at": "2026-09-24",
+ "terms_note": "EvalAI REST API (OpenAPI schema at https://eval.ai/api/schema/, Redoc at /api/docs/). Auth token from your EvalAI profile, sent as a Bearer token (the schema's jwtAuth).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "bearer (EvalAI auth token)",
+  "access": "self-serve",
+  "capabilities": [
+   "search",
+   "details",
+   "leaderboard",
+   "join",
+   "submit_file"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "evalai (CLI)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://eval.ai",
+  "auth": {
+   "type": "bearer",
+   "field": "auth_token",
+   "fields": [
+    {
+     "name": "auth_token",
+     "required": true,
+     "help": "EvalAI auth token from https://eval.ai/web/profile ('Get your Auth Token'; the token the evalai CLI uses). Sent as Authorization: Bearer."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "participant_team_id",
+    "required": false,
+    "help": "Numeric id of your EvalAI participant team (from GET /api/participants/participant_team or the Participant Teams page); needed only by `enter`."
+   }
+  ],
+  "rate_per_second": 1,
+  "rate_note": "Endpoints are throttled (DRF UserRateThrottle/AnonRateThrottle) without published numbers. One request per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/auth/user/",
+    "docs": "https://eval.ai/api/docs/",
+    "note": "GET /api/auth/user/: pk, username, email, first_name, last_name."
+   },
+   "discover": {
+    "method": "GET",
+    "path": "/api/challenges/challenge/present/approved/public",
+    "params": {
+     "page": "page"
+    },
+    "default_limit": 150,
+    "max_limit": 150,
+    "result": {
+     "items": "results",
+     "key": "competitions",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "kind": "domain_name",
+      "starts_at": "start_date",
+      "deadline": "end_date",
+      "tags": "list_tags"
+     }
+    },
+    "docs": "https://eval.ai/api/docs/",
+    "note": "GET /api/challenges/challenge/{challenge_time}/{approved}/{published} with present/approved/public fixed: ongoing public challenges. The server pages (`page`, fixed size); `limit` is not sent and there is no text filter, so `query`, `kind` and `status` are not sent. short_description, is_registration_open and has_prize stay in `raw`."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/api/challenges/challenge/{competition_id}/",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "kind": "domain_name",
+      "starts_at": "start_date",
+      "deadline": "end_date",
+      "tags": "list_tags",
+      "description": "description",
+      "submission_format": "submission_guidelines"
+     }
+    },
+    "docs": "https://eval.ai/api/docs/",
+    "note": "GET /api/challenges/challenge/{id}/. `description` and `submission_format` (submission_guidelines) are HTML; terms_and_conditions, evaluation_details and is_registration_open stay in `raw`. Phase splits (the leaderboard ids) are at GET /api/challenges/{challenge_pk}/challenge_phase_split (not mapped)."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/api/jobs/challenge_phase_split/{competition_id}/leaderboard/",
+    "params": {
+     "page": "page"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "standings",
+     "total": "count",
+     "fields": {
+      "team": "submission__participant_team__team_name",
+      "score": "filtering_score",
+      "updated_at": "submission__submitted_at"
+     }
+    },
+    "docs": "https://eval.ai/api/docs/",
+    "note": "Leaderboards are per challenge-phase split: pass the phase-split id (from /api/challenges/{challenge_pk}/challenge_phase_split) as `competition_id`, not the challenge id. Rows come in leaderboard order; `score` is the default-order metric (filtering_score) and the full metric vector is `raw.result` with labels in `raw.leaderboard__schema`."
+   },
+   "enter": {
+    "method": "POST",
+    "path": "/api/challenges/challenge/{competition_id}/participant_team/{participant_team_pk}",
+    "path_params": {
+     "participant_team_pk": "@participant_team_id"
+    },
+    "result": {
+     "fields": {
+      "id": "=registered",
+      "status": "=registered"
+     }
+    },
+    "docs": "https://eval.ai/api/docs/",
+    "note": "POST /api/challenges/challenge/{challenge_pk}/participant_team/{participant_team_pk}: registers your team (config `participant_team_id`) for the challenge; answers 201 with no body. Closed registration, email-domain rules and team-size limits come back as 406 errors."
+   }
+  },
+  "not_offered": {
+   "my_entries": "Participant submissions are listed per phase (GET /api/jobs/challenge/{challenge_id}/challenge_phase/{challenge_phase_id}/submission/); the vocabulary has no phase id, and /api/jobs/challenge/{challenge_pk}/submission/ is host-only.",
+   "submit": "POST /api/jobs/challenge/{challenge_id}/challenge_phase/{challenge_phase_id}/submission/ takes a multipart `input_file` (or a presigned-URL upload); binary uploads are out of scope."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host eval.ai: DNS ok, TLSv1.2 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; names not found on the page: discover:page, standings:page",
+   "live read without credentials: discover returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

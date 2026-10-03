@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "jobspresso-mcp",
+ "display_name": "Jobspresso MCP",
+ "version": "0.1.0",
+ "description": "Jobspresso (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobspresso"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "WP Job Manager job feed (?feed=job_feed, RSS 2.0). WP Job Manager's job_feed() reads search_keywords, search_location (';'-separated), job_types, job_categories and posts_per_page (default 10) and pages with paged (https://github.com/Automattic/WP-Job-Manager/blob/trunk/includes/class-wp-job-manager-post-types.php). company / location come from the job_listing:company / job_listing:location elements, description is the full post (content:encoded, HTML); job_type and job_category stay in raw. id is the posting's permalink. Jobspresso's /feed/ is an empty blog feed; ?feed=job_feed carries the remote jobs."
+  }
+ ]
+}

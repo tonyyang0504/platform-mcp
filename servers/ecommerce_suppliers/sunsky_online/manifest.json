@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "sunsky_online-mcp",
+ "display_name": "Sunsky Online MCP",
+ "version": "0.1.0",
+ "description": "Sunsky Online (ecommerce suppliers): me, list_products, get_product, quote_shipping, create_order, g",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "sunsky_online"
+   ],
+   "env": {
+    "PLATFORM_MCP_SUNSKY_ONLINE_KEY": "${user_config.platform_mcp_sunsky_online_key}",
+    "PLATFORM_MCP_SUNSKY_ONLINE_SECRET": "${user_config.platform_mcp_sunsky_online_secret}",
+    "PLATFORM_MCP_SUNSKY_ONLINE_LANGUAGE": "${user_config.platform_mcp_sunsky_online_language}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_sunsky_online_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SUNSKY_ONLINE_KEY",
+   "description": "SUNSKY Open API key, issued by your SUNSKY sales manager (https://doc.sunsky-online.com/).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_sunsky_online_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SUNSKY_ONLINE_SECRET",
+   "description": "SUNSKY Open API secret issued with the key; signs every call (MD5 of the parameter values sorted by name, then '@' + secret) and is never sent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_sunsky_online_language": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SUNSKY_ONLINE_LANGUAGE",
+   "description": "Product text language code (Appendix E), e.g. en, fr, de, es, it, zh_CN; default en.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "order!getBalance.do: your prepaid SUNSKY balance ({result: 'success', data: '1200.00'}); NO_PERMISSION_DUE_TO_SIGNATURE means the key/secret pair is wrong."
+  },
+  {
+   "name": "list_products",
+   "description": "product!search.do lists SUNSKY products (40 per page by default, max 100) filtered by `category` (a SUNSKY categoryId from category!getChildren.do, subcategories included). The API has NO keyword search, so `query` is ignored. `id` is the item # (itemNo) used by get_product, quote_shipping and create_order; prices are USD strings; priceList (quantity tiers), modelList and specs are in `raw`."
+  },
+  {
+   "name": "get_product",
+   "description": "product!detail.do by item # (itemNo): full product with priceList tiers, modelList, dimensions, packing, battery flag, specs (paramsTable) in `raw`. Prices are USD."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "order!getPricesAndFreights.do. `country` must be SUNSKY's numeric countryId (from order!getCountries.do, e.g. 41 = U.S.A.), not an ISO code; `product_id` is the item # (itemNo); always pass `quantity`. Each option's `id` is the shippingWayId that create_order takes as shipping_option; the item prices (priceList) are in `raw`."
+  },
+  {
+   "name": "create_order",
+   "description": "order!createOrder.do. `items`: up to 10 rows [{itemNo, qty, remark?}]; `shipping_address` in SUNSKY form {countryId (numeric, order!getCountries.do), state (state code), city, address, address2?, postcode, receiver, telephone?, email?, company?, shipment: 'drop' (dropshipping) | 'wholesale'} plus optional order-level siteNumber (your reference, ≤32 chars), vatNumber, eoriNumber, iossNumber, coupon; `shipping_option` is the shippingWayId from quote_shipping. The order is created UNPAID (useBalanceOnly defaults to false); `id` is the SUNSKY order number."
+  },
+  {
+   "name": "get_order",
+   "description": "order!getOrderDetails.do by SUNSKY order number. `status` is the numeric order status of Appendix C (https://doc.sunsky-online.com/appendixes-8295235m0); detailList (items) and deliveryAddress are in `raw`."
+  },
+  {
+   "name": "track",
+   "description": "SUNSKY has no tracking-events API: this reads the order's trackingNumber, shipping way and its tracking query URL (append the number, e.g. https://t.17track.net/en#nums=) from order!getOrderDetails.do; `status` is the Appendix C order status."
+  }
+ ]
+}

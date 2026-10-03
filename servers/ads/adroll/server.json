@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/adroll-mcp",
+ "description": "AdRoll (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a docu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.nextroll.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "adroll"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ADROLL_TOKEN",
+     "description": "AdRoll Personal Access Token (dashboard > settings > Personal Access Tokens), sent as `Authorization: Token <PAT>` (https://apidocs.nextroll.com/guides/get-started.html).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ADROLL_CLIENT_ID",
+     "description": "Client ID (consumer key) of your NextRoll developer application, sent in the `apikey` query parameter on every call.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

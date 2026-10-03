@@ -1,0 +1,35 @@
+{
+ "id": "socarrao_br",
+ "category": "automotive",
+ "label": "Socarrao",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.socarrao.com.br",
+ "domain": "socarrao.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Brazil cars_marketplace with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://socarrao.com.br/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

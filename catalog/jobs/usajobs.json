@@ -1,0 +1,203 @@
+{
+ "id": "usajobs",
+ "category": "jobs",
+ "label": "USAJOBS",
+ "lane": "api",
+ "kind": "government",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://developer.usajobs.gov/",
+ "url": "https://www.usajobs.gov/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Official Search API (API key + User-Agent e-mail). Applications require a login.gov account — assisted browser for apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key",
+  "access": "apply",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "code_lists",
+   "historic_announcements"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (official federal job search API, apply via login.gov).",
+  "base_urls": [
+   "https://data.usajobs.gov/api/Search"
+  ],
+  "auth": [
+   "1. Request an API key on the developer portal (free; e-mail address registered).",
+   "2. Headers on every call: `Host: data.usajobs.gov`, `User-Agent: <registration e-mail>`, `Authorization-Key: <key>`. Code-list endpoints need no key."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/Search",
+    "purpose": "job search",
+    "notes": "Keyword, PositionTitle, LocationName, Radius, JobCategoryCode, PayGradeLow/High, RemunerationMinimumAmount/MaximumAmount, HiringPath, Organization, DatePosted, ResultsPerPage (≤500), Page, PositionID …; SearchResult.SearchResultItems[].MatrixObjectDescriptor (PositionTitle, PositionURI, ApplyURI, Po"
+   },
+   {
+    "call": "GET /api/HistoricJoa`, `/api/HistoricJoa/AnnouncementText",
+    "purpose": "closed announcements",
+    "notes": "historic JOAs by date range"
+   },
+   {
+    "call": "GET /codelist/{name}",
+    "purpose": "code lists",
+    "notes": "academichonors, agencysubelements, applicationstatuses, hiringpaths, occupationalseries, whomayapply, …"
+   }
+  ],
+  "limits": " Search API: max 10,000 rows per query, 500 rows per page; code lists and dynamic search: no limits. - Free government API with registration; key + e-mail identify the caller. - The Terms-of-Use page (developer.usajobs.gov/general/terms-of-use) returned 'WHOOPS! USAJOBS has encountered an error' — terms text not readable today; no automation clause could be checked.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.usajobs.gov/api-reference/get-api-search",
+   "https://developer.usajobs.gov/guides/authentication",
+   "https://developer.usajobs.gov/guides/rate-limiting",
+   "https://developer.usajobs.gov/general/terms-of-use"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://data.usajobs.gov",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "Authorization-Key": "api_key",
+    "User-Agent": "email"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "USAJOBS API key requested on https://developer.usajobs.gov/ (free); sent as the Authorization-Key header on every call."
+    },
+    {
+     "name": "email",
+     "required": true,
+     "help": "The e-mail address registered with the API key; USAJOBS requires it as the User-Agent header on every call."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/Search",
+    "fixed_params": {
+     "ResultsPerPage": 1
+    },
+    "docs": "https://developer.usajobs.gov/guides/authentication",
+    "note": "Verified with a one-result search (USAJOBS has no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/api/Search",
+    "params": {
+     "Keyword": "query",
+     "LocationName": "location",
+     "ResultsPerPage": "limit",
+     "Page": "page"
+    },
+    "default_limit": 25,
+    "max_limit": 500,
+    "result": {
+     "items": "SearchResult.SearchResultItems",
+     "key": "postings",
+     "fields": {
+      "id": "MatchedObjectDescriptor.PositionID",
+      "title": "MatchedObjectDescriptor.PositionTitle",
+      "location": "MatchedObjectDescriptor.PositionLocation.0.LocationName",
+      "url": "MatchedObjectDescriptor.PositionURI",
+      "description": "MatchedObjectDescriptor.QualificationSummary"
+     }
+    },
+    "docs": "https://developer.usajobs.gov/api-reference/get-api-search",
+    "note": "Federal announcements only. ResultsPerPage ≤ 500 and at most 10,000 rows per query. description carries QualificationSummary; PositionRemuneration, ApplyURI and UserArea.Details stay in raw. No published per-second limit."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/Search",
+    "params": {
+     "PositionID": "id"
+    },
+    "fixed_params": {
+     "ResultsPerPage": 1
+    },
+    "result": {
+     "root": "SearchResult.SearchResultItems.0",
+     "fields": {
+      "id": "MatchedObjectDescriptor.PositionID",
+      "title": "MatchedObjectDescriptor.PositionTitle",
+      "location": "MatchedObjectDescriptor.PositionLocation.0.LocationName",
+      "url": "MatchedObjectDescriptor.PositionURI",
+      "description": "MatchedObjectDescriptor.QualificationSummary"
+     }
+    },
+    "docs": "https://developer.usajobs.gov/api-reference/get-api-search",
+    "note": "Looks the announcement up with the documented PositionID search parameter (there is no per-id path)."
+   }
+  },
+  "not_offered": {
+   "apply": "Page: 'not offered — candidates apply on usajobs.gov with a login.gov account' (ApplyURI is in raw).",
+   "list_messages": "Page: 'apply / status / messaging' are 'not offered'."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host data.usajobs.gov: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/3 tool paths found verbatim on their docs pages; names not found on the page: me:ResultsPerPage"
+  ],
+  "notes": "-"
+ }
+}

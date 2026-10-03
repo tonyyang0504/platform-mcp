@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "hyperliquid-mcp",
+ "display_name": "Hyperliquid (perpetuals) MCP",
+ "version": "0.1.0",
+ "description": "Hyperliquid (perpetuals) (trading): me, list_markets, get_ticker, list_orders. Every tool maps to a ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hyperliquid"
+   ],
+   "env": {
+    "PLATFORM_MCP_HYPERLIQUID_WALLET_ADDRESS": "${user_config.platform_mcp_hyperliquid_wallet_address}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_hyperliquid_wallet_address": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HYPERLIQUID_WALLET_ADDRESS",
+   "description": "Public 0x address (42 hex characters) of the MAIN wallet whose orders/balances to read. Not a secret; no private key is needed or accepted. Only list_orders/get_balances use it.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public info endpoint, no credentials: the probe posts {\"type\": \"meta\"} (weight 20)."
+  },
+  {
+   "name": "list_markets",
+   "description": "Perpetuals universe (weight 20); every market is quoted in USDC and returned in one response (no pagination; `query` is not sent)."
+  },
+  {
+   "name": "get_ticker",
+   "description": "Top of the L2 book (weight 2): levels[0] are bids, levels[1] asks; prices are decimal strings on the wire and are returned as numbers (num:, as the vocabulary types bid/ask). `last`/`volume` are not available per symbol (allMids is a coin-keyed map and metaAndAssetCtxs a positional array the runtime cannot index by symbol)."
+  },
+  {
+   "name": "list_orders",
+   "description": "Open orders of PLATFORM_MCP_HYPERLIQUID_WALLET_ADDRESS (weight 20); `side` is B (bid/buy) or A (ask/sell). `symbol`/`status` are not sent."
+  }
+ ]
+}

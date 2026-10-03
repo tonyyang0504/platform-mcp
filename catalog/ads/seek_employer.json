@@ -1,0 +1,137 @@
+{
+ "id": "seek_employer",
+ "category": "ads",
+ "label": "SEEK Employer (Australia)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "apac",
+  "au",
+  "nz"
+ ],
+ "docs_url": "https://developer.seek.com/",
+ "url": "https://au.employer.seek.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "\"Access to the SEEK API requires approval from SEEK\" (integration request form); console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "webhooks"
+  ],
+  "auth": "oauth2 (SEEK API partner tokens + browser tokens; hirer relationships)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "reports",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (SEEK API — GraphQL job posting + ad performance, partner programme) Confidence: **high**.",
+  "base_urls": [
+   "https://graphql.seek.com/graphql"
+  ],
+  "auth": [
+   "1. Become a SEEK integration partner; obtain partner credentials (client credentials → partner token).",
+   "2. Hirers grant a hirer relationship; browser tokens power embedded panels.",
+   "3. GraphQL mutations for job posting; webhooks for events."
+  ],
+  "endpoints": [
+   {
+    "call": "mutation postPosition` / `postPositionProfileForOpening",
+    "purpose": "job ads with ad selection (Classic / StandOut / Premium)",
+    "notes": "positionTitle, positionDescription, location, salary, seekAnzAdvertisementType, questionnaire"
+   },
+   {
+    "call": "mutation updatePostedPositionProfile` · `closePostedPositionProfile",
+    "purpose": "update / close",
+    "notes": "profile id"
+   },
+   {
+    "call": "Ad Performance panel / query",
+    "purpose": "reports",
+    "notes": "positionProfileId"
+   },
+   {
+    "call": "Application Export · webhooks",
+    "purpose": "applications / events",
+    "notes": "subscription"
+   }
+  ],
+  "limits": " - Partner programme; SEEK API terms; free.",
+  "mcp_sdk": [
+   "GraphQL playground, mock objects, web components (developer.seek.com)."
+  ],
+  "sources": [
+   "https://developer.seek.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://developer.seek.com/ documents the SEEK API (GraphQL) for Job Posting, Ad Selection, Optimised Apply, Apply with SEEK and Ad Performance, available only to SEEK-approved software partners (partner tokens scoped to hirer relationships); it posts and manages job ads rather than advertising campaigns, budgets or spend reports, with no public self-serve access to map."
+}

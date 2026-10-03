@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercedes_benz_gebrauchtwagen-mcp",
+ "display_name": "Mercedes-Benz Vehicle Specification MCP",
+ "version": "0.1.0",
+ "description": "Mercedes-Benz Vehicle Specification (automotive): decode_vin. Every tool maps to a documented endpoi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mercedes_benz_gebrauchtwagen"
+   ],
+   "env": {
+    "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_API_KEY": "${user_config.platform_mcp_mercedes_benz_gebrauchtwagen_api_key}",
+    "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_LOCALE": "${user_config.platform_mcp_mercedes_benz_gebrauchtwagen_locale}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mercedes_benz_gebrauchtwagen_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_API_KEY",
+   "description": "Secret API key of a Mercedes-Benz /developers console project subscribed to Vehicle Specification (commercial plan); sent as x-api-key.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercedes_benz_gebrauchtwagen_locale": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_LOCALE",
+   "description": "Market locale for descriptions, e.g. de_DE or en_GB (required by the API; only some locales are supported).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "decode_vin",
+   "description": "GET /vehicles/{VIN or FIN}?locale&payloadNullValues=false (x-api-key): marketing specification of that exact vehicle (brand, model, longType, body, engine type, fuel, paint, options with codes, technicalData, power). modelYear is a code and stays in raw with baumuster, options and technicalData."
+  }
+ ]
+}

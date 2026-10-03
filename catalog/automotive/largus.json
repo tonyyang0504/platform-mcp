@@ -1,0 +1,44 @@
+{
+ "id": "largus",
+ "category": "automotive",
+ "label": "Occasion",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://occasion.largus.fr",
+ "domain": "occasion.largus.fr",
+ "country": "France",
+ "official_api": true,
+ "docs_url": "https://developer.leboncoin.auto/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client id/secret after commercial agreement",
+  "access": "partner_only",
+  "capabilities": [
+   "get_valuation",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). L'argus API documentation (developer.largus.fr) has moved to the leboncoin auto developer portal; Cote Argus valuation and pro listing APIs are available under a commercial contract.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.largus.fr/",
+   "https://developer.leboncoin.auto/",
+   "https://pro.largus.fr/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "L'argus / leboncoin auto developer portal (https://developer.leboncoin.auto/): Cote Argus valuation and pro listing APIs are available only under an annual commercial contract (OAuth2 client id/secret after agreement); not self-serve."
+}

@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/aws_marketplace-mcp",
+ "description": "AWS Marketplace (marketplaces): me, list_products, get_product, list_sales, list_refunds. Every tool",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.aws.amazon.com/marketplace-catalog/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "aws_marketplace"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AWS_MARKETPLACE_ACCESS_KEY_ID",
+     "description": "AWS access key id of the seller account's IAM principal with aws-marketplace:ListEntities, DescribeEntity and SearchAgreements (e.g. the AWSMarketplaceSellerProductsReadOnly policy plus agreement read access).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AWS_MARKETPLACE_SECRET_ACCESS_KEY",
+     "description": "The matching AWS secret access key; only used to derive the SigV4 signing key.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AWS_MARKETPLACE_SESSION_TOKEN",
+     "description": "Session token when the keys are temporary STS credentials.",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AWS_MARKETPLACE_ENTITY_TYPE",
+     "description": "Catalog entity type of your listings: SaaSProduct, AmiProduct, ContainerProduct, DataProduct (or Offer).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

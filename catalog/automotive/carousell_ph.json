@@ -1,0 +1,38 @@
+{
+ "id": "carousell_ph",
+ "category": "automotive",
+ "label": "Carousell",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.carousell.ph",
+ "domain": "carousell.ph",
+ "country": "Philippines",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Carousell has no public listings API; its GitHub org holds only OSS tooling.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://github.com/carousell",
+   "https://carousell.ph/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/hipersoft/carousell-scraper/api/mcp"
+  ]
+ },
+ "official_mcp": []
+}

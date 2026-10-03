@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "openligadb-mcp",
+ "display_name": "OpenLigaDB (Fußball-Bundesliga und weitere Ligen) MCP",
+ "version": "0.1.0",
+ "description": "OpenLigaDB (Fußball-Bundesliga und weitere Ligen) (competitions): discover, standings. Every tool ma",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "openligadb"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "discover",
+   "description": "Every league-season OpenLigaDB carries (about 830: Bundesliga 'bl1/2025', 2. Bundesliga 'bl2/2025', DFB-Pokal, also other sports); id is 'leagueShortcut/season'. query matches the name, id or sport; kind the sport name (Fußball ...)."
+  },
+  {
+   "name": "standings",
+   "description": "League table in table order (first row = first place; rank is not given by the API). competition_id is 'leagueShortcut/season' (bl1/2025). goals, goalDiff, won/draw/lost in raw."
+  }
+ ]
+}

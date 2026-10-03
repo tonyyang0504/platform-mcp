@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "roblox_devforum_collaboration-mcp",
+ "display_name": "Roblox DevForum — Collaboration MCP",
+ "version": "0.1.0",
+ "description": "Roblox DevForum — Collaboration (deals): search_postings, get_posting. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "roblox_devforum_collaboration"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /search.json?q=<query> category:82 order:latest&page=<page> (Discourse 'Search for a term'), restricted to the Collaboration › Find and Hire Talent ('Post job listings to hire talent.') category (id 82) and newest first. `query` is REQUIRED in practice: without it no q is sent and Discourse returns no topics. Discourse search takes at least 3 characters and supports its advanced filters inside the query (e.g. tags:scripter, after:2026-09-01). category and min_budget are not sent (no budget field on forum topics). Pages hold up to 50 topics (limit is not sent). title/posted_at are the topic's; description is the search excerpt; the topic URL is https://devforum.roblox.com/t/<id>. Posters are matched in the response's separate posts[] list (raw is per topic), so buyer is null here — use get_posting."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /t/{id}.json ('Get a single topic'): buyer = the topic creator's username, description = the first post's HTML (post_stream.posts[0].cooked); skills = the topic's tags. The topic URL is https://devforum.roblox.com/t/<id>."
+  }
+ ]
+}

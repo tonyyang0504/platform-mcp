@@ -1,0 +1,314 @@
+{
+ "id": "gmarket_esm",
+ "category": "ecommerce_channels",
+ "label": "Gmarket / Auction (ESM)",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://etapi.gmarket.com/",
+ "url": "https://www.gmarket.co.kr/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Active Gmarket / Auction seller with an ESM Plus master id; Access Key / Secret Key requested by e-mail (et_api@ebay.co.kr per integrator guides) — not self-serve; throttling on product-list queries announced; Korean-language docs; test environment not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Access Key + Secret Key issued by Gmarket on e-mail request with the ESM master id)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "messages"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.master_id"
+ ],
+ "rate_limits": "not readable",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official ESM Trading API site was opene",
+  "base_urls": [
+   "https://sa2.esmplus.com/…"
+  ],
+  "auth": [
+   "1. Seller has Gmarket + Auction seller ids under one ESM Plus master id.",
+   "2. Request an Access Key / Secret Key pair by e-mail with the master id (manual issuance).",
+   "3. Sign / authenticate calls per the certification guide (not readable in this pass)."
+  ],
+  "endpoints": [
+   {
+    "call": "item (goods) APIs",
+    "purpose": "register / modify products, price, stock",
+    "notes": "/item/v1/… — list query throttled"
+   },
+   {
+    "call": "order APIs",
+    "purpose": "orders + shipping (invoice / tracking registration)",
+    "notes": "/order/v1/…"
+   },
+   {
+    "call": "claim APIs",
+    "purpose": "cancellations, returns, exchanges, non-receipt",
+    "notes": "/claim/v1/…"
+   },
+   {
+    "call": "settlement APIs",
+    "purpose": "settlement inquiry (reports)",
+    "notes": ""
+   },
+   {
+    "call": "CS APIs",
+    "purpose": "customer messages",
+    "notes": ""
+   },
+   {
+    "call": "Star Shipping",
+    "purpose": "Gmarket fulfilment",
+    "notes": ""
+   }
+  ],
+  "limits": " Throttling announced for the product-list query API; numbers not published on the pages opened. - Keys issued manually to the seller (master id) — no third-party app model documented. - Korean market only (Gmarket + Auction).",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://etapi.gmarket.com/",
+   "https://etapi.gmarket.com/api-start/certification-guide/",
+   "https://etapi.ebaykorea.com/api-start/certification-guide/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://sa2.esmplus.com",
+  "rate_per_second": 0.2,
+  "envelope": {
+   "ok_field": "ResultCode",
+   "ok_value": 0,
+   "error_field": "Message"
+  },
+  "config_fields": [
+   {
+    "name": "master_id",
+    "required": true,
+    "help": "Your ESM+ master id; sent as the JWT header `kid` (selling-tool vendors put their own master id here). https://etapi.gmarket.com/pages/API-가이드"
+   },
+   {
+    "name": "site_seller_ids",
+    "required": true,
+    "help": "The JWT `ssi` claim: site id + seller id pairs, e.g. 'A:myauctionid,G:mygmarketid' (A = Auction, G = Gmarket; one of each at most)."
+   },
+   {
+    "name": "site_type",
+    "required": true,
+    "help": "Site whose orders list_orders reads: 1 = Auction, 2 = Gmarket (RequestOrders siteType)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "ESM Trading API Secret Key issued by Gmarket after the e-mail application (etapihelp@gmail.com); signs the HS256 JWT sent as 'Authorization: Bearer <JWT>' on every call. Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "mode": "jwt_hs256",
+    "key_field": "secret_key",
+    "jwt_header": {
+     "kid": "{@master_id}"
+    },
+    "claims": {
+     "iss": "www.esmplus.com",
+     "sub": "sell",
+     "aud": "sa.esmplus.com",
+     "iat": "{timestamp_s}",
+     "ssi": "{@site_seller_ids}"
+    },
+    "headers": {
+     "Authorization": "Bearer {signature}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/item/v1/shipping/delivery-company",
+    "docs": "https://etapi.gmarket.com/142",
+    "note": "Carrier list (deliveryCompanies[{deliveryCompCode, deliveryCompName}]); verifies the JWT and API permission. The codes are what mark_shipped's `carrier` takes."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/shipping/v1/Order/RequestOrders",
+    "body": {
+     "siteType": "int:@site_type",
+     "orderStatus": "map:status:paid=json:1,preparing=json:2,shipping=json:3,delivered=json:4,completed=json:5",
+     "requestDateType": "json:2",
+     "requestDateFrom": "date:since",
+     "requestDateTo": "today",
+     "pageIndex": "page",
+     "pageSize": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "Data.RequestOrders",
+     "key": "orders",
+     "total": "Data.TotalCount",
+     "fields": {
+      "id": "OrderNo",
+      "status": "OrderStatus",
+      "total": "AcntMoney",
+      "currency": "=KRW",
+      "created_at": "PayDate",
+      "tracking_number": "NoSongjang"
+     }
+    },
+    "docs": "https://etapi.gmarket.com/67",
+    "note": "주문조회 API (RequestOrders) by payment date. Both `status` (paid = 결제완료/new, preparing = 배송준비중, shipping = 배송중, delivered = 배송완료, completed = 구매결정완료) and `since` (YYYY-MM-DD, at most 31 days before today on Gmarket, 180 on Auction) are required by the API; the window ends today. Claim orders (cancel/return/exchange) are not listed. Rate limit: one call per 5 seconds. OrderStatus in results: 1 new, 2 awaiting shipment, 3 shipping, 4 delivered, 5 purchase decided."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/shipping/v1/Delivery/ShippingInfo",
+    "body": {
+     "OrderNo": "int:order_id",
+     "ShippingDate": "datefmt:%Y-%m-%dT%H:%M:%S:now",
+     "DeliveryCompanyCode": "int:carrier",
+     "InvoiceNo": "tracking_number"
+    },
+    "result": {
+     "root": "Data",
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://etapi.gmarket.com/70",
+    "note": "발송처리 API: marks a confirmed order as shipped. `carrier` is the numeric DeliveryCompanyCode from `me` (e.g. 10013 CJ대한통운, 10007 한진, 10008 롯데); `tracking_number` is the waybill (InvoiceNo). ShippingDate is the call time (UTC, within the 2-day window). Re-calling updates the shipping info."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/item/v1/goods/{listing_id}/price",
+    "body": {
+     "gmkt": "int:price",
+     "iac": "int:price"
+    },
+    "result": {
+     "fields": {
+      "status": "message"
+     }
+    },
+    "docs": "https://etapi.gmarket.com/186",
+    "note": "가격 수정 API: sets the same KRW price (10-won steps) on Gmarket (gmkt) and Auction (iac) for the master product `listing_id` (goodsNo). Only for products on sale. The item APIs report failures as resultCode 1000 with the reason in `status` (e.g. '[IAC] 상품이 없습니다.' when the product is listed on one site only)."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/item/v1/goods/{listing_id}/stock",
+    "body": {
+     "stock.gmkt": "quantity",
+     "stock.iac": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "message"
+     }
+    },
+    "docs": "https://etapi.gmarket.com/194",
+    "note": "재고 수정 API: sets the stock (1 to 99,999) of master product `listing_id` on both Gmarket and Auction. Only single products (no options, not Fulfilment Star Delivery). Failures come back as resultCode 1000 with the reason in `status`."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/item/v1/goods/{listing_id}",
+    "result": {
+     "fields": {
+      "status": "message"
+     }
+    },
+    "docs": "https://etapi.gmarket.com/29",
+    "note": "상품 삭제 API: deletes master product `listing_id` on both sites; it must already be 판매중지 (sale stopped), otherwise resultCode 1000 '상품삭제는 요청된 모든 상품이 [판매중지] 상태일 경우에만 가능합니다.' is returned in `status`."
+   }
+  },
+  "not_offered": {
+   "create_listing": "상품 등록 API (https://etapi.gmarket.com/20) requires the Gmarket/Auction leaf category codes ('itemBasicInfo > category > site > catCode', Y), shipping place and dispatch-policy numbers ('shipping > policy > placeNo', Y), product-notice codes ('officialNotice > officialNoticeNo', Y), selling periods and isVatFree; the vocabulary's create_listing has none of these inputs, so a valid registration cannot be built."
+  },
+  "terms": "ESM Trading API (Gmarket + Auction). Access is granted by Gmarket after an e-mail application with the ESM master id ('신청 승인은 … 내부 지원 리소스 한도 내에서 가능합니다'); calls are also restricted to registered server IPs."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires secret_key, master_id, site_seller_ids, site_type; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

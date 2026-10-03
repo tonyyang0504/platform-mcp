@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/the_trade_desk-mcp",
+ "description": "The Trade Desk (ads): me, list_accounts, list_campaigns, update_budget. Every tool maps to a documen",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/post-campaign-query-advertiser",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "the_trade_desk"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_THE_TRADE_DESK_API_TOKEN",
+     "description": "Platform API token generated in OpenTTD > Access Management > Generate Token / Key (Application: Platform API; lifetime one week to one year), sent as the TTD-Auth header. Short-lived tokens from POST /v3/authentication also work until they expire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_THE_TRADE_DESK_PARTNER_ID",
+     "description": "Your Partner ID (e.g. from POST /v3/partner/query); list_accounts lists the advertisers of this partner (POST /v3/advertiser/query/partner needs PartnerId).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

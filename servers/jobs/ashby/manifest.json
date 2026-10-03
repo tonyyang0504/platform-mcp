@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "ashby-mcp",
+ "display_name": "Ashby MCP",
+ "version": "0.1.0",
+ "description": "Ashby (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ashby"
+   ],
+   "env": {
+    "PLATFORM_MCP_ASHBY_JOB_BOARD_NAME": "${user_config.platform_mcp_ashby_job_board_name}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ashby_job_board_name": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ASHBY_JOB_BOARD_NAME",
+   "description": "The organisation's Ashby jobs page name: the last path segment of its hosted board, e.g. 'Ashby' in https://jobs.ashbyhq.com/Ashby.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Public Job Postings API for ONE organisation's board (config job_board_name): GET https://api.ashbyhq.com/posting-api/job-board/{JOB_BOARD_NAME}?includeCompensation=true 'get[s] data for all currently published Job Postings for your organization'. It has no keyword, location or paging parameters, so query/location/page/limit are not sent: every published job comes back in one response — filter client-side and do not request further pages. Live responses carry a posting id (the UUID in jobUrl) that the docs' field table omits. company is null (it is the configured organisation); department, team, isRemote, workplaceType, employmentType, secondaryLocations[], applyUrl, descriptionHtml and compensation (compensationTierSummary, summaryComponents[] with minValue/maxValue/currencyCode) are in raw."
+  }
+ ]
+}

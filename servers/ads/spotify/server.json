@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/spotify-mcp",
+ "description": "Spotify Ads (Spotify Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, pause_resume",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.spotify.com/documentation/ads-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "spotify"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SPOTIFY_CLIENT_ID",
+     "description": "Client ID of your Spotify for Developers app registered for the Ads API (the Ads API Terms must be accepted for it; allowlisting can take an hour).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SPOTIFY_CLIENT_SECRET",
+     "description": "The app's client secret (HTTP Basic on https://accounts.spotify.com/api/token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SPOTIFY_REFRESH_TOKEN",
+     "description": "Refresh token from one authorization-code login with your Ads Manager account (https://developer.spotify.com/documentation/ads-api/quick-start); it does not expire. One-hour access tokens are minted from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SPOTIFY_BUSINESS_ID",
+     "description": "Spotify Ads business id whose ad accounts list_accounts returns (GET /businesses lists yours).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SPOTIFY_AD_ACCOUNT_ID",
+     "description": "Ad account id used by pause_resume (the campaign PATCH path is /ad_accounts/{ad_account_id}/campaigns/{campaign_id}).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

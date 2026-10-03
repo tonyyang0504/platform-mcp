@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "doba-mcp",
+ "display_name": "Doba MCP",
+ "version": "0.1.0",
+ "description": "Doba (ecommerce suppliers): me, list_products, get_product, quote_shipping, create_order, get_order,",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "doba"
+   ],
+   "env": {
+    "PLATFORM_MCP_DOBA_APP_KEY": "${user_config.platform_mcp_doba_app_key}",
+    "PLATFORM_MCP_DOBA_PRIVATE_KEY": "${user_config.platform_mcp_doba_private_key}",
+    "PLATFORM_MCP_DOBA_PLATFORM_ID": "${user_config.platform_mcp_doba_platform_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_doba_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOBA_APP_KEY",
+   "description": "appKey assigned by Doba (Retailer API > Generate Key, https://open.doba.com/apidoc/retailer/developer/key); sent as the appKey header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_doba_private_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOBA_PRIVATE_KEY",
+   "description": "Your RSA private key from the same page, as PEM: '-----BEGIN PRIVATE KEY-----' + the base64 PKCS#8 key Doba shows + '-----END PRIVATE KEY-----' (newlines may be written as \\n). Signs 'appKey=…&signType=rsa2&timestamp=…' with SHA256withRSA; never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_doba_platform_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOBA_PLATFORM_ID",
+   "description": "Doba dsPlatformId of the marketplace your orders come from (Import Order): 1 Amazon, 2 eBay, 3 Shopify, 7 BigCommerce, 8 WooCommerce, 13 Walmart, 19 TikTok Shop, 26 Etsy, 99 Others (https://open.doba.com/apidoc/retailer).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "PrePay Balance Check (GET /api/pay/payManage/doba/queryPrepayBalance): businessData.data[{paymentMethodCode (7 = PrePay), remainingBalance}]. Verifies the appKey and RSA signature (requests older than 1 minute are rejected)."
+  },
+  {
+   "name": "list_products",
+   "description": "Query SPU List (GET /api/goods/doba/spu/list): keyword search of the Doba catalogue; `category` is a Doba catId (Query Category List). Prices are USD strings (min/max over the SPU's variants); `url` is the supplier's store page; `id` is the spuId for get_product."
+  },
+  {
+   "name": "get_product",
+   "description": "Query SPU Detail (GET /api/goods/doba/spu/detail): full SPU with children[] variants, each with stocks[] per warehouse {itemNo, availableNum, sellingPrice, regionId} and shipMethods. The mapped price/sku/stock are the FIRST variant's first warehouse; `sku` is the itemNo that create_order and quote_shipping take."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "Product Shipping Rate Estimate (POST /api/shipping/doba/cost/goods): `product_id` is an itemNo (get_product's `sku`), `quantity` is required. Each option's `id` (shippingMethodId) is what create_order's items take as shippingMethodId; `days` is the transit time range."
+  },
+  {
+   "name": "create_order",
+   "description": "Import Order (POST /api/order/doba/importOrder) creates one UNPAID order; pay it at `pay_url` or with Doba's Order Payment API. Pass `items` in Doba form: [{itemNo (get_product's sku), quantityOrdered, shippingMethodId (from quote_shipping)}] and `shipping_address` as {name, addr1, addr2, city, provinceCode (e.g. NY), countryCode (e.g. US), zip, telephone}; it is also sent as the billing address. When nothing succeeds (address invalid, out of stock, shipping method unavailable) the call reports 'platform returned no record'. Order ids are 18-digit numbers."
+  },
+  {
+   "name": "get_order",
+   "description": "Get Order Detail (GET /api/order/doba/queryOrder?ordBusiId=): returns the order's batch. `id` is the order BATCH id (ordBatchId); a paid order's status (Awaiting Payment, Pending, Unshipped, In Transit, Completed), placed time and waybill come from paidOrderList, while an order still awaiting payment appears only under `unpaid_status` / raw.waitingPayOrderList."
+  },
+  {
+   "name": "track",
+   "description": "Get Order Shipment Information (POST /api/order/doba/queryLogisTrack): one row per shipment with the waybill, carrier and logisTrackDetails[{code, desc, occurTime}]. Empty until the supplier ships."
+  }
+ ]
+}

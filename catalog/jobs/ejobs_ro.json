@@ -1,0 +1,65 @@
+{
+ "id": "ejobs_ro",
+ "category": "jobs",
+ "label": "eJobs",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "ro"
+ ],
+ "docs_url": "https://www.ejobs.ro/",
+ "url": "https://www.ejobs.ro/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Romania's main board; CV apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

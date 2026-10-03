@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "criteo-mcp",
+ "display_name": "Criteo (Commerce Growth / Criteo GO) MCP",
+ "version": "0.1.0",
+ "description": "Criteo (Commerce Growth / Criteo GO) (ads): me, list_accounts, list_campaigns, get_report, update_bu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "criteo"
+   ],
+   "env": {
+    "PLATFORM_MCP_CRITEO_CLIENT_ID": "${user_config.platform_mcp_criteo_client_id}",
+    "PLATFORM_MCP_CRITEO_CLIENT_SECRET": "${user_config.platform_mcp_criteo_client_secret}",
+    "PLATFORM_MCP_CRITEO_CURRENCY": "${user_config.platform_mcp_criteo_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_criteo_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRITEO_CLIENT_ID",
+   "description": "Client id of a Criteo Marketing Solutions app (Developer portal > app > Create new key), sent in the form body of POST https://api.criteo.com/oauth2/token (grant_type=client_credentials).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_criteo_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRITEO_CLIENT_SECRET",
+   "description": "The app key's secret. Tokens last 900 seconds and are re-requested automatically; the advertisers must have approved the app's consent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_criteo_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRITEO_CURRENCY",
+   "description": "ISO 4217 currency for get_report (the statistics endpoint requires `currency`), e.g. EUR or USD.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /2026-07/advertisers/me: the advertiser portfolio the app may access ({data: [{type: advertiser, id, attributes {advertiserName}}]})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "Advertisers in the app's portfolio; no currency on this record."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /2026-07/marketing-solutions/campaigns/search {filters: {advertiserIds: [account_id]}}. `budget` is spendLimit.spendLimitAmount.value (renewal daily|monthly|lifetime and capped|uncapped in raw.attributes.spendLimit). Criteo campaigns have no status (delivery is started/stopped per ad set); `status` and `page` are not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /2026-07/statistics/report (synchronous; up to two years back) with advertiserIds (comma-separated string), startDate/endDate, format=json, currency (config), dimensions CampaignId, Campaign, Day and metrics Displays, Clicks, AdvertiserCost. `campaign_id` is not applied (the endpoint filters by ad set only). The JSON rows are read from `Rows`."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /2026-07/marketing-solutions/campaigns {data: [{id, type: Campaign, attributes: {spendLimit: {spendLimitAmount: {value}, spendLimitRenewal: daily, spendLimitType: capped}}}]}: sets a capped daily spend limit in the advertiser currency (`currency` is ignored). A rejected patch comes back in `errors` with no data and is reported as invalid_input."
+  }
+ ]
+}

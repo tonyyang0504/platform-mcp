@@ -1,0 +1,42 @@
+{
+ "id": "paruvendu",
+ "category": "automotive",
+ "label": "Paruvendu",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.paruvendu.fr",
+ "domain": "paruvendu.fr",
+ "country": "France",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). ParuVendu Pro offers 'passerelles' (automatic listing import from pros' software) via commercial contact; no public spec found (article 403 on fetch).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://pro.paruvendu.fr/",
+   "https://pro.paruvendu.fr/article/les-passerelles-de-diffusion-d-annonces-i37185"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): ParuVendu Pro offers 'passerelles' (automatic listing import from pros' software) via commercial contact; no public spec found (article 403 on fetch)."
+}

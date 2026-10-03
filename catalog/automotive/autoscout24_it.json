@@ -1,0 +1,47 @@
+{
+ "id": "autoscout24_it",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autoscout24.it",
+ "domain": "autoscout24.it",
+ "country": "Italy",
+ "official_api": true,
+ "docs_url": "https://listing-creation.api.autoscout24.com/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql"
+  ],
+  "auth": "OAuth2 client credentials (issued by AutoScout24)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "search_listings"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). AutoScout24 group Listing Creation API (dealer listing upload) plus a GraphQL Search API for partners; credentials issued on application, no open public search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://listing-creation.api.autoscout24.com/assets/swagger/spec/index.html",
+   "https://www.autoscout24.de/haendlerportal/api/",
+   "https://www.autoscout24.de/haendlerportal/schnittstelle-search-api/",
+   "https://www.autoscout24.at/partner-infoportal/schnittstellen/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "AutoScout24 group Listing Creation API (dealer listing upload) plus a GraphQL Search API for partners; credentials issued on application, no open public search. The read side (search/valuation) is only issued on contract or to approved partners and its reference is not public, so no adapter was generated."
+}

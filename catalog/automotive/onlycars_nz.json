@@ -1,0 +1,43 @@
+{
+ "id": "onlycars_nz",
+ "category": "automotive",
+ "label": "Onlycars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.onlycars.co.nz",
+ "domain": "onlycars.co.nz",
+ "country": "New Zealand",
+ "official_api": false,
+ "docs_url": "https://www.onlycars.co.nz/partners",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "leads"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). OnlyCars integrates with DMS partners (Motorcentral, AutoPlay, Autostock) and mentions a lead API for dealers/3rd parties via its Partner Program (email); no public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.onlycars.co.nz/partners"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): OnlyCars integrates with DMS partners (Motorcentral, AutoPlay, Autostock) and mentions a lead API for dealers/3rd parties via its Partner Program (email); no public docs."
+}

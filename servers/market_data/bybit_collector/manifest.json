@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "bybit_collector-mcp",
+ "display_name": "Bybit V5 public REST MCP",
+ "version": "0.1.0",
+ "description": "Bybit V5 public REST (market data): me, get_candles, search_symbols. Every tool maps to a documented",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bybit_collector"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public API, no credentials: the probe is GET /v5/market/time ({retCode, retMsg, result.timeSecond, result.timeNano})."
+  },
+  {
+   "name": "get_candles",
+   "description": "`category=linear` (USDT/USDC perpetuals, the collector's scope) is fixed. result.list rows are positional arrays [startTime, openPrice, highPrice, lowPrice, closePrice, volume, turnover] sorted newest first and mapped by index (`raw.values` keeps the row). `interval` uses Bybit's values 1, 3, 5, 15, 30, 60, 120, 240, 360, 720, D, W, M; `start`/`end` are epoch MILLISECONDS (pass the number as a string); limit 1-1000, default 200. Bybit reports request errors inside HTTP 200 as retCode != 0 (retMsg), which then surfaces as an empty candle list — check `raw`. Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema). Failures answer HTTP 200 with a non-zero retCode (e.g. 10001 'params error: Symbol Is Invalid'); the envelope turns them into isError results instead of an empty candle list (live check 2026-09-26)."
+  },
+  {
+   "name": "search_symbols",
+   "description": "`category=linear` is fixed (required by the endpoint). No text search: `query` is sent as the exact `symbol` filter (e.g. BTCUSDT) and the first `limit` (default 500, max 1000) linear instruments come back when it is omitted; paging is by cursor (result.nextPageCursor), which `page` cannot carry. `name` is the baseCoin, `type` the contractType; status, quoteCoin, leverageFilter, priceFilter, lotSizeFilter stay in `raw`."
+  }
+ ]
+}

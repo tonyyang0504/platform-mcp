@@ -1,0 +1,36 @@
+{
+ "id": "at_wko_firmen",
+ "category": "sales",
+ "label": "WKO Firmen A-Z",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "at"
+ ],
+ "docs_url": null,
+ "url": "https://firmen.wko.at/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Chamber's official business directory (every Austrian business is a chamber member); robots.txt (4 Disallow) blocks the complex-search page only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

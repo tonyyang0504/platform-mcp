@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "kaufland-mcp",
+ "display_name": "Kaufland Global Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Kaufland Global Marketplace (ecommerce channels): me, set_inventory, end_listing, list_orders, mark_",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kaufland"
+   ],
+   "env": {
+    "PLATFORM_MCP_KAUFLAND_CLIENT_KEY": "${user_config.platform_mcp_kaufland_client_key}",
+    "PLATFORM_MCP_KAUFLAND_SECRET_KEY": "${user_config.platform_mcp_kaufland_secret_key}",
+    "PLATFORM_MCP_KAUFLAND_STOREFRONT": "${user_config.platform_mcp_kaufland_storefront}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kaufland_client_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAUFLAND_CLIENT_KEY",
+   "description": "Kaufland Marketplace Client Key (32 characters, seller portal API settings), sent as the Shop-Client-Key header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kaufland_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAUFLAND_SECRET_KEY",
+   "description": "The Secret Key (64 characters): signs every request (hex HMAC-SHA256 over METHOD, full URI, body and Unix timestamp joined by newlines, sent as Shop-Signature with Shop-Timestamp). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kaufland_storefront": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAUFLAND_STOREFRONT",
+   "description": "Kaufland storefront your offers live on: de, cz, sk, pl, at, fr, it, es or nl (GET /v2/info/storefront lists yours); sent as ?storefront= on unit and order-unit calls.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/info/storefront: the storefronts created for the signed-in seller ({data: [\"de\", ...]})."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PATCH /v2/units/{id_unit}?storefront {amount} sets the available amount of one offer unit; `listing_id` is the id_unit (required; units are not addressed by SKU). Returns the updated unit; `status` is the unit status (AVAILABLE|ONHOLD|INCOMPLETE)."
+  },
+  {
+   "name": "end_listing",
+   "description": "DELETE /v2/units/{id_unit}?storefront DELETES the offer unit (not reversible: a new unit must be created with POST /units). To pause an offer instead, set its amount to 0 with set_inventory."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /v2/order-units: one row per ORDER UNIT (Kaufland ships, cancels and refunds per unit), so `id` is id_order_unit — the id mark_shipped needs — and the customer order is raw.id_order. status: open|need_to_be_sent|sent|received|cancelled|returned|returned_paid|sent_and_autopaid; since = ts_created_from_iso (YYYY-MM-ddTHH:mm:ssZ); limit max 100. Prices are integral cents (raw.price, raw.revenue_gross), so no decimal `total` is mapped."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "PATCH /v2/order-units/{id_order_unit}/send {tracking_numbers, carrier_code} marks ONE order unit as sent (answers 204). `order_id` must be the id_order_unit from list_orders (call once per unit of a multi-unit order); `carrier` is a Kaufland carrier code (e.g. DHL, DPD, GLS, Hermes, UPS — see ?page=order-files#carrier-codes). Both carrier and tracking_number are required by the endpoint."
+  }
+ ]
+}

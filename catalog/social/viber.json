@@ -1,0 +1,262 @@
+{
+ "id": "viber",
+ "category": "social",
+ "label": "Viber",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "eu",
+  "sea"
+ ],
+ "docs_url": "https://developers.viber.com/docs/api/rest-bot-api/",
+ "url": "https://www.viber.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Messages reach SUBSCRIBED users only (one welcome message on conversation_started is the exception); broadcasts are marketing: <=300 receivers, 500 requests/10 s, text <=7,000 chars. Personal Viber accounts are never automated.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "token",
+  "access": "partner_only",
+  "capabilities": [
+   "inbox_dm",
+   "reply",
+   "broadcast(≤300 subscribers per call)",
+   "upload_media(URL)",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "viber-bot-python / viber-bot-node (official, archived)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 7000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (bots are commercially provisioned).",
+  "base_urls": [
+   "https://chatapi.viber.com/pa/"
+  ],
+  "auth": [
+   "1. Since **2024-02-05 \"Viber bots can only be created on commercial terms\"** — apply to Rakuten Viber directly or",
+   "2. `POST /set_webhook` {url, event_types[], send_name, send_photo} — Viber calls back with `webhook` event.",
+   "3. Users become subscribers when they send their first message (or via a deep link); one welcome message may be sent"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /send_message` {receiver, type text",
+    "purpose": "picture",
+    "notes": "video"
+   },
+   {
+    "call": "POST /broadcast_message` {broadcast_list[≤ 300], …}",
+    "purpose": "marketing → propose-only",
+    "notes": ""
+   },
+   {
+    "call": "POST /get_account_info` (subscribers count, webhook)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /get_user_details` {id}, `POST /get_online` {ids}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "webhook events `message`, `subscribed`, `unsubscribed`, `conversation_started`, `delivered`, `seen`, `failed",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - broadcast_message rate limit 500 requests per 10 s; message text ≤ 7,000 chars; media by URL. - Commercial contract pricing (not published); Business Messages (database messaging) is a separate paid product. - Personal Viber accounts cannot be automated (human lane in the Messaging rules).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.viber.com/docs/api/rest-bot-api/",
+   "https://developers.viber.com/docs/general/getting-started/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://chatapi.viber.com/pa",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "auth_token",
+     "required": true,
+     "help": "Viber Channel authentication token: as the channel's super admin open the Channel info screen > Developer Tools > copy token. The Channels Post API takes it as the auth_token member of every JSON request body (https://developers.viber.com/docs/tools/channels-post-api/). A webhook must have been set once with set_webhook before posting works (status 10 webhookNotSet otherwise)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sender_id",
+    "required": true,
+    "help": "Viber user id of a Channel SUPER ADMIN, sent as `from` ('Only the superadmins' ID should be used as the sender ID with this API'); listed under members[] with role superadmin in get_account_info."
+   }
+  ],
+  "envelope": {
+   "ok_field": "status",
+   "ok_value": 0,
+   "error_field": "status_message"
+  },
+  "rate_per_second": 2,
+  "terms": "Channel posts reach every channel subscriber; only channel super admins can obtain a token. Error status 12 tooManyRequests is a rate-control breach (no published numbers).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/get_account_info",
+    "body": {
+     "auth_token": "@auth_token"
+    },
+    "docs": "https://developers.viber.com/docs/tools/channels-post-api/#get-account-info",
+    "note": "get_account_info returns {status, status_message, Id ('pa:...'), chat_hostname (channel name), background, members[{id, name, avatar, role superadmin|admin}]}."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/post",
+    "body": {
+     "auth_token": "@auth_token",
+     "from": "@sender_id",
+     "type": "=text",
+     "text": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "message_token"
+     }
+    },
+    "docs": "https://developers.viber.com/docs/tools/channels-post-api/#text-message",
+    "note": "PUBLISHES to the Viber Channel: POST /pa/post {auth_token, from (config sender_id), type: 'text', text (max 7000 characters)}; subscribers see the channel name as sender. A non-zero status (2 invalidAuthToken, 4 missingData, 10 webhookNotSet, 12 tooManyRequests) is an error result. The page does not show a /post response body; `id` is message_token when Viber returns it (null otherwise). `reply_to` is ignored (no reply parameter)."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/post",
+    "body": {
+     "auth_token": "@auth_token",
+     "from": "@sender_id",
+     "type": "=picture",
+     "text": "text",
+     "media": "image_urls.0"
+    },
+    "result": {
+     "fields": {
+      "id": "message_token"
+     }
+    },
+    "docs": "https://developers.viber.com/docs/tools/channels-post-api/#picture-message",
+    "note": "PUBLISHES a picture message to the Viber Channel: {type: 'picture', text (description, 'Required. Max 768 characters' - pass text, an empty string is allowed), media (the first image_urls entry: a JPEG URL with a .jpeg extension, max 1 MB; 'Only JPEG format is supported')}. Only the first image is posted; no thumbnail is sent."
+   }
+  },
+  "not_offered": {
+   "read_comments": "The Channels Post API only posts: 'Posting to the Channel using the API, or when new messages are posted in the Channel by users will not generate a callback to this webhook', and no read endpoint is documented (https://developers.viber.com/docs/tools/channels-post-api/).",
+   "reply_comment": "No reply or comment parameter exists on /pa/post; the documented message types are text, picture, video, file, location, contact, sticker, url (https://developers.viber.com/docs/tools/channels-post-api/#message-types).",
+   "read_mentions": "No mentions or notifications endpoint is documented for channels (https://developers.viber.com/docs/tools/channels-post-api/).",
+   "delete": "No delete / unsend endpoint is documented for channel posts (https://developers.viber.com/docs/tools/channels-post-api/).",
+   "analytics_post": "No statistics endpoint is documented for channel posts (https://developers.viber.com/docs/tools/channels-post-api/)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires auth_token, sender_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

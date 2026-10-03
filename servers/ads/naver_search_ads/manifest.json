@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "naver_search_ads-mcp",
+ "display_name": "네이버 검색광고 Naver Search Ads MCP",
+ "version": "0.1.0",
+ "description": "네이버 검색광고 Naver Search Ads (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "naver_search_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_NAVER_SEARCH_ADS_API_KEY": "${user_config.platform_mcp_naver_search_ads_api_key}",
+    "PLATFORM_MCP_NAVER_SEARCH_ADS_SECRET_KEY": "${user_config.platform_mcp_naver_search_ads_secret_key}",
+    "PLATFORM_MCP_NAVER_SEARCH_ADS_CUSTOMER_ID": "${user_config.platform_mcp_naver_search_ads_customer_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_naver_search_ads_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NAVER_SEARCH_ADS_API_KEY",
+   "description": "API license (access license) from NAVER Search Advertiser's Center > Tools > API Manager, sent as X-API-KEY.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_naver_search_ads_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NAVER_SEARCH_ADS_SECRET_KEY",
+   "description": "The license's secret key; signs every request: X-Signature = base64(HMAC-SHA256(secret, \"<X-Timestamp ms>.<METHOD>.<path>\")).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_naver_search_ads_customer_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NAVER_SEARCH_ADS_CUSTOMER_ID",
+   "description": "Numeric advertiser customer id (shown in the Search Advertiser's Center), sent as X-Customer and as customerId in campaign updates.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /billing/bizmoney: the advertiser's bizmoney (prepaid balance) record for the X-Customer account; verifies the license, secret and customer id."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /ncc/campaigns?recordSize=… (campaigns of the X-Customer account, a JSON array). `budget` is dailyBudget in KRW, applied only when useDailyBudget is true (in raw); userLock=true means paused. Paging is cursor-style (baseSearchId + selector), so only the first page is returned; `account_id` and `status` are not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /stats?id=<campaign_id>&fields=[\"impCnt\",\"clkCnt\",\"salesAmt\",\"ctr\",\"cpc\",\"ccnt\"]&timeRange={\"since\",\"until\"}&timeIncrement=1: daily stats of one campaign (KST days). campaign_id is REQUIRED (the endpoint reports one entity). `spend` is salesAmt, the cost in KRW including VAT. `account_id` is not sent (X-Customer selects the account)."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /ncc/campaigns/{campaign_id}?fields=budget {nccCampaignId, customerId, useDailyBudget: true, dailyBudget} sets the campaign's daily budget in whole KRW (an integer; fractional values are refused) and switches the daily cap on. This spends money. `currency` is ignored (KRW)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /ncc/campaigns/{campaign_id}?fields=userLock {nccCampaignId, customerId, userLock}: userLock=true pauses (the advertiser's ON/OFF switch), false resumes. Naver's sample client (Campaigns.update) sends the Campaign object with fields=userLock."
+  }
+ ]
+}

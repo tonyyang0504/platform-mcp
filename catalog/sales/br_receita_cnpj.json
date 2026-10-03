@@ -1,0 +1,36 @@
+{
+ "id": "br_receita_cnpj",
+ "category": "sales",
+ "label": "Receita Federal",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "br"
+ ],
+ "docs_url": null,
+ "url": "https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp",
+ "verified_at": "2026-09-05",
+ "terms_note": "Per-query hCaptcha → tenant session; the same data is open as bulk CNPJ files (see BrasilAPI).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

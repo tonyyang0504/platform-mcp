@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "baijiahao-mcp",
+ "display_name": "Baijiahao MCP",
+ "version": "0.1.0",
+ "description": "Baijiahao (social): me, read_comments, delete, analytics_post. Every tool maps to a documented endpo",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "baijiahao"
+   ],
+   "env": {
+    "PLATFORM_MCP_BAIJIAHAO_APP_ID": "${user_config.platform_mcp_baijiahao_app_id}",
+    "PLATFORM_MCP_BAIJIAHAO_APP_TOKEN": "${user_config.platform_mcp_baijiahao_app_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_baijiahao_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIJIAHAO_APP_ID",
+   "description": "作者帐号ID (app_id) shown when you enable 开发者 service in the 百家号 creator console (开通开发者服务，获取app_token及app_id).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_baijiahao_app_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIJIAHAO_APP_TOKEN",
+   "description": "授权密钥 (app_token) from the same 开发者 settings; sent in the request body of every call. Reset it at once if it leaks.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No self-profile call is documented, so the credentials are verified with query/articleListall (page_size 1): errno 0 answers {page, items{article_id: {article_id, nid, title, type, status, collection, article_url, updated_at}}}; errno 60001001 means 授权校验失败."
+  },
+  {
+   "name": "read_comments",
+   "description": "query/articleCommentList (article_id, page_no, page_size ≤ 20): comments on one article (post_id = the article_id from the 百家号 console or article list), each {reply_id, thread_id, uname, avatar, content, create_time (epoch s), like_count, reply_count, favor, is_fans, reply_to_uname?}; data.page.has_next tells whether another page exists. Replies to one comment are at query/articleCommentReplyList (https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getCommentResponse)."
+  },
+  {
+   "name": "delete",
+   "description": "article/withdraw (撤回内容) takes the published article's NID as article_id: the article stops being shown ('撤回后的文章将不再展示'); personalised-recommended articles cannot be withdrawn. Permanent deletion (article/delete, https://baijiahao.baidu.com/docs/#/normalcomplex/developer/delete) only applies to drafts of 图文/横版视频 and to published 小视频, so it is not what this verb maps to."
+  },
+  {
+   "name": "analytics_post",
+   "description": "query/articleStatistics (article_id): cumulative recommend_count, view_count (阅读/播放量), comment_count, share_count, collect_count and likes_count since publication (-1 = 获取失败); no per-day series. The runtime cannot compose a nested metrics object or echo the post_id argument, so counts are top-level fields (all of data stays in raw)."
+  }
+ ]
+}

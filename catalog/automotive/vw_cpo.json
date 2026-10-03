@@ -1,0 +1,35 @@
+{
+ "id": "vw_cpo",
+ "category": "automotive",
+ "label": "Vwcertified",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://vwcertified.me",
+ "domain": "vwcertified.me",
+ "country": "UAE",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). VW certified region selector; no API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://vwcertified.me/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "whatsapp-mcp",
+ "display_name": "WhatsApp Business MCP",
+ "version": "0.1.0",
+ "description": "WhatsApp Business (messaging): me, send, mark_read. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "whatsapp"
+   ],
+   "env": {
+    "PLATFORM_MCP_WHATSAPP_ACCESS_TOKEN": "${user_config.platform_mcp_whatsapp_access_token}",
+    "PLATFORM_MCP_WHATSAPP_PHONE_NUMBER_ID": "${user_config.platform_mcp_whatsapp_phone_number_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_whatsapp_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WHATSAPP_ACCESS_TOKEN",
+   "description": "System user access token or business token of the WhatsApp Business Account (whatsapp_business_messaging, whatsapp_business_management), sent as `Authorization: Bearer` as in every Cloud API example (https://developers.facebook.com/docs/whatsapp/cloud-api/messages/text-messages).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_whatsapp_phone_number_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WHATSAPP_PHONE_NUMBER_ID",
+   "description": "WhatsApp business phone number ID (not the phone number itself, e.g. 106540352242922; GET /<WABA_ID>/phone_numbers lists them). Every call goes to /<phone_number_id>/... Env: PLATFORM_MCP_WHATSAPP_PHONE_NUMBER_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /{phone_number_id}?fields=id,display_phone_number,verified_name,quality_rating,status: the business phone number the token sends from."
+  },
+  {
+   "name": "send",
+   "description": "POST /{phone_number_id}/messages {messaging_product: whatsapp, recipient_type: individual, to, type: text, text: {body}} answers {contacts[{input, wa_id}], messages[{id: wamid...}]}. `to` is the user's phone number (e.g. +16505551234); body up to 4096 characters. Free-form text only reaches users inside the 24-hour customer service window; outside it only approved template messages can be sent (not mapped). `subject`/`channel` are ignored."
+  },
+  {
+   "name": "mark_read",
+   "description": "POST /{phone_number_id}/messages {messaging_product: whatsapp, status: read, message_id} answers {success: true}. `message_id` (the wamid from the incoming-message webhook) is REQUIRED by WhatsApp; 'When you mark a message as read, the API also marks earlier messages in the conversation as read'; within 30 days of receipt. `thread_id` is not used."
+  }
+ ]
+}

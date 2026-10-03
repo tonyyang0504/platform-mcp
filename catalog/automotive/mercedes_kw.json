@@ -1,0 +1,42 @@
+{
+ "id": "mercedes_kw",
+ "category": "automotive",
+ "label": "Mercedes Benz Mena",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.mercedes-benz-mena.com",
+ "domain": "mercedes-benz-mena.com",
+ "country": "Kuwait",
+ "official_api": true,
+ "docs_url": "https://developer.mercedes-benz.com/products/vehicle_specification",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key (Mercedes-Benz /developers account)",
+  "access": "paid",
+  "capabilities": [
+   "decode_vin"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). No API for the MENA used-car listings site itself, but Mercedes-Benz /developers offers an official VIN-based Vehicle Specification API (decode_vin) via signup/commercial plan.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.mercedes-benz.com/products/vehicle_specification",
+   "https://connectivity.mercedes-benz.com/products/vehicle-specification"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "No API for this used-car site: the site itself has no API; Mercedes-Benz's official Vehicle Specification (Fleet) API (https://developer.mercedes-benz.com/products/vehicle_specification, x-api-key, paid plan) decodes VINs and is served once, as automotive/mercedes_benz_gebrauchtwagen (decode_vin), since the same OEM API covers every Mercedes-Benz used-car site."
+}

@@ -1,0 +1,159 @@
+{
+ "id": "jobicy",
+ "category": "jobs",
+ "label": "Jobicy",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobicy.com/jobs-rss-feed",
+ "url": "https://jobicy.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Public JSON feed (attribution required); external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "rss",
+   "mcp",
+   "widget"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml",
+   "salary_data"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/Jobicy/jobicy-api-examples (official examples)"
+  ]
+ },
+ "official_mcp": [
+  "https://jobicy.com/mcp (official public MCP server, documented on the API page)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — keyless GET https://jobicy.com/api/v2/remote-jobs?count=N&geo=<location slug>&industry=<category>&tag=<keyword> (?get=locations / ?get=industries for the value lists) → jobs[{id, url,",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "RSS feed and an official MCP server (https://jobicy.com/mcp) as alternatives.",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " guidance: for cached / stored listings 'checking availability once or twice per hour is generally sufficient'; 'No API key … No account or authentication header is required'; guidance: for cached / stored listings 'checking availability once or twice per hour is generally sufficient'; robots.txt disallows /*api_access_key= and /feed$ for crawlers (the API is the sanctioned path). Terms-and-conditions page rate-limited the audit host (429) — not read. Salary API is a separate product page.",
+  "mcp_sdk": [
+   "https://jobicy.com/mcp (official public MCP server, documented on the API page)",
+   "https://github.com/Jobicy/jobicy-api-examples (official examples)"
+  ],
+  "sources": [
+   "https://jobicy.com/jobs-rss-feed",
+   "https://jobicy.com/jobs-rss-feed.md",
+   "https://jobicy.com/robots.txt",
+   "https://jobicy.com/api/v2/remote-jobs?get=industries",
+   "https://jobicy.com/api/v2/remote-jobs?get=locations",
+   "https://jobicy.com/terms-and-conditions"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobicy.com/api/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/remote-jobs",
+    "params": {
+     "tag": "query",
+     "geo": "location",
+     "count": "limit"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "jobTitle",
+      "company": "companyName",
+      "location": "jobGeo",
+      "url": "url",
+      "posted_at": "pubDate",
+      "salary_min": "salaryMin",
+      "salary_max": "salaryMax",
+      "currency": "salaryCurrency",
+      "description": "jobDescription"
+     }
+    },
+    "docs": "https://jobicy.com/jobs-rss-feed",
+    "note": "Keyless ('No API key … No account or authentication header is required'). location must be a Jobicy location slug (?get=locations lists them); there is no page parameter — count is the whole result set, so page > 1 repeats it. Jobicy asks that stored listings be re-checked only 'once or twice per hour'. An official MCP server also exists at https://jobicy.com/mcp."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "Only the list endpoint (plus ?get=locations / ?get=industries) is documented; re-read the record from the search hit.",
+   "apply": "Page: 'Apply stays assist (url → Jobicy listing → employer)'.",
+   "list_messages": "No messaging API; the page documents job search, RSS and the value lists only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

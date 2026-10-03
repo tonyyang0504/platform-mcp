@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "meta_audience_network-mcp",
+ "display_name": "Meta Audience Network MCP",
+ "version": "0.1.0",
+ "description": "Meta Audience Network (ads): me, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "meta_audience_network"
+   ],
+   "env": {
+    "PLATFORM_MCP_META_AUDIENCE_NETWORK_ACCESS_TOKEN": "${user_config.platform_mcp_meta_audience_network_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_meta_audience_network_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_AUDIENCE_NETWORK_ACCESS_TOKEN",
+   "description": "Long-lived Meta User Access Token with the read_audience_network_insights permission (system user tokens are not supported by this endpoint); long-lived user tokens last about 60 days and must then be renewed.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me: the user the token belongs to ({id, name})."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /{account_id}/adnetworkanalytics (account_id = the Business, property or app id) with metrics fb_ad_network_request, _imp, _click, _revenue, aggregation_period=day, since/until: one row per metric per day (value is a string; revenue in the account currency). Synchronous queries cover at most 8 days and 2,000 rows; data is kept 540 days. Audience Network is a publisher (monetisation) product; `campaign_id` does not apply."
+  }
+ ]
+}

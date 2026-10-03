@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "fruugo-mcp",
+ "display_name": "Fruugo MCP",
+ "version": "0.1.0",
+ "description": "Fruugo (ecommerce channels): me, list_orders, mark_shipped, set_inventory, end_listing. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "fruugo"
+   ],
+   "env": {
+    "PLATFORM_MCP_FRUUGO_USERNAME": "${user_config.platform_mcp_fruugo_username}",
+    "PLATFORM_MCP_FRUUGO_PASSWORD": "${user_config.platform_mcp_fruugo_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_fruugo_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FRUUGO_USERNAME",
+   "description": "Fruugo Retailer Portal login (the Order and Stock Status APIs use the portal credentials with HTTP Basic).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_fruugo_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FRUUGO_PASSWORD",
+   "description": "Fruugo Retailer Portal password.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe downloads today's released orders (GET /orders/download/v2?from=<today>) to verify the portal credentials."
+  },
+  {
+   "name": "list_orders",
+   "description": "Download Orders v2: `since` (ISO 8601 date or datetime) is REQUIRED and is compared with the time Fruugo RELEASED the order (after payment and fraud checks), not the order date. The API is not paged: it returns every order released since then, with order lines, statuses (PENDING, PROCESSED…) and shipments under raw; `status` is not a server-side filter."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "Ship Order for every item on the order (orderId from list_orders). `carrier` is sent as trackingUrl, which Fruugo documents as \"a URL of the courier company where the package can be tracked or at a minimum the courier name\"; `tracking_number` is relayed to the customer. Confirm the order first in the portal or it ships from PENDING directly."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Stock Inventory Update: `listing_id` is the fruugoSkuId (Fruugo's numeric SKU id, listed by GET /stockstatus-api), required; itemsInStock is saved synchronously (the live site follows within minutes). The availability flag is left unchanged; use end_listing to mark a SKU NOTAVAILABLE."
+  },
+  {
+   "name": "end_listing",
+   "description": "Sets availability NOTAVAILABLE for one fruugoSkuId (listing_id): \"The product is permanently out of stock and needs to be removed.\" Your product feed must stop listing it too, or the next feed import restores it."
+  }
+ ]
+}

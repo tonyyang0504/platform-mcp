@@ -1,0 +1,92 @@
+{
+ "id": "polymarket_collector",
+ "category": "market_data",
+ "label": "Polymarket Gamma + CLOB",
+ "provider": "Polymarket",
+ "lane": "api",
+ "base_urls": [
+  "https://gamma-api.polymarket.com",
+  "https://clob.polymarket.com"
+ ],
+ "data_kinds": [
+  "prediction markets: market discovery/metadata/resolution",
+  "1-minute price history (implied probability)",
+  "L2 order books"
+ ],
+ "auth": "none (public; custom User-Agent needed, Cloudflare filters default python UAs)",
+ "docs_url": "https://docs.polymarket.com/",
+ "verified_at": "2026-09-24",
+ "adapter": {
+  "base_url": "https://gamma-api.polymarket.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "Gamma and the Data API are public and keyless; rate limits are only described as 'Standard' per Builder tier (https://docs.polymarket.com/programs/builders/tiers), no number published. Two requests per second. The survey notes Cloudflare filters default python User-Agents; the runtime sends its own platform-mcp User-Agent.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/markets",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://docs.polymarket.com/api-spec/gamma-openapi.yaml",
+    "note": "No credentials: the probe lists one market (GET /markets?limit=1); Gamma answers a bare array, so `account` is empty."
+   },
+   "search_symbols": {
+    "method": "GET",
+    "path": "/markets",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "$",
+     "key": "results",
+     "fields": {
+      "symbol": "slug",
+      "name": "question",
+      "type": "marketType"
+     }
+    },
+    "docs": "https://docs.polymarket.com/api-spec/gamma-openapi.yaml",
+    "note": "Gamma `GET /markets` (OpenAPI listMarkets: limit, offset, order, ascending, closed (default false), tag_id, slug[], condition_ids[] …) has no free-text parameter, so `query` is not sent and the offset-paged list of open markets is returned (filter by `name` client-side; /public-search?q= exists but returns events/tags/profiles). `symbol` is the market slug (also accepted by GET /markets/slug/{slug}); conditionId, clobTokenIds (the token ids get_series needs), outcomes, outcomePrices, volume, liquidity, endDate stay in `raw`. No max limit is documented; capped at 100."
+   },
+   "get_series": {
+    "method": "GET",
+    "path": "https://data-api.polymarket.com/v2/prices-history",
+    "params": {
+     "token_id": "series_id",
+     "start": "start",
+     "end": "end"
+    },
+    "default_limit": 100000,
+    "result": {
+     "items": "data",
+     "key": "points",
+     "fields": {
+      "time": "str:timestamp",
+      "value": "price"
+     }
+    },
+    "docs": "https://docs.polymarket.com/market-data/prices-order-books",
+    "note": "Price history of one outcome token from the Data API (different host, same keyless access): `series_id` is the CLOB token_id (from a market's raw.clobTokenIds). The endpoint requires exactly one time specification — `start` and `end` here, as Unix epoch SECONDS (max 15-day span); it also accepts interval (1m…max) and as_of, which the vocabulary cannot carry, so a call without start/end is refused by the platform. Points are `data[].timestamp` (Unix seconds) / `price` (implied probability), oldest first; bucket_seconds and cursor paging are not exposed. `time` is returned as a string (the vocabulary types it so; the API sends Unix seconds as a number — live check 2026-09-26). An unknown token_id answers an empty data list."
+   }
+  },
+  "not_offered": {
+   "get_candles": "Polymarket publishes price points (timestamp/price) per outcome token, not OHLC candles — use get_series.",
+   "get_news": "No news endpoint on this API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: series point time was a number, the vocabulary a string; all read tools answered, schema-valid, pagination advances"
+ }
+}

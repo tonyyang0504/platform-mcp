@@ -1,0 +1,228 @@
+{
+ "id": "amazon_dsp",
+ "category": "ads",
+ "label": "Amazon DSP",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://advertising.amazon.com/API/docs/en-us/",
+ "url": "https://advertising.amazon.com/solutions/products/amazon-dsp",
+ "verified_at": "2026-09-25",
+ "terms_note": "Same Amazon Ads API onboarding as sponsored ads (approved application required)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (Login with Amazon, same Amazon Ads API credentials; DSP calls scoped by dspAccountId / manager_account_id)",
+  "access": "partner_only",
+  "capabilities": [
+   "reports",
+   "audiences",
+   "account_management"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (reporting + audience tooling confirmed; DSP order / line-item management not verifiable this pass).",
+  "base_urls": [
+   "https://advertising-api.amazon.com"
+  ],
+  "auth": [
+   "1. Login with Amazon app approved for the Ads API (see `amazon_ads.md`); the advertiser grants access to a DSP advertiser / entity.",
+   "2. `Authorization: Bearer`, `Amazon-Advertising-API-ClientId`, and the DSP account id (`dspAccountId`) / `manager_account_id` where the collection uses them."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /accounts/{dspAccountId}/dsp/reports` → `GET …/dsp/reports/{reportId}",
+    "purpose": "DSP reports (async)",
+    "notes": "startDate, endDate, format, type (CAMPAIGN / INVENTORY / AUDIENCE…), dimensions[], metrics[]"
+   },
+   {
+    "call": "Persona builder (`Amazon DSP › Persona builder`, 5 requests)",
+    "purpose": "audience insights / persona",
+    "notes": "audience definitions, overlap"
+   },
+   {
+    "call": "POST /amc/audiences/query` · `POST /amc/audiences/lookalike",
+    "purpose": "AMC rule-based / lookalike audiences",
+    "notes": "instance id, SQL query, audience metadata"
+   },
+   {
+    "call": "DSP orders / line items / creatives create + update",
+    "purpose": "**not in the official collection** (TODO(verify) in the Advanced Tools Center \"DSP\" section)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-endpoint throttling (429). DSP access: self-service DSP subject to Amazon approval and spend minimums, or managed service; fees via the DSP.",
+  "mcp_sdk": [
+   "Official Postman collection (github.com/amzn/ads-advanced-tools-docs). No SDK / MCP."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/postman/Amazon_Ads_API.postman_collection.json",
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/postman/Amazon_Ads_API_Environment.postman_environment.json",
+   "https://advertising.amazon.com/solutions/products/amazon-dsp"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.amazon.com/auth/o2/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "Amazon-Advertising-API-ClientId": "client_id",
+    "Amazon-Advertising-API-Scope": "profile_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Login with Amazon client id of the app approved for the Amazon Ads API; also sent as the Amazon-Advertising-API-ClientId header."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The LWA client secret (form body of the refresh_token grant)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "LWA refresh token from the advertiser's consent (scope advertising::campaign_management); the runtime mints hourly access tokens from it at https://api.amazon.com/auth/o2/token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "Regional Amazon Ads API host: advertising-api.amazon.com (North America), advertising-api-eu.amazon.com (Europe) or advertising-api-fe.amazon.com (Far East)."
+   },
+   {
+    "name": "profile_id",
+    "required": true,
+    "help": "Advertising profile id of the DSP entity (from GET /v2/profiles; accountInfo.type must be `agency`), sent as the Amazon-Advertising-API-Scope header."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/profiles/{profile_id}",
+    "path_params": {
+     "profile_id": "@profile_id"
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/reference/profiles",
+    "note": "GET /v2/profiles/{profileId}: the configured profile {profileId, countryCode, currencyCode, timezone, accountInfo {id, type, name, marketplaceStringId}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/dsp/advertisers",
+    "params": {
+     "startIndex": "offset",
+     "count": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "response",
+     "key": "accounts",
+     "total": "totalResults",
+     "fields": {
+      "id": "advertiserId",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/dsp-advertiser/#tag/Advertiser/paths/~1dsp~1advertisers/get",
+    "note": "GET /dsp/advertisers (startIndex/count, max 100): DSP advertisers of the configured DSP entity profile ({advertiserId, name, currency, url, country, timezone})."
+   }
+  },
+  "not_offered": {
+   "get_report": "DSP reports are asynchronous: \"POST /accounts/{dspAccountId}/dsp/reports\" then \"GET …/dsp/reports/{reportId}\" until the file is ready (Amazon Ads API Postman collection, https://github.com/amzn/ads-advanced-tools-docs, Reporting > DSP report); the runtime has no report polling.",
+   "list_campaigns": "DSP orders / line items are not in Amazon's public API collection and their reference page (https://advertising.amazon.com/API/docs/en-us/dsp-orders/) answers \"The requested document was not found\"; not mapped rather than guessed.",
+   "update_budget": "No publicly documented DSP order/line-item update endpoint could be opened (see list_campaigns).",
+   "pause_resume": "No publicly documented DSP order/line-item update endpoint could be opened (see list_campaigns)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host advertising-api.amazon.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.amazon.com/auth/o2/token: 401 Client authentication failed",
+   "authorize https://www.amazon.com/ap/oa: 200",
+   "spec https://d1y2lf8k3vrkfu.cloudfront.net/openapi/en-us/dest/Profiles_prod_3p.json: 0/1 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "me: spec says \"path not in spec: GET /v2/profiles/X1X\"; waived: Amazon's published Profiles OpenAPI (Profiles_prod_3p.json) lists GET /profiles; the adapter uses GET /v2/profiles, the path on Amazon's reference page and in its SDKs. Both answer 401 with a dummy token while an unknown route answers 403 'Invalid key=value pair … in Authorization header', so both routes exist. 1 tool(s) have no machine-readable spec"
+ }
+}

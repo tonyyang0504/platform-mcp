@@ -1,0 +1,33 @@
+{
+ "id": "autoagora",
+ "category": "automotive",
+ "label": "Autoagora",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autoagora.com.cy",
+ "domain": "autoagora.com.cy",
+ "country": "Cyprus",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). cars_marketplace site unreachable during check; no developer/API presence known. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

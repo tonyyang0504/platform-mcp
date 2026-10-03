@@ -1,0 +1,36 @@
+{
+ "id": "ca_business_registries",
+ "category": "sales",
+ "label": "Canada's Business Registries",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "ca"
+ ],
+ "docs_url": null,
+ "url": "https://www.canadasbusinessregistries.ca/",
+ "verified_at": "2026-09-05",
+ "terms_note": "The beta host no longer resolves; the search now lives at ised-isde.canada.ca/cbr-rec (federal + provincial registers, free); no robots.txt on the path.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

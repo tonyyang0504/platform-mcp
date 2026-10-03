@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "bonanza-mcp",
+ "display_name": "Bonanza MCP",
+ "version": "0.1.0",
+ "description": "Bonanza (ecommerce channels): me, create_listing, end_listing, list_orders, mark_shipped. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bonanza"
+   ],
+   "env": {
+    "PLATFORM_MCP_BONANZA_DEV_ID": "${user_config.platform_mcp_bonanza_dev_id}",
+    "PLATFORM_MCP_BONANZA_CERT_ID": "${user_config.platform_mcp_bonanza_cert_id}",
+    "PLATFORM_MCP_BONANZA_AUTH_TOKEN": "${user_config.platform_mcp_bonanza_auth_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bonanza_dev_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BONANZA_DEV_ID",
+   "description": "Developer id (dev_id) of your approved Bonanza API account (api.bonanza.com > Apply for an API account); sent as the X-BONANZLE-API-DEV-NAME header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bonanza_cert_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BONANZA_CERT_ID",
+   "description": "Certificate id (cert_id) of the same API account; sent as the X-BONANZLE-API-CERT-NAME header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bonanza_auth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BONANZA_AUTH_TOKEN",
+   "description": "The seller's verified user token (fetchToken, then the seller approves it at the returned authentication URL); sent in every request body as requesterCredentials.bonanzleAuthToken. Tokens expire a year after issue or when the seller deactivates them.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getTokenStatus returns getTokenStatusResponse {verified, hardExpirationTime} for the configured seller token."
+  },
+  {
+   "name": "create_listing",
+   "description": "addFixedPriceItem with allowForSale=true: the item is PUBLISHED for sale in the seller's booth immediately when it has every required field (sellingState Active). `price` is in US dollars; title at most 80 characters; up to 4 image URLs fetched by Bonanza. Category is guessed by Bonanza and no shipping is sent, so an item without a shipping setting comes back as 'Missing required fields' with the missing fields in raw.message. `currency` is not a field of the call."
+  },
+  {
+   "name": "end_listing",
+   "description": "endFixedPriceItem removes the item from the seller's booth; endFixedPriceItemResponse.itemsRemoved (in raw) is the number actually removed (0 means nothing was ended)."
+  },
+  {
+   "name": "list_orders",
+   "description": "getOrders as seller: orderStatus (Active|Cancelled|Completed|Incomplete|InProcess|Invoiced|Proposed|Shipped; Completed = paid, not yet shipped), createTimeFrom (dateTime), entriesPerPage (max 100) and pageNumber (max 100). Each row is orderArray[].order; `total` is order.total (a decimal string, US dollars), items and shipping address in raw."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "completeSale {transactionID (= order id), shipped: true, shipment {shippingTrackingNumber, shippingCarrierUsed}} marks the order shipped. `carrier` must be one of usps, ups, fedex, other."
+  }
+ ]
+}

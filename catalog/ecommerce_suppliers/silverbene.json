@@ -1,0 +1,133 @@
+{
+ "id": "silverbene",
+ "category": "ecommerce_suppliers",
+ "label": "SilverBene (Guangzhou Shibao Jewelry Co.)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://silverbene.com/silverbene-jewelry-dropshipping-rest-api",
+ "url": "https://www.silverbene.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (\"We provide REST API for your order & inventory synchronization automation\")",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "API token from the (dropshipping-enabled) account",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Create an account and switch it to Dropshipping",
+   "2. Get the API token (link on the guide)",
+   "3. Send the token with each request"
+  ],
+  "endpoints": [
+   {
+    "call": "get products list",
+    "purpose": "by SKU → product with option_id(s)",
+    "notes": ""
+   },
+   {
+    "call": "get product stock qty",
+    "purpose": "by option_id",
+    "notes": ""
+   },
+   {
+    "call": "get shipping rates",
+    "purpose": "option_id + qty, country_id + postcode → shipping methods",
+    "notes": ""
+   },
+   {
+    "call": "create order",
+    "purpose": "products + shipping_address + shipping method → order_id + USD payment link",
+    "notes": ""
+   },
+   {
+    "call": "order status / tracking",
+    "purpose": "via Shopify app sync or order query",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Order from 1 piece - Pay per order (USD link)",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://silverbene.com/silverbene-jewelry-dropshipping-rest-api"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "https://silverbene.com/silverbene-jewelry-dropshipping-rest-api links the reference at https://s.silverbene.com/dropshipping-api-doc, which renders (2026-09-25) as 'Silverbene Dropshipping Open API — Sign in: Sign in with your silverbene.com account to view the API documentation and your API key' with an email/password form and no other links. Docs behind the customer login."
+}

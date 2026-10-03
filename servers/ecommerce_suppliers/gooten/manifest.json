@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "gooten-mcp",
+ "display_name": "Gooten MCP",
+ "version": "0.1.0",
+ "description": "Gooten (ecommerce suppliers): me, list_products, create_order, get_order, track. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gooten"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOTEN_RECIPE_ID": "${user_config.platform_mcp_gooten_recipe_id}",
+    "PLATFORM_MCP_GOOTEN_PARTNER_BILLING_KEY": "${user_config.platform_mcp_gooten_partner_billing_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_gooten_recipe_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOTEN_RECIPE_ID",
+   "description": "Gooten RecipeID (public key, Admin Panel > Settings > API), sent as the `recipeid` query parameter on every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_gooten_partner_billing_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOTEN_PARTNER_BILLING_KEY",
+   "description": "Gooten PartnerBillingKey (private key from the same API settings page), sent inside create_order's Payment object so Gooten bills your account; required only for create_order.",
+   "sensitive": true,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists the supported shipping countries ({Countries[{Name, Code, IsSupported, DefaultCurrency}]}) for the RecipeID."
+  },
+  {
+   "name": "list_products",
+   "description": "Your Print Ready Products (products already combined with your artwork): {PageCount, Page, Products[{ProductName, NumberOfVariants}]}. `query`, `category` and `limit` are not accepted (Gooten sets the page size). Gooten's base catalogue is a static CDN file (productdatav3/catalog.json), not an API call."
+  },
+  {
+   "name": "create_order",
+   "description": "Submits a LIVE order billed to your Gooten account through the PartnerBillingKey (IsInTestMode is not sent). `shipping_address` is Gooten's address {FirstName, LastName, Line1, Line2, City, State, CountryCode, PostalCode, Phone, Email} and is also used as BillingAddress; `items` are Gooten items [{SKU, Quantity, ShipType (standard|expedited|overnight), Images[{Url}]}] - the shipping method is per item, so `shipping_option` is not sent. Answers {Id} (the order id get_order takes); validation failures come back as HadError=true with Errors[{PropertyName, ErrorMessage}]."
+  },
+  {
+   "name": "get_order",
+   "description": "GET orders/?id= : {Id, NiceId, SourceId, Items[{Sku, Quantity, Status, TrackingNumber, TrackingUrl, ShipCarrierName, Price{Price, CurrencyCode}, Shipments[]}], ShipToAddress, ...}. Gooten tracks status per item; `status`/`tracking_number` are the first item's. Order totals are per item (Items[].Price) and not mapped to `total`."
+  },
+  {
+   "name": "track",
+   "description": "One row per order item with its status, carrier and tracking number/URL (Items[].Shipments holds split shipments, in `raw`)."
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "id": "blocket",
+ "category": "automotive",
+ "label": "Blocket",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.blocket.se",
+ "domain": "blocket.se",
+ "country": "Sweden",
+ "official_api": true,
+ "docs_url": "https://api.blocket.se/pro-import-api/docs/client-documentation",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "JWT in X-Auth-Token, issued by Blocket customer support (dealer_code scope)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Blocket Pro Import API v4 lets dealers create/update/delete their own Blocket and Bytbil ads; explicitly not for powering search sites; no public search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.blocket.se/pro-import-api/docs/client-documentation",
+   "https://api.blocket.se/pro-import-api/docs/category-reference",
+   "https://api.blocket.se/pro-import-api/docs/changelog"
+  ],
+  "unofficial": [
+   "https://blocket-api.se/",
+   "https://pypi.org/project/blocket-api/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://api.blocket.se/pro-import-api/docs/client-documentation): Blocket Pro Import API v4 lets dealers create/update/delete their own Blocket and Bytbil ads; explicitly not for powering search sites; no public search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

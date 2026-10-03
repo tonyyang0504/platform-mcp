@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "youtube-mcp",
+ "display_name": "YouTube MCP",
+ "version": "0.1.0",
+ "description": "YouTube (social): me, read_comments, reply_comment, delete, analytics_post. Every tool maps to a doc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "youtube"
+   ],
+   "env": {
+    "PLATFORM_MCP_YOUTUBE_CLIENT_ID": "${user_config.platform_mcp_youtube_client_id}",
+    "PLATFORM_MCP_YOUTUBE_CLIENT_SECRET": "${user_config.platform_mcp_youtube_client_secret}",
+    "PLATFORM_MCP_YOUTUBE_REFRESH_TOKEN": "${user_config.platform_mcp_youtube_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_youtube_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YOUTUBE_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_youtube_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YOUTUBE_CLIENT_SECRET",
+   "description": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_youtube_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YOUTUBE_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/youtube.force-ssl. 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "channels.list?mine=true: account.items[0] is the authenticated user's channel (snippet, statistics)."
+  },
+  {
+   "name": "read_comments",
+   "description": "`post_id` is the video ID; returns top-level comments (1 quota unit). Pagination is by pageToken, so `page` is ignored. `id` is the top-level comment id to pass to reply_comment."
+  },
+  {
+   "name": "reply_comment",
+   "description": "comments.insert 'Creates a reply to an existing comment' (50 quota units); `comment_id` is the top-level comment id."
+  },
+  {
+   "name": "delete",
+   "description": "DESTRUCTIVE: videos.delete 'Deletes a YouTube video' (`post_id` = video ID, 50 quota units); answers 204."
+  },
+  {
+   "name": "analytics_post",
+   "description": "videos.list?part=statistics: metrics carries viewCount, likeCount, favoriteCount, commentCount (strings). An unknown video id is `invalid_input`."
+  }
+ ]
+}

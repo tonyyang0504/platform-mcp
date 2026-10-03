@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "atlassian_marketplace-mcp",
+ "display_name": "Atlassian Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Atlassian Marketplace (marketplaces): me, list_products, get_product, list_sales, list_refunds. Ever",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "atlassian_marketplace"
+   ],
+   "env": {
+    "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_EMAIL": "${user_config.platform_mcp_atlassian_marketplace_email}",
+    "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_API_TOKEN": "${user_config.platform_mcp_atlassian_marketplace_api_token}",
+    "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_VENDOR_ID": "${user_config.platform_mcp_atlassian_marketplace_vendor_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_atlassian_marketplace_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_EMAIL",
+   "description": "Email of the Atlassian account that belongs to the Marketplace partner (vendor) with reporting access; Basic auth username (securitySchemes mpac_authed http basic in https://developer.atlassian.com/platform/marketplace/rest/v2/ swagger.v3.json).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_atlassian_marketplace_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_API_TOKEN",
+   "description": "Atlassian API token of that account (https://id.atlassian.com/manage-profile/security/api-tokens), used as the Basic auth password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_atlassian_marketplace_vendor_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ATLASSIAN_MARKETPLACE_VENDOR_ID",
+   "description": "Numeric Marketplace partner (vendor) id, shown in the Marketplace partner portal URL (/manage/vendors/{vendorId}).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no 'current user' resource: the probe reads one sales transaction of config vendor_id ('This resource requires authentication'), which proves the credentials have reporting access to that partner."
+  },
+  {
+   "name": "list_products",
+   "description": "Get apps (by vendor) for config vendor_id, private listings included (includePrivate=true with the partner's credentials). `id` is the app key; status is the listing status (e.g. public, private, rejected). Pricing is not part of the app record; `status` input is not a filter and is not sent."
+  },
+  {
+   "name": "get_product",
+   "description": "Get app by app key (`product_id` = addonKey): name, summary, tagLine, status, lastModified, marketing and _embedded details under raw; no price."
+  },
+  {
+   "name": "list_sales",
+   "description": "Get transactions (newest first) for config vendor_id, filtered by `product_id` (addon key) and `since` (startDate, YYYY-MM-DD only). `amount` is purchasePrice ('The sale price in USD'); vendorAmount (your share), saleType (new, renewal, upgrade, refund), licenseType and hosting are under raw.purchaseDetails. Refund transactions appear here too (saleType refund, negative amounts)."
+  },
+  {
+   "name": "list_refunds",
+   "description": "Get transactions with saleType=refund since `since` (YYYY-MM-DD). amount is the (negative) USD purchasePrice; refundReason under purchaseDetails; sale_id is the original transaction when Atlassian reports originalTransactionDetails."
+  }
+ ]
+}

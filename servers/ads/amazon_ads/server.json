@@ -1,0 +1,81 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/amazon_ads-mcp",
+ "description": "Amazon Ads (Sponsored Products / Brands / Display) (ads): me, list_accounts, list_campaigns, update_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://advertising.amazon.com/API/docs/en-us/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "amazon_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_CLIENT_ID",
+     "description": "Login with Amazon client id of the app approved for the Amazon Ads API; also sent as the Amazon-Advertising-API-ClientId header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_CLIENT_SECRET",
+     "description": "The LWA client secret (form body of the refresh_token grant).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_REFRESH_TOKEN",
+     "description": "LWA refresh token from the advertiser's consent (scope advertising::campaign_management); the runtime mints hourly access tokens from it at https://api.amazon.com/auth/o2/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_API_HOST",
+     "description": "Regional Amazon Ads API host: advertising-api.amazon.com (North America), advertising-api-eu.amazon.com (Europe) or advertising-api-fe.amazon.com (Far East).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_PROFILE_ID",
+     "description": "Advertising profile id (one per advertiser and marketplace, from GET /v2/profiles), sent as the Amazon-Advertising-API-Scope header.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_ENV",
+     "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ADS_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

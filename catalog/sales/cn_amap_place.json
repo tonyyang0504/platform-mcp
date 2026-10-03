@@ -1,0 +1,36 @@
+{
+ "id": "cn_amap_place",
+ "category": "sales",
+ "label": "高德地图 搜索 POI API",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://lbs.amap.com/api/webservice/guide/api/search",
+ "url": "https://lbs.amap.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Web Service POI search on the user's AMap key (real-name developer account, free daily quota); robots.txt has no Disallow.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

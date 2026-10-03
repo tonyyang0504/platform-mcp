@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/aliexpress_ds-mcp",
+ "description": "AliExpress Dropshipping (DS) API / AliExpress Open Platform (ecommerce suppliers): me, list_products",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://openservice.aliexpress.com/doc/doc.htm#/?docId=1646",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "aliexpress_ds"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_APP_KEY",
+     "description": "App Key of your AliExpress Open Platform Dropshipping app (Console > App Management; https://openservice.aliexpress.com/doc/doc.htm#/?docId=1589).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_APP_SECRET",
+     "description": "App Secret of the same app; signs every call (uppercase hex HMAC-SHA256 over the parameters sorted by name as name+value, docId=1386). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_ACCESS_TOKEN",
+     "description": "Buyer (dropshipper) access_token from the authorization-code exchange /auth/token/create (docId=1592). Production tokens last 30 days (expires_in 2592000); renew with /auth/token/refresh (docId=1593) and update this value — the runtime does not refresh it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_SHIP_TO_COUNTRY",
+     "description": "Two-letter destination country used for DS prices, stock and search (countryCode / ship_to_country), e.g. US.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_CURRENCY",
+     "description": "Currency for search and product prices (currency / target_currency), e.g. USD.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_ALIEXPRESS_DS_LANGUAGE",
+     "description": "Locale for search, product text and tracking (local / target_language / language), e.g. en_US.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

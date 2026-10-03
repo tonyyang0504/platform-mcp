@@ -1,0 +1,101 @@
+{
+ "id": "binance_vision_collector",
+ "category": "market_data",
+ "label": "Binance Vision historical CDN",
+ "provider": "Binance",
+ "lane": "api",
+ "base_urls": [
+  "https://data.binance.vision",
+  "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision",
+  "https://fapi.binance.com/fapi/v1/klines",
+  "https://dapi.binance.com/dapi/v1/klines",
+  "https://api.binance.com/api/v3/klines"
+ ],
+ "data_kinds": [
+  "candles (OHLCV)",
+  "funding rates",
+  "liquidation snapshots (archive retired)",
+  "mark/index/premium price klines",
+  "metrics",
+  "aggregated trades"
+ ],
+ "auth": "none",
+ "docs_url": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints",
+ "verified_at": "2026-09-24",
+ "adapter": {
+  "base_url": "https://data-api.binance.vision",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 5,
+  "rate_note": "REQUEST_WEIGHT 6000 per minute per IP; klines weight 2, exchangeInfo weight 20, ping 1; HTTP 429 carries Retry-After and repeated violations earn a 418 IP ban (https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-api-information). https://data-api.binance.vision is the documented 'market data only' base endpoint (same paths as api.binance.com). The survey's data.binance.vision ZIP archive (historical CSV) is not an HTTP JSON API and is not mapped.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v3/ping",
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints",
+    "note": "Public market-data host, no credentials: the probe is GET /api/v3/ping (weight 1, empty object)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/api/v3/klines",
+    "params": {
+     "symbol": "symbol",
+     "interval": "interval",
+     "startTime": "start",
+     "endTime": "end",
+     "limit": "limit"
+    },
+    "max_limit": 1000,
+    "default_limit": 500,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "str:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints",
+    "note": "Kline/candlestick rows are positional arrays [openTime, open, high, low, close, volume, closeTime, quoteVolume, trades, takerBuyBase, takerBuyQuote, ignore] mapped by index (`raw.values` keeps the row). `interval`: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M. `start`/`end` are startTime/endTime in epoch MILLISECONDS (pass the number as a string); `time` is the open time in ms and prices/volume are Binance's decimal strings. limit default 500, max 1000 (weight 2). Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+   },
+   "search_symbols": {
+    "method": "GET",
+    "path": "/api/v3/exchangeInfo",
+    "params": {
+     "symbol": "query"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "symbols",
+     "key": "results",
+     "fields": {
+      "symbol": "symbol",
+      "name": "baseAsset",
+      "type": "status"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints",
+    "note": "exchangeInfo has no text search: `query` is sent as the exact `symbol` filter (e.g. BTCUSDT; an unknown symbol is a 400 'Invalid symbol' error) and the whole symbol list comes back when it is omitted — pagination is not supported, `page`/`limit` are ignored. `name` is the baseAsset, `type` the trading status; quoteAsset, precisions, orderTypes, permissions and filters stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "get_series": "No named time series on the spot market-data API (funding/open interest live on the futures hosts, which this entry does not cover).",
+   "get_news": "No news endpoint on this API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: candle prices are decimal strings and the time an integer (schema-invalid); now num:/str:; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,285 @@
+{
+ "id": "yahoo_dsp",
+ "category": "ads",
+ "label": "Yahoo DSP",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://help.yahooinc.com/dsp-api/docs/dsp-api-help-home",
+ "url": "https://www.yahooinc.com/yahoo-dsp",
+ "verified_at": "2026-09-25",
+ "terms_note": "DSP API documentation is public; access is provisioned through the account representative.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Yahoo DSP API; separate direct OAuth 2.0 for the Yahoo Conversion API)",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "budgets_bids",
+   "targeting_search",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Yahoo DSP API: Traffic API + Reporting API + Conversion / Pixel API).",
+  "base_urls": [],
+  "auth": [
+   "1. DSP seat; API credentials provisioned per the Setup & Access Guide (page moved — TODO(verify)).",
+   "2. \"Yahoo DSP API supports the industry-standard OAuth 2.0 protocol for authorization\"; bearer token on each call.",
+   "3. \"To use the Yahoo Conversion API, implement a separate direct OAuth 2.0 authentication.\""
+  ],
+  "endpoints": [
+   {
+    "call": "GET /traffic/advertisers` · `/seats",
+    "purpose": "advertisers, seats (\"Perform read, update and create actions across seats\")",
+    "notes": "id, name, currency"
+   },
+   {
+    "call": "GET/POST/PUT /traffic/campaigns",
+    "purpose": "campaigns + budget",
+    "notes": "name, advertiserId, budget, budgetType, startDate, endDate, status"
+   },
+   {
+    "call": "GET/POST/PUT /traffic/lines",
+    "purpose": "line items: bid, pacing, targeting, deals (\"adding or removing line items or making adjustments to targeting and bid prices\")",
+    "notes": "name, campaignId, bidPrice, budget, pacing, goal, targeting (audiences, geo, sites, deals)"
+   },
+   {
+    "call": "GET/POST /traffic/ads` · creatives",
+    "purpose": "ads / creatives",
+    "notes": "adType, creativeId, landingUrl"
+   },
+   {
+    "call": "Reporting API `POST /reports/custom` → poll → CSV",
+    "purpose": "reports (Report Builder metrics + dimensions)",
+    "notes": "dimensionTypeIds[], metricTypeIds[], startDate, endDate, entity level"
+   },
+   {
+    "call": "Pixel API / Conversion API",
+    "purpose": "audiences + server-to-server conversions (\"enhanced attribution … post-back mechanism\")",
+    "notes": "pixel id, identity keys (email hash, etc.), event value"
+   }
+  ],
+  "limits": " - Rate limits not on the pages read. Access via account representative (\"If you need help, contact your account representative\"). DSP contract fees.",
+  "mcp_sdk": [
+   "Official Postman Toolkit (\"Install and configure the Postman Toolkit to test and verify your DSP APIs\"). No SDK / MCP found."
+  ],
+  "sources": [
+   "https://help.yahooinc.com/dsp-api/docs/dsp-api-help-home",
+   "https://help.yahooinc.com/dsp-api/docs/authentication",
+   "https://help.yahooinc.com/dsp-api/docs/setup-access"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://dspapi.admanagerplus.yahoo.com",
+  "rate_per_second": 1,
+  "headers": {
+   "X-Auth-Method": "OAuth2"
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://id.b2b.yahooincapis.com/zts/v1/oauth2/token",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": null,
+    "client_secret": null
+   },
+   "token_jwt": {
+    "mode": "jwt_hs256",
+    "key_field": "client_secret",
+    "claims": {
+     "aud": "https://id.b2b.yahooincapis.com/zts/v1",
+     "iss": "idb2b.dsp.dspapi.{@client_id}",
+     "sub": "idb2b.dsp.dspapi.{@client_id}",
+     "iat": "{timestamp_s}",
+     "exp": "+600",
+     "jti": "{nonce}"
+    }
+   },
+   "token_params": {
+    "scope": "api-client",
+    "realm": "dsp",
+    "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+    "client_assertion": "{client_assertion}"
+   },
+   "token_ttl_seconds": 540,
+   "header": "X-Auth-Token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "DSP API client ID (DSP UI → your name → My Account → Activate; shown once). The JWT issuer is built as idb2b.dsp.dspapi.<client_id>, so enter the ID without that prefix."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "DSP API client secret shown with the client ID; it signs the HS256 client assertion."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/traffic/seats",
+    "docs": "https://help.yahooinc.com/dsp-api/docs/seats",
+    "note": "GET /traffic/seats: the seats the API user can access; verifies the JWT client assertion and the X-Auth-Token."
+   },
+   "list_accounts": {
+    "path": "/traffic/advertisers",
+    "params": {
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "response",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "currency": "currency",
+      "timezone": "timezone"
+     }
+    },
+    "docs": "https://help.yahooinc.com/dsp-api/docs/advertisers",
+    "note": "GET /traffic/advertisers?page&limit (max 100): advertisers on the seat; the id is the accountId used for campaigns."
+   },
+   "list_campaigns": {
+    "path": "/traffic/campaigns",
+    "params": {
+     "accountId": "account_id",
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "response",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "goal_type": "goalType",
+      "goal_value": "goalValue",
+      "currency": "currency",
+      "budget": "budgetSchedules.0.scheduleBudget",
+      "daily_budget": "budgetSchedules.0.scheduleDailyBudget"
+     }
+    },
+    "docs": "https://help.yahooinc.com/dsp-api/docs/campaigns",
+    "note": "GET /traffic/campaigns?accountId&page&limit (max 100). budget/daily_budget come from the first budget schedule (all schedules are in raw.budgetSchedules). `status` is not applied."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/traffic/campaigns/{campaign_id}",
+    "body": {
+     "status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "root": "response",
+     "fields": {
+      "campaign_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://help.yahooinc.com/dsp-api/docs/campaigns",
+    "note": "PUT /traffic/campaigns/{id} {status: PAUSED | ACTIVE} (partial update)."
+   }
+  },
+  "not_offered": {
+   "get_report": "The Reporting API is asynchronous: 'To create a new report, call the endpoint using the POST method… To retrieve report status and a URL, call the endpoint using the GET method and specify the customerReportId', and the finished report is a CSV behind a temporary URL (https://help.yahooinc.com/dsp-api/docs/resources) — no single call returns rows.",
+   "update_budget": "Campaign budgets live in budgetSchedules, and an update must name the schedule: budget schedule 'id' is 'Required' on Update, as are 'startDate', 'endDate' and 'scheduleBudgetType' (https://help.yahooinc.com/dsp-api/docs/campaigns); the vocabulary's update_budget carries only campaign_id and daily_budget."
+  },
+  "terms": "Yahoo DSP API (https://help.yahooinc.com/dsp-api/docs/setup-access-guide): the user must be enabled for DSP API access on the seat. Access tokens come from the OAuth2 client_credentials grant with an HS256 JWT client assertion signed by the client secret (expiry under 1 hour) and are sent as X-Auth-Token with X-Auth-Method: OAuth2. Default Traffic API limits: 60 GET / 30 PUT per minute (https://help.yahooinc.com/dsp-api/docs/rate-limits)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host dspapi.admanagerplus.yahoo.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token id.b2b.yahooincapis.com/zts/v1/oauth2/token: 400 400",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

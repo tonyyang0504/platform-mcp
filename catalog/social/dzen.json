@@ -1,0 +1,130 @@
+{
+ "id": "dzen",
+ "category": "social",
+ "label": "Dzen",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://dzen.ru/",
+ "url": "https://dzen.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Dzen offers channel owners an RSS import for sites (full-text or link mode, moderated) and the Dzen Studio UI; no public write API for articles / posts; Russian platform (sanctions review pending).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed(rss import)"
+  ],
+  "auth": "none",
+  "access": "signup",
+  "capabilities": [
+   "post(RSS import into a connected channel)"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 20000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS import only; no write API).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": " - Dzen content rules (originality, no clickbait, advertising labelling under Russian law); RU platform: sanctions compliance may restrict its use.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dzen.ru/help/website/rss-modes.html"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25: Dzen publishes no HTTP API for channel content. The old RSS help pages https://dzen.ru/help/website/rss-modes.html and https://dzen.ru/help/ru/website/rss-modes.html answer 404; the current help (https://dzen.ru/help/ru/export-content/export.html, 'Технические требования к RSS-ленте', rendered in headless Chromium) documents only Dzen pulling a partner's RSS 2.0 feed into Новости/channels. There is no documented request an adapter could send to post, read comments or delete."
+}

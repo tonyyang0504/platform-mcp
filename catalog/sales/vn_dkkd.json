@@ -1,0 +1,36 @@
+{
+ "id": "vn_dkkd",
+ "category": "sales",
+ "label": "Cổng thông tin quốc gia về đăng ký doanh nghiệp",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "vn"
+ ],
+ "docs_url": null,
+ "url": "https://dangkykinhdoanh.gov.vn/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free search of registered enterprises (name, address, legal representative); no robots.txt served; per-query form — rate-limit.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

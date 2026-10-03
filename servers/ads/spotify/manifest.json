@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "spotify-mcp",
+ "display_name": "Spotify Ads (Spotify Ads Manager) MCP",
+ "version": "0.1.0",
+ "description": "Spotify Ads (Spotify Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, pause_resume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "spotify"
+   ],
+   "env": {
+    "PLATFORM_MCP_SPOTIFY_CLIENT_ID": "${user_config.platform_mcp_spotify_client_id}",
+    "PLATFORM_MCP_SPOTIFY_CLIENT_SECRET": "${user_config.platform_mcp_spotify_client_secret}",
+    "PLATFORM_MCP_SPOTIFY_REFRESH_TOKEN": "${user_config.platform_mcp_spotify_refresh_token}",
+    "PLATFORM_MCP_SPOTIFY_BUSINESS_ID": "${user_config.platform_mcp_spotify_business_id}",
+    "PLATFORM_MCP_SPOTIFY_AD_ACCOUNT_ID": "${user_config.platform_mcp_spotify_ad_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_spotify_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPOTIFY_CLIENT_ID",
+   "description": "Client ID of your Spotify for Developers app registered for the Ads API (the Ads API Terms must be accepted for it; allowlisting can take an hour).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_spotify_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPOTIFY_CLIENT_SECRET",
+   "description": "The app's client secret (HTTP Basic on https://accounts.spotify.com/api/token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_spotify_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPOTIFY_REFRESH_TOKEN",
+   "description": "Refresh token from one authorization-code login with your Ads Manager account (https://developer.spotify.com/documentation/ads-api/quick-start); it does not expire. One-hour access tokens are minted from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_spotify_business_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPOTIFY_BUSINESS_ID",
+   "description": "Spotify Ads business id whose ad accounts list_accounts returns (GET /businesses lists yours).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_spotify_ad_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPOTIFY_AD_ACCOUNT_ID",
+   "description": "Ad account id used by pause_resume (the campaign PATCH path is /ad_accounts/{ad_account_id}/campaigns/{campaign_id}).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /ads/v3/businesses: the businesses of the logged-in user ({businesses: [{id, name, type, status}]})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /ads/v3/businesses/{business_id config}/ad_accounts: ad accounts under the business for the current user (currency_code, status, ad_account_role)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /ads/v3/ad_accounts/{ad_account_id}/campaigns (limit up to 50, offset; `status` filters statuses: ACTIVE, PAUSED, ARCHIVED…). Budgets live on ad sets (budget.micro_amount), not campaigns."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /ads/v3/ad_accounts/{ad_account_id}/aggregate_reports?entity_type=CAMPAIGN&granularity=LIFETIME&fields=IMPRESSIONS&fields=CLICKS&fields=SPEND with report_start/report_end at UTC midnight (range within 90 days): one row per campaign whose `stats` is a list of {field_type, field_value} (SPEND in the account currency). campaign_id is not applied; first page only (continuation_token)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /ads/v3/ad_accounts/{ad_account_id config}/campaigns/{campaign_id} {status: PAUSED|ACTIVE}. Resuming restarts spending."
+  }
+ ]
+}

@@ -1,0 +1,328 @@
+{
+ "id": "zalando",
+ "category": "ecommerce_channels",
+ "label": "Zalando Partner Program",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://partner.zalando.com/",
+ "url": "https://www.zalando.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Zalando Partner Program (brands) or Connected Retail (physical retailers) — admission by application / invitation, fashion-only, EU markets; zDirect Portal apps with OAuth 2.0 client credentials; sandbox; integrators (Tradebyte, ChannelEngine …) commonly used; rate limits not public.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "oauth2 client credentials (apps registered in the zDirect Portal › Applications; per search-indexed docs)",
+  "access": "partner_only",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.base_url",
+  "config.sales_channel"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — official partner",
+  "base_urls": [],
+  "auth": [
+   "1. Brand / retailer is accepted into the Partner Program and receives a zDirect invitation.",
+   "2. Register an application in the zDirect Portal › Applications → client id + secret; set access permissions.",
+   "3. client_credentials token → API calls; sandbox first."
+  ],
+  "endpoints": [
+   {
+    "call": "articles / product data + attributes",
+    "purpose": "onboard and enrich products",
+    "notes": "Zalando attribute model; approval workflow"
+   },
+   {
+    "call": "prices · stock",
+    "purpose": "price + stock per sales channel",
+    "notes": ""
+   },
+   {
+    "call": "offers block / unblock · sales channels · logistic centres",
+    "purpose": "availability control",
+    "notes": ""
+   },
+   {
+    "call": "orders · shipments · returns",
+    "purpose": "order retrieval, shipment confirmation with tracking, returns",
+    "notes": ""
+   },
+   {
+    "call": "ZFS stock movements · cross-border reporting",
+    "purpose": "Zalando Fulfillment Solutions, reports",
+    "notes": ""
+   }
+  ],
+  "limits": " Not public. - Partner Program admission (fashion brands / retailers, EU). - zDirect Portal app registration; sandbox environment.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://partner.zalando.com/",
+   "https://developers.zalando.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.merchants.zalando.com",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.merchants.zalando.com/auth/token",
+   "client_auth": "basic",
+   "scope": "access_token_only",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of an app registered in the zDirect (Zalando Partner) portal > Applications, with the stocks, prices, orders and offer-blocker scopes granted."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same app; sent with the client ID as HTTP Basic on POST https://api.merchants.zalando.com/auth/token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "merchant_id",
+    "required": true,
+    "help": "Your zDirect merchant id (uuid; GET /auth/me lists the merchant ids the token can access)."
+   },
+   {
+    "name": "sales_channel_id",
+    "required": true,
+    "help": "Sales channel id (uuid) the offers belong to (Sales Channels API); each Zalando country shop is a channel."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "ISO currency of the sales channel, e.g. EUR; required for update_listing."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Zalando zDirect (Partner Program / Connected Retail) API — access is limited to approved Zalando partners. Offers are addressed by EAN per sales channel.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/auth/me",
+    "docs": "https://developers.merchants.zalando.com/docs/openapi/authentication.html",
+    "note": "GET /auth/me: the token owner's scopes and the merchant ids it can access."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/merchants/{mid}/prices",
+    "path_params": {
+     "mid": "@merchant_id"
+    },
+    "body": {
+     "product_prices.0.ean": "listing_id",
+     "product_prices.0.sales_channel_id": "@sales_channel_id",
+     "product_prices.0.regular_price.amount": "price",
+     "product_prices.0.regular_price.currency": "@currency"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.merchants.zalando.com/docs/offers-prices-api.html",
+    "note": "Prices API POST /merchants/{merchant-id}/prices {product_prices: [{ean, sales_channel_id, regular_price: {amount, currency}}]} sets the LIVE regular price of the offer (listing_id = the article EAN) in the configured sales channel. Only the price is applied (`price` required). Answers 207 with a per-item status."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/merchants/{mid}/stocks",
+    "path_params": {
+     "mid": "@merchant_id"
+    },
+    "body": {
+     "items.0.sales_channel_id": "@sales_channel_id",
+     "items.0.ean": "sku",
+     "items.0.quantity": "quantity"
+    },
+    "result": {
+     "root": "results.0.result",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.merchants.zalando.com/docs/offers-stocks-api.html",
+    "note": "Stocks API POST /merchants/{merchant-id}/stocks {items: [{sales_channel_id, ean, quantity}]}: `sku` must be the article EAN (GTIN-13). Answers 207 with a per-item result."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/merchants/{mid}/offer-blockers",
+    "path_params": {
+     "mid": "@merchant_id"
+    },
+    "body": {
+     "items.0.reason": "=PAUSE_06",
+     "items.0.description": "=Paused through the Article Availability API",
+     "items.0.criteria.sales_channel_id": "@sales_channel_id",
+     "items.0.criteria.ean": "listing_id"
+    },
+    "result": {
+     "root": "results.0.result",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.merchants.zalando.com/docs/offers-blocking.html",
+    "note": "Article Availability (Offer Blocking) API: creates a pause blocker for the EAN in the configured sales channel with reason PAUSE_06 ('Other reasons'), taking the offer offline; delete the blocker (DELETE /offer-blockers) to reactivate. Needs the products/blockers/write scope."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/merchants/{mid}/orders",
+    "path_params": {
+     "mid": "@merchant_id"
+    },
+    "params": {
+     "order_status": "status",
+     "created_after": "since",
+     "page[number]": "page",
+     "page[size]": "limit",
+     "sales_channel_id": "@sales_channel_id"
+    },
+    "headers": {
+     "Accept": "application/vnd.api+json"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "attributes.status",
+      "total": "attributes.order_lines_price_amount",
+      "currency": "attributes.order_lines_price_currency",
+      "created_at": "attributes.order_date",
+      "tracking_number": "attributes.tracking_number"
+     }
+    },
+    "docs": "https://developers.merchants.zalando.com/docs/orders-api-get-orders.html",
+    "note": "Orders API GET /merchants/{merchant-id}/orders?order_status(initial|approved|fulfilled)&created_after(ISO-8601)&page[number]&page[size] for the configured sales channel (JSON:API). `id` is the order id (uuid) used by mark_shipped; raw.attributes.order_number is the customer-facing number."
+   },
+   "mark_shipped": {
+    "method": "PATCH",
+    "path": "/merchants/{mid}/orders/{order_id}",
+    "path_params": {
+     "mid": "@merchant_id"
+    },
+    "headers": {
+     "Accept": "application/vnd.api+json",
+     "Content-Type": "application/vnd.api+json"
+    },
+    "body": {
+     "data.type": "=Order",
+     "data.id": "order_id",
+     "data.attributes.tracking_number": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=tracking_updated"
+     }
+    },
+    "docs": "https://developers.merchants.zalando.com/docs/orders-api-patch.html",
+    "note": "PATCH /merchants/{merchant-id}/orders/{order-id} {data: {type: Order, id, attributes: {tracking_number}}} records the tracking number. Marking lines shipped is a separate per-order-line PATCH ({type: OrderLine, attributes: {status: shipped}}) that this tool does not make; `carrier` is not a field of the order."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Offers are created by onboarding products (Product Submission / Onboarding APIs with the category's attribute model per EAN) and then sending prices and stocks per sales channel; the vocabulary has no EAN attributes or product model."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.merchants.zalando.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.merchants.zalando.com/auth/token: 400 unauthorized_client",
+   "HTML docs spot-check (render-doc): 3/5 tool paths found verbatim on their docs pages; names not found on the page: mark_shipped:data, set_inventory:items, update_listing:product_prices"
+  ],
+  "notes": "-"
+ }
+}

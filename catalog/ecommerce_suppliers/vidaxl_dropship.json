@@ -1,0 +1,253 @@
+{
+ "id": "vidaxl_dropship",
+ "category": "ecommerce_suppliers",
+ "label": "vidaXL B2B dropshipping",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://b2b.vidaxl.com/pages/8-api",
+ "url": "https://b2b.vidaxl.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged — \"Drop-shippers can use our order API to create order and retrieve status\"; payment not via API; orders only for countries the account may dropship to",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed",
+   "sandbox"
+  ],
+  "auth": "HTTP Basic (customer e-mail + API token from MY ACCOUNT)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "orders",
+   "tracking",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - See dropxl_vidaxl.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://b2b.vidaxl.com/pages/8-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://b2b.vidaxl.com",
+  "auth": {
+   "type": "basic",
+   "username_field": "email",
+   "password_field": "api_token",
+   "fields": [
+    {
+     "name": "email",
+     "required": true,
+     "help": "The vidaXL B2B customer e-mail (HTTP Basic username)."
+    },
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "API token shown under MY ACCOUNT on b2b.vidaxl.com (HTTP Basic password). Sandbox tokens belong to https://sandbox.b2b.vidaxl.com, which this server does not switch to."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api_customer/products",
+    "fixed_params": {
+     "limit": 1,
+     "offset": 0
+    },
+    "docs": "https://b2b.vidaxl.com/pages/8-api",
+    "note": "vidaXL has no account endpoint; the probe reads one product with the Basic credentials, so `account` is empty on success. Limit 1 request/second."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/api_customer/products",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 100,
+    "max_limit": 500,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "require": [
+      "title"
+     ],
+     "fields": {
+      "id": "code",
+      "title": "name",
+      "sku": "code",
+      "product_id": "id",
+      "category_path": "category_path",
+      "quantity": "quantity",
+      "list_price": "price",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://b2b.vidaxl.com/pages/8-api",
+    "note": "GET /api_customer/products?limit&offset: the products you may sell [{id, name, code (SKU), category_path, quantity, price, created_at, updated_at}] (up to 500 per request). quantity and price are decimal strings (list_price, quantity). `query` and `category` are not accepted. `id` is the SKU code used in orders."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/api_customer/products",
+    "params": {
+     "code_eq": "id"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "code",
+      "title": "name",
+      "sku": "code",
+      "product_id": "id",
+      "category_path": "category_path",
+      "quantity": "quantity",
+      "list_price": "price"
+     }
+    },
+    "docs": "https://b2b.vidaxl.com/pages/8-api",
+    "note": "GET /api_customer/products?code_eq={SKU}: a one-element array; an unknown SKU is an empty array (invalid_input). Images, descriptions and full prices are in the offer feed, not the API."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/api_customer/orders",
+    "body": {
+     "customer_order_reference": "uuid",
+     "addressbook": "shipping_address",
+     "order_products": "items"
+    },
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "id",
+      "status_order_id": "status_order_id",
+      "created_at": "created_at",
+      "customer_order_reference": "customer_order_reference",
+      "gross_total": "gross_total"
+     }
+    },
+    "docs": "https://b2b.vidaxl.com/pages/8-api",
+    "note": "POST /api_customer/orders. 'Order payment is not available via API. All the accepted orders are available in Unsubmitted orders' and must be paid on b2b.vidaxl.com. `shipping_address` is the addressbook {name, address (max 30 chars, with a number), address2, city, province (required for US/AU), postal_code, country (ISO-2), phone, comments}; `items` are order_products [{product_code, quantity}] (an item may carry its own addressbook). customer_order_reference is a fresh UUID. `shipping_option` is not sent."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/api_customer/orders",
+    "params": {
+     "id_eq": "id"
+    },
+    "result": {
+     "root": "0.order",
+     "fields": {
+      "id": "id",
+      "status": "status_order_name",
+      "created_at": "submitted_at",
+      "tracking_number": "shipping_tracking",
+      "tracking_url": "shipping_tracking_url",
+      "status_order_id": "status_order_id",
+      "gross_total": "gross_total",
+      "customer_order_reference": "customer_order_reference"
+     }
+    },
+    "docs": "https://b2b.vidaxl.com/pages/8-api",
+    "note": "GET /api_customer/orders?id_eq={id}: [{order: {id, status_order_id, status_order_name (Temporary, Submitted, Being Prepared, Sent, Cancelled, Refunded, Replaced), submitted_at, gross_total, shipping_tracking, shipping_tracking_url, order_products}}]; tracking number and URL appear at status 5 (Sent). Totals are decimal strings."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "The order API has no shipping-quote endpoint (only create order, get orders, invoices and products are documented).",
+   "track": "No tracking-events endpoint; shipping_tracking and shipping_tracking_url are part of the order record (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host b2b.vidaxl.com: DNS ok, TLSv1.2 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 0/5 tool paths found verbatim on their docs pages; names not found on the page: get_order:id_eq, get_product:code_eq, list_products:limit, list_products:offset, me:limit, me:offset, create_order:addressbook, create_order:customer_order_reference, create_order:order_products"
+  ],
+  "notes": "-"
+ }
+}

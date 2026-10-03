@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "runway-mcp",
+ "display_name": "Runway MCP",
+ "version": "0.1.0",
+ "description": "Runway (builder tools): me, generate_image, generate_video, get_job, list_items, get_item, create_it",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "runway"
+   ],
+   "env": {
+    "PLATFORM_MCP_RUNWAY_API_KEY": "${user_config.platform_mcp_runway_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_runway_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_RUNWAY_API_KEY",
+   "description": "Runway API key (dev.runwayml.com > API keys), sent as Authorization: Bearer; every request also carries X-Runway-Version: 2024-11-06.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/organization: tier limits, credit balance and usage."
+  },
+  {
+   "name": "generate_image",
+   "description": "POST /v1/text_to_image {model (required: gen4_image, gen4_image_turbo, gpt_image_2 …), promptText, ratio (required, a pixel size such as 1920:1080 or 1024:1024), seed, referenceImages[{uri}] (required for gen4_image_turbo)} -> {id}; poll with get_job."
+  },
+  {
+   "name": "generate_video",
+   "description": "POST /v1/text_to_video {model (required: gen4.5, veo3.1, veo3.1_fast …), promptText, ratio (required, e.g. 1280:720 or 720:1280), duration (2–10 s for gen4.5)} -> {id}; poll with get_job. image_url is not sent (image-to-video is POST /v1/image_to_video)."
+  },
+  {
+   "name": "get_job",
+   "description": "GET /v1/tasks/{id}: status PENDING|THROTTLED|RUNNING|SUCCEEDED|FAILED|CANCELLED; output is the array of result URLs (expire in 24–48 h), failure/failureCode on error."
+  },
+  {
+   "name": "list_items",
+   "description": "GET /v1/documents?limit&cursor: knowledge documents used by Runway Characters (items are documents). Cursor-paginated: pass next_cursor back as cursor."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /v1/documents/{id}: one knowledge document with its content."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /v1/documents {name, content (markdown or plain text)}: creates a knowledge document (title -> name)."
+  },
+  {
+   "name": "update_item",
+   "description": "PATCH /v1/documents/{id} {name, content}: renames and/or replaces the content."
+  },
+  {
+   "name": "delete_item",
+   "description": "DELETE /v1/documents/{id} (204): deletes a knowledge document."
+  }
+ ]
+}

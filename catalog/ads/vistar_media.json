@@ -1,0 +1,127 @@
+{
+ "id": "vistar_media",
+ "category": "ads",
+ "label": "Vistar Media",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://developers.vistarmedia.com/",
+ "url": "https://www.vistarmedia.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer portal access for partners (media owners, DSPs); SSP creative approvals API; no advertiser-facing campaign API documented publicly.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Vistar developer portal credentials — Marketplace / SSP APIs for partners)",
+  "access": "partner_only",
+  "capabilities": [
+   "reports",
+   "creatives_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (partner-facing Marketplace + SSP APIs; no advertiser campaign API) Confidence: **high**.",
+  "base_urls": [],
+  "auth": [
+   "1. Partner (media owner / DSP) agreement with Vistar.",
+   "2. Developer portal credentials.",
+   "3. Marketplace / SSP API calls."
+  ],
+  "endpoints": [
+   {
+    "call": "Marketplace API",
+    "purpose": "inventory / deals for partners",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "SSP API (creative approvals)",
+    "purpose": "creative approvals",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "advertiser campaigns / bids / budgets",
+    "purpose": "not public (Vistar DSP UI)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Partner-only; terms per agreement.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.vistarmedia.com/",
+   "https://www.vistarmedia.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://developers.vistarmedia.com/ renders only 'Getting Started', 'Marketplace SSP API Documentation' (media-owner screens/venues and 'SSP creative approvals API') and the Vistar Knowledge Base, plus 'Platform Login'/'Cortex Login'. There is no advertiser (DSP buyer) account, campaign, budget or spend-report API; campaigns are managed in the Vistar DSP UI, so none of the ads verbs maps."
+}

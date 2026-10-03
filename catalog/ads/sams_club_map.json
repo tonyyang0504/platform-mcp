@@ -1,0 +1,154 @@
+{
+ "id": "sams_club_map",
+ "category": "ads",
+ "label": "Sam's Club MAP (Member Access Platform)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": "https://developer.samsclub.com/API/overview/",
+ "url": "https://map.samsclub.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API partner onboarding (Salesforce contact form → welcome email → SPA support portal → API keys in the development environment: consumer id + auth token per the Authentication guide → production); advertiser self-serve onboarding form for suppliers (UI). Rate limits documented ('Rate Limits on API Operations'). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (consumer id + auth token generated in the developer environment; partner credentials)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "creatives_upload",
+   "reports",
+   "recommendations"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Sam's Club Connect Ads API — platform partners only) Confidence: **high** — official developer portal read.",
+  "base_urls": [],
+  "auth": [
+   "1. Contact partnerenablement@samsclub.com for the Salesforce onboarding form; receive account setup steps; log in to the SPA support portal ('API Ad Partners').",
+   "2. Generate API keys in the development environment — 'consumer id' and 'auth token' per the Authentication Guide; integrate and validate; then production keys.",
+   "3. Advertisers (suppliers) onboard via the self-serve form and grant the partner access."
+  ],
+  "endpoints": [
+   {
+    "call": "Campaigns (create / update / list)",
+    "purpose": "campaigns + budget + schedule",
+    "notes": "name, campaignType, dailyBudget, totalBudget, startDate, endDate, status"
+   },
+   {
+    "call": "Ad Groups · Ad Items",
+    "purpose": "ad groups, items + bids",
+    "notes": "adGroupId, itemId, bid, status"
+   },
+   {
+    "call": "Keywords · Negative Keywords · Bid Multipliers · Placements",
+    "purpose": "keywords + bids + placement multipliers",
+    "notes": "keywordText, matchType, bid, multiplier"
+   },
+   {
+    "call": "SBA Profile v1/v2 · Media · Ad Group Media",
+    "purpose": "Sponsored Brands creatives + video",
+    "notes": "logo, headline, media upload"
+   },
+   {
+    "call": "Snapshot Reports v1/v2 · Statistics · Latest Report Date · Entity Snapshot",
+    "purpose": "reports",
+    "notes": "reportType, dates"
+   },
+   {
+    "call": "Alerts & Recommendations · API Usage Analyzer · Review",
+    "purpose": "recommendations / ops",
+    "notes": "—"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits page in the portal; partner-only API access; free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.samsclub.com/API/overview/",
+   "https://developer.samsclub.com/API/self-serve-onboarding/",
+   "https://map.samsclub.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Remaining gap: the string to sign is not published. The runtime now has an rsa_sha256 (PKCS#1 v1.5) signing mode, but Sam's Club Connect Ads API's WM_SEC.AUTH_SIGNATURE is 'A Base64-encoded RSA-SHA256 signature … The client must sign the canonical request string using the private .pem key', and both the signature and WM_CONSUMER.intimestamp are to be produced with 'the signature generator code shared by Sam's team' (https://developer.samsclub.com/API/authentication/, re-read 2026-09-25; the Curl/Java/Node JS/Python samples only show '<Auth signature as generated using signature generator code>'). Without the canonical string the signature cannot be reproduced. Access is limited to onboarded platform partners, who also receive the consumer id, key version and Bearer auth token by e-mail."
+}

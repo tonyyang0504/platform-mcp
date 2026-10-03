@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "trademe_jobs-mcp",
+ "display_name": "Trade Me Jobs MCP",
+ "version": "0.1.0",
+ "description": "Trade Me Jobs (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "trademe_jobs"
+   ],
+   "env": {
+    "PLATFORM_MCP_TRADEME_JOBS_CONSUMER_KEY": "${user_config.platform_mcp_trademe_jobs_consumer_key}",
+    "PLATFORM_MCP_TRADEME_JOBS_CONSUMER_SECRET": "${user_config.platform_mcp_trademe_jobs_consumer_secret}",
+    "PLATFORM_MCP_TRADEME_JOBS_OAUTH_TOKEN": "${user_config.platform_mcp_trademe_jobs_oauth_token}",
+    "PLATFORM_MCP_TRADEME_JOBS_OAUTH_TOKEN_SECRET": "${user_config.platform_mcp_trademe_jobs_oauth_token_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_trademe_jobs_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_JOBS_CONSUMER_KEY",
+   "description": "Trade Me application consumer key (My Trade Me > My applications).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trademe_jobs_consumer_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_JOBS_CONSUMER_SECRET",
+   "description": "Trade Me application consumer secret.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trademe_jobs_oauth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_JOBS_OAUTH_TOKEN",
+   "description": "Member access token from the OAuth 1.0a flow (Trade Me access tokens do not expire).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trademe_jobs_oauth_token_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_JOBS_OAUTH_TOKEN_SECRET",
+   "description": "Access token secret from the same flow.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/MyTradeMe/Summary.json ('Permission Required: MyTradeMeRead') returns the MemberSummary (MemberId, Nickname, ...)."
+  },
+  {
+   "name": "search",
+   "description": "GET /v1/Search/Jobs.json: search_string ('One or more keywords'), page ('starting from 1'), rows (max 500 when authenticated). location is not sent because Trade Me filters by numeric region / district ids (see the Localities catalogue). company, Region and StartDate (/Date(ms)/) come per job; JobType, District, Category and pay details stay in raw; description is the PayBenefits text."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v1/Listings/{listingId}.json: the full listing (Body, Attributes with job details, Agency for agency-posted jobs, ShortDescription)."
+  }
+ ]
+}

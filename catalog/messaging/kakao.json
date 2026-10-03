@@ -1,0 +1,243 @@
+{
+ "id": "kakao",
+ "category": "messaging",
+ "label": "KakaoTalk",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://developers.kakao.com/",
+ "url": "https://business.kakao.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Kakao Talk Message API (developers.kakao.com): 'Send to me' needs no permission (unlimited to the user's own chatroom); 'Send to friends' needs the Send Kakao Talk Message scope + friends-list consent AND conversion to a business app; before approval 30 messages / day for testing, after approval up to 30,000 / day per app with 100 messages sent / received per user and 20 exchanges per sender-recipient pair; templates = default (feed, list, location, commerce, text, calendar), custom (message template tool) and scrape. The docs explicitly separate this from Kakao Talk Channel messaging (Brand Message, Info Talk / AlimTalk, CS Talk) 'which operate through the Kakao Business platform'. Kakao Talk Channel API on developers.kakao.com only adds a channel / checks relationship / manages customer files (needs a Business Channel + Biz App, 3-5 business-day review); targeted messages are sent in the Channel Manager Center, not via API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "send_to_friends (user-to-user, business app, quota)",
+   "templates",
+   "channel_add",
+   "channel_relationship"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "Kakao SDK (Android / iOS / JavaScript) + REST — developers.kakao.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**. What exists publicly (developers.kakao.com) is the **Kakao Talk Message API** — a",
+  "base_urls": [
+   "https://kapi.kakao.com/v2/api/talk/…"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v2/api/talk/memo/default/send` (default template) · `/memo/send` (custom template) · `/memo/scrap/send",
+    "purpose": "\"Send to me\" — the token owner's own chatroom",
+    "notes": "no permission, unlimited"
+   },
+   {
+    "call": "POST /v2/api/talk/friends/message/default/send` · `/friends/message/send` · `/friends/message/scrap/send` `{receiver_uuids[]}",
+    "purpose": "\"Send to friends\"",
+    "notes": "before approval 30 messages / day (testing); after approval ≤ 30,000 / day per app, 100 sent + received per user, 20 exchanges per sender-recipient pair"
+   },
+   {
+    "call": "GET /v1/api/talk/friends",
+    "purpose": "friend list (consented)",
+    "notes": ""
+   },
+   {
+    "call": "Templates: default types feed, list, location, commerce, text, calendar; custom templates from the message template tool",
+    "purpose": "content",
+    "notes": ""
+   },
+   {
+    "call": "Kakao Talk Channel API: `followChannel()` / `addChannel()` (SDK), relationship check, customer-file upload for Channel Manager Center targeting",
+    "purpose": "channel growth",
+    "notes": "Business Channel + Biz App, 3-5 business-day review"
+   }
+  ],
+  "limits": " - The docs \"explicitly distinguish this API from KakaoTalk Channel messaging (Brand Message, Info Talk, CS Talk), which operate through Kakao Business platform separately\" — those are service-to-user, template-approved, sent via dealers. - No inbound API for user replies (messages land in the sender's KakaoTalk); no webhooks.",
+  "mcp_sdk": [],
+  "sources": [
+   "http://developers.kakao.com/docs/en/kakaotalk-message/common",
+   "https://developers.kakao.com/docs/en/kakaotalk-channel/common",
+   "https://business.kakao.com/info/bizmessage/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://kapi.kakao.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://kauth.kakao.com/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "REST API key of the Kakao app ([App] > [Platform Key] > [REST API key]), sent as client_id to POST https://kauth.kakao.com/oauth/token (https://developers.kakao.com/docs/en/kakaologin/rest-api)."
+    },
+    {
+     "name": "client_secret",
+     "required": false,
+     "help": "Client secret of the REST API key; 'Required when the setting is [ON]' (enabled by default for new keys)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from Kakao Login (authorization code flow) of the SENDING user, with consent to the talk_message scope and friends-list access (friends scope); valid about 60 days (refresh_token_expires_in 5184000). Kakao returns a renewed refresh_token when less than a month is left: the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/kakao.json (mode 0600)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "link_url",
+    "required": true,
+    "help": "Web URL opened when the message is tapped (text template link.web_url / mobile_web_url, 'O' required); its domain must be registered as a Web domain under Product Link on the app management page (https://developers.kakao.com/docs/en/message-template/default)."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Kakao Talk Message API is user-to-user: 'Send to friends' reaches only friends who also consented to the app (receiver uuids from the friends API), needs the Send Kakao Talk Message permission and a business app for production volume, and has daily quotas; Kakao Talk Channel business messages (AlimTalk / Brand Message) are a separate Kakao Business product.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/user/me",
+    "docs": "https://developers.kakao.com/docs/en/kakaologin/rest-api",
+    "note": "GET /v2/user/me returns the token's user {id, connected_at, properties, kakao_account}."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/v1/api/talk/friends/message/default/send",
+    "body_format": "form",
+    "body": {
+     "receiver_uuids": "jsonstr:[{to}]",
+     "template_object": "jsonstr:{\"object_type\": \"text\", \"text\": {text}, \"link\": {\"web_url\": {@link_url}, \"mobile_web_url\": {@link_url}}}"
+    },
+    "result": {
+     "fields": {
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/en/kakaotalk-message/rest-api#default-template-msg-friend",
+    "note": "SENDS a Kakao Talk message as the token's user to ONE app-connected friend: `to` is the friend's uuid (from the friends API / Friends picker, not a phone number or user id). Form fields receiver_uuids=[\"<to>\"] and template_object = default text template {object_type: 'text', text (max 200 characters displayed), link (config link_url)}; `subject` and `channel` are ignored. Success answers {successful_receiver_uuids}; a single-recipient failure is an HTTP error with Kakao's code and msg. Counts against the app's daily message quota. No message id is returned."
+   }
+  },
+  "not_offered": {
+   "list_inbound": "The Kakao Talk Message API only sends ('Send to me' / 'Send to friends', https://developers.kakao.com/docs/en/kakaotalk-message/rest-api); there is no endpoint to read received messages.",
+   "get_thread": "No conversation or history endpoint exists in the Kakao Talk Message API (https://developers.kakao.com/docs/en/kakaotalk-message/rest-api).",
+   "reply": "Messages have no thread ids to reply to; use send to the friend's uuid (https://developers.kakao.com/docs/en/kakaotalk-message/rest-api).",
+   "mark_read": "The Kakao Talk Message API has no read-state endpoint (https://developers.kakao.com/docs/en/kakaotalk-message/rest-api)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host kapi.kakao.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token kauth.kakao.com/oauth/token: 401 invalid_client",
+   "authorize https://kauth.kakao.com/oauth/authorize: 302",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "id": "carswitch_ksa",
+ "category": "automotive",
+ "label": "Ksa",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://ksa.carswitch.com",
+ "domain": "ksa.carswitch.com",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Saudi Arabia); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ksa.carswitch.com/"
+  ],
+  "unofficial": [
+   "https://docs.carapis.com/platforms/mena-africa/carswitch",
+   "https://providers.apievangelist.com/providers/carswitch/",
+   "https://github.com/api-evangelist/carswitch/blob/main/README.md"
+  ]
+ },
+ "official_mcp": []
+}

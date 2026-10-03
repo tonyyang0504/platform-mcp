@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/shopee_open_platform-mcp",
+ "description": "Shopee Seller Centre + Shopee Open Platform (ecommerce suppliers): me, list_products, get_product, g",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.shopee.com/documents",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "shopee_open_platform"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_ID",
+     "description": "partner_id of your Shopee Open Platform app (Console > App list).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_KEY",
+     "description": "The app's partner_key; signs the refresh request and every call (lower-case hex HMAC-SHA256) and is never sent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_SHOP_ID",
+     "description": "shop_id that authorised the app (returned in the authorisation redirect).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_REFRESH_TOKEN",
+     "description": "The shop's refresh_token from v2.public.get_access_token (valid 30 days, single-use). Each refresh (every ~4 h) returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_HOST",
+     "description": "API host: partner.shopeemobile.com (global production), openplatform.shopee.cn (mainland China), openplatform.shopee.com.br (Brazil) or openplatform.sandbox.test-stable.shopee.sg (sandbox).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

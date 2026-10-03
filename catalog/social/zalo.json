@@ -1,0 +1,337 @@
+{
+ "id": "zalo",
+ "category": "social",
+ "label": "Zalo",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "sea"
+ ],
+ "docs_url": "https://developers.zalo.me/",
+ "url": "https://oa.zalo.me/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Requires a verified Zalo Official Account on a paid OA package (Basic / Growth / Premium — API messaging features scale with the package); OAuth v4 at oauth.zaloapp.com/v4/oa (access token ~25 h, refresh ~3 months per earlier research research; not re-read today); consultation (tư vấn) messages only within 48 h of the user's last message; transaction / promotion messages via paid ZNS templates; article broadcasts capped (≤ 4 per follower per month per earlier research research).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "paid",
+  "capabilities": [
+   "inbox_dm",
+   "reply",
+   "post(article)",
+   "broadcast",
+   "templates(ZNS)",
+   "webhooks",
+   "analytics"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2.0/article/create → GET /v2.0/article/verify → POST /v2.0/oa/message (article attachment to a follower segment)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2.0/oa/upload/image → article cover / message attachment",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (not modelled by our client; existence unverified)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no comment feed modelled)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v3.0/oa/message/cs (consultation message — the reply channel)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v3.0/oa/message/{cs|transaction|promotion}",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (inbound events are pushed to the OA webhook; our client has no receiver/verifier)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "— (no delete implemented; existence unverified)",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.zalo.me/docs"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v2.0/oa/getoa (num_follower) · GET /v2.0/oa/getfollowers",
+   "docs": "https://developers.zalo.me/docs"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (gated by the OA's paid package).",
+  "base_urls": [
+   "https://openapi.zalo.me/v3.0/oa/…",
+   "https://oauth.zaloapp.com/v4/oa/"
+  ],
+  "auth": [
+   "1. Tenant owns a **verified Zalo OA** on a paid package (Basic / Growth / Premium — API messaging features scale",
+   "2. Zalo app (developers.zalo.me) → OA permission page `GET /v4/oa/permission?app_id&redirect_uri&code_challenge` →",
+   "3. Webhook URL registered on the app; events `user_send_text`, `user_send_image`, `follow`, `unfollow`,"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/cs` {recipient{user_id}, message{text",
+    "purpose": "attachment}}",
+    "notes": "only within 48 h of the user's last message"
+   },
+   {
+    "call": "POST /message/transaction` (templated)",
+    "purpose": "paid ZNS for users who never messaged",
+    "notes": ""
+   },
+   {
+    "call": "POST /article/create` → `POST /article/verify` → `GET /article/getdetail",
+    "purpose": "OA \"bài viết\"",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/... broadcast` of an article",
+    "purpose": "≤ 4 per follower per month (research)",
+    "notes": ""
+   },
+   {
+    "call": "POST /upload/image`, `/upload/gif`, `/upload/file",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /getfollowers`, `GET /getprofile?data={user_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "OA Manager statistics (no confirmed public analytics endpoint)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Package-gated; ZNS sends billed per message; 48 h consultation window; broadcast cap per follower per month. - Zalo OA terms: no spam, business verification, Vietnamese consumer-protection rules for promotions.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.zalo.me/docs/official-account/bat-dau/gioi-thieu",
+   "https://developers.zalo.me/docs/official-account/bat-dau/xac-thuc-va-uy-quyen-ung-dung-new"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi.zalo.me",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "author",
+    "required": true,
+    "help": "Author name shown on OA articles (≤50 characters)."
+   },
+   {
+    "name": "cover_photo_url",
+    "required": true,
+    "help": "URL of the cover photo used for text articles (the article API requires a cover)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth.zaloapp.com/v4/oa/access_token",
+   "client_auth": "body",
+   "client_id_field": "app_id",
+   "client_secret_field": "secret_key",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": null
+   },
+   "token_headers": {
+    "secret_key": "{@secret_key}"
+   },
+   "token_path": "access_token",
+   "refresh_token_path": "refresh_token",
+   "token_ttl_seconds": 86400,
+   "header": "access_token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "ID of your Zalo app (developers.zalo.me > app > Thông tin ứng dụng)."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The app's secret key (Khóa bí mật của ứng dụng); sent only as the secret_key header of the token request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "OA refresh_token from the OA authorisation (POST https://oauth.zaloapp.com/v4/oa/access_token with grant_type=authorization_code). Valid 3 months and single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set). Access tokens last 25 h."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/v2.0/oa/getoa",
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/quan-ly/quan-ly-thong-tin-oa/lay-thong-tin-zalo-official-account",
+    "note": "GET /v2.0/oa/getoa: the OA's id, name, description, is_verified, num_follower, package."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/v2.0/article/create",
+    "body": {
+     "type": "=normal",
+     "title": "text",
+     "author": "@author",
+     "cover.cover_type": "=photo",
+     "cover.photo_url": "@cover_photo_url",
+     "cover.status": "=show",
+     "description": "text",
+     "body.0.type": "=text",
+     "body.0.content": "text",
+     "status": "=show",
+     "comment": "=show"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "token",
+      "status": "=processing"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/",
+    "note": "POST /v2.0/article/create (type normal, status show) publishes an OA article whose title, description and body are `text` — so `text` must be ≤150 characters (title limit; description ≤300) — with the configured author and cover photo. Creation is asynchronous: the returned `id` is the creation token; POST /v2.0/article/verify {token} gives the article id that delete takes. reply_to is ignored."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/v2.0/article/create",
+    "body": {
+     "type": "=normal",
+     "title": "text",
+     "author": "@author",
+     "cover.cover_type": "=photo",
+     "cover.photo_url": "image_urls.0",
+     "cover.status": "=show",
+     "description": "text",
+     "body.0.type": "=text",
+     "body.0.content": "text",
+     "body.1.type": "=image",
+     "body.1.url": "image_urls.0",
+     "status": "=show",
+     "comment": "=show"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "token",
+      "status": "=processing"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/",
+    "note": "POST /v2.0/article/create: an OA article with `text` as title/description/first paragraph (≤150 characters; required here) and the FIRST of `image_urls` as both cover and image paragraph (further URLs are ignored: the adapter cannot emit a variable number of paragraphs). `id` is the creation token (resolve with /v2.0/article/verify)."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/v2.0/article/remove",
+    "body": {
+     "id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/xoa-noi-dung-dang-bai-viet",
+    "note": "POST /v2.0/article/remove {id}: deletes an OA article by its article id (from /v2.0/article/verify or /v2.0/article/getslice)."
+   }
+  },
+  "not_offered": {
+   "read_comments": "The OA content APIs (https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/: create, verify, getdetail, getslice, remove, update) expose no article comments.",
+   "reply_comment": "No comment API exists for OA articles (https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/).",
+   "read_mentions": "The Official Account API has no mentions feed (https://developers.zalo.me/docs/official-account/noi-dung/tong-quan).",
+   "analytics_post": "Per-article statistics are only total_view / total_share inside the paged list GET /v2.0/article/getslice (https://stc-developers.zdn.vn/docs/v2/official-account/noi-dung/noi-dung-dang-bai-viet/lay-danh-sach-noi-dung-dang-bai-viet), which cannot be filtered by id; GET /v2.0/article/getdetail returns no counts."
+  },
+  "terms": "Zalo Official Account API (https://developers.zalo.me/docs/official-account/): every call carries the OA access_token header; failures are {error: <non-zero>, message} in 200 bodies. Access tokens (25 h) are minted from the rotating single-use refresh token at https://oauth.zaloapp.com/v4/oa/access_token (form refresh_token, app_id, grant_type; secret_key header; https://stc-developers.zdn.vn/docs/v2/official-account/bat-dau/xac-thuc-va-uy-quyen-cho-ung-dung-new)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host openapi.zalo.me: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (not_found), so the answers are path-specific",
+   "token oauth.zaloapp.com/v4/oa/access_token: 200 Invalid app id",
+   "authorize https://oauth.zaloapp.com/v4/oa/permission: 200",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

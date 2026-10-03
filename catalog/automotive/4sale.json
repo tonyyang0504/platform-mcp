@@ -1,0 +1,35 @@
+{
+ "id": "4sale",
+ "category": "automotive",
+ "label": "Q84Sale",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.q84sale.com",
+ "domain": "q84sale.com",
+ "country": "Kuwait",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). 4Sale has no official API; only an unofficial community MCP scraper.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "github.com/isaamthalhath07/4sale-mcp (unofficial read-only MCP)"
+  ]
+ },
+ "official_mcp": []
+}

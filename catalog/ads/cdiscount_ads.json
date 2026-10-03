@@ -1,0 +1,87 @@
+{
+ "id": "cdiscount_ads",
+ "category": "ads",
+ "label": "Cdiscount Advertising",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "eu",
+  "fr"
+ ],
+ "docs_url": null,
+ "url": "https://cdiscountadvertising.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "No developer documentation; onboarding through a contact form (seller ID, monthly revenue band); marketplace listing API exists separately but no ads API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "apply",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

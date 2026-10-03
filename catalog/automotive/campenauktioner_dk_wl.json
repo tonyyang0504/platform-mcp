@@ -1,0 +1,36 @@
+{
+ "id": "campenauktioner_dk_wl",
+ "category": "automotive",
+ "label": "Campen Auktioner",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.campenauktioner.dk",
+ "domain": "campenauktioner.dk",
+ "country": "Denmark",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Campen Auktioner has B2B auctions but no API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.campenauktioner.dk/om-auktionerne/auktionstyper/b2b-auktioner",
+   "https://campenauktioner.dk/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

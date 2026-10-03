@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "digital_turbine-mcp",
+ "display_name": "Digital Turbine (DT Ads) MCP",
+ "version": "0.1.0",
+ "description": "Digital Turbine (DT Ads) (ads): update_budget, pause_resume. Every tool maps to a documented endpoin",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "digital_turbine"
+   ],
+   "env": {
+    "PLATFORM_MCP_DIGITAL_TURBINE_MANAGEMENT_API_TOKEN": "${user_config.platform_mcp_digital_turbine_management_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_digital_turbine_management_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DIGITAL_TURBINE_MANAGEMENT_API_TOKEN",
+   "description": "Offerwall Advertiser Management API token (ACP Edge Console > Account > Security Tokens > Add Token > Management API Token; shown once), sent as the x-api-key header. It identifies the advertiser account.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "update_budget",
+   "description": "GraphQL mutation offerCampaignBulkUpdateBids {offerCmsId: campaign_id, bidsList: [{dailyBudget}]} sets the offer-level daily budget (a decimal string, account currency); this spends money. campaign_id is the offer's legacy CMS id shown under the product name in the ACP Edge dashboard. Rejected when country-level daily budgets are already configured ('A dailyBudget cannot be set for both the offer campaign and the country code simultaneously'). Validation failures come back in `errors` (non-empty = not applied). `currency` is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "GraphQL mutation offerCampaignBulkUpdateBids {offerCmsId: campaign_id, offerEnabled: false|true, bidsList: []} ('offerEnabled — Optional, boolean: true enables an offer; false, disables an offer'). bidsList is a required list and is sent empty so no bid or budget changes. campaign_id is the offer's legacy CMS id. Failures come back in `errors` (non-empty = not applied)."
+  }
+ ]
+}

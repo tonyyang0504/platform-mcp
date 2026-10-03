@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "apliiq-mcp",
+ "display_name": "Apliiq MCP",
+ "version": "0.1.0",
+ "description": "Apliiq (ecommerce suppliers): me, list_products, get_product, get_order, track. Every tool maps to a",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "apliiq"
+   ],
+   "env": {
+    "PLATFORM_MCP_APLIIQ_APP_ID": "${user_config.platform_mcp_apliiq_app_id}",
+    "PLATFORM_MCP_APLIIQ_SHARED_SECRET": "${user_config.platform_mcp_apliiq_shared_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_apliiq_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APLIIQ_APP_ID",
+   "description": "API Key (APPID) of an Apliiq custom store (https://www.apliiq.com/verified/stores > custom store > API Key).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_apliiq_shared_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APLIIQ_SHARED_SECRET",
+   "description": "The store's Shared_SECRET: signs every request (base64 HMAC-SHA256 over APPID + RTS + STATE + base64(body), empty for GET). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Apliiq has no account endpoint; the probe lists the last month's orders (an array), so `account` is empty on success. A 401 means the APPID/Shared_SECRET signature was refused."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v1/Product returns the whole blank catalogue as one array [{Id, Name, Code, SKU, Price, Currency_Code, Sizes[{Id, Name, Weight, PlusSize_Fee}], Colors[{Id, Name}], Services, Locations}]; `query`, `category`, `page` and `limit` are not accepted by the endpoint."
+  },
+  {
+   "name": "get_product",
+   "description": "One blank product by its numeric Id with Sizes, Colors, Services (screen print, embroidery, digital print ...), Locations (placement areas) and Subscriptions in `raw`."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v1/Order/{OrderId} answers a one-element array [{OrderId, OrderDate, ExpectedDate, TotalQty, SN[shipment notices], StoreOrderId, Status (New, In Production, Ready To Ship, Shipped, Canceled, ...), AwaitingGarment, AwaitingArtwork, CanChangeShipAddress}]. No totals are returned."
+  },
+  {
+   "name": "track",
+   "description": "The order's shipment notices SN[{TrackingNumber, Service (e.g. USPS First Class Mail), Carrier (tracking URL), Helptext (\"your package shipped on ...\"), Items}]; empty until shipped."
+  }
+ ]
+}

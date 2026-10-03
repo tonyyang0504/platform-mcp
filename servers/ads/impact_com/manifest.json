@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "impact_com-mcp",
+ "display_name": "impact.com MCP",
+ "version": "0.1.0",
+ "description": "impact.com (ads): me, list_campaigns, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "impact_com"
+   ],
+   "env": {
+    "PLATFORM_MCP_IMPACT_COM_ACCOUNT_SID": "${user_config.platform_mcp_impact_com_account_sid}",
+    "PLATFORM_MCP_IMPACT_COM_AUTH_TOKEN": "${user_config.platform_mcp_impact_com_auth_token}",
+    "PLATFORM_MCP_IMPACT_COM_REPORT_ID": "${user_config.platform_mcp_impact_com_report_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_impact_com_account_sid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_IMPACT_COM_ACCOUNT_SID",
+   "description": "Account SID of a Brand API access token (impact.com > user profile > Settings > Technical > API > Create Access Token); the HTTP Basic username and the {AccountSID} in every path.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_impact_com_auth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_IMPACT_COM_AUTH_TOKEN",
+   "description": "The token's Auth Token, the HTTP Basic password. Needs read scope for programs and reports.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_impact_com_report_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_IMPACT_COM_REPORT_ID",
+   "description": "Report handle for get_report, taken from GET /Advertisers/{AccountSID}/Reports (Id of a report with ApiAccessible=true, e.g. a performance-by-day report); its columns are listed by /Reports/{ReportId}/MetaData.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /Advertisers/{AccountSID}/CompanyInformation: the brand account's company details."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /Advertisers/{AccountSID}/Campaigns: the account's programs (impact.com calls programs 'Campaigns'); status filters State (ACTIVE, AWAITING_REVIEW, CANCELLED, CLOSED, DEACTIVATED, DELINQUENT, REJECTED, SETUP, SETUP_COMPLETE). Programs carry no budget; Type (Performance, Retail Media, Creator …) is in raw. `account_id` is not sent (the Account SID selects the account); `page`/`limit` are not sent (only the first page is returned)."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /Advertisers/{AccountSID}/Reports/{report_id}?StartDate&EndDate&SUBAID=<campaign_id> (Run a Report, synchronous legacy endpoint with pagination limits): the configured report's Records, with the report's own columns (see /Reports/{report_id}/MetaData) left as returned in each row's raw. campaign_id is the program id (SUBAID), 'required for most reports'. Needs the report_id config field. `account_id` is not sent."
+  }
+ ]
+}

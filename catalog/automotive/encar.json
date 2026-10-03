@@ -1,0 +1,38 @@
+{
+ "id": "encar",
+ "category": "automotive",
+ "label": "Encar",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.encar.com",
+ "domain": "encar.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). No official Encar API; all found APIs are unofficial scrapers/resellers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "encarapi.com",
+   "Carapis encar client",
+   "auto-api.com/encar",
+   "Apify encar scrapers"
+  ]
+ },
+ "official_mcp": []
+}

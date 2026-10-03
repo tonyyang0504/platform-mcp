@@ -1,0 +1,36 @@
+{
+ "id": "npi_registry",
+ "category": "sales",
+ "label": "NPPES NPI Registry API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://npiregistry.cms.hhs.gov/api-page",
+ "url": "https://npiregistry.cms.hhs.gov/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free public API without a key (organisations and individual providers; practice phone / address are published by CMS). Individual providers are business contacts only in their professional capacity.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

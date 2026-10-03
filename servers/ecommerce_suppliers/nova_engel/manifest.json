@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "nova_engel-mcp",
+ "display_name": "Nova Engel (ES perfumery & cosmetics dropshipping) MCP",
+ "version": "0.1.0",
+ "description": "Nova Engel (ES perfumery & cosmetics dropshipping) (ecommerce suppliers): me, list_products, create_",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "nova_engel"
+   ],
+   "env": {
+    "PLATFORM_MCP_NOVA_ENGEL_USER": "${user_config.platform_mcp_nova_engel_user}",
+    "PLATFORM_MCP_NOVA_ENGEL_PASSWORD": "${user_config.platform_mcp_nova_engel_password}",
+    "PLATFORM_MCP_NOVA_ENGEL_LANGUAGE": "${user_config.platform_mcp_nova_engel_language}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_nova_engel_user": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOVA_ENGEL_USER",
+   "description": "Your Nova Engel dropshipping web-service user (issued with the approved dropshipping account).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_nova_engel_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOVA_ENGEL_PASSWORD",
+   "description": "The password of that web-service user.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_nova_engel_language": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOVA_ENGEL_LANGUAGE",
+   "description": "Language code for product texts in the URL path, e.g. es, en, fr, it, pt or de (the {language} segment of /api/products/…).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Logs in (POST /api/login {User, Password} → Token) and reads one catalogue product with the session token in the path: verifies the credentials."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /api/products/paging/{token}/{pages}/{elements}/{language}: one page of the catalogue (Id, EANs, Description, Price = your cost ex-VAT, PVR = recommended retail price, Stock, brand, families). `query`/`category` are not applied — the API has no search; brands are listed with /api/products/brand."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /api/orders/sendv2/{token} with one ClientOrderModel. `items`: up to 10 lines [{product_id: Nova Engel product Id, quantity}]; `shipping_address`: {order_number (your unique reference), name, second_name, street, city, county, postal_code, country, telephone, mobile, carrier_notes?, valoration? (declared value)}. Answers OrderNumber, BookingCode, Message and Errors[]. `shipping_option` is not applied."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /api/orders/orderbyid/{token}/{id}: OrderModel (Status code 0–12, Total, Date, Invoice, SendInfo tracking, Lines). `status` is the numeric Status code as a string (the vocabulary types status as a string)."
+  },
+  {
+   "name": "track",
+   "description": "The order's SendInfo (TrackingModel: Tracking, Carrier, Expedition, TrackingURL) as the single entry of `events` (the vocabulary requires an events array); the API has no tracking-event history, and the order Status code stays in raw of get_order."
+  }
+ ]
+}

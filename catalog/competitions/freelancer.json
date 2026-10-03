@@ -1,0 +1,156 @@
+{
+ "id": "freelancer",
+ "category": "competitions",
+ "label": "Freelancer",
+ "lane": "api",
+ "kind": "design",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.freelancer.com/docs/contests/contests",
+ "url": "https://www.freelancer.com/contest/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Freelancer.com API (contests 0.1). OAuth access token sent in the `freelancer-oauth-v1` header; per-endpoint rate limits answer HTTP 429.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "header freelancer-oauth-v1 (OAuth or personal access token)",
+  "access": "self-serve",
+  "capabilities": [
+   "search",
+   "details",
+   "entries",
+   "submit_file"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://www.freelancer.com/api",
+  "auth": {
+   "type": "header",
+   "header": "freelancer-oauth-v1",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "OAuth access token with the `basic` scope (a personal access token from https://accounts.freelancer.com/settings/develop works); sent in the freelancer-oauth-v1 header."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "rate_note": "Docs: 'Each endpoint has a rate limit' (numbers unpublished; HTTP 429). One request per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/0.1/self/",
+    "docs": "https://developers.freelancer.com/docs/users/authenticated-users",
+    "note": "GET /users/0.1/self/: the logged-in user (under `result`)."
+   },
+   "discover": {
+    "method": "GET",
+    "path": "/contests/0.1/contests/active/",
+    "params": {
+     "query": "query",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.contests",
+     "key": "competitions",
+     "total": "result.total_count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "status": "status",
+      "kind": "type"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/contests/contests",
+    "note": "GET /contests/0.1/contests/active/ (query = space-separated terms matched against names and descriptions; limit/offset): active contests only, so `status` is not sent. `kind` is the contest type (e.g. guaranteed). prize (number) with currency, time_ended (Unix seconds), seo_url and jobs stay in `raw`."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/contests/0.1/contests/{competition_id}/",
+    "result": {
+     "root": "result.contests.0",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "status": "status",
+      "kind": "type",
+      "description": "description"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/contests/contests",
+    "note": "GET /contests/0.1/contests/{contest_id}/ (numeric id); the API answers {result: {contests: [contest]}}, and an unknown id is an empty list (invalid_input). prize, currency, time_ended and judging_period_days stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "standings": "Contests have no ranking endpoint; the holder rates and awards entries (entry statuses won/eliminated only).",
+   "my_entries": "GET /contests/0.1/entries/ (entrants[] filter) requires the advanced `fln:contest_manage` scope in addition to `basic`.",
+   "enter": "No join step: a contest is entered by submitting an entry (see submit).",
+   "submit": "POST /contests/0.1/entries/ submits an entry with its design files (multipart upload); binary uploads are out of scope."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host www.freelancer.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: discover, get_competition returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

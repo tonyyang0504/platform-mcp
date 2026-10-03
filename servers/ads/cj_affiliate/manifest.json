@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "cj_affiliate-mcp",
+ "display_name": "CJ Affiliate MCP",
+ "version": "0.1.0",
+ "description": "CJ Affiliate (ads): me, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "cj_affiliate"
+   ],
+   "env": {
+    "PLATFORM_MCP_CJ_AFFILIATE_PERSONAL_ACCESS_TOKEN": "${user_config.platform_mcp_cj_affiliate_personal_access_token}",
+    "PLATFORM_MCP_CJ_AFFILIATE_COMPANY_ID": "${user_config.platform_mcp_cj_affiliate_company_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_cj_affiliate_personal_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CJ_AFFILIATE_PERSONAL_ACCESS_TOKEN",
+   "description": "CJ Developer Portal personal access token (https://developers.cj.com/account/personal-access-tokens), sent as `Authorization: Bearer`; it must belong to a user of the advertiser company (CID) queried.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_cj_affiliate_company_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CJ_AFFILIATE_COMPANY_ID",
+   "description": "The advertiser's CJ company id (CID); used by the `me` probe (get_report takes it as account_id).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account query; the probe is the Commission Detail advertiserCommissions query for the configured CID with no dates (CJ defaults to the last 24 hours by posting date), returning {data: {advertiserCommissions: {count, payloadComplete}}}. GraphQL failures come back as {data: null, errors: [...]}."
+  },
+  {
+   "name": "get_report",
+   "description": "Commission Detail API (POST https://commissions.api.cj.com/query, GraphQL) advertiserCommissions for account_id (the advertiser CID) posted from date_from 00:00Z up to (excluding) date_to 00:00Z; at most 31 days per call. Rows are individual commission records, not aggregates: `spend` is the advertiser commission and `cj_fee` the CJ fee, both in the advertiser's currency; corrections are separate delta records (original=false) to be summed with the original. At most 10,000 records per call; when payloadComplete is false, more exist (cursor paging by maxCommissionId is not followed). `campaign_id` is not applied (CJ has no campaigns). A GraphQL error answers {data: null, errors} and yields no rows. Limit: 200 calls per 5 minutes."
+  }
+ ]
+}

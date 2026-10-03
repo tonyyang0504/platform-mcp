@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yahoo_dsp-mcp",
+ "description": "Yahoo DSP (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps to a documented en",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://help.yahooinc.com/dsp-api/docs/dsp-api-help-home",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yahoo_dsp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YAHOO_DSP_CLIENT_ID",
+     "description": "DSP API client ID (DSP UI → your name → My Account → Activate; shown once). The JWT issuer is built as idb2b.dsp.dspapi.<client_id>, so enter the ID without that prefix.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_DSP_CLIENT_SECRET",
+     "description": "DSP API client secret shown with the client ID; it signs the HS256 client assertion.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

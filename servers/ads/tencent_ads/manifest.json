@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "tencent_ads-mcp",
+ "display_name": "腾讯广告 Tencent Ads MCP",
+ "version": "0.1.0",
+ "description": "腾讯广告 Tencent Ads (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "tencent_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_TENCENT_ADS_CLIENT_ID": "${user_config.platform_mcp_tencent_ads_client_id}",
+    "PLATFORM_MCP_TENCENT_ADS_CLIENT_SECRET": "${user_config.platform_mcp_tencent_ads_client_secret}",
+    "PLATFORM_MCP_TENCENT_ADS_REFRESH_TOKEN": "${user_config.platform_mcp_tencent_ads_refresh_token}",
+    "PLATFORM_MCP_TENCENT_ADS_ACCOUNT_ID": "${user_config.platform_mcp_tencent_ads_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tencent_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TENCENT_ADS_CLIENT_ID",
+   "description": "应用 id (client_id) of your Tencent Marketing API application (developers.e.qq.com > 应用程序管理).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tencent_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TENCENT_ADS_CLIENT_SECRET",
+   "description": "应用 secret (client_secret) of the same application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tencent_ads_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TENCENT_ADS_REFRESH_TOKEN",
+   "description": "refresh_token from the one-time OAuth consent (oauth/authorize → GET https://api.e.qq.com/oauth/token?grant_type=authorization_code). The runtime mints 1-day access tokens with grant_type=refresh_token; the refresh token itself expires after refresh_token_expires_in (30 days) and must then be re-authorized.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tencent_ads_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TENCENT_ADS_ACCOUNT_ID",
+   "description": "推广帐号 id (account_id) the token may operate; used by `me` and by update_budget / pause_resume (adgroups/update needs account_id). For agency tokens use the sub-account id to operate.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET advertiser/get?account_id=…&fields=[…]&pagination_mode=PAGINATION_MODE_NORMAL&page=1&page_size=1 with the common access_token / timestamp (seconds) / nonce (32-char random) query parameters."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET advertiser/get without account_id: for an agency (代理商) token this lists all sub-accounts ('如未传 account_id，则默认拉取该代理商下属所有子客信息'); a direct advertiser token must pass account_id, so use `me` instead. raw.daily_budget is in 分 (fen). Returns the first 100 accounts (list_accounts takes no page argument); total in `total`."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "Marketing API v3.0 has no campaign level: the 营销单元 (adgroup) carries the daily budget and on/off status, so campaigns here are adgroups (GET adgroups/get). status is configured_status (AD_STATUS_NORMAL / AD_STATUS_SUSPEND). The daily budget is in raw.daily_budget in 分 (fen, 1/100 CNY; 0 = unlimited), so `budget` is not mapped. `status` is not sent as a filter."
+  },
+  {
+   "name": "get_report",
+   "description": "GET daily_reports/get?account_id&level=REPORT_LEVEL_ADGROUP&date_range={start_date,end_date}&group_by=[date,adgroup_id]&fields=[…] (JSON-encoded query values, as the official SDK sends them); campaign_id filters on adgroup_id. cost_fen is spend in 分 (fen, 1/100 CNY). Up to 1000 rows (first page)."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST adgroups/update {account_id, adgroup_id, daily_budget}: daily_budget is given in CNY (元) and sent in 分 (×100); allowed 5,000–400,000,000 分 (50–4,000,000 元), 0 = unlimited, and it may not go below 1.5× today's spend plus frozen funds. This changes spend. `currency` is ignored (CNY)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST adgroups/update {account_id, adgroup_id, configured_status} (pause → AD_STATUS_SUSPEND, resume → AD_STATUS_NORMAL). Resuming restarts spend."
+  }
+ ]
+}

@@ -1,0 +1,251 @@
+{
+ "id": "partnerize",
+ "category": "ads",
+ "label": "Partnerize",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "gb",
+  "us",
+  "au",
+  "jp"
+ ],
+ "docs_url": "https://api-docs.partnerize.com/",
+ "url": "https://partnerize.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Brand and partner API documentation is public; credentials require an onboarded account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "basic / token (Partnerize application key + user API key — Access and Authentication section)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "reports",
+   "conversions_upload",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Partnerize Brands API) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.partnerize.com/…"
+  ],
+  "auth": [
+   "1. Partnerize brand contract → account.",
+   "2. Application key + user API key (Basic / token per docs).",
+   "3. Campaign → partners → commission groups → voucher codes → reports."
+  ],
+  "endpoints": [
+   {
+    "call": "GET/POST /brands` · `/brands/{id}",
+    "purpose": "brands (accounts)",
+    "notes": "name, network"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE /campaigns` · `GET /brands/{id}/campaigns",
+    "purpose": "campaigns",
+    "notes": "title, currency, status, terms"
+   },
+   {
+    "call": "GET/POST …/campaigns/{id}/partners` (participation) · commission groups CRUD · custom terms",
+    "purpose": "partners + commissions",
+    "notes": "partner id, participation status, commission rate"
+   },
+   {
+    "call": "GET/POST/PUT …/vouchers",
+    "purpose": "voucher codes (offers)",
+    "notes": "code, discount, dates"
+   },
+   {
+    "call": "conversions endpoints",
+    "purpose": "conversions upload",
+    "notes": "conversion ref, value, items"
+   },
+   {
+    "call": "reporting endpoints",
+    "purpose": "reports",
+    "notes": "dates, metrics"
+   }
+  ],
+  "limits": " - Rate limits documented (values TODO(verify)); contract pricing; API change-management policy.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api-docs.partnerize.com/brand/",
+   "https://api-docs.partnerize.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.partnerize.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "basic",
+   "username_field": "application_key",
+   "password_field": "user_api_key",
+   "fields": [
+    {
+     "name": "application_key",
+     "required": true,
+     "help": "Partnerize application_key (identifies the Network; Partnerize console > Settings > API credentials), the HTTP Basic username."
+    },
+    {
+     "name": "user_api_key",
+     "required": true,
+     "help": "The user's user_api_key, the HTTP Basic password; results are limited to the user's brand permissions."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v3/brand",
+    "docs": "https://api-docs.partnerize.com/brand/#operation/Get%20brands%20for%20a%20user",
+    "note": "GET /v3/brand: the brands the user can access ({data: [{brand_id, brand_name}]}); there is no user profile endpoint."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v3/brand",
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "brand_id",
+      "name": "brand_name"
+     }
+    },
+    "docs": "https://api-docs.partnerize.com/brand/#operation/Get%20brands%20for%20a%20user",
+    "note": "GET /v3/brand: brands (advertisers) the user has access to. `id` is the brand id that list_campaigns takes as account_id; the brand currency is on GET /user/advertiser/{id} (default_currency)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/user/advertiser/{account_id}/campaign",
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "count",
+     "fields": {
+      "id": "campaign.campaign_id",
+      "name": "campaign.title",
+      "status": "campaign.status",
+      "currency": "campaign.default_currency"
+     }
+    },
+    "docs": "https://api-docs.partnerize.com/brand/#operation/List%20all%20Brand%20Campaigns",
+    "note": "GET /user/advertiser/{brand_id}/campaign: the brand's campaigns (programmes). status is a single letter: a = active, p = pending, r = rejected, n = inactive. Partnerize campaigns are commission-based (default_commission_rate / is_cpc in raw) and carry no budget; `status`, `page` and `limit` are not sent."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/reporting/report_advertiser/campaign/{campaign_id}/conversion.json",
+    "params": {
+     "start_date": "fmt:{date:date_from}T00:00:00Z",
+     "end_date": "fmt:{date:date_to}T23:59:59Z",
+     "timezone": "=UTC"
+    },
+    "result": {
+     "items": "conversions",
+     "key": "rows",
+     "total": "count",
+     "fields": {
+      "conversion_id": "conversion_data.conversion_id",
+      "date": "conversion_data.conversion_time",
+      "publisher_id": "conversion_data.publisher_id",
+      "currency": "conversion_data.currency",
+      "status": "conversion_data.conversion_value.conversion_status",
+      "sales": "conversion_data.conversion_value.value",
+      "spend": "conversion_data.conversion_value.commission",
+      "publisher_commission": "conversion_data.conversion_value.publisher_commission"
+     }
+    },
+    "docs": "https://api-docs.partnerize.com/brand/#operation/Retrieve%20a%20Brand%20Conversions%20Report",
+    "note": "GET /reporting/report_advertiser/campaign/{campaign_id}/conversion.json?start_date&end_date (whole UTC days): one row per conversion (not aggregated) for one campaign; campaign_id is REQUIRED. `spend` is the conversion's commission (what the brand pays, including the network fee) and publisher_commission the partner's share; up to 300 rows per call (count holds the total; offset paging is not followed). Totals per currency are in the response's total_* fields. `account_id` is not sent."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Partnerize campaigns are commission-based and have no budget attribute; PUT /campaign/{campaign_id} updates destination_url, title, terms and tracking settings (https://api-docs.partnerize.com/brand/#operation/Update%20a%20Campaign).",
+   "pause_resume": "The campaign status (a/p/r/n) is not among the fields accepted by PUT /campaign/{campaign_id} (https://api-docs.partnerize.com/brand/#operation/Update%20a%20Campaign); there is no status endpoint."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.partnerize.com: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://api-docs.partnerize.com/brand/: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

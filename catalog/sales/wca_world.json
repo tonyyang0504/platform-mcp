@@ -1,0 +1,36 @@
+{
+ "id": "wca_world",
+ "category": "sales",
+ "label": "WCA member directory",
+ "lane": "assist",
+ "kind": "directory",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.wcaworld.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt is Disallow: / for every agent → no public fetching; the member directory needs a member login → tenant session.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

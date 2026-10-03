@@ -1,0 +1,208 @@
+{
+ "id": "adzuna",
+ "category": "jobs",
+ "label": "Adzuna",
+ "lane": "api",
+ "kind": "aggregator",
+ "regions": [
+  "uk",
+  "us",
+  "br",
+  "ca",
+  "de",
+  "fr",
+  "in",
+  "it",
+  "nl",
+  "pl",
+  "ru",
+  "sg",
+  "za"
+ ],
+ "docs_url": "https://developer.adzuna.com/",
+ "url": "https://www.adzuna.co.uk/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Public Job Search API (app_id + app_key, free tier). Aggregator — applications land on the employer/original board, so search only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "salary_histogram",
+   "top_companies",
+   "categories"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (aggregator search API, apply on the source board).",
+  "base_urls": [
+   "https://api.adzuna.com/v1/api"
+  ],
+  "auth": [
+   "1. Register at developer.adzuna.com (username, e-mail, organisation name + website) → `app_id` + `app_key`.",
+   "2. Both are mandatory query parameters on every call. No user context."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/api/jobs/{country}/search/{page}",
+    "purpose": "job search",
+    "notes": "`what`, `what_and`, `what_phrase`, `what_or`, `what_exclude`, `title_only`, `where`, `distance`, `location0..7`, `results_per_page`, `salary_min`, `salary_max`, `salary_include_unknown`, `full_time`, `part_time`, `contract`, `permanent`, `company`, `category`, `sort_by`, `sort_dir`, `max_days_old`; "
+   },
+   {
+    "call": "GET /v1/api/jobs/{country}/categories",
+    "purpose": "category list",
+    "notes": "tag + label"
+   },
+   {
+    "call": "GET /v1/api/jobs/{country}/histogram`, `/history`, `/top_companies`, `/geodata",
+    "purpose": "labour-market data",
+    "notes": "salary distribution, salary over time, vacancies by company / region"
+   },
+   {
+    "call": "GET /v1/api/version",
+    "purpose": "API version",
+    "notes": "—"
+   }
+  ],
+  "limits": " Not published on the docs pages (plans are managed by the 3scale portal); the Labour Market Intelligence tier is commercial. - Free key for the public API; organisation name and website are required at signup. - The developer T&C page could not be opened (404); general Adzuna site terms apply. - Aggregator — no account actions, so no automated-application question.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.adzuna.com/",
+   "https://developer.adzuna.com/overview",
+   "https://developer.adzuna.com/docs/search",
+   "https://developer.adzuna.com/signup"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.adzuna.com/v1/api",
+  "auth": {
+   "type": "query",
+   "params": {
+    "app_id": "app_id",
+    "app_key": "app_key"
+   },
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "Adzuna app_id from https://developer.adzuna.com/ (register with username, e-mail, organisation name + website); mandatory app_id query parameter on every call."
+    },
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "Adzuna app_key from https://developer.adzuna.com/; mandatory app_key query parameter on every call."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/jobs/gb/search/1",
+    "fixed_params": {
+     "what": "test",
+     "results_per_page": 1
+    },
+    "docs": "https://developer.adzuna.com/docs/search",
+    "note": "Verified with a one-result UK search (Adzuna has no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/jobs/{country}/search/{page}",
+    "path_params": {
+     "country": "=gb",
+     "page": "page"
+    },
+    "params": {
+     "what": "query",
+     "where": "location",
+     "results_per_page": "limit"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company.display_name",
+      "location": "location.display_name",
+      "url": "redirect_url",
+      "posted_at": "created",
+      "salary_min": "salary_min",
+      "salary_max": "salary_max",
+      "description": "description"
+     }
+    },
+    "docs": "https://developer.adzuna.com/docs/search",
+    "note": "The country is a path segment (gb, us, de, fr, ... per the Adzuna site); this server is pinned to gb (UK). description is cropped by Adzuna and redirect_url opens the ad on the original board. Rate limits are not published (plans are managed by the 3scale portal)."
+   }
+  },
+  "not_offered": {
+   "get_posting": "Page: 'no details endpoint — redirect_url opens the ad on the original board'; re-read the record from the search hit.",
+   "apply": "Page: 'applying happens there' (on the original board); 'Aggregator — no account actions'.",
+   "list_messages": "No messaging API: 'Aggregator — no account actions'."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.adzuna.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

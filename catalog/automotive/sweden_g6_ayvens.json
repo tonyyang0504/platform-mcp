@@ -1,0 +1,41 @@
+{
+ "id": "sweden_g6_ayvens",
+ "category": "automotive",
+ "label": "Usedcars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://usedcars.ayvens.com",
+ "domain": "usedcars.ayvens.com",
+ "country": "Sweden",
+ "official_api": false,
+ "docs_url": "https://portal.api.aldautomotive.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Azure APIM subscription key after sign-in",
+  "access": "partner_only",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Ayvens (ex-ALD) runs an Azure API Management developer portal for clients/partners (sign-in required, API list not public); no documented public used-car listing API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://portal.api.aldautomotive.com/product",
+   "https://portal.api.aldautomotive.com/apis",
+   "https://carmarket.ayvens.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Ayvens (ex-ALD) runs an Azure API Management developer portal for clients/partners (sign-in required, API list not public); no documented public used-car listing API."
+}

@@ -1,0 +1,360 @@
+{
+ "id": "google_business",
+ "category": "social",
+ "label": "Google Business Profile",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/my-business/content/posts-data",
+ "url": "https://business.google.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Business Profile content policy: no misleading offers, no keyword stuffing; review replies are public. 300 QPM once approved.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post(local posts: standard / event / offer)",
+   "upload_media",
+   "reply(review replies)",
+   "read_comments(reviews, Q&A)",
+   "analytics(performance)",
+   "delete",
+   "edit"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "google-api-python-client (discovery: mybusiness v4, mybusinessbusinessinformation v1, businessprofileperformance v1, mybusinessqanda v1)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1500,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (gated by an access application).",
+  "base_urls": [
+   "https://mybusiness.googleapis.com/v4/"
+  ],
+  "auth": [
+   "1. Google Cloud project → **Application for Basic API Access** form (GBP API contact form) with the project number;",
+   "2. Enable the Business Profile APIs, OAuth 2.0 web client, scope `https://www.googleapis.com/auth/business.manage`.",
+   "3. Each tenant connects their own owner / manager Google account (refresh token stored per account); accounts →"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /v4/accounts/{a}/locations/{l}/localPosts` {languageCode, summary (≤ 1,500), topicType STANDARD",
+    "purpose": "EVENT",
+    "notes": "OFFER, event{title, schedule{startDate, endDate…}}, offer{couponCode, redeemOnlineUrl, termsConditions}, callToAction{actionType, url}, media[{mediaFormat PHOTO, sourceUrl}]}"
+   },
+   {
+    "call": "PATCH …/localPosts/{p}?updateMask=`, `DELETE …/localPosts/{p}`, `GET …/localPosts",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /v4/accounts/{a}/locations/{l}/media` {mediaFormat, locationAssociation{category}, sourceUrl}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v4/accounts/{a}/locations/{l}/reviews`, `PUT …/reviews/{r}/reply` {comment}, `DELETE …/reply",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "mybusinessqanda v1 locations/{l}/questions`, `…/answers:upsert",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "businessprofileperformance v1 locations/{l}:getDailyMetricsTimeSeries?dailyMetric=…",
+    "purpose": "impressions, calls, clicks",
+    "notes": ""
+   },
+   {
+    "call": "Pub/Sub topic via accounts/{a}/notificationSetting",
+    "purpose": "new reviews",
+    "notes": ""
+   }
+  ],
+  "limits": " - 300 QPM per approved project (raise via the quota form); Google API Services policies. - Business Profile content policy: no misleading offers, no keyword stuffing; review replies are public.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.google.com/my-business/content/posts-data",
+   "https://developers.google.com/my-business/content/prereqs"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://mybusiness.googleapis.com/v4",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/business.manage. 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "Business Profile account id (digits after accounts/ in GET https://mybusinessaccountmanagement.googleapis.com/v1/accounts)."
+   },
+   {
+    "name": "location_id",
+    "required": true,
+    "help": "Location id (digits after locations/) of the verified location that posts and reviews belong to."
+   },
+   {
+    "name": "language_code",
+    "required": false,
+    "help": "languageCode of new local posts, e.g. en-US (optional)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://mybusinessaccountmanagement.googleapis.com/v1/accounts",
+    "docs": "https://developers.google.com/my-business/reference/accountmanagement/rest/v1/accounts/list",
+    "note": "accounts.list: the Business Profile accounts the user can manage (use the digits of `name` as account_id)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/accounts/{account_id}/locations/{location_id}/localPosts",
+    "path_params": {
+     "account_id": "@account_id",
+     "location_id": "@location_id"
+    },
+    "body": {
+     "languageCode": "@language_code",
+     "summary": "text",
+     "topicType": "=STANDARD"
+    },
+    "result": {
+     "fields": {
+      "id": "name",
+      "url": "searchUrl",
+      "created_at": "createTime"
+     }
+    },
+    "docs": "https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts/create",
+    "note": "localPosts.create with topicType STANDARD and summary = text; id is the post resource name accounts/…/locations/…/localPosts/…. `reply_to` is ignored."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/accounts/{account_id}/locations/{location_id}/localPosts",
+    "path_params": {
+     "account_id": "@account_id",
+     "location_id": "@location_id"
+    },
+    "body": {
+     "languageCode": "@language_code",
+     "summary": "text",
+     "topicType": "=STANDARD",
+     "media.0.mediaFormat": "=PHOTO",
+     "media.0.sourceUrl": "image_urls.0"
+    },
+    "result": {
+     "fields": {
+      "id": "name",
+      "url": "searchUrl",
+      "created_at": "createTime"
+     }
+    },
+    "docs": "https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts/create",
+    "note": "localPosts.create with media [{mediaFormat: PHOTO, sourceUrl}] (https://developers.google.com/my-business/content/posts-data); only the first image URL is sent and Google fetches it."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/accounts/{account_id}/locations/{location_id}/reviews",
+    "path_params": {
+     "account_id": "@account_id",
+     "location_id": "@location_id"
+    },
+    "params": {
+     "pageSize": "limit"
+    },
+    "max_limit": 50,
+    "default_limit": 25,
+    "result": {
+     "items": "reviews",
+     "key": "mentions",
+     "total": "totalReviewCount",
+     "fields": {
+      "id": "reviewId",
+      "author": "reviewer.displayName",
+      "text": "comment",
+      "created_at": "createTime"
+     }
+    },
+    "docs": "https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews/list",
+    "note": "The location's customer REVIEWS are returned as mentions (newest first; starRating and reviewReply in raw). Valid only for verified locations; 'The maximum pageSize is 50'; pages by pageToken, so `page`/`since` are ignored."
+   },
+   "reply_comment": {
+    "method": "PUT",
+    "path": "/accounts/{account_id}/locations/{location_id}/reviews/{comment_id}/reply",
+    "path_params": {
+     "account_id": "@account_id",
+     "location_id": "@location_id"
+    },
+    "body": {
+     "comment": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "=reviewReply",
+      "created_at": "updateTime"
+     }
+    },
+    "docs": "https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews/updateReply",
+    "note": "Replies to a REVIEW (`comment_id` = reviewId from read_mentions); 'A reply is created if one does not exist', otherwise it is replaced. A review has one reply, so `id` is a fixed marker."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/accounts/{account_id}/locations/{location_id}/localPosts/{post_id}",
+    "path_params": {
+     "account_id": "@account_id",
+     "location_id": "@location_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts/delete",
+    "note": "`post_id` is the numeric local post id (the last segment of the post name)."
+   }
+  },
+  "not_offered": {
+   "read_comments": "Local posts carry no comments in the LocalPost resource (https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts); customer feedback is reviews, exposed as read_mentions.",
+   "analytics_post": "localPosts.reportInsights is a location-wide POST taking localPostNames plus a basicRequest with metricRequests and a timeRange (https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts/reportInsights); the vocabulary carries no time range."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host mybusiness.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://mybusinessaccountmanagement.googleapis.com/$discovery/rest?version=v1: 1/1 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "5 tool(s) have no machine-readable spec"
+ }
+}

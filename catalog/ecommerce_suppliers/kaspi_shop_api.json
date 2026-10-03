@@ -1,0 +1,177 @@
+{
+ "id": "kaspi_shop_api",
+ "category": "ecommerce_suppliers",
+ "label": "Kaspi.kz Shop (merchant API)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "ru_cis"
+ ],
+ "docs_url": "https://guide.kaspi.kz/partner/ru/shop/api/general",
+ "url": "https://kaspi.kz/merchantcabinet/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated beyond user agreement (kaspi.kz/terms)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token — authorisation token issued in the Kaspi seller cabinet (FAQ 'Как получить токен авторизации'), sent per request",
+  "access": "signup",
+  "capabilities": [
+   "orders",
+   "tracking",
+   "listings_create_update",
+   "stock_feed",
+   "price_feed"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Kaspi merchant cabinet account; user agreement (kaspi.kz/terms); no sandbox described.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://guide.kaspi.kz/partner/ru/shop/api/general",
+   "https://guide.kaspi.kz/partner/ru/shop/api/orders"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://kaspi.kz/shop/api/v2",
+  "auth": {
+   "type": "header",
+   "header": "X-Auth-Token",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Kaspi.kz merchant authorisation token from the seller cabinet (Настройки > Токен API), sent as the X-Auth-Token header."
+    }
+   ]
+  },
+  "headers": {
+   "Content-Type": "application/vnd.api+json"
+  },
+  "rate_per_second": 1,
+  "terms": "Kaspi's merchant API is SELLER-side: it manages the orders customers placed with your Kaspi.kz shop and uploads your products. There is no sourcing/purchasing API.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://kaspi.kz/shop/api/products/import/schema",
+    "docs": "https://guide.kaspi.kz/partner/ru/shop/api/goods",
+    "note": "No account endpoint; the probe reads the product-import JSON schema, which requires a valid X-Auth-Token."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "filter[orders][code]": "id"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "id": "attributes.code",
+      "status": "attributes.status",
+      "total": "attributes.totalPrice",
+      "currency": "=KZT",
+      "state": "attributes.state",
+      "order_uid": "id",
+      "creation_date_ms": "attributes.creationDate",
+      "delivery_mode": "attributes.deliveryMode"
+     }
+    },
+    "docs": "https://guide.kaspi.kz/partner/ru/shop/api/orders",
+    "note": "GET /v2/orders?filter[orders][code]={id}: `id` is the order NUMBER (attribute code) of a customer order placed with your shop. status is APPROVED_BY_BANK, ACCEPTED_BY_MERCHANT, COMPLETED, CANCELLED, CANCELLING, KASPI_DELIVERY_RETURN_REQUESTED or RETURNED; totalPrice is in tenge; dates are epoch milliseconds (creation_date_ms). The order entries are at /v2/orders/{uid}/entries (not mapped)."
+   }
+  },
+  "not_offered": {
+   "list_products": "The goods API only uploads products (POST /products/import) and reads import results, categories and attributes; there is no call that lists the shop's catalogue.",
+   "get_product": "No product read endpoint in the goods API (import schema, classification attributes/values, import status only).",
+   "quote_shipping": "No shipping-rate endpoint; delivery costs appear on the order (deliveryCostForSeller).",
+   "create_order": "Seller-side API: customers order on kaspi.kz; the API accepts, cancels and completes those orders but cannot place one.",
+   "track": "No tracking-events endpoint; Kaspi Доставка waybills are generated through order state changes and the order carries only state/plannedDeliveryDate."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "blocked",
+  "evidence": [
+   "host kaspi.kz: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 0/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> None (timeout), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 1/2 tool paths found verbatim on their docs pages; names not found on the page: get_order:filter"
+  ],
+  "notes": "kaspi.kz timed out from both audit hosts (a residential and a datacenter connection); the API appears to be reachable only from Kazakhstan. no answer (timeout/connection) for me, get_order"
+ }
+}

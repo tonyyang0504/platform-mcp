@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "adtraction-mcp",
+ "display_name": "Adtraction MCP",
+ "version": "0.1.0",
+ "description": "Adtraction (ads): me, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "adtraction"
+   ],
+   "env": {
+    "PLATFORM_MCP_ADTRACTION_API_TOKEN": "${user_config.platform_mcp_adtraction_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_adtraction_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADTRACTION_API_TOKEN",
+   "description": "Adtraction advertiser API token (log in to Adtraction > Account > Settings), sent as the X-Token header; it determines the advertiser program the calls see.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/advertiser/account/: the advertiser program behind the token ({programId, programName, currency, market})."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /v2/advertiser/statistics/days/ {fromDate, toDate, transactionStatus: 3}: the program's statistics per day with approved + pending transactions (transactionStatus 3). `spend` is `cost` (partner commission plus platform fee, in the program currency). `account_id` is not sent (the token selects the program) and `campaign_id` is not applied (Adtraction has no campaigns; the optional channelId filter is a partner channel)."
+  }
+ ]
+}

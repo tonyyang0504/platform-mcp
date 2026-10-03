@@ -1,0 +1,37 @@
+{
+ "id": "bonbanh_vn",
+ "category": "automotive",
+ "label": "Bonbanh",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://bonbanh.com",
+ "domain": "bonbanh.com",
+ "country": "Vietnam",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API links on rendered site; only third-party scrapers exist.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bonbanh.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/rainminer/bonbanh-scraper"
+  ]
+ },
+ "official_mcp": []
+}

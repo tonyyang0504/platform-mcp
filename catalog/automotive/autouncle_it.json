@@ -1,0 +1,43 @@
+{
+ "id": "autouncle_it",
+ "category": "automotive",
+ "label": "Autouncle",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autouncle.it",
+ "domain": "autouncle.it",
+ "country": "Italy",
+ "official_api": true,
+ "docs_url": "https://b2b.autouncle.com/en-gb/automotive-api",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key",
+  "access": "apply",
+  "capabilities": [
+   "get_valuation",
+   "search_listings"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). AutoUncle sells a B2B valuation API (API key; market value, deal rating, comparables from 8.6M listings in 14 countries) via sales contact; no open self-serve docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://b2b.autouncle.com/en-gb/automotive-api",
+   "https://b2b.autouncle.com/en-gb/automotive-api/crm-systems"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "AutoUncle's B2B automotive API (https://b2b.autouncle.com/en-gb/automotive-api: valuation, deal rating, comparables) is sold via sales contact with an API key; no public reference to read."
+}

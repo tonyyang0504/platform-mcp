@@ -1,0 +1,42 @@
+{
+ "id": "volkswagen_gebrauchtwagen",
+ "category": "automotive",
+ "label": "Volkswagen",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.volkswagen.de",
+ "domain": "volkswagen.de",
+ "country": "Germany",
+ "official_api": true,
+ "docs_url": "https://productdata.volkswagenag.com/swagger-doc.html",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client credentials (by application)",
+  "access": "apply",
+  "capabilities": [
+   "vehicle_specs"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). Volkswagen OKAPI product-data API (models/configurations) is official; no API for used-car listings on volkswagen.de.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://okapi-ddp.productdata.volkswagenag.com/dev-portal/overview.html",
+   "https://productdata.volkswagenag.com/overview.html"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "No API for the used-car site. Volkswagen OKAPI product data (https://productdata.volkswagenag.com/swagger-doc.html, rendered 2026-09-25) covers new-vehicle models/configurations behind a sign-up and its Swagger page renders no operations without signing in; it has no VIN decode, listing or valuation operation that fits the automotive vocabulary."
+}

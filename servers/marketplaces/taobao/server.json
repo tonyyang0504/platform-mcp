@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/taobao-mcp",
+ "description": "Taobao (marketplaces): me, list_products, get_product, list_sales, list_refunds. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.taobao.com",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "taobao"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TAOBAO_APP_KEY",
+     "description": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TAOBAO_APP_SECRET",
+     "description": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TAOBAO_SESSION",
+     "description": "The seller's authorised session (access_token) from the TOP user-authorisation flow (https://open.taobao.com/doc.htm?docId=102635&docType=1); sent as the `session` parameter. Update it when it expires — the runtime does not refresh it.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

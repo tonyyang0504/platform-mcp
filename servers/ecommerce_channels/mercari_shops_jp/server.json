@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mercari_shops_jp-mcp",
+ "description": "Mercari Shops (JP) (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.mercari-shops.com/docs/index.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "mercari_shops_jp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MERCARI_SHOPS_JP_ACCESS_TOKEN",
+     "description": "Personal API Access Token issued on your mercari Shops shop administration page; sent as Authorization: Bearer.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCARI_SHOPS_JP_API_HOST",
+     "description": "api.mercari-shops.com (production) or api.mercari-shops-sandbox.com (sandbox).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_MERCARI_SHOPS_JP_USER_AGENT",
+     "description": "User-Agent required by mercari Shops: <API_CLIENT_NAME>/<VERSION>, where API_CLIENT_NAME is the value Mercari assigns to your company at contract (e.g. EXAMPLE_SHOP/1.0.0); requests without the correct User-Agent are restricted.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

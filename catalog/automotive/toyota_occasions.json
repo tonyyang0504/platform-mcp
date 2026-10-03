@@ -1,0 +1,35 @@
+{
+ "id": "toyota_occasions",
+ "category": "automotive",
+ "label": "Occasions",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://occasions.toyota.nl",
+ "domain": "occasions.toyota.nl",
+ "country": "Netherlands",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Toyota NL occasions has no public API (Toyota developer portal covers TMNA/US only).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://occasions.toyota.nl/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

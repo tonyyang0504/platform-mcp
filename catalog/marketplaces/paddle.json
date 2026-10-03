@@ -1,0 +1,291 @@
+{
+ "id": "paddle",
+ "category": "marketplaces",
+ "label": "Paddle",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.paddle.com",
+ "url": "https://vendors.paddle.com",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed with a Developer-tools API key (scoped permissions); MoR, 5 % + 50¢; rate limits per about/rate-limiting (429); payment domain must be approved before live checkout",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "set_price",
+   "checkout_links",
+   "orders",
+   "sales_stats",
+   "webhooks",
+   "refunds",
+   "subscriptions",
+   "reports_csv",
+   "invoices_pdf"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/PaddleHQ/paddle-python-sdk",
+   "https://github.com/PaddleHQ/paddle-node-sdk",
+   "https://github.com/paddlehq"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.paddle.com/mcp",
+  "https://sandbox-mcp.paddle.com/mcp",
+  "https://developer.paddle.com/sdks/ai/paddle-mcp/",
+  "https://www.npmjs.com/package/@paddle/paddle-mcp"
+ ],
+ "auth_fields": [
+  "api_key",
+  "default_price_cents?",
+  "currency?",
+  "tax_category?",
+  "notification_secret?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null,
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.paddle.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://sandbox-api.paddle.com",
+    "docs": "https://developer.paddle.com/build/tools/sandbox",
+    "verified_at": "2026-09-27",
+    "notes": "Paddle Billing sandbox: 'API base URLs — Live https://api.paddle.com, Sandbox https://sandbox-api.paddle.com'. A separate sandbox account at sandbox-vendors.paddle.com with its own API key (keys contain _sdbx); no real payments; sandbox auto-approves refunds and retries webhooks on a shorter schedule."
+   }
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Paddle API key (Paddle > Developer tools > Authentication; live keys look like pdl_live_apikey_...) sent as Authorization: Bearer. Give it product.read, product.write, price.write, transaction.read, adjustment.read and adjustment.write permissions for the full tool set. Sandbox keys (pdl_sdbx_apikey_...) need base https://sandbox-api.paddle.com, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "tax_category",
+    "required": false,
+    "help": "Tax category for create_product (POST /products requires it): standard, digital-goods, ebooks, implementation-services, professional-services, saas, software-programming-services, training-services or website-hosting. Only create_product needs it."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Paddle is the merchant of record; a refund adjustment on a live account is created with status pending_approval and reviewed by Paddle before it is processed (sandbox approves automatically).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/event-types",
+    "docs": "https://developer.paddle.com/api-reference/event-types/list-event-types",
+    "note": "GET /event-types (no specific permission listed) answers {data[{name, description, group, available_versions}], meta{request_id}}; it verifies the API key and the environment. Paddle has no account/me endpoint."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "params": {
+     "per_page": "limit",
+     "status": "status"
+    },
+    "fixed_params": {
+     "include": "prices"
+    },
+    "default_limit": 25,
+    "max_limit": 200,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "prices.0.unit_price.amount",
+      "currency": "prices.0.unit_price.currency_code",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/products/list-products",
+    "note": "GET /products?include=prices&per_page (1-200, default 50)&status (active|archived; Paddle defaults to active). `price`/`currency` come from the product's first included price (unit_price.amount is a STRING in the currency's lowest denomination, e.g. \"1000\" = 10.00 USD; other prices stay in raw.prices). Paging is by cursor (`after` from meta.pagination.next), which page/limit cannot carry: `page` is ignored and only the first page is returned; `total` is not mapped (estimated_total may be -1)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{product_id}",
+    "fixed_params": {
+     "include": "prices"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "prices.0.unit_price.amount",
+      "currency": "prices.0.unit_price.currency_code",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/products/get-product",
+    "note": "GET /products/{product_id}?include=prices returns data{id, name, description, tax_category, type, image_url, custom_data, status, created_at, updated_at, prices[]}; `price`/`currency` are the first price's unit_price (amount as a string in the lowest denomination)."
+   },
+   "create_product": {
+    "method": "POST",
+    "path": "/products",
+    "body": {
+     "name": "name",
+     "description": "description",
+     "tax_category": "@tax_category"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/products/create-product",
+    "note": "POST /products {name (required, 1-200 chars), description, tax_category (required by Paddle, taken from the tax_category setting; a 400 upstream_error means it is unset)}. Paddle products carry no price: `price`/`currency` are NOT sent — call update_price afterwards to create the price entity. The product is created active; `url` is not accepted (image_url is not a product page)."
+   },
+   "update_price": {
+    "method": "POST",
+    "path": "/prices",
+    "body": {
+     "description": "=Price created via platform-mcp update_price",
+     "product_id": "product_id",
+     "unit_price.amount": "str:price",
+     "unit_price.currency_code": "currency"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "product_id",
+      "name": "name",
+      "price": "unit_price.amount",
+      "currency": "unit_price.currency_code",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/prices/create-price",
+    "note": "Paddle prices are separate entities, so this CREATES a new active price for the product with POST /prices {description (required internal note, fixed), product_id, unit_price{amount, currency_code}}; existing prices stay active until archived (PATCH /prices/{price_id} status=archived, not mapped). `price` is sent as the documented STRING in the currency's lowest denomination — pass an integer such as 1000 for 10.00 USD (a decimal is rejected). `currency` is required by Paddle. The result's `id` is the product id; the new price id is raw.id (pri_...)."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/transactions",
+    "params": {
+     "per_page": "limit",
+     "created_at[GTE]": "since"
+    },
+    "fixed_params": {
+     "include": "customer"
+    },
+    "default_limit": 25,
+    "max_limit": 30,
+    "result": {
+     "items": "data",
+     "key": "sales",
+     "fields": {
+      "id": "id",
+      "product_id": "items.0.price.product_id",
+      "product_name": "items.0.price.name",
+      "amount": "details.totals.total",
+      "currency": "currency_code",
+      "status": "status",
+      "customer_email": "customer.email",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/transactions/list-transactions",
+    "note": "GET /transactions?include=customer&per_page (max 30)&created_at[GTE]=since (RFC 3339), newest first (default order id[DESC]). `amount` is details.totals.total, a STRING in the lowest denomination after discount and tax; `product_id`/`product_name` come from the first line item's price. There is no product filter, so `product_id` is not sent. Cursor paging (`after`) cannot be carried by page/limit: `page` is ignored and only the first page is returned. `refunded` is not a transaction field (see list_refunds)."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/adjustments",
+    "params": {
+     "per_page": "limit"
+    },
+    "fixed_params": {
+     "action": "refund"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "data",
+     "key": "refunds",
+     "fields": {
+      "id": "id",
+      "sale_id": "transaction_id",
+      "amount": "totals.total",
+      "currency": "currency_code",
+      "reason": "reason",
+      "status": "status",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/adjustments/list-adjustments",
+    "note": "GET /adjustments?action=refund&per_page (default 10, max 50), newest first. `amount` is totals.total (string, lowest denomination); `status` is pending_approval, approved, rejected or reversed. The endpoint has no date filter, so `since` is not sent; chargebacks are action=chargeback (not listed here). Cursor paging: `page` is ignored, first page only."
+   },
+   "refund": {
+    "method": "POST",
+    "path": "/adjustments",
+    "body": {
+     "action": "=refund",
+     "transaction_id": "sale_id",
+     "reason": "reason",
+     "type": "=full"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "sale_id": "transaction_id",
+      "amount": "totals.total",
+      "currency": "currency_code",
+      "status": "status",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://developer.paddle.com/api-reference/adjustments/create-adjustment",
+    "note": "DESTRUCTIVE: POST /adjustments {action: refund, transaction_id: sale_id (txn_...), reason, type: full} requests a FULL refund of the transaction. `amount` is NOT sent and does not limit the refund: a partial adjustment needs items[{item_id, type, amount}] per transaction item, which this input cannot express — call the API directly for partial refunds. `reason` is required by Paddle (a missing reason is a 400 upstream_error). On live accounts the adjustment is created as pending_approval and reviewed by Paddle; sandbox approves automatically."
+   }
+  },
+  "not_offered": {
+   "get_sales_stats": "No revenue-totals endpoint: the Reports API (POST /reports, then GET /reports/{report_id}/download-url) produces an asynchronous CSV report of transactions or adjustments rather than a totals object the runtime could map."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.paddle.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/main/v1/openapi.yaml: 8/8 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

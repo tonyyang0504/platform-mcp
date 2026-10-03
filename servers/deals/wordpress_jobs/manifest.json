@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "wordpress_jobs-deals-mcp",
+ "display_name": "WordPress Jobs MCP",
+ "version": "0.1.0",
+ "description": "WordPress Jobs (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/wordpress_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "The feed answers its whole current list in one response (WordPress RSS 2.0, the latest 10 job posts); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). id is the job's permalink; description is the full post (content:encoded, HTML); the short excerpt is raw.description and the WordPress post id raw['post-id']."
+  }
+ ]
+}

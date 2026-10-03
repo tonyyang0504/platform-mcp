@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "moloco-mcp",
+ "display_name": "Moloco Ads MCP",
+ "version": "0.1.0",
+ "description": "Moloco Ads (ads): me, list_accounts, list_campaigns, get_report. Every tool maps to a documented end",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "moloco"
+   ],
+   "env": {
+    "PLATFORM_MCP_MOLOCO_API_KEY": "${user_config.platform_mcp_moloco_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_moloco_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MOLOCO_API_KEY",
+   "description": "Moloco Ads API key (Moloco Ads > account settings > API key; created for the ad account's workplace). Exchanged at POST https://api.moloco.cloud/cm/v1/auth/tokens {api_key} for a 16-hour bearer token, re-requested on expiry or 401.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no current-user endpoint in the Campaign management API; the probe is GET /cm/v1/ad-accounts (ad accounts the token's user can access in the workplace)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /cm/v1/ad-accounts: all ad accounts accessible to the current user on the token's workplace."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /cm/v1/campaigns?ad_account_id=…&states=… (states: SUBMITTED, READY, UPCOMING, ACTIVE, PAUSED, SUSPENDED, COMPLETED; deleted campaigns are excluded). The daily budget is in raw.budget_schedule.daily_schedule.daily_budget.amount_micros (micros of the account currency), so it is not mapped to `budget`; enabling_state ENABLED|DISABLED is in raw. `page`/`limit` are not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /cm/v1/analytics-overview {ad_account_id, date_range {start, end}, dimensions [DATE, CAMPAIGN_ID, CAMPAIGN_TITLE], metrics [IMPRESSIONS, CLICKS, INSTALLS, CONVERSIONS, SPEND]} answers the rows synchronously; spend is in the ad account's currency. `campaign_id` is not applied (all campaigns of the account are returned, one row per day and campaign)."
+  }
+ ]
+}

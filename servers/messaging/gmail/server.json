@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/gmail-mcp",
+ "description": "Gmail (messaging): me, list_inbound, get_thread, mark_read. Every tool maps to a documented endpoint",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.google.com/workspace/gmail/api/guides",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "gmail"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GMAIL_CLIENT_ID",
+     "description": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GMAIL_CLIENT_SECRET",
+     "description": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GMAIL_REFRESH_TOKEN",
+     "description": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/gmail.modify (or gmail.readonly for reading only). 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

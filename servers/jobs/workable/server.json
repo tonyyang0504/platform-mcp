@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/workable-mcp",
+ "description": "Workable (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://workable.readme.io/reference/job-board-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "workable"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WORKABLE_API_TOKEN",
+     "description": "Workable API access token (Settings > Integrations > Apps / API access token) with the r_jobs scope; sent as `Authorization: Bearer`. It is the employer account's token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WORKABLE_SUBDOMAIN",
+     "description": "The Workable account subdomain, e.g. 'groove-tech' in https://groove-tech.workable.com.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

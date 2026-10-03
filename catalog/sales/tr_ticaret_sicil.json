@@ -1,0 +1,36 @@
+{
+ "id": "tr_ticaret_sicil",
+ "category": "sales",
+ "label": "Türkiye Ticaret Sicili Gazetesi",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "tr"
+ ],
+ "docs_url": null,
+ "url": "https://www.ticaretsicil.gov.tr/",
+ "verified_at": "2026-09-05",
+ "terms_note": "TOBB's trade-registry gazette with free announcement search; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

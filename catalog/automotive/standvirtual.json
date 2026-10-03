@@ -1,0 +1,44 @@
+{
+ "id": "standvirtual",
+ "category": "automotive",
+ "label": "Standvirtual",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.standvirtual.com",
+ "domain": "standvirtual.com",
+ "country": "Portugal",
+ "official_api": true,
+ "docs_url": "https://www.standvirtual.com/api/doc/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (client credentials issued by Standvirtual) + professional account",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Standvirtual (OLX Group) publishes an APIDoc for its v2 REST API (OAuth2) to manage professional accounts' adverts, images, stats and taxonomy.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.standvirtual.com/api/doc/",
+   "https://www.standvirtual.com/api/doc/api_project.js",
+   "https://standvirtual.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.standvirtual.com/api/doc/): Standvirtual (OLX Group) publishes an APIDoc for its v2 REST API (OAuth2) to manage professional accounts' adverts, images, stats and taxonomy. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

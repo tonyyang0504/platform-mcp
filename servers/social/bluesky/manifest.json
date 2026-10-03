@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "bluesky-mcp",
+ "display_name": "Bluesky MCP",
+ "version": "0.1.0",
+ "description": "Bluesky (social): me, publish_text, read_comments, read_mentions, analytics_post. Every tool maps to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bluesky"
+   ],
+   "env": {
+    "PLATFORM_MCP_BLUESKY_IDENTIFIER": "${user_config.platform_mcp_bluesky_identifier}",
+    "PLATFORM_MCP_BLUESKY_PASSWORD": "${user_config.platform_mcp_bluesky_password}",
+    "PLATFORM_MCP_BLUESKY_DID": "${user_config.platform_mcp_bluesky_did}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bluesky_identifier": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLUESKY_IDENTIFIER",
+   "description": "Bluesky handle (e.g. alice.bsky.social) or the account's e-mail; sent as `identifier` to com.atproto.server.createSession.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bluesky_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLUESKY_PASSWORD",
+   "description": "An app password from Settings → Privacy and security → App Passwords, never the account password; the runtime exchanges it for a short-lived accessJwt (createSession is capped at 300/day per IP, so the token is cached and re-issued only on expiry or 401).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bluesky_did": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLUESKY_DID",
+   "description": "The account's DID (did:plc:..., shown in Settings → Account or returned by com.atproto.server.getSession); used as `repo` when writing records. The createRecord lexicon also accepts the handle here.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /xrpc/com.atproto.server.getSession (auth required) returns {handle, did, email?, emailConfirmed?, active?, status?} for the session's account. docs.bsky.app/docs/api/* now 301s to https://endpoints.bsky.app/; the lexicon JSON in the atproto repo is the authoritative definition."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /xrpc/com.atproto.repo.createRecord {repo, collection: app.bsky.feed.post, record: {$type, text (<= 300 graphemes), createdAt}} returns {uri, cid}; the AT-URI is the post id used by read_comments / analytics_post (app.bsky.feed.post requires text and createdAt: https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/post.json; the runtime fills createdAt with the current UTC time). `reply_to` is ignored: a reply needs reply.root and reply.parent as {uri, cid} strong refs, and the parent's cid would have to be looked up first. No url / created_at in the response."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /xrpc/app.bsky.feed.getPostThread?uri=<at-uri> (depth default 6, parentHeight default 80 kept) returns {thread: threadViewPost {post, parent?, replies?}}; `comments` are the direct replies (each a threadViewPost whose `post` is a postView {uri, cid, author{did, handle}, record, indexedAt, ...}, deeper replies stay under raw.replies). page/limit are not sent: the thread comes back in one response. A reply that is a notFoundPost / blockedPost has no `post` and maps to an empty row."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /xrpc/app.bsky.notification.listNotifications?reasons=mention&limit=N (limit 1..100, default 50) returns {cursor, notifications[{uri, cid, author{did, handle}, reason, reasonSubject, record, isRead, indexedAt}]}; `reasons` is an array parameter sent as one value (mention), so replies / quotes are excluded. Pagination is cursor-based, so `page` and `since` are not sent."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /xrpc/app.bsky.feed.getPosts?uris=<at-uri> (array parameter, up to 25; one value is sent) returns {posts[postView {uri, cid, author, record, replyCount, repostCount, likeCount, quoteCount, indexedAt}]}; counts are mapped from posts[0]. The runtime cannot compose a nested `metrics` object, so counts are top-level fields (postView: https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/defs.json)."
+  }
+ ]
+}

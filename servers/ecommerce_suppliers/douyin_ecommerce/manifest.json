@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "douyin_ecommerce-mcp",
+ "display_name": "Douyin E-commerce — 抖店 (Doudian) seller + 精选联盟 / 巨量百应 + Doudian Open Platform MCP",
+ "version": "0.1.0",
+ "description": "Douyin E-commerce — 抖店 (Doudian) seller + 精选联盟 / 巨量百应 + Doudian Open Platform (ecommerce suppliers):",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "douyin_ecommerce"
+   ],
+   "env": {
+    "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_KEY": "${user_config.platform_mcp_douyin_ecommerce_app_key}",
+    "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_SECRET": "${user_config.platform_mcp_douyin_ecommerce_app_secret}",
+    "PLATFORM_MCP_DOUYIN_ECOMMERCE_ACCESS_TOKEN": "${user_config.platform_mcp_douyin_ecommerce_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_douyin_ecommerce_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_KEY",
+   "description": "Your Doudian app's app_key (抖店开放平台 → 应用管理).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_douyin_ecommerce_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_SECRET",
+   "description": "The app's app_secret; it signs every call (hmac-sha256).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_douyin_ecommerce_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOUYIN_ECOMMERCE_ACCESS_TOKEN",
+   "description": "Shop access_token from /token/create (self-built apps: grant_type authorization_self with your shop_id). It lasts about 7 days; renew it with /token/refresh and update this value — the server does not renew it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "product.listV2 with one product: verifies app_key, signature and the shop access_token."
+  },
+  {
+   "name": "list_products",
+   "description": "product.listV2 (seller side: your own shop's products), page from 1, size up to 100. status 0 = online, 1 = offline; check_status 3 = approved. Prices are per SKU (see get_product). `query`/`category` are not applied. product_id values exceed 2^53: the Python server returns them exactly, the TypeScript server may round them — use get_product's product_id_str."
+  },
+  {
+   "name": "get_product",
+   "description": "product.detail by product_id: title, images, price (discount_price, in fen: 1990 = ¥19.90), status and spec_prices (SKU prices and stock)."
+  },
+  {
+   "name": "get_order",
+   "description": "order.orderDetail by shop_order_id: status (order_status_desc), pay_amount in fen, create_time (unix seconds), logistics and SKU lines; buyer data is encrypted by the platform."
+  },
+  {
+   "name": "track",
+   "description": "order.orderDetail logistics_info: the parcels (tracking_no, company_name, ship_time) of the order; route events are only available for Douyin e-waybills (logistics.trackNoRouteDetail)."
+  }
+ ]
+}

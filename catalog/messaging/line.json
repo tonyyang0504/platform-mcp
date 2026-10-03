@@ -1,0 +1,250 @@
+{
+ "id": "line",
+ "category": "messaging",
+ "label": "LINE",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "jp",
+  "tw",
+  "sea"
+ ],
+ "docs_url": "https://developers.line.biz/en/docs/messaging-api/",
+ "url": "https://www.lycbiz.com/jp/service/line-official-account/",
+ "verified_at": "2026-09-24",
+ "terms_note": "LINE Official Account with a Messaging API channel; Authorization: Bearer <channel access token>. Reply (free, webhook replyToken), push (one user; X-Line-Retry-Key header), multicast (≤500 user ids), narrowcast (segments), broadcast (all friends) — push / multicast / narrowcast / broadcast count toward the plan's monthly message quota ('the number of free messages depends on the subscription plan'). Rate limits per channel per endpoint: send 2,000 requests / second, get content 2,000 / s, broadcast 60 / hour, narrowcast 60 / hour, others 2,000 / s. Groups: the OA is invited by users (cannot create a group), can read group summary / member count / member profiles and leave; 'the bot cannot send messages to groups it is not a member of'. Mark-as-read and loading-animation endpoints exist. Inbound is webhook-only (X-Line-Signature HMAC-SHA256) — no history endpoint.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "channel_access_token",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "broadcast",
+   "multicast",
+   "narrowcast",
+   "media",
+   "webhooks",
+   "group_read",
+   "mark_read",
+   "loading_animation",
+   "analytics",
+   "rich_menu"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official LINE Messaging API SDKs (Java, PHP, Python, Node.js, Go, Ruby) — developers.line.biz"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 5000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (webhook-only; LINE has no message-history endpoint)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/bot/message/push (`Authorization: Bearer <channel access token>`, optional `X-Line-Retry-Key`)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/bot/chat/markAsRead",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.line.me/v2/bot/…",
+   "https://api-data.line.me"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v2/bot/message/reply` `{replyToken, messages[≤5]}",
+    "purpose": "reply to a webhook event",
+    "notes": "free (not counted); reply token single-use, short-lived"
+   },
+   {
+    "call": "POST /v2/bot/message/push` `{to: userId",
+    "purpose": "groupId",
+    "notes": "roomId, messages}` + `X-Line-Retry-Key`"
+   },
+   {
+    "call": "POST /v2/bot/message/multicast` `{to[≤500]}` · `/narrowcast` (segments) · `/broadcast",
+    "purpose": "sequences / campaigns",
+    "notes": "2,000 / s multicast (client note: 200 / s); broadcast + narrowcast **60 / hour**"
+   },
+   {
+    "call": "POST /v2/bot/chat/loading/start` · mark-as-read endpoint",
+    "purpose": "UX",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/bot/group/{groupId}/summary` · `/members/count` · `/member/{userId}` · `POST /v2/bot/group/{groupId}/leave",
+    "purpose": "groups",
+    "notes": "OA is invited by users — cannot create a group; cannot post to a group it is not in"
+   },
+   {
+    "call": "GET /v2/bot/message/{messageId}/content` (api-data)",
+    "purpose": "inbound media",
+    "notes": "2,000 / s"
+   },
+   {
+    "call": "Webhook events `message`, `follow`, `unfollow`, `join`, `leave`, `memberJoined`, `postback",
+    "purpose": "inbound (no history endpoint)",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/bot/message/quota` · `/quota/consumption` · `/insight/*",
+    "purpose": "quota + analytics",
+    "notes": ""
+   }
+  ],
+  "limits": " - Quota: \"the number of free messages depends on the subscription plan of your LINE Official Account\" — push / multicast / narrowcast / broadcast consume it, replies do not. - Message objects: text ≤ 5,000 chars, image / video by HTTPS URL, Flex, template, sticker, location; ≤ 5 per call. - Rate limits per channel per endpoint as in the table; 429 → `RateLimited`.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.line.biz/en/docs/messaging-api/overview/",
+   "https://developers.line.biz/en/reference/messaging-api/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.line.me",
+  "auth": {
+   "type": "bearer",
+   "field": "channel_access_token",
+   "fields": [
+    {
+     "name": "channel_access_token",
+     "required": true,
+     "help": "Channel access token of the Messaging API channel (long-lived token from the LINE Developers Console, or a short-lived / v2.1 token), sent as 'Authorization: Bearer {channel access token}' (securitySchemes Bearer 'Channel access token' in LINE's official OpenAPI description, https://github.com/line/line-openapi/blob/main/messaging-api.yml; https://developers.line.biz/en/reference/messaging-api/#send-push-message)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "Push messages are counted against the plan's monthly message quota and answered 429 Too Many Requests above the per-endpoint rate limit (https://developers.line.biz/en/reference/messaging-api/#rate-limits — the section is rendered client-side and could not be read headlessly, so its per-endpoint numbers are UNCONFIRMED here); the client bucket stays at the runtime default 2/s. X-Line-Retry-Key (an idempotency UUID) is not sent.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/bot/info",
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#get-bot-info",
+    "note": "'Get bot info' — account carries userId ('Bot's user ID'), basicId, premiumId, displayName, pictureUrl, chatMode (chat | bot) and markAsReadMode (auto | manual)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/v2/bot/message/push",
+    "body": {
+     "to": "to",
+     "messages.0.type": "=text",
+     "messages.0.text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "sentMessages.0.id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#send-push-message",
+    "note": "'Sends a message to a user, group chat, or multi-person chat at any time': `to` is the userId, groupId or roomId ('ID of the receiver'), `text` becomes messages[0] = {type: 'text', text} ('Max character limit: 5000'); `subject` and `channel` are ignored. Users must have added the LINE Official Account (or share the group / room) and push messages consume the plan's monthly quota. message_id is sentMessages[0].id ('ID of the sent message'); quoteToken sits under raw.sentMessages[0]."
+   }
+  },
+  "not_offered": {
+   "reply": "POST /v2/bot/message/reply needs the single-use, short-lived `replyToken` of the webhook event being answered (not a conversation id); nothing in the reply input carries it (https://developers.line.biz/en/reference/messaging-api/#send-reply-message).",
+   "list_inbound": "The Messaging API has no message-history endpoint: inbound messages are delivered only to the channel's webhook URL (https://developers.line.biz/en/reference/messaging-api/#webhooks).",
+   "get_thread": "No conversation or history resource exists; only media content of a webhook-delivered message can be fetched (GET https://api-data.line.me/v2/bot/message/{messageId}/content, https://developers.line.biz/en/reference/messaging-api/#get-content).",
+   "mark_read": "POST /v2/bot/chat/markAsRead requires a `markAsReadToken` delivered in the webhook event ('Tokens must be used by the bot that received them via Webhook'), which none of the mark_read inputs carries (https://developers.line.biz/en/reference/messaging-api/#mark-as-read)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.line.me: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/line/line-openapi/main/messaging-api.yml, https://raw.githubusercontent.com/line/line-openapi/main/insight.yml: 2/2 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

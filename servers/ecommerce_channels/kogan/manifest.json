@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "kogan-mcp",
+ "display_name": "Kogan Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Kogan Marketplace (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kogan"
+   ],
+   "env": {
+    "PLATFORM_MCP_KOGAN_SELLER_TOKEN": "${user_config.platform_mcp_kogan_seller_token}",
+    "PLATFORM_MCP_KOGAN_SELLER_ID": "${user_config.platform_mcp_kogan_seller_id}",
+    "PLATFORM_MCP_KOGAN_API_HOST": "${user_config.platform_mcp_kogan_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kogan_seller_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KOGAN_SELLER_TOKEN",
+   "description": "SellerToken (API key) issued by your Kogan Marketplace account manager after the marketplace application is approved (UAT and production keys differ); sent as the SellerToken header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kogan_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KOGAN_SELLER_ID",
+   "description": "SellerID (your Kogan marketplace account name) issued with the token; sent as the SellerID header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kogan_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KOGAN_API_HOST",
+   "description": "nimda.kogan.com for production, or nimda-marketplace.aws.kgn.io for the UAT test environment; calls go to https://<api_host>/api/marketplace/v2/...",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one of your products ({status, body: {next, previous, results[]}}) to verify SellerToken/SellerID."
+  },
+  {
+   "name": "update_listing",
+   "description": "PATCH /products/ [{product_sku, product_title, product_description, stock}] updates only the keys sent ('only send the keys that have changed'); `listing_id` is your product SKU. The change is LIVE on kogan.com once processed. Asynchronous: status is AsyncResponsePending/Complete/CompleteWithErrors/Failed and raw.pending_url gives the result. `price` is NOT applied: prices live in offer_data keyed by store currency (AUD/NZD) and each entry also requires handling_days."
+  },
+  {
+   "name": "set_inventory",
+   "description": "POST /products/stockprice/ [{product_sku, stock}] sets the stock of one product by SKU (`sku` is required; listing_id is not used). Stock 0 marks the listing sold out (removed automatically after 7 days). Asynchronous; see raw.pending_url."
+  },
+  {
+   "name": "end_listing",
+   "description": "POST /products/status/ {product_sku, enabled: false} disables the product and removes the listing from the website immediately (reversible with enabled: true). `listing_id` is your product SKU. Kogan must grant this API to your account first (marketplace-support@kogan.com.au); otherwise 403."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /orders/?status&startDateUTC&limit. `status` is REQUIRED by Kogan: ReleasedForShipment (paid, awaiting dispatch), Pending, AcknowledgedBySeller, PartiallyShipped, Shipped or Canceled; for Shipped/PartiallyShipped/Canceled the date range is at most 15 days. The endpoint has no offset/cursor, so there is no second page (raise `limit` instead). Items, addresses and dispatched items are in raw."
+  }
+ ]
+}

@@ -1,0 +1,185 @@
+{
+ "id": "ted_eu",
+ "category": "deals",
+ "label": "TED — Tenders Electronic Daily",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://api.ted.europa.eu/",
+ "url": "https://ted.europa.eu/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Anonymous search of published notices; EU Login + API key only for publishing; reuse under EU open-data terms.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none for published notices (API key via EU Login for unpublished / publishing endpoints)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — returns the configured CPV list)",
+   "docs": "https://api.ted.europa.eu/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST https://api.ted.europa.eu/v3/notices/search",
+   "docs": "https://api.ted.europa.eu/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST /v3/notices/search with query publication-number=<pn>",
+   "docs": "https://api.ted.europa.eu/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for discovery (anonymous search of published notices) Confidence high (official TED API docs opened).",
+  "base_urls": [
+   "https://api.ted.europa.eu/"
+  ],
+  "auth": [
+   "1. Anonymous for published notices.",
+   "2. EU Login → Manage API Keys → one key per EU Login in production (only for unpublished / publishing endpoints)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v3/notices/search",
+    "purpose": "search",
+    "notes": "expert query, fields[], page, limit; totalNoticeCount (audit: 1035 vs 250-row page — paginate)"
+   },
+   {
+    "call": "GET /v3/notices/{publication-number}",
+    "purpose": "details",
+    "notes": "notice fields / XML / PDF links"
+   }
+  ],
+  "limits": " - EU open data reuse; no rate limit on the page read. - No submission API — tenders are lodged on the buyer's platform.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.ted.europa.eu/",
+   "https://docs.ted.europa.eu/api/latest/index.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.ted.europa.eu",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "Search API: 'primarily targeted at data reusers and does not require authentication' (docs.ted.europa.eu/api/latest/search.html); no rate limit published in api-v3.yaml. Limits in PAGE_NUMBER mode: 250 notices per page, 15,000 retrievable notices per query, 10,000 fields per page (fields × limit). Two requests per second.",
+  "tools": {
+   "search_postings": {
+    "method": "POST",
+    "path": "/v3/notices/search",
+    "body": {
+     "query": "query",
+     "fields": "json:[\"publication-number\",\"notice-title\",\"publication-date\",\"buyer-name\",\"deadline-receipt-tender-date-lot\",\"links\"]",
+     "page": "page",
+     "limit": "limit",
+     "scope": "=ACTIVE",
+     "paginationMode": "=PAGE_NUMBER"
+    },
+    "max_limit": 250,
+    "default_limit": 25,
+    "result": {
+     "items": "notices",
+     "key": "postings",
+     "total": "totalNoticeCount",
+     "fields": {
+      "id": "publication-number",
+      "title": "notice-title.eng",
+      "buyer": "buyer-name.eng.0",
+      "posted_at": "publication-date",
+      "deadline": "deadline-receipt-tender-date-lot.0",
+      "url": "links.html.ENG"
+     }
+    },
+    "docs": "https://api.ted.europa.eu/api-v3.yaml",
+    "note": "`query` is sent verbatim as the TED EXPERT query (PublicExpertSearchRequestV1.query: 'Expert search query to filter and sort notices'); plain words are refused with QUERY_SYNTAX_ERROR ('expecting {NOT, IN, '!=', '=', '~', '!~', COMPARISON_OPERATOR}'). Use the full-text field documented in api-v3.yaml: FT~\"<words>\" (e.g. FT~\"cloud hosting\"), or a field search such as notice-title~\"software\", combinable with AND/OR, e.g. (FT~\"software\") AND (classification-cpv=72000000). `category` and `min_budget` are not sent. scope=ACTIVE restricts to active notices; page/limit paginate (limit ≤ 250). The fixed `fields` list is what the vocabulary needs; `title` is notice-title.eng and `buyer` buyer-name.eng[0] (i18n maps keyed by ISO 639-2 language — null when the notice has no English text; other languages stay in `raw`), `url` links.html.ENG, `deadline` the first deadline-receipt-tender-date-lot (null on older notices). Total = totalNoticeCount."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify (the Search API needs no key) and no account endpoint.",
+   "get_posting": "api-v3.yaml documents no GET by publication number: GET /v3/notices lists the caller's OWN submitted notices (API key), so the reference page's 'GET /v3/notices/{publication-number}' is UNCONFIRMED. Re-read a notice from the search hit (`url`/raw.links) or search with query publication-number=<id>.",
+   "submit_bid": "Page: 'No submission API — tenders are lodged on the buyer's platform'; the only writes (/v3/notices/submit) publish notices for buyers with an EU Login API key.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the public API is notice search, render, convert and validate.",
+   "send_message": "No messaging API; the public API is notice search, render, convert and validate.",
+   "credits": "No account or credit endpoint; the Search API is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

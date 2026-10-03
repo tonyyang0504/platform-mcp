@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "jolpica_f1-mcp",
+ "display_name": "Jolpica F1 (Ergast-compatible Formula 1 data) MCP",
+ "version": "0.1.0",
+ "description": "Jolpica F1 (Ergast-compatible Formula 1 data) (competitions): discover, get_competition, standings. ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jolpica_f1"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "discover",
+   "description": "The current season's Grands Prix in calendar order (id 'season/round', e.g. 2026/5). No search: query, kind and status are not applied."
+  },
+  {
+   "name": "get_competition",
+   "description": "competition_id is 'season/round' (2026/5), as discover returns it."
+  },
+  {
+   "name": "standings",
+   "description": "Race classification of one Grand Prix ('season/round'): finishing position, driver (constructor), points; status and laps in raw. Empty before the race is run."
+  }
+ ]
+}

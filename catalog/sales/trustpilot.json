@@ -1,0 +1,39 @@
+{
+ "id": "trustpilot",
+ "category": "sales",
+ "label": "Trustpilot business profiles",
+ "lane": "assist",
+ "kind": "review_site",
+ "regions": [
+  "global",
+  "eu",
+  "gb",
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.trustpilot.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt is Disallow: / for every agent → no public fetching; the site opened through WebFetch. Business API only covers the user's own profile.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

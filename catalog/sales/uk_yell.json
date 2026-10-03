@@ -1,0 +1,36 @@
+{
+ "id": "uk_yell",
+ "category": "sales",
+ "label": "Yell",
+ "lane": "assist",
+ "kind": "directory",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": null,
+ "url": "https://www.yell.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "www.yell.com answers a Cloudflare 403 to every fetch (no robots.txt served); business.yell.com opened. Tenant session only; raise to public if the listing host stops walling.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,76 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/google_merchant-mcp",
+ "description": "Google Merchant Center (ecommerce channels): me, update_listing, end_listing. Every tool maps to a d",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.google.com/merchant/api/overview",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "google_merchant"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_ID",
+     "description": "OAuth 2.0 client ID of your Google Cloud project (with the Merchant API enabled and the project registered with the Merchant Center account).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_SECRET",
+     "description": "OAuth client secret of the same client.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_REFRESH_TOKEN",
+     "description": "Refresh token from a one-time consent with scope https://www.googleapis.com/auth/content by a user of the Merchant Center account; the runtime mints access tokens at https://oauth2.googleapis.com/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_ACCOUNT_ID",
+     "description": "Numeric Merchant Center account id.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_DATA_SOURCE",
+     "description": "API product data source to write to, in the form accounts/<account>/dataSources/<id> (Merchant Center > Data sources, or the Data Sources API); only API data sources can be edited.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_CONTENT_LANGUAGE",
+     "description": "Two-letter content language of your products, e.g. en; part of the product input id <language>~<feedLabel>~<offerId>.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_MERCHANT_FEED_LABEL",
+     "description": "Feed label of your products, e.g. US; part of the product input id.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

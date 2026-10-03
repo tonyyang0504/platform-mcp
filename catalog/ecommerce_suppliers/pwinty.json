@@ -1,0 +1,231 @@
+{
+ "id": "pwinty",
+ "category": "ecommerce_suppliers",
+ "label": "Pwinty (absorbed into Prodigi)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.prodigi.com/print-api/docs/reference/",
+ "url": "https://www.pwinty.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (see prodigi)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "same X-API-Key as `prodigi` (Pwinty became Prodigi)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - See prodigi.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.prodigi.com/print-api/docs/reference/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.prodigi.com/v4.0",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://api.sandbox.prodigi.com/v4.0",
+    "docs": "https://www.prodigi.com/print-api/docs/reference/",
+    "verified_at": "2026-09-27",
+    "notes": "Prodigi Sandbox: 'Sandbox API: api.sandbox.prodigi.com' (Environments section; paths are the same /v4.0 ones). Orders placed there are not fulfilled or charged. A Live dashboard account gets a Sandbox account automatically; use the Sandbox API key (sandbox dashboard sandbox-beta-dashboard.pwinty.com)."
+   }
+  },
+  "auth": {
+   "type": "header",
+   "header": "X-API-Key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Prodigi API key for the LIVE environment (dashboard), sent as `X-API-Key`. A Sandbox key needs PLATFORM_MCP_PWINTY_ENV=sandbox (https://api.sandbox.prodigi.com/v4.0)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/Orders",
+    "fixed_params": {
+     "top": 1
+    },
+    "docs": "https://www.prodigi.com/print-api/docs/reference/#orders",
+    "note": "Prodigi has no account endpoint; the probe lists one order (GET /v4.0/Orders?top=1)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{id}",
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "sku",
+      "title": "description",
+      "sku": "sku"
+     }
+    },
+    "docs": "https://www.prodigi.com/print-api/docs/reference/#products",
+    "note": "`id` is the Prodigi SKU (e.g. GLOBAL-CAN-10X10); productDimensions, attributes, printAreas and variants[] are in `raw`. Prices come from POST /quotes, not from the product."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/Orders",
+    "body": {
+     "recipient": "shipping_address",
+     "items": "items",
+     "shippingMethod": "shipping_option"
+    },
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "id",
+      "status": "status.stage",
+      "created_at": "created",
+      "tracking_number": "shipments.0.tracking.number"
+     }
+    },
+    "docs": "https://www.prodigi.com/print-api/docs/reference/#orders",
+    "note": "Spends money on the live account. `shipping_address` is Prodigi's recipient {name, email, phoneNumber, address{line1, line2, postalOrZipCode, countryCode, townOrCity, stateOrCounty}}; `items` are Prodigi items [{sku, copies, sizing, attributes, assets[{printArea, url}]}]; `shipping_option` is the required shippingMethod (Budget|Standard|Express|Overnight)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/Orders/{id}",
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "id",
+      "status": "status.stage",
+      "created_at": "created",
+      "tracking_number": "shipments.0.tracking.number"
+     }
+    },
+    "docs": "https://www.prodigi.com/print-api/docs/reference/#orders",
+    "note": "status.stage is one of the order stages (InProgress, Complete, ...); charges[] and shipments[{carrier, tracking{number, url}}] are in `raw`."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+     "destinationCountryCode": "country",
+     "items.0.sku": "product_id",
+     "items.0.copies": "quantity",
+     "items.0.assets.0.printArea": "=default"
+    },
+    "result": {
+     "items": "quotes",
+     "key": "options",
+     "fields": {
+      "shipping_method": "shipmentMethod",
+      "items_cost": "costSummary.items.amount",
+      "shipping_cost": "costSummary.shipping.amount",
+      "currency": "costSummary.shipping.currency"
+     }
+    },
+    "docs": "https://www.prodigi.com/print-api/docs/reference/#create-quote",
+    "note": "POST /v4.0/quotes for one SKU (product_id) with `quantity` copies and a single 'default' print area, shipped to `country` (ISO-2). No shippingMethod is sent, so Prodigi quotes each available method: quotes[{shipmentMethod, costSummary{items, shipping} (decimal strings), shipments}]. SKUs whose attributes are mandatory (e.g. canvas wrap) or that need other print areas are rejected by Prodigi, since the vocabulary cannot pass attributes."
+   }
+  },
+  "not_offered": {
+   "list_products": "No catalogue browse endpoint: products are SKUs chosen in the Prodigi dashboard; GET /v4.0/products/{sku} only reads one.",
+   "track": "No tracking-events endpoint; shipments[{carrier{name, service}, tracking{number, url}}] are part of the order record (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.prodigi.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

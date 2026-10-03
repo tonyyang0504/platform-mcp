@@ -1,0 +1,73 @@
+{
+ "id": "federal_reserve_press",
+ "category": "market_data",
+ "label": "Federal Reserve Board - press releases (RSS)",
+ "lane": "api",
+ "country": "US",
+ "docs_url": "https://www.federalreserve.gov/feeds/feeds.htm",
+ "url": "https://www.federalreserve.gov",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public RSS 2.0 feed (no key), listed on the Board's 'RSS Feeds' page. The feed starts with a UTF-8 byte-order mark, carries the 20 most recent releases, has no search or paging, and gives dates as RFC 822 strings in CDATA ('Wed, 30 Sep 2026 13:00:00 GMT').",
+ "adapter": {
+  "base_url": "https://www.federalreserve.gov/feeds",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "get_news": {
+    "method": "GET",
+    "path": "/press_all.xml",
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "rss.channel.item",
+     "slice": true,
+     "key": "articles",
+     "require": [
+      "title"
+     ],
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "title",
+        "raw.description",
+        "raw.category"
+       ]
+      },
+      {
+       "arg": "since",
+       "fields": [
+        "published_at"
+       ],
+       "match": "gte"
+      }
+     ],
+     "fields": {
+      "id": "guid|link",
+      "title": "title",
+      "url": "link",
+      "published_at": "isodate:%a, %d %b %Y %H:%M:%S GMT:pubDate",
+      "source": "category"
+     }
+    },
+    "docs": "https://www.federalreserve.gov/feeds/press_all.xml",
+    "note": "The 20 most recent Federal Reserve Board press releases (monetary policy, banking regulation, enforcement ...); source is the release category. query matches title, description or category; since (YYYY-MM-DD or ISO datetime) keeps releases published at or after it. Newest first."
+   }
+  },
+  "not_offered": {
+   "me": "Public feed: no accounts.",
+   "get_candles": "No market data in this feed.",
+   "get_series": "Economic series are published through FRED and the Data Download Program, not this feed.",
+   "search_symbols": "No instruments in this feed."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

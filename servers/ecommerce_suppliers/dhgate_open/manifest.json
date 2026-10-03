@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "dhgate_open-mcp",
+ "display_name": "DHgate (敦煌网) + DHgate Open Platform MCP",
+ "version": "0.1.0",
+ "description": "DHgate (敦煌网) + DHgate Open Platform (ecommerce suppliers): me, list_products, get_product, quote_shi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dhgate_open"
+   ],
+   "env": {
+    "PLATFORM_MCP_DHGATE_OPEN_CLIENT_ID": "${user_config.platform_mcp_dhgate_open_client_id}",
+    "PLATFORM_MCP_DHGATE_OPEN_CLIENT_SECRET": "${user_config.platform_mcp_dhgate_open_client_secret}",
+    "PLATFORM_MCP_DHGATE_OPEN_REFRESH_TOKEN": "${user_config.platform_mcp_dhgate_open_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dhgate_open_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DHGATE_OPEN_CLIENT_ID",
+   "description": "App Key of your DHgate Open Platform application (https://open.dhgate.com/console); the Dropshipping/buyer APIs must be granted to the app (API authorization level A, no public network access).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dhgate_open_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DHGATE_OPEN_CLIENT_SECRET",
+   "description": "App Secret of the application, sent in the refresh_token grant to https://secure.dhgate.com/dop/oauth2/access_token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dhgate_open_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DHGATE_OPEN_REFRESH_TOKEN",
+   "description": "Refresh token from the DHgate BUYER account's authorization-code consent (https://secure.dhgate.com/dop/oauth2/authorize?response_type=code&client_id=…&scope=basic, then grant_type=authorization_code). It is valid 30 days; the runtime mints 1-day access tokens from it and keeps the refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "dh.buyer.user.get v2.0 (GET https://api.dhgate.com/dop/router?method=…&v=2.0&timestamp=<ms>&access_token=…): {status{code '00000000', message}, buyerId, buyerName, email, country, buyerType, userTypeBase}. Router failures such as an unknown app key answer HTTP 200 {code, message} (e.g. 23 'Invalid App Key', 40 expired Access Token), reported as errors."
+  },
+  {
+   "name": "list_products",
+   "description": "dh.dropshipping.item.list v1.0: pages (1-based), pageSize (at most 60), itemNameKeyWords, dispCategoryId (display category id from dh.dropshipping.dispcategory.list). Rows {itemCode, itemName, supplierid, minBuyerPrice/maxBuyerPrice (original), dealMinBuyerPrice/dealMaxBuyerPrice (actual sale price), imgUrl (a DHgate image path), cateDispId, isFreeShip (0 = free shipping, 1 = not), confirmQty}. Prices are in USD (the currency parameter is not sent). The response's total/pageTotal are strings and are not returned."
+  },
+  {
+   "name": "get_product",
+   "description": "dh.dropshipping.item.get v1.0 (itemCode): itemName, currency, dhgateProductUrl, itemImgList[{imgUrl, mainImg}], itemPackage (grossWeight kg, cm dimensions), itemAttrList, itemSkuList[{skuId, skuMD5, minBuyerPrice, dealMinBuyerPrice, retailPrice, inventory, saleStatus, itemPriceRangeList, itemSkuAttrValueList, itemSkuInventoryList[{inventoryLocation, skuInventoryQty}]}]. price and stock are the FIRST SKU's; every SKU is in raw.itemSkuList (create_order needs the chosen skuMD5). Error 108 means a wrong itemCode."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "dh.dropshipping.ship.get v1.0 (itemCode, country ISO-2 e.g. US/FR, quantity; stocking country CN by default): shipCostAndWayList[{expressType (e.g. ePacket, pass as the item's shipType in create_order), shipcost, currency, deliveryTime ('8-30' days), shipTimeMin/Max, isfreeShipping, stockCountryId}]."
+  },
+  {
+   "name": "create_order",
+   "description": "dh.buyer.order.place v2.0 (POST, form fields cartList and contactInfo as JSON strings). Pass `items` in DHgate's CartInfo shape: [{itemcode, skuMd5 (from get_product raw.itemSkuList), quantity, shipType (expressType from quote_shipping, optional), stockin (optional, default CN)}], and `shipping_address` in BuyerContactInfo shape: {firstname, lastname, country (ISO-2), state, city, addressline1, addressline2, postalcode, tel, email, vatNumber (mandatory for BR)}; both are sent as given. The answer lists one order per seller (orderList[{orderInfo{id (the order No.), orderTotal, shipCost, createTime (epoch ms)}}]); `id` is the FIRST order's number (every order is in raw of that first entry only; see get_order). Placed orders are paid separately (dh.buyer.order.pay, not mapped)."
+  },
+  {
+   "name": "get_order",
+   "description": "dh.buyer.order.get v2.0 (orderNo, the numeric order No., not the hexadecimal order id): orderStatus codes 101003 awaiting payment, 102001 paid awaiting confirmation, 103001 awaiting shipment, 103002 partially shipped, 101009 awaiting receipt confirmation, 102111 completed, 111000 cancelled, 111111 closed, 105xxx/106xxx refund and dispute states. Dates are 'yyyy-MM-dd HH:mm:ss' (Beijing time); amounts are USD (no currency field). tracking_number is the first orderDeliveryList entry's deliveryNo."
+  }
+ ]
+}

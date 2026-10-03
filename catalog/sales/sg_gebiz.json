@@ -1,0 +1,36 @@
+{
+ "id": "sg_gebiz",
+ "category": "sales",
+ "label": "GeBIZ",
+ "lane": "public",
+ "kind": "tender",
+ "regions": [
+  "sg"
+ ],
+ "docs_url": null,
+ "url": "https://www.gebiz.gov.sg/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Public notices list the agency and contact; robots.txt (1 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

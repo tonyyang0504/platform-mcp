@@ -1,0 +1,139 @@
+{
+ "id": "wix_app_market",
+ "category": "marketplaces",
+ "label": "Wix App Market",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://dev.wix.com",
+ "url": "https://dev.wix.com",
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation via the official Wix CLI / App Extensions API is allowed; App Market listing is submitted from the app dashboard ('Submit & Publish') and passes an automated AI review in minutes (no more 15-day human queue); paid apps must use Wix billing + a payout account; revenue 100% year 1 then 80% after a 2.5% fee, $200 monthly payout minimum; rate limits not published (per-site data quotas exist).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "cli",
+   "rest",
+   "sdk",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "release_version (CLI)",
+   "create_components (App Extensions API)",
+   "search_listings (read-only)",
+   "app_instances",
+   "app_plans (read)",
+   "purchase_history",
+   "webhooks (plan purchased/changed)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/wix/skills (official agent skills: wix-app, wix-manage, wix-docs)",
+   "https://dev.wix.com/docs/sdk",
+   "https://dev.wix.com/docs/wix-cli/command-reference/project-commands/release"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.wix.com/mcp (official; docs search + site APIs, not App Market management)",
+  "https://github.com/wix/wix-mcp"
+ ],
+ "auth_fields": [
+  "wix_app_id",
+  "wix_app_secret"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict**: has_api **partial**.",
+  "base_urls": [
+   "https://www.wixapis.com/…",
+   "https://mcp.wix.com/mcp",
+   "https://mcp.wix.com/sse"
+  ],
+  "auth": [
+   "1. Tenant signs in at dev.wix.com and creates an app (app dashboard) — the CLI quick start does this interactively",
+   "2. REST calls on behalf of the app use OAuth 2 (`POST https://www.wixapis.com/oauth2/token`, app id + secret; instance",
+   "3. Paid apps: pricing plans defined in the dashboard, payout account completed before publishing."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path / command",
+    "purpose": "Fields from the docs",
+    "notes": ""
+   },
+   {
+    "call": "CLI `wix release [--site <id>] [--base-url <cdn>] [--comment <c>] [--version-type major\\",
+    "purpose": "minor]`",
+    "notes": "pushes code to Wix hosting, registers extensions, creates a version"
+   },
+   {
+    "call": "CLI `wix preview` (does NOT register embedded scripts / widgets / plugins)",
+    "purpose": "preview URLs",
+    "notes": ""
+   },
+   {
+    "call": "POST .../app-extensions/v1/components` (Create Component), Update / Upsert / Validate / Query Component, Get Draft App Components",
+    "purpose": "`appId`, `type` (ComponentType enum), `data` (matching oneof, e.g. `widget`), `externalId`, `version` (draft = 0)",
+    "notes": ""
+   },
+   {
+    "call": "POST https://www.wixapis.com/app-market-listing/v1/listings/search` (Search Market Listings, PUBLISHED only, ≤ 50/page, `languageCode` default `en`)",
+    "purpose": "`appId`, `languageCode`, `status` DRAFT \\",
+    "notes": "APPROVED \\"
+   },
+   {
+    "call": "**dashboard only**: \"Submit & Publish\" → automated AI review (minutes); blockers listed in the dashboard",
+    "purpose": "status DRAFT → PUBLISHED → ARCHIVED",
+    "notes": ""
+   },
+   {
+    "call": "dashboard (Pricing & Billing); read with `GET .../app-plans/v1/apps/{appId}/plans` (List App Plans By App Id)",
+    "purpose": "plan ids, billing model",
+    "notes": ""
+   },
+   {
+    "call": "Get Purchase History`, `Get Metered Billing Charges` (App Billing), webhooks Paid Plan Purchased / Changed / Auto Renewal Cancelled (App Instance)",
+    "purpose": "instance id, plan id, invoice status",
+    "notes": ""
+   },
+   {
+    "call": "Query App Installations`, `Search App Installation`, `Get App Instance",
+    "purpose": "`instanceId`, `siteId`, `billing`",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published for App Management. Site data APIs have per-minute read / write quotas (`WDE0014: Requests per minute quota exceeded`). Treat 429 as retry-after. - App Market guidelines govern every listed app (performance, security, content); the review is now an **automated AI review** on Submit & Publish, results in minutes; Wix may audit retroactively; appeals through support tickets. - Paid apps bill through Wix (Wix = payment collection agent): 100 % revenue in year 1, 80 % afterwards, after a 2.5 % transaction fee and sales tax; net-30 EOM payouts, $200 monthly minimum. External billing ",
+  "mcp_sdk": [
+   "Official MCP: https://mcp.wix.com/mcp — https://github.com/wix/wix-mcp (docs search, API schema, call Wix APIs on the",
+   "Official agent skills: https://github.com/wix/skills (`/plugin install wix@wix`; `wix-app` skill includes an App Market",
+   "JS SDK: https://dev.wix.com/docs/sdk ; REST: https://dev.wix.com/docs/rest ; CLI reference: https://dev.wix.com/docs/wix-cli/command-reference/project-commands/release"
+  ],
+  "sources": [
+   "https://dev.wix.com/docs/build-apps/launch-your-app/app-distribution/submit-your-first-app-version.md",
+   "https://dev.wix.com/docs/build-apps/launch-your-app/app-distribution/about-app-distribution.md",
+   "https://dev.wix.com/docs/wix-cli/guides/about-the-wix-cli.md",
+   "https://dev.wix.com/docs/wix-cli/guides/development/build-and-deploy-a-project.md",
+   "https://dev.wix.com/docs/wix-cli/command-reference/project-commands/release.md",
+   "https://dev.wix.com/docs/build-apps/manage-your-app/versioning/release-a-new-app-version.md",
+   "https://dev.wix.com/docs/build-apps/launch-your-app/marketing/app-market-listing.md",
+   "https://dev.wix.com/docs/api-reference/app-management.md",
+   "https://dev.wix.com/docs/api-reference/app-management/market-listing/introduction.md",
+   "https://dev.wix.com/docs/api-reference/app-management/app-extensions/app-extensions/introduction.md",
+   "https://dev.wix.com/docs/build-apps/launch-your-app/pricing-and-billing/about-monetizing-your-app.md",
+   "https://dev.wix.com/docs/build-apps/develop-your-app/api-integrations/about-wix-apis.md",
+   "https://dev.wix.com/docs/build-apps/develop-your-app/frameworks/wix-cli/app-development/build-and-deploy-an-app-with-the-cli",
+   "https://www.wix.com/studio/developers/mcp-server",
+   "https://github.com/wix/wix-mcp",
+   "https://github.com/wix/skills",
+   "https://www.wix.com/about/app-market-terms"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 (markdown of the official pages): the App Market Listing API only 'lets you retrieve and search for app listings' and 'Search Market Listings ... returns only PUBLISHED listings' - listings are prepared and submitted in the app dashboard (https://dev.wix.com/docs/api-reference/app-management/market-listing/introduction.md); Get Purchase History 'Retrieves a list of past purchases for your app on this site' with the site taken from the per-instance token context (https://dev.wix.com/docs/api-reference/app-management/app-billing/billing/get-purchase-history.md). There is no vendor-wide call to list sales, refunds or totals across installs, or to create a listing or change a price."
+}

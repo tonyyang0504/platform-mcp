@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/cj_affiliate-mcp",
+ "description": "CJ Affiliate (ads): me, get_report. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.cj.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "cj_affiliate"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CJ_AFFILIATE_PERSONAL_ACCESS_TOKEN",
+     "description": "CJ Developer Portal personal access token (https://developers.cj.com/account/personal-access-tokens), sent as `Authorization: Bearer`; it must belong to a user of the advertiser company (CID) queried.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CJ_AFFILIATE_COMPANY_ID",
+     "description": "The advertiser's CJ company id (CID); used by the `me` probe (get_report takes it as account_id).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

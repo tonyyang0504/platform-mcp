@@ -1,0 +1,230 @@
+{
+ "id": "stackadapt",
+ "category": "ads",
+ "label": "StackAdapt",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "na",
+  "ca",
+  "us"
+ ],
+ "docs_url": "https://docs.stackadapt.com/",
+ "url": "https://www.stackadapt.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API key issued by StackAdapt on request; REST write operations deprecated in favour of GraphQL.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "rest",
+   "mcp"
+  ],
+  "auth": "api_key (REST: X-AUTHORIZATION header; GraphQL: Authorization Bearer token; keys issued by StackAdapt)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "StackAdapt MCP Server (official — docs.stackadapt.com: 'A secure portal for AI agents to interact with the StackAdapt platform, powered by the GQL API')"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (GraphQL API for campaign CRUD, REST reporting, Pixel API, Data Taxonomy API, official MCP) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.stackadapt.com/service/v2/…",
+   "https://api.stackadapt.com/graphql"
+  ],
+  "auth": [
+   "1. StackAdapt account; request an API key / token from StackAdapt.",
+   "2. REST: `X-AUTHORIZATION: <API_KEY>`; GraphQL: `Authorization: Bearer <token>`.",
+   "3. Use GraphQL for all writes (REST writes deprecated; V2 REST → GraphQL migration reference)."
+  ],
+  "endpoints": [
+   {
+    "call": "GraphQL `campaignGroups` / `campaigns` queries + `createCampaign` / `updateCampaign` mutations",
+    "purpose": "campaigns + budgets + bids + status",
+    "notes": "name, budget, bid, start/end, targeting, state (TODO(verify) schema)"
+   },
+   {
+    "call": "GraphQL creatives + native / display / video / CTV assets",
+    "purpose": "creatives upload",
+    "notes": "asset upload, click url"
+   },
+   {
+    "call": "REST reporting endpoints (dimensions × metrics)",
+    "purpose": "reports",
+    "notes": "date range, dimensions, metrics"
+   },
+   {
+    "call": "Pixel API `GET /saq_pxl?uid=…` (server-to-server events)",
+    "purpose": "conversions + audiences",
+    "notes": "event, user identifiers"
+   },
+   {
+    "call": "Data Taxonomy API",
+    "purpose": "audience sync / data sharing",
+    "notes": "taxonomy ids"
+   }
+  ],
+  "limits": " - Rate limits page (TODO(verify) values); key by request; StackAdapt terms.",
+  "mcp_sdk": [
+   "Official MCP server (GraphQL-powered)."
+  ],
+  "sources": [
+   "https://docs.stackadapt.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.stackadapt.com/service/v2",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "header",
+   "header": "X-Authorization",
+   "field": "rest_api_key",
+   "fields": [
+    {
+     "name": "rest_api_key",
+     "required": true,
+     "help": "StackAdapt REST API key (issued by StackAdapt on request), sent as the X-Authorization header. The GraphQL API uses a different Bearer token and is not used here."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/advertisers",
+    "docs": "https://docs.stackadapt.com/v2",
+    "note": "There is no user endpoint in the REST API; the probe is GET /advertisers (advertisers the key can access). REST spec: https://www.stackadapt.com/service/v2/apidocs."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/advertisers",
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "total": "total_advertisers",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://docs.stackadapt.com/v2",
+    "note": "GET /advertisers: first page (30 per page) of the advertisers the key can access; total_advertisers gives the full count."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/campaigns",
+    "params": {
+     "page": "page"
+    },
+    "default_limit": 30,
+    "max_limit": 30,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "total": "total_campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "state",
+      "budget": "budget",
+      "start": "start_date",
+      "end": "end_date",
+      "advertiser_id": "advertiser_id"
+     }
+    },
+    "docs": "https://docs.stackadapt.com/v2",
+    "note": "GET /campaigns?page=N (30 per page): every campaign the key can access, across advertisers; `account_id` is NOT applied as a filter (advertiser_id is on each row). state is active or paused (status.code/description in raw); `budget` is the campaign budget and daily_cap the daily limit (raw). `status` and `limit` are not sent."
+   }
+  },
+  "not_offered": {
+   "get_report": "GET /delivery (resource_type, type=total|daily|hourly, date_range_type=custom, start_date, end_date, group_by_resource) documents only a single total_stats object in its response; the shape of daily or grouped rows is not specified (https://www.stackadapt.com/service/v2/apidocs), and the GraphQL reporting reference is login-gated (https://docs.stackadapt.com/graphql).",
+   "update_budget": "REST write operations are 'officially deprecated' (https://docs.stackadapt.com/: 'Migrate write integrations to the GraphQL API'), and the GraphQL reference that replaces them is login-gated (https://docs.stackadapt.com/graphql), so the current campaign-update mutation cannot be cited.",
+   "pause_resume": "Same as update_budget: the REST PUT /campaign/{id} is deprecated and the GraphQL mutation reference is login-gated (https://docs.stackadapt.com/graphql). StackAdapt also publishes its own MCP server (https://docs.stackadapt.com/mcp-server) covering campaign management."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.stackadapt.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

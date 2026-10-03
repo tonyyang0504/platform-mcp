@@ -1,0 +1,18 @@
+{
+ "id": "cboe_options_collector",
+ "category": "market_data",
+ "label": "Cboe delayed options quotes",
+ "provider": "Cboe",
+ "lane": "api",
+ "base_urls": [
+  "https://cdn.cboe.com/api/global/delayed_quotes/options/"
+ ],
+ "data_kinds": [
+  "options chain snapshots (US equity/index; bid/ask/iv/oi/greeks, 15-min delayed)"
+ ],
+ "auth": "none",
+ "docs_url": null,
+ "verified_at": "2026-09-24",
+ "adapter_status": "unconfirmed",
+ "reason": "No developer documentation (re-checked 2026-09-25 with headless Chromium): the delayed-quote pages (e.g. https://www.cboe.com/delayed_quotes/spx/quote_table) load https://cdn.cboe.com/api/global/delayed_quotes/options/<SYMBOL>.json (now a 307 redirect) as an internal widget backend, and neither those pages nor Cboe's market-data sections (Cboe DataShop, Cboe Data Vantage, market-data support pages) document that endpoint, its parameters or its permitted use - Cboe's licensed data products are sold through DataShop. It is also a 15-minute-delayed options-chain snapshot per underlying (bid/ask/iv/oi/greeks per strike), which fits none of the market_data verbs (candles, series, symbols, news)."
+}

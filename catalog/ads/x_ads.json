@@ -1,0 +1,330 @@
+{
+ "id": "x_ads",
+ "category": "ads",
+ "label": "X Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.x.com/x-ads-api/introduction",
+ "url": "https://ads.x.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "X Ads API access is by application form (3 business days review) on top of a developer account",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "oauth (X developer app; OAuth 1.0a user context per the Ads API — TODO(verify) on the auth page)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "catalog_products",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://docs.x.com/x-ads-api/introduction → Tools & Libraries (X-built and community client libraries; Postman collection; xurl CLI)"
+  ]
+ },
+ "official_mcp": [
+  "X Ads MCP (official, linked from docs.x.com/x-ads-api/introduction)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (X Ads API).",
+  "base_urls": [
+   "https://ads-api.x.com/{version}/"
+  ],
+  "auth": [
+   "1. X developer account + app in the Developer Console; submit the **Ads API Access Form**; review ≤ 3 business days.",
+   "2. User-context OAuth for the advertiser's handle (TODO(verify): OAuth 1.0a vs OAuth 2.0 on the \"Making Authenticated Requests\" page).",
+   "3. \"Accessing Ads accounts\": list the accounts the authenticated user can administer."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /{v}/accounts` · `GET /{v}/accounts/{account_id}/funding_instruments",
+    "purpose": "accounts + funding",
+    "notes": "id, name, currency; funding_instrument_id"
+   },
+   {
+    "call": "GET/POST /{v}/accounts/{id}/campaigns` · `PUT …/campaigns/{cid}",
+    "purpose": "campaigns",
+    "notes": "name, funding_instrument_id, daily_budget_amount_local_micro, total_budget_amount_local_micro, entity_status, start_time, end_time"
+   },
+   {
+    "call": "GET/POST /{v}/accounts/{id}/line_items` · `PUT …/line_items/{lid}",
+    "purpose": "line items: objective, bid, placements",
+    "notes": "campaign_id, objective, placements[], bid_amount_local_micro, bid_strategy, product_type, entity_status"
+   },
+   {
+    "call": "POST /{v}/accounts/{id}/promoted_tweets` · media upload (`upload.x.com/1.1/media/upload` chunked) · `POST /{v}/accounts/{id}/cards/…",
+    "purpose": "ads (promoted posts), creatives, cards",
+    "notes": "line_item_id, tweet_ids[]; media_key"
+   },
+   {
+    "call": "GET /{v}/stats/accounts/{id}` (sync) · `POST /{v}/stats/jobs/accounts/{id}` (async)",
+    "purpose": "analytics",
+    "notes": "entity CAMPAIGN/LINE_ITEM, entity_ids, start_time, end_time, granularity DAY, metric_groups[ENGAGEMENT, BILLING…], placement"
+   },
+   {
+    "call": "POST /{v}/accounts/{id}/custom_audiences` · `POST …/custom_audiences/{aid}/users",
+    "purpose": "Tailored Audiences",
+    "notes": "name, users[]{operation_type, params{effective_at, users[{email hashed…}]}}"
+   },
+   {
+    "call": "POST /{v}/measurement/conversions/{pixel_id}` (web) · `POST /{v}/conversion_event` (mobile)",
+    "purpose": "conversions upload",
+    "notes": "conversion_time, event_id, identifiers[], value, currency"
+   },
+   {
+    "call": "GET /{v}/targeting_criteria/…` · `POST /{v}/accounts/{id}/targeting_criteria",
+    "purpose": "targeting",
+    "notes": "line_item_id, targeting_type, targeting_value"
+   }
+  ],
+  "limits": " - Rate limiting page blocked this pass (TODO(verify)). Access by application; X Developer Agreement + Ads policies. Sandbox available for development.",
+  "mcp_sdk": [
+   "Official **X Ads MCP** (\"Connect AI tools to the X Ads API\"), Postman collection for v2 endpoints, `xurl` command-line tool, X-built + community client libraries (Tools & Libraries page)."
+  ],
+  "sources": [
+   "https://docs.x.com/x-ads-api/introduction",
+   "https://docs.x.com/x-ads-api/fundamentals/rate-limiting"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ads-api.x.com/12",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "consumer_key",
+     "required": true,
+     "help": "API Key (consumer key) of an X developer app approved for Ads API access (Ads API Access Form, https://docs.x.com/forms/ads-api-access)."
+    },
+    {
+     "name": "consumer_secret",
+     "required": true,
+     "help": "API Key Secret (consumer secret) of the same app."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "OAuth 1.0a user access token of an X user with access to the ads account (app management UI or the 3-legged OAuth flow)."
+    },
+    {
+     "name": "access_token_secret",
+     "required": true,
+     "help": "OAuth 1.0a access token secret belonging to that access token."
+    }
+   ],
+   "sign": {
+    "mode": "oauth1"
+   }
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": false,
+    "help": "Ads account id (e.g. 18ce54d4x5t) used by update_budget and pause_resume, whose inputs carry only the campaign id; list_accounts shows the ids."
+   }
+  ],
+  "terms": "X Ads API v12 (https://docs.x.com/x-ads-api/fundamentals/making-authenticated-requests): HTTPS requests to https://ads-api.x.com/<version>/… signed with OAuth 1.0a ('All HTTP calls to the Ads API must include an Authorization request header (using OAuth 1.0a)'); PUT parameters are sent on the query string. Requires an app approved for Ads API access; rate limits per endpoint (https://docs.x.com/x-ads-api/fundamentals/rate-limiting).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/accounts",
+    "fixed_params": {
+     "count": 1
+    },
+    "docs": "https://docs.x.com/x-ads-api/campaign-management/reference#get-accounts",
+    "note": "GET /12/accounts?count=1: the advertising accounts the authenticating user can access."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/accounts",
+    "params": {
+     "count": "limit",
+     "cursor": "cursor"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "next_cursor": "next_cursor",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://docs.x.com/x-ads-api/campaign-management/reference#get-accounts",
+    "note": "GET /12/accounts (count ≤ 1000, cursor pagination via next_cursor). Each account has id, name, timezone, business_id, approval_status, deleted."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/accounts/{account_id}/campaigns",
+    "params": {
+     "count": "limit",
+     "cursor": "cursor"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "next_cursor": "next_cursor",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "entity_status",
+      "currency": "currency",
+      "start": "start_time",
+      "end": "end_time"
+     }
+    },
+    "docs": "https://docs.x.com/x-ads-api/campaign-management/reference#get-accounts-account-id-campaigns",
+    "note": "GET /12/accounts/:account_id/campaigns (count ≤ 1000, cursor pagination). Each campaign has id, name, entity_status (ACTIVE/PAUSED/DRAFT), effective_status, daily_budget_amount_local_micro and total_budget_amount_local_micro (micro units: $5.50 = 5500000, left in raw), currency, funding_instrument_id. status is not sent (no status filter is documented)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/stats/accounts/{account_id}",
+    "params": {
+     "entity_ids": "campaign_id",
+     "start_time": "date:date_from",
+     "end_time": "date:date_to"
+    },
+    "fixed_params": {
+     "entity": "CAMPAIGN",
+     "granularity": "DAY",
+     "metric_groups": "ENGAGEMENT,BILLING",
+     "placement": "ALL_ON_TWITTER"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows"
+    },
+    "docs": "https://docs.x.com/x-ads-api/analytics",
+    "note": "Synchronous analytics: GET /12/stats/accounts/:account_id?entity=CAMPAIGN&entity_ids=<campaign_id>&start_time&end_time&granularity=DAY&metric_groups=ENGAGEMENT,BILLING&placement=ALL_ON_TWITTER. campaign_id is required in practice (entity_ids is required, up to 20 comma-separated ids) and the window may span at most 7 days. Each row is {id, id_data: [{segment, metrics: {impressions: [...], clicks, billed_charge_local_micro, …}}]} with one array element per day; spend is in micro units. X Audience Platform placements need a separate request."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/accounts/{account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "account_id": "@account_id"
+    },
+    "params": {
+     "daily_budget_amount_local_micro": "micros:daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.x.com/x-ads-api/campaign-management/reference#put-accounts-account-id-campaigns-campaign-id",
+    "note": "PUT /12/accounts/:account_id/campaigns/:campaign_id?daily_budget_amount_local_micro=… (the configured account_id; micro units of the funding instrument's currency, 'For USD, $5.50 is represented as 5500000'; must not exceed the total budget). This spends money. currency is ignored."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/accounts/{account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "account_id": "@account_id"
+    },
+    "params": {
+     "entity_status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.x.com/x-ads-api/campaign-management/reference#put-accounts-account-id-campaigns-campaign-id",
+    "note": "PUT /12/accounts/:account_id/campaigns/:campaign_id?entity_status=ACTIVE|PAUSED (the configured account_id). Resuming restarts spend."
+   }
+  },
+  "not_offered": {}
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires consumer_key, consumer_secret, access_token, access_token_secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

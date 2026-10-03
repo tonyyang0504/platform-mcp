@@ -1,0 +1,215 @@
+{
+ "id": "sticker_mule",
+ "category": "ecommerce_suppliers",
+ "label": "Sticker Mule API",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.stickermule.com/api",
+ "url": "https://www.stickermule.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api available to account holders; no scraping clause read",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "account API key (per earlier research: /api/items, /api/addresses, /api/payments, /api/orders — reorders only)",
+  "access": "signup",
+  "capabilities": [
+   "orders",
+   "tracking"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable this pass.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.stickermule.com/api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.stickermule.com/api",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Personal API key generated under Account settings > Store settings on stickermule.com (shown once; personal accounts only, not team accounts), sent as `Authorization: Bearer`. It can place orders on the saved payment methods."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "payment_id",
+    "required": false,
+    "help": "paymentId for create_order: a saved payment method id from GET /api/payments (not mapped). Orders are charged to it."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "ISO 4217 currency for list_products prices (the `currency` query parameter; Sticker Mule defaults to USD)."
+   },
+   {
+    "name": "locale",
+    "required": false,
+    "help": "Locale for product names and prices in list_products (the `locale` query parameter; default en)."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/items",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://www.stickermule.com/api",
+    "note": "Sticker Mule has no account endpoint; the probe reads one saved item (GET /api/items?limit=1) with the key, so `account` is {items, canLoadMore}. A bad key answers 403 ForbiddenError, a missing one 401."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/items",
+    "params": {
+     "limit": "limit",
+     "offset": "offset",
+     "currency": "@currency",
+     "locale": "@locale"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "items",
+     "key": "products",
+     "require": [
+      "title"
+     ],
+     "fields": {
+      "id": "id",
+      "title": "productName",
+      "name": "name",
+      "price": "retailPrice",
+      "image_url": "artworkUrls.0",
+      "product_id": "productId",
+      "original_quantity": "quantity",
+      "is_size_required": "isSizeRequired",
+      "min_quantity": "buyingOptions.quantity.min",
+      "quantity_increment": "buyingOptions.quantity.increment"
+     }
+    },
+    "docs": "https://www.stickermule.com/api",
+    "note": "GET /api/items: only the items you have ordered before and can reorder ('Custom items, packaging tape, and vinyl lettering are not available through the API'). `id` is the item id to pass in create_order items; `price` is retailPrice at the minimum quantity in the currency setting. Rows whose productName is null (product no longer available) are dropped. `query` and `category` are not accepted; limit 1-50, offset paging."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders",
+    "body": {
+     "items": "items",
+     "addressId": "str:shipping_address.id",
+     "paymentId": "@payment_id"
+    },
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "number"
+     }
+    },
+    "docs": "https://www.stickermule.com/api",
+    "note": "POST /api/orders places a real reorder and CHARGES the saved payment method from the payment_id setting (GET /api/payments). `items` are [{id (item id from list_products), quantity (within the item's min/max/increment), size (sizeS…size7XL, apparel only)}], up to 50; `shipping_address` must carry `id`, a saved address id from GET /api/addresses (addresses cannot be created through the API). `shipping_option` is not sent. Answers {order: {number}}."
+   }
+  },
+  "not_offered": {
+   "get_product": "No single-item endpoint; the documented endpoints are GET /api/items, /api/addresses, /api/payments, /api/orders and POST /api/orders only.",
+   "quote_shipping": "No shipping-quote endpoint is documented.",
+   "get_order": "GET /api/orders only lists placed orders ('most recent first', limit/offset) with no order-number filter; there is no single-order endpoint.",
+   "track": "No tracking endpoint; GET /api/orders carries only shipmentState, expectedDeliveryDate and deliveredAt per order, no tracking numbers or events."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.stickermule.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

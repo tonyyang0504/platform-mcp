@@ -1,0 +1,170 @@
+{
+ "id": "arbeitnow",
+ "category": "deals",
+ "label": "Arbeitnow",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "de",
+  "uk"
+ ],
+ "docs_url": "https://www.arbeitnow.com/api/job-board-api",
+ "url": "https://www.arbeitnow.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Keyless public JSON API; the earlier audit recorded the board's ask for a source credit / link back. No proposal or messaging surface — the board carries no bidding, contracts or escrow.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://www.arbeitnow.com/api/job-board-api"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.arbeitnow.com/api/job-board-api",
+   "docs": "https://www.arbeitnow.com/api/job-board-api"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://www.arbeitnow.com/api/job-board-api"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search) Confidence high (live endpoint opened).",
+  "base_urls": [
+   "https://www.arbeitnow.com/api/job-board-api"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/job-board-api?page=N",
+    "purpose": "search + details",
+    "notes": "data[]: slug, company_name, title, description (HTML), remote, url, tags[], job_types[], location, created_at (unix)"
+   }
+  ],
+  "limits": " - No key, no published rate limit; the board asks for a source credit / link back (earlier audit). - No bid / message / contract surface — Arbeitnow is a board; the employer's page takes the application.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.arbeitnow.com/api/job-board-api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.arbeitnow.com/api",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/job-board-api",
+    "params": {
+     "page": "page"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "buyer": "company_name",
+      "url": "url",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.arbeitnow.com/api/job-board-api",
+    "note": "Keyless feed whose only documented parameter is page, so query and location are not sent — filter the returned postings client-side; the page size is fixed by the platform (do not pass limit). description is HTML; remote, tags[], job_types[] and created_at (type not documented on the page) are in raw. Terms: the API is provided 'as is' and 'We may revoke the permission to use API at any time'; no published rate limit. Mirrors the jobs/arbeitnow search: these are employment listings; buyer is the employer, and apply happens on the posting's url."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; the feed returns whole records.",
+   "submit_bid": "Page: 'No bid / message / contract surface — Arbeitnow is a board; the employer's page takes the application.'",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

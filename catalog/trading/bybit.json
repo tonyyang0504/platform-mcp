@@ -1,0 +1,336 @@
+{
+ "id": "bybit",
+ "category": "trading",
+ "label": "Bybit (Unified)",
+ "lane": "api",
+ "kind": "perp_linear",
+ "docs_url": "https://bybit-exchange.github.io/docs/v5/guide",
+ "url": "https://www.bybit.com/",
+ "verified_at": "2026-09-24",
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://api.bybit.com",
+  "ws": "wss://stream.bybit.com/v5/public",
+  "ccxt_exchange_id": "bybit",
+  "sandbox": "ccxt set_sandbox_mode(True)"
+ },
+ "notes": "Bybit's key-info endpoint must show NO Wallet/Transfer permission and a Contract or Spot trade permission.",
+ "regions": [
+  "global"
+ ],
+ "terms_note": "V5 unified REST API; HMAC-SHA256 header signing (X-BAPI-*); failures come back as HTTP 200 with retCode != 0. place_order and cancel_order move real funds.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "HMAC-SHA256 signed headers (api_key + api_secret)",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "candles",
+   "balances",
+   "orders",
+   "trading"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "adapter": {
+  "base_url": "https://api.bybit.com",
+  "envelope": {
+   "ok_field": "retCode",
+   "ok_value": 0,
+   "error_field": "retMsg"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Bybit API key (system-generated HMAC key) with Read + Trade (Spot/Contract) and NO Wallet/Transfer/Withdraw permission. Testnet keys come from https://testnet.bybit.com and work only against https://api-testnet.bybit.com (set adapter.base_url to it)."
+    },
+    {
+     "name": "api_secret",
+     "required": true,
+     "help": "The key's secret: HMAC-SHA256 over timestamp + api_key + recv_window (5000) + query string (GET) or JSON body (POST), sent as X-BAPI-SIGN. Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{timestamp}{@api_key}5000{query}{body}",
+    "key_field": "api_secret",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "X-BAPI-API-KEY": "{@api_key}",
+     "X-BAPI-TIMESTAMP": "{timestamp}",
+     "X-BAPI-RECV-WINDOW": "5000",
+     "X-BAPI-SIGN": "{signature}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "category",
+    "required": true,
+    "help": "Bybit product category every tool works on: `spot` or `linear` (USDT/USDC perpetuals and futures)."
+   }
+  ],
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v5/user/query-api",
+    "docs": "https://bybit-exchange.github.io/docs/v5/user/apikey-info",
+    "note": "API key information: readOnly, permissions (check that Wallet/Withdraw is empty), ips, uta, isMaster."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/v5/market/instruments-info",
+    "params": {
+     "category": "@category",
+     "limit": "map:@category:linear=1000,spot="
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result.list",
+     "key": "markets",
+     "fields": {
+      "symbol": "symbol",
+      "base": "baseCoin",
+      "quote": "quoteCoin",
+      "status": "status",
+      "type": "contractType"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/market/instrument",
+    "note": "Instruments of the configured category in one call (spot has no pagination; linear is asked for 1000, the maximum; further cursor pages are not fetched). `query` is not sent."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/v5/market/tickers",
+    "params": {
+     "category": "@category",
+     "symbol": "symbol"
+    },
+    "result": {
+     "root": "result.list.0",
+     "fields": {
+      "symbol": "symbol",
+      "last": "lastPrice",
+      "bid": "bid1Price",
+      "ask": "ask1Price",
+      "volume": "volume24h",
+      "quote_volume": "turnover24h",
+      "change_fraction": "price24hPcnt",
+      "high": "highPrice24h",
+      "low": "lowPrice24h"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/market/tickers",
+    "note": "Decimal strings passed through; price24hPcnt is a fraction (-0.0126 = -1.26%)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/v5/market/kline",
+    "params": {
+     "category": "@category",
+     "symbol": "symbol",
+     "interval": "map:interval:1m=1,3m=3,5m=5,15m=15,30m=30,1h=60,2h=120,4h=240,6h=360,12h=720,1d=D,1w=W,1M=M",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "result.list",
+     "key": "candles",
+     "fields": {
+      "time": "str:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/market/kline",
+    "note": "Intervals 1m,3m,5m,15m,30m,1h,2h,4h,6h,12h,1d,1w,1M. Rows come NEWEST FIRST; `time` is the start time in ms (string) and values are decimal strings. Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+   },
+   "get_balances": {
+    "method": "GET",
+    "path": "/v5/account/wallet-balance",
+    "fixed_params": {
+     "accountType": "UNIFIED"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result.list.0.coin",
+     "key": "balances",
+     "fields": {
+      "asset": "coin",
+      "balance": "walletBalance",
+      "equity": "equity",
+      "locked": "locked",
+      "unrealized_pnl": "unrealisedPnl",
+      "usd_value": "usdValue"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/account/wallet-balance",
+    "note": "Unified trading account, non-zero coins only; account totals (totalEquity, totalAvailableBalance) are in each row's context under the raw response."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v5/order/realtime",
+    "params": {
+     "category": "@category",
+     "symbol": "symbol",
+     "settleCoin": "map:@category:linear=USDT,spot="
+    },
+    "fixed_params": {
+     "limit": "50"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result.list",
+     "key": "orders",
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "orderLinkId",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "orderType",
+      "status": "orderStatus",
+      "price": "price",
+      "quantity": "qty",
+      "filled": "cumExecQty",
+      "time": "createdTime"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/order/open-order",
+    "note": "Open orders (first 50). For `linear` Bybit needs a symbol or settle coin, so settleCoin=USDT is sent: pass `symbol` for USDC contracts. `status` is not sent."
+   },
+   "place_order": {
+    "method": "POST",
+    "path": "/v5/order/create",
+    "body": {
+     "category": "@category",
+     "symbol": "symbol",
+     "side": "map:side:buy=Buy,sell=Sell",
+     "orderType": "map:type:market=Market,limit=Limit",
+     "qty": "str:quantity",
+     "price": "str:price",
+     "marketUnit": "map:@category:spot=baseCoin,linear="
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "orderLinkId",
+      "status": "=submitted"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/order/create-order",
+    "note": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the Bybit testnet https://api-testnet.bybit.com first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. On `linear` this opens or adds to a LEVERAGED position. `quantity` is in the base coin (spot market orders are sent with marketUnit=baseCoin; Bybit's own default for spot market buys is quote coin). Limit orders rest GTC (Bybit's default) and need `price`. Creation is asynchronous: status `submitted` means accepted, check list_orders."
+   },
+   "cancel_order": {
+    "method": "POST",
+    "path": "/v5/order/cancel",
+    "body": {
+     "category": "@category",
+     "symbol": "symbol",
+     "orderId": "order_id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "order_id": "orderId",
+      "status": "=cancel_requested"
+     }
+    },
+    "docs": "https://bybit-exchange.github.io/docs/v5/order/cancel-order",
+    "note": "Bybit requires `symbol` with the order id; cancellation is asynchronous."
+   }
+  },
+  "not_offered": {}
+ },
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://api.bybit.com",
+   "https://api.bytick.com",
+   "https://api-testnet.bybit.com (testnet)"
+  ],
+  "auth": [
+   "Headers X-BAPI-API-KEY, X-BAPI-TIMESTAMP (ms), X-BAPI-RECV-WINDOW, X-BAPI-SIGN = lowercase hex HMAC_SHA256 of timestamp + API key + recv_window + queryString (GET) or jsonBodyString (POST)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v5/user/query-api",
+    "purpose": "key info",
+    "notes": "any permission"
+   },
+   {
+    "call": "GET /v5/market/instruments-info",
+    "purpose": "instruments",
+    "notes": "category required; limit 1-1000 (default 500), cursor; spot: no pagination"
+   },
+   {
+    "call": "GET /v5/market/tickers",
+    "purpose": "tickers",
+    "notes": "lastPrice, bid1Price, ask1Price, volume24h, turnover24h, price24hPcnt, highPrice24h, lowPrice24h"
+   },
+   {
+    "call": "GET /v5/market/kline",
+    "purpose": "candles",
+    "notes": "interval 1,3,5,15,30,60,120,240,360,720,D,W,M; limit 1-1000 (default 200); rows [start, open, high, low, close, volume, turnover] newest first"
+   },
+   {
+    "call": "GET /v5/account/wallet-balance",
+    "purpose": "balances",
+    "notes": "accountType=UNIFIED; result.list[0].coin[] {coin, walletBalance, equity, locked, unrealisedPnl, usdValue}"
+   },
+   {
+    "call": "GET /v5/order/realtime",
+    "purpose": "open orders",
+    "notes": "linear: symbol, baseCoin or settleCoin required; limit max 50"
+   },
+   {
+    "call": "POST /v5/order/create",
+    "purpose": "new order",
+    "notes": "category, symbol, side Buy|Sell, orderType Market|Limit, qty (string); price for Limit; timeInForce default GTC; marketUnit for spot market orders"
+   },
+   {
+    "call": "POST /v5/order/cancel",
+    "purpose": "cancel",
+    "notes": "category, symbol, orderId or orderLinkId"
+   }
+  ],
+  "limits": "Per-UID endpoint limits (e.g. 10-20 req/s for order endpoints) plus 600 requests per 5 s per IP.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bybit-exchange.github.io/docs/v5/guide",
+   "https://bybit-exchange.github.io/docs/v5/order/create-order",
+   "https://bybit-exchange.github.io/docs/v5/order/open-order",
+   "https://bybit-exchange.github.io/docs/v5/account/wallet-balance",
+   "https://bybit-exchange.github.io/docs/v5/market/kline"
+  ]
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires api_key, api_secret, category; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

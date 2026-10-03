@@ -1,0 +1,323 @@
+{
+ "id": "shopee_br",
+ "category": "ecommerce_channels",
+ "label": "Shopee Brasil",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "br"
+ ],
+ "docs_url": "https://open.shopee.com/developer-guide/4",
+ "url": "https://shopee.com.br/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Same Open Platform terms as Shopee; Brazilian seller account; fiscal (NF-e) obligations on orders are the seller's; one app can serve BR shops after review.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "same as Shopee (partner_id + partner_key HMAC-SHA256 sign; shop authorisation → access 4 h / refresh 30 d)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.partner_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.shop_id",
+  "config.region"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Identical to Shopee — the seller authorises the platform's app for its Brazilian shop_id."
+  ],
+  "endpoints": [
+   {
+    "call": "see shopee.md",
+    "purpose": "product / order / logistics / returns / payment endpoints",
+    "notes": "identical v2 API"
+   }
+  ],
+  "limits": " Per API (see Shopee). - Shopee Open Platform terms; Brazilian seller registration.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://open.shopee.com/developer-guide/4",
+   "https://r.jina.ai/https://open.shopee.com/developer-guide/20"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openplatform.shopee.com.br",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": "",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "partner_id",
+    "required": true,
+    "help": "partner_id of your Shopee Open Platform app (Console > App)."
+   },
+   {
+    "name": "shop_id",
+    "required": true,
+    "help": "shop_id of the authorised shop (returned in the authorisation redirect)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://openplatform.shopee.com.br/api/v2/auth/access_token/get",
+   "token_body": "json",
+   "client_auth": "body",
+   "client_id_field": "partner_id",
+   "token_fields": {
+    "client_id": null,
+    "client_secret": null,
+    "grant_type": null
+   },
+   "expires_path": "expire_in",
+   "state_key": "shopee_br",
+   "header": "",
+   "token_param": "access_token",
+   "token_sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "partner_key",
+    "payload": "{@partner_id}{path}{timestamp_s}"
+   },
+   "token_query": {
+    "partner_id": "{@partner_id}",
+    "timestamp": "{timestamp_s}",
+    "sign": "{signature}"
+   },
+   "token_body_extra": {
+    "partner_id": "int:{@partner_id}",
+    "shop_id": "int:{@shop_id}"
+   },
+   "fields": [
+    {
+     "name": "partner_key",
+     "required": true,
+     "help": "partner_key (live key) of the app; signs the token refresh and every shop call (HMAC-SHA256). Never sent on the wire."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from GetAccessToken (/api/v2/auth/token/get) after the shop authorised the app (https://open.shopee.com/developer-guide/20). Valid 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the newest one survives restarts."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "partner_key",
+    "payload": "{@partner_id}{path}{timestamp_s}{access_token}{@shop_id}",
+    "params": {
+     "partner_id": "{@partner_id}",
+     "shop_id": "{@shop_id}",
+     "timestamp": "{timestamp_s}"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v2/shop/get_shop_info",
+    "docs": "https://open.shopee.com/documents/v2/v2.shop.get_shop_info?module=92&type=1",
+    "note": "v2.shop.get_shop_info: shop_name, region, status and the authorisation expire_time."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/api/v2/order/get_order_list",
+    "params": {
+     "time_range_field": "=create_time",
+     "time_from": "epoch:since",
+     "time_to": "now_epoch",
+     "page_size": "limit",
+     "cursor": "cursor",
+     "order_status": "status",
+     "response_optional_fields": "=order_status"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "response.order_list",
+     "key": "orders",
+     "next_cursor": "response.next_cursor",
+     "fields": {
+      "id": "order_sn",
+      "status": "order_status"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.order.get_order_list?module=94&type=1",
+    "note": "v2.order.get_order_list: orders created from `since` (required; the window up to now may be at most 15 days) newest pages via next_cursor. `status`: UNPAID, READY_TO_SHIP, PROCESSED, SHIPPED, COMPLETED, IN_CANCEL, CANCELLED, INVOICE_PENDING. Amounts and items: v2.order.get_order_detail (not mapped)."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/api/v2/logistics/ship_order",
+    "body": {
+     "order_sn": "order_id",
+     "non_integrated.tracking_number": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.logistics.ship_order?module=95&type=1",
+    "note": "v2.logistics.ship_order for NON-INTEGRATED logistics channels: ships order `order_id` with the carrier's `tracking_number` (non_integrated.tracking_number). Integrated channels need pickup/dropoff details from v2.logistics.get_shipping_parameter and are not mapped; `carrier` is not sent."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/api/v2/product/update_stock",
+    "body": {
+     "item_id": "int:listing_id",
+     "stock_list.0.model_id": "int:sku",
+     "stock_list.0.seller_stock.0.stock": "quantity"
+    },
+    "result": {
+     "root": "response",
+     "fields": {
+      "status": "=updated",
+      "failures": "failure_list"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.product.update_stock?module=89&type=1",
+    "note": "v2.product.update_stock: sets the seller stock of item `listing_id`; `sku` is the model_id (0 for an item without variations). Check `failures` (failure_list with failed_reason)."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/api/v2/product/update_price",
+    "body": {
+     "item_id": "int:listing_id",
+     "price_list.0.model_id": "json:0",
+     "price_list.0.original_price": "price"
+    },
+    "result": {
+     "root": "response",
+     "fields": {
+      "status": "=updated",
+      "failures": "failure_list"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.product.update_price?module=89&type=1",
+    "note": "v2.product.update_price: sets the original price of item `listing_id` without variations (model_id 0) in the shop's local currency. Items with models need per-model prices (not mapped); title/description edits (v2.product.update_item) are not mapped."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/api/v2/product/unlist_item",
+    "body": {
+     "item_list.0.item_id": "int:listing_id",
+     "item_list.0.unlist": "json:true"
+    },
+    "result": {
+     "root": "response",
+     "fields": {
+      "status": "=unlisted",
+      "failures": "failure_list"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.product.unlist_item?module=89&type=1",
+    "note": "v2.product.unlist_item: unlists item `listing_id` (reversible with unlist=false)."
+   }
+  },
+  "not_offered": {
+   "create_listing": "v2.product.add_item (https://open.shopee.com/documents/v2/v2.product.add_item?module=89&type=1) requires category_id, image.image_id_list from v2.media_space.upload_image, logistic_info channel settings, weight and brand; the vocabulary's create_listing has none of these inputs."
+  },
+  "terms": "Shopee Open Platform v2 (Brazil host https://openplatform.shopee.com.br, from the portal's host list): shop APIs carry partner_id, timestamp, access_token, shop_id and sign = HMAC-SHA256(partner_key, partner_id + api path + timestamp + access_token + shop_id); access tokens last 4 hours and are refreshed through the signed RefreshAccessToken API (/api/v2/auth/access_token/get), which rotates the 30-day refresh_token (https://open.shopee.com/developer-guide/20)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host openplatform.shopee.com.br: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token openplatform.shopee.com.br/api/v2/auth/access_token/get: 403 invalid_partner_id",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

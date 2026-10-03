@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "domeme-mcp",
+ "display_name": "Domeme (Domeggook dropship / 배송대행 B2B) MCP",
+ "version": "0.1.0",
+ "description": "Domeme (Domeggook dropship / 배송대행 B2B) (ecommerce suppliers): me, list_products, get_product. Every ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "domeme"
+   ],
+   "env": {
+    "PLATFORM_MCP_DOMEME_API_KEY": "${user_config.platform_mcp_domeme_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_domeme_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOMEME_API_KEY",
+   "description": "Domeggook Open API key (openapi.domeggook.com > API 키 발급/관리), sent as the `aid` query parameter. The same key serves 도매꾹 and 도매매.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe runs a one-item 도매매 (Domeme) search. An invalid key answers HTTP 200 with {errors{code: 401, dcode: UNAUTHORIZED}}, reported as a tool error."
+  },
+  {
+   "name": "list_products",
+   "description": "getItemList v4.1 on 도매매 (Domeme) (market=supply): items on sale only. Domeggook requires at least one condition: `query` (kw) or `category` (ca, five two-digit pairs such as 01_11_00_00_00; a top-level-only code is not searchable). Prices are KRW integers; unitQty is the minimum order quantity. Errors arrive as HTTP 200 {errors{code, message, dcode, dmessage}} and are reported as tool errors."
+  },
+  {
+   "name": "get_product",
+   "description": "getItemView v4.6: basis{no, status, title, dateReg}, price, qty{inventory, domeMoq, domeUnit}, deli (shipping rules), seller info and options in `raw`. price.supply is an integer, or a tier string such as \"1+3800|20+3500|50+3300\" (quantity+unit price), so it is returned as `supply_price` instead of the numeric `price`. supply_unit is the 도매매 purchase multiple (qty.supplyUnit)."
+  }
+ ]
+}

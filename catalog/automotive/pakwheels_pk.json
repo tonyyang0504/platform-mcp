@@ -1,0 +1,35 @@
+{
+ "id": "pakwheels_pk",
+ "category": "automotive",
+ "label": "Pakwheels",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.pakwheels.com",
+ "domain": "pakwheels.com",
+ "country": "Pakistan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official PakWheels API; only third-party scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "Apify PakWheels scrapers/MCP wrappers"
+  ]
+ },
+ "official_mcp": []
+}

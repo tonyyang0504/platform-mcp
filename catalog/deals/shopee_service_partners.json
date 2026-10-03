@@ -1,0 +1,122 @@
+{
+ "id": "shopee_service_partners",
+ "category": "deals",
+ "label": "Shopee Service Partners",
+ "lane": "human",
+ "kind": "expert_directory",
+ "regions": [
+  "sg",
+  "apac"
+ ],
+ "docs_url": "https://open.shopee.com/documents",
+ "url": "https://open.shopee.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "ISV requires a registered enterprise licence; Open Platform agreement.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "partner_id/partner_key (Shopee Open Platform)",
+  "access": "partner_only",
+  "capabilities": [
+   "shop_apis"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Open Platform ISV APIs — operate sellers' shops; no client-finding API). Lane `human` → **keep**. Confidence medium.",
+  "base_urls": [
+   "https://partner.shopeemobile.com/api/v2/"
+  ],
+  "auth": [
+   "1. Register as ISV (registered enterprise) → partner_id / partner_key → shop authorization."
+  ],
+  "endpoints": [
+   {
+    "call": "shop / product / order APIs",
+    "purpose": "service delivery for a client's shop",
+    "notes": "per docs"
+   }
+  ],
+  "limits": " - Partner gate; no marketplace of jobs. - ISV requires a registered enterprise licence; Open Platform agreement.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://r.jina.ai/https://open.shopee.com/documents"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "The Shopee Open Platform (https://open.shopee.com/documents, opened 2026-09-25) serves registered ISVs (enterprise registration → partner_id/partner_key, HMAC-signed calls and per-shop authorisation) to operate authorised sellers' shops (shop, product, order, logistics APIs). There is no endpoint that lists merchants seeking service partners or lets a partner bid for work, so no deals verb maps, and access is partner-gated."
+}

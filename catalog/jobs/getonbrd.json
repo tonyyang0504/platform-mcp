@@ -1,0 +1,151 @@
+{
+ "id": "getonbrd",
+ "category": "jobs",
+ "label": "Get on Board",
+ "lane": "api",
+ "kind": "tech",
+ "regions": [
+  "latam",
+  "cl"
+ ],
+ "docs_url": "https://www.getonbrd.com/api-doc.html",
+ "url": "https://www.getonbrd.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "LatAm tech board with a public API v0 — no client yet; profile apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "categories"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — the public Get on Board API v0 answers without a key: GET https://www.getonbrd.com/api/v0/search/jobs?query=…/companies=…/featured/remote/country_code/board_host (one is required, els",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "GET /api/v0/categories.",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No developer terms or rate limits could be read: the documentation page (/api-docs) and every terms URL guess return 404; No developer terms or rate limits could be read: the documentation page (/api-docs) and every terms URL guess return 404; the API itself is open and unauthenticated. robots.txt blocks ClaudeBot, GPTBot, CCBot, Bytespider, Amazonbot, CloudflareBrowserRenderingCrawler with Disallow: / for unlisted agents — the API endpoint, not the HTML, is the sanctioned path.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.getonbrd.com/api-docs",
+   "https://www.getonbrd.com/robots.txt",
+   "https://www.getonbrd.com/api/v0/search/jobs",
+   "https://www.getonbrd.com/api/v0/search/jobs?query=developer&per_page=2",
+   "https://www.getonbrd.com/api/v0/categories"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.getonbrd.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api/v0/search/jobs",
+    "params": {
+     "query": "query",
+     "remote": "remote",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "fixed_params": {
+     "expand": "[\"company\"]"
+    },
+    "default_limit": 25,
+    "max_limit": 120,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "attributes.title",
+      "company": "attributes.company.data.attributes.name",
+      "location": "attributes.countries.0",
+      "url": "links.public_url",
+      "salary_min": "attributes.min_salary",
+      "salary_max": "attributes.max_salary",
+      "description": "attributes.description"
+     }
+    },
+    "docs": "https://www.getonbrd.com/api-doc.html",
+    "note": "Public API ('No authentication required'): GET /api/v0/search/jobs with query, remote, page ('starting at 1') and per_page (maximum 120); expand=[\"company\"] is sent so the company name is inline. country_code takes alpha-3 codes (example 'CHL') and there is no free-text place filter, so location and country are not sent. JSON:API hits: id is the job slug, attributes.description is HTML, attributes.published_at is a Unix epoch integer (raw), min/max_salary are integers with no documented currency, meta.total_pages is the only count (no total)."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint for the public API; private endpoints use a company API key ('Company authentication for private endpoints').",
+   "get_posting": "GET /api/v0/jobs/{id} is a private endpoint (security ApiKeyAuth: 'Send Authorization: Bearer <api_key>', answered 401 without one on 2026-09-24); the public search hit already carries the full description.",
+   "apply": "POST /api/v0/applications is a company (ApiKeyAuth) endpoint for recruiters; candidates apply on getonbrd.com ('profile apply').",
+   "list_messages": "No messaging API in the public API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

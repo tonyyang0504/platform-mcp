@@ -1,0 +1,236 @@
+{
+ "id": "allegro",
+ "category": "marketplaces",
+ "label": "Allegro",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://developer.allegro.pl",
+ "url": "https://allegro.pl",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "offers_create_update",
+   "product_catalogue_match",
+   "orders_checkout_forms",
+   "shipments",
+   "after_sales_returns",
+   "billing",
+   "messaging_center",
+   "webhooks(event_stats)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "client_id",
+  "client_secret",
+  "refresh_token",
+  "redirect_uri",
+  "category_id",
+  "default_price_cents?",
+  "currency?",
+  "stock?",
+  "sandbox?",
+  "auto_publish?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.allegro.pl",
+  "headers": {
+   "Accept": "application/vnd.allegro.public.v1+json",
+   "Content-Type": "application/vnd.allegro.public.v1+json"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://allegro.pl/auth/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your app registered at apps.developer.allegro.pl; sent with the secret as HTTP Basic on the token call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret of the same app."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code (or device-flow) consent of the seller account (valid 3 months). It is SINGLE-USE: every refresh returns a new pair (access token 12 h + new refresh token) and the old refresh token stops working 60 seconds after its first use. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token. The state file is keyed by platform id, so it is shared with ecommerce_channels/allegro: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent / refresh token) so the two never race on one single-use refresh token."
+    }
+   ]
+  },
+  "rate_per_second": 10,
+  "terms": "Allegro seller REST API; amounts are decimal strings in the offer / order currency (PLN on allegro.pl).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developer.allegro.pl/documentation#operation/meGET",
+    "note": "GET /me (scope allegro:api:profile:read) returns the authorised user {id, login, firstName, lastName, email, baseMarketplace, company}."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/sale/offers",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "publication.status": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "offers",
+     "key": "products",
+     "total": "totalCount",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "price": "sellingMode.price.amount",
+      "currency": "sellingMode.price.currency",
+      "status": "publication.status"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/searchOffersUsingGET",
+    "note": "GET /sale/offers?offset&limit(1-1000)&publication.status (INACTIVE|ACTIVE|ACTIVATING|ENDED; scope allegro:api:sale:offers:read) lists the seller's offers: {offers[{id, name, sellingMode.price {amount (decimal string), currency}, stock, stats, publication.status, primaryImage ...}], count, totalCount}. There is no description or URL in the list (see raw / get_product)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/sale/product-offers/{product_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "price": "sellingMode.price.amount",
+      "currency": "sellingMode.price.currency",
+      "status": "publication.status",
+      "created_at": "createdAt",
+      "updated_at": "updatedAt"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/getProductOffer",
+    "note": "GET /sale/product-offers/{offerId} returns all data of the offer; `description` is a structured sections object (raw.description) and is not flattened, so the mapped description is null."
+   },
+   "update_price": {
+    "method": "PATCH",
+    "path": "/sale/product-offers/{product_id}",
+    "body": {
+     "sellingMode.price.amount": "str:price",
+     "sellingMode.price.currency": "currency"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "price": "sellingMode.price.amount",
+      "currency": "sellingMode.price.currency",
+      "status": "publication.status"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/editProductOffers",
+    "note": "CHANGES THE LIVE PRICE: PATCH /sale/product-offers/{offerId} {sellingMode: {price: {amount (sent as the documented decimal string), currency}}} edits only the price; pass `currency` (PLN on allegro.pl). Answers 200 (edited, offer in the body) or 202 (accepted, still processing - the body may be empty and GET /sale/product-offers/{offerId}/operations/{operationId} tracks it)."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/order/checkout-forms",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "lineItems.boughtAt.gte": "since",
+     "sort": "=-lineItems.boughtAt"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "checkoutForms",
+     "key": "sales",
+     "total": "totalCount",
+     "fields": {
+      "id": "id",
+      "product_id": "lineItems.0.offer.id",
+      "product_name": "lineItems.0.offer.name",
+      "amount": "summary.totalToPay.amount",
+      "currency": "summary.totalToPay.currency",
+      "status": "status",
+      "customer_email": "buyer.email",
+      "created_at": "lineItems.0.boughtAt"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/getListOfOrdersUsingGET",
+    "note": "GET /order/checkout-forms?offset&limit(1-100)&lineItems.boughtAt.gte=`since` (ISO-8601 date-time) sorted newest first (scope allegro:api:orders:read). `amount` is summary.totalToPay (decimal string, whole order incl. delivery), product_id / product_name are the FIRST line item's offer; `status` is the purchase status (BOUGHT|FILLED_IN|READY_FOR_PROCESSING|CANCELLED). Orders cannot be filtered by offer: `product_id` is not sent."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/payments/refunds",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "occurredAt.gte": "since"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "refunds",
+     "key": "refunds",
+     "total": "totalCount",
+     "fields": {
+      "id": "id",
+      "sale_id": "order.id",
+      "amount": "totalValue.amount",
+      "currency": "totalValue.currency",
+      "reason": "reason",
+      "status": "status",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://developer.allegro.pl/documentation#operation/getRefundedPayments",
+    "note": "GET /payments/refunds?offset&limit(1-100)&occurredAt.gte=`since` (ISO-8601 date-time; scope allegro:api:payments:read): refunds {id, payment.id, order.id, reason, status (WAITING|IN_PROGRESS|SUCCESS|CANCELED|...), totalValue {amount, currency}, lineItems, createdAt}. sale_id is the order (checkout form) id."
+   }
+  },
+  "not_offered": {
+   "create_product": "POST /sale/product-offers needs productSet[{product: {id, idType}}] (an Allegro catalogue product or a new product with category.id and required parameters), delivery shipping rates and after-sales policies (https://developer.allegro.pl/documentation#operation/createProductOffers); the vocabulary carries none of these ids.",
+   "get_sales_stats": "The REST API has no revenue summary endpoint; sales exist only as individual checkout forms (https://developer.allegro.pl/documentation#operation/getListOfOrdersUsingGET).",
+   "refund": "POST /payments/refunds requires payment.id, a reason and per-line-item quantities or values (lineItems[] with the checkout form's line item ids) (https://developer.allegro.pl/documentation#operation/initiateRefund); a sale id and a single amount cannot express it."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.allegro.pl: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token allegro.pl/auth/oauth/token: 401 Client authentication failed",
+   "authorize https://allegro.pl/auth/oauth/authorize: ReadTimeout: ",
+   "spec https://developer.allegro.pl/swagger.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,115 @@
+{
+ "id": "yandex_market_api",
+ "category": "ecommerce_suppliers",
+ "label": "Yandex Market API for sellers (FBS/DBS)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "ru_cis"
+ ],
+ "docs_url": "https://yandex.ru/dev/market/partner-api/doc/en/",
+ "url": "https://partner.market.yandex.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "\"Restrictions on requests\" page (global + per-resource limits); \"Signature of integrations\" for integrators",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "webhooks"
+  ],
+  "auth": "Api-Key tokens created in the partner account (OAuth deprecated)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI specifications; 1C module"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Seller account; Api-Key tokens; request restrictions page.",
+  "mcp_sdk": [
+   "OpenAPI specifications; 1C module"
+  ],
+  "sources": [
+   "https://yandex.ru/dev/market/partner-api/doc/en/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Wrong direction for this category (docs readable, re-opened 2026-09-25 in headless Chromium): 'Yandex Market API for sellers' (https://yandex.ru/dev/market/partner-api/doc/en/; OpenAPI at github.com/yandex-market/yandex-market-partner-api) 'helps sellers manage assortment and prices, process orders, update balances' - its sections are all 'THE STORE'S REQUESTS TO THE MARKET' (offices and shops, products, stocks, prices, orders, FBS shipments, DBS delivery, returns, reviews, chats, warehouses) under seller Api-Key tokens. It is the seller (sales-channel) side of Yandex Market with no API for buying from the marketplace, so this category's supplier catalogue search, quote_shipping and create_order have no counterpart; an adapter belongs with the sales channels."
+}

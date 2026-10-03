@@ -1,0 +1,37 @@
+{
+ "id": "ora7",
+ "category": "automotive",
+ "label": "Ora7",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.ora7.fr",
+ "domain": "ora7.fr",
+ "country": "France",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Ora7 dealer site links only a pro login (pro.ora7.fr); no API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.ora7.fr/",
+   "https://pro.ora7.fr/",
+   "https://ora7.fr/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

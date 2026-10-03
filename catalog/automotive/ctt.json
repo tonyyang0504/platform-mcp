@@ -1,0 +1,42 @@
+{
+ "id": "ctt",
+ "category": "automotive",
+ "label": "Commercialtrucktrader",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.commercialtrucktrader.com",
+ "domain": "commercialtrucktrader.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": "https://www.traderinteractive.com/tradertraxxhelp/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Trader Interactive manages dealer inventory through TraderTraxx for member dealers; no public API documentation found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.traderinteractive.com/commercial-truck-trader/",
+   "https://www.traderinteractive.com/tradertraxxhelp/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Trader Interactive manages dealer inventory through TraderTraxx for member dealers; no public API documentation found."
+}

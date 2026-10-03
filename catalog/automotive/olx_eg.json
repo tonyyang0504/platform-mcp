@@ -1,0 +1,36 @@
+{
+ "id": "olx_eg",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.olx.com.eg",
+ "domain": "olx.com.eg",
+ "country": "Egypt",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OLX/Dubizzle Egypt publishes no public developer API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "parse.bot dubizzle-eg",
+   "Apify"
+  ]
+ },
+ "official_mcp": []
+}

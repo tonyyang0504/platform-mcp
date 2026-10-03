@@ -1,0 +1,109 @@
+{
+ "id": "cbr_dailyinfo",
+ "category": "market_data",
+ "label": "Банк России - DailyInfo (веб-сервис)",
+ "lane": "api",
+ "country": "RU",
+ "docs_url": "https://www.cbr.ru/development/DWS/",
+ "url": "https://www.cbr.ru",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "The Bank of Russia's public SOAP web service (documentation in Russian; WSDL https://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL, 282 operations listed with Russian descriptions). The WSDL gives an http:// address; the same service answers on https. Answers are .NET DataSets: an inline XML schema followed by diffgram rows. A request the service cannot read (e.g. a missing FromDate) is a SOAP Fault with HTTP 500; an unknown currency code answers an empty DataSet (no error).",
+ "adapter": {
+  "base_url": "https://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "error_kinds": [
+   {
+    "status": 500,
+    "match": "Server was unable to read request",
+    "kind": "invalid_input",
+    "note": "SOAP Fault for a missing or malformed field"
+   }
+  ],
+  "tools": {
+   "search_symbols": {
+    "method": "POST",
+    "path": "",
+    "body_format": "xml",
+    "xml_root": "soap:Envelope",
+    "headers": {
+     "Content-Type": "text/xml; charset=utf-8",
+     "SOAPAction": "\"http://web.cbr.ru/EnumValutes\""
+    },
+    "body": {
+     "@xmlns:soap": "=http://schemas.xmlsoap.org/soap/envelope/",
+     "soap:Body.EnumValutes.@xmlns": "=http://web.cbr.ru/",
+     "soap:Body.EnumValutes.Seld": "=false"
+    },
+    "cache_ttl": 600,
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "Envelope.Body.EnumValutesResponse.EnumValutesResult.diffgram.ValuteData.EnumValutes",
+     "slice": true,
+     "sort": "symbol",
+     "key": "results",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "name",
+        "raw.Vname",
+        "raw.VcharCode"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "Vcode",
+      "name": "VEngname",
+      "type": "VcharCode"
+     }
+    },
+    "docs": "https://www.cbr.ru/development/DWS/",
+    "note": "Currencies quoted daily (EnumValutes, Seld=false): symbol is the CBR code (R01235 = USD), name the English name, type the ISO letter code; the Russian name is raw.Vname. query matches any of them."
+   },
+   "get_series": {
+    "method": "POST",
+    "path": "",
+    "body_format": "xml",
+    "xml_root": "soap:Envelope",
+    "headers": {
+     "Content-Type": "text/xml; charset=utf-8",
+     "SOAPAction": "\"http://web.cbr.ru/GetCursDynamic\""
+    },
+    "body": {
+     "@xmlns:soap": "=http://schemas.xmlsoap.org/soap/envelope/",
+     "soap:Body.GetCursDynamic.@xmlns": "=http://web.cbr.ru/",
+     "soap:Body.GetCursDynamic.FromDate": "date:start",
+     "soap:Body.GetCursDynamic.ToDate": "date:end",
+     "soap:Body.GetCursDynamic.ValutaCode": "series_id"
+    },
+    "result": {
+     "items": "Envelope.Body.GetCursDynamicResponse.GetCursDynamicResult.diffgram.ValuteData.ValuteCursDynamic",
+     "key": "points",
+     "fields": {
+      "time": "CursDate",
+      "value": "num:VunitRate"
+     }
+    },
+    "docs": "https://www.cbr.ru/development/DWS/",
+    "note": "Official RUB rate per ONE unit of the currency (VunitRate; raw.Vcurs is per Vnom units) for every fixing day from start to end. series_id is the CBR code from search_symbols (R01235 USD, R01239 EUR, R01375 CNY). start and end (YYYY-MM-DD) are both REQUIRED by the service."
+   }
+  },
+  "not_offered": {
+   "me": "Public web service: no accounts.",
+   "get_candles": "Official daily rates only, no OHLC.",
+   "get_news": "The service has no news operation (MainInfoXML returns key rates, not headlines)."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

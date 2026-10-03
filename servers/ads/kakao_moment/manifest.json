@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "kakao_moment-mcp",
+ "display_name": "카카오모먼트 Kakao Moment MCP",
+ "version": "0.1.0",
+ "description": "카카오모먼트 Kakao Moment (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resum",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kakao_moment"
+   ],
+   "env": {
+    "PLATFORM_MCP_KAKAO_MOMENT_BUSINESS_TOKEN": "${user_config.platform_mcp_kakao_moment_business_token}",
+    "PLATFORM_MCP_KAKAO_MOMENT_AD_ACCOUNT_ID": "${user_config.platform_mcp_kakao_moment_ad_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kakao_moment_business_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAKAO_MOMENT_BUSINESS_TOKEN",
+   "description": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to moment_management in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). No refresh flow; it expires after long non-use.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kakao_moment_ad_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAKAO_MOMENT_AD_ACCOUNT_ID",
+   "description": "Kakao Moment ad account number, sent as the `adAccountId` header that campaign and report calls require.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET https://kapi.kakao.com/v1/business/tokeninfo: validates the business token and lists its biz_agreements (group MOMENT with ad_account_ids)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /openapi/v4/adAccounts/pages (0-based page upstream): Kakao Moment ad accounts (ON and OFF) with raw.memberType. Limited to one call per second."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /openapi/v4/campaigns for the ad account in the ad_account_id config (adAccountId header; account_id is not sent). `status` filters config (ON, OFF, DEL); raw.systemConfig shows admin stops. The list has no budget (GET /openapi/v4/campaigns/{id} carries dailyBudgetAmount). No paging."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /openapi/v4/campaigns/report?campaignId=&start=&end=&metricsGroup=BASIC&timeUnit=DAY&level=CAMPAIGN. campaign_id is required by Kakao (up to 5, comma-separated). Kakao expects yyyyMMdd dates: pass date_from/date_to like 20260901 (end no later than yesterday). One call per 5 seconds per ad account; cost is KRW."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /openapi/v4/campaigns/dailyBudgetAmount {id, dailyBudgetAmount}: KRW, 50,000 to 1,000,000,000 in steps of 10 (`currency` is ignored); spends money. Not available for reach campaigns (Bizboard, KakaoTalk channel, Daum shopping); lowering it can cut ad group budgets and bids. One call per 5 seconds."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /openapi/v4/campaigns/onOff {id, config: OFF|ON} (only campaigns currently ON or OFF; pausing a KakaoTalk channel reach campaign suspends queued messages). Resuming restarts spending. One call per 5 seconds."
+  }
+ ]
+}

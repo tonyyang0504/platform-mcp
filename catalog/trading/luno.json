@@ -1,0 +1,71 @@
+{
+ "id": "luno",
+ "category": "trading",
+ "label": "Luno",
+ "lane": "api",
+ "docs_url": "https://www.luno.com/en/developers/api",
+ "url": "https://www.luno.com",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only; they need no API key. The docs state 'APIs are rate limited to 300 calls per minute' (HTTP 429 beyond). Live 2026-09-27: GET /api/exchange/1/candles answers 401 {\"error\":\"authentication failure, type mismatch\",\"error_code\":\"ErrUnauthorized\"} without a key, as the docs' 'Permissions required: MP_None' implies. An unknown pair on /api/1/ticker answers HTTP 400 {\"error\":\"Market not available\",\"error_code\":\"ErrMarketUnavailable\"}; /api/exchange/1/markets with an unknown pair answers 200 {\"markets\":[]}.",
+ "adapter": {
+  "base_url": "https://api.luno.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/api/exchange/1/markets",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "markets",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "fields": {
+      "symbol": "market_id",
+      "base": "base_currency",
+      "quote": "counter_currency"
+     }
+    },
+    "docs": "https://www.luno.com/en/developers/api#tag/Market/operation/Markets",
+    "note": "GET /api/exchange/1/markets returns every market (market_id such as XBTZAR, base/counter currency, trading_status, min/max volume and price, scales in raw); the server sorts by symbol and pages locally. `query` is not sent: the API only filters by exact pair codes."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/api/1/ticker",
+    "params": {
+     "pair": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "pair",
+      "last": "num:last_trade",
+      "bid": "num:bid",
+      "ask": "num:ask",
+      "volume": "num:rolling_24_hour_volume"
+     }
+    },
+    "docs": "https://www.luno.com/en/developers/api#tag/Market/operation/GetTicker",
+    "note": "symbol is a Luno pair code without separator, e.g. XBTZAR, ETHZAR, XBTMYR (see list_markets). Prices are in the counter currency; volume is the rolling 24h base volume. An unknown pair answers HTTP 400 ErrMarketUnavailable."
+   }
+  },
+  "not_offered": {
+   "me": "No public identity endpoint; every account call 'requires your application to authenticate itself ... using an API key' (HTTP basic auth). Public-data entry only.",
+   "get_candles": "GET /api/exchange/1/candles lists 'Permissions required: MP_None', i.e. it needs an API key (live 2026-09-27: 401 ErrUnauthorized without one); no credentials in this public-data entry.",
+   "get_balances": "GET /api/1/balance requires an API key with 'Perm_R_Balance'; public-data entry only.",
+   "list_orders": "GET /api/1/listorders requires an API key with 'Perm_R_Orders'; public-data entry only.",
+   "place_order": "POST /api/1/postorder and /api/1/marketorder require an API key with 'Perm_W_Orders' and spend money; not mapped in this public-data entry.",
+   "cancel_order": "POST /api/1/stoporder requires an API key with 'Perm_W_Orders'; not mapped in this public-data entry."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

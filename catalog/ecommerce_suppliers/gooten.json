@@ -1,0 +1,252 @@
+{
+ "id": "gooten",
+ "category": "ecommerce_suppliers",
+ "label": "Gooten",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.gooten.com/api-documentation/getting-started/",
+ "url": "https://www.gooten.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "RecipeID (public key) on every URL + PartnerBillingKey (secret) for order submission; keys in account settings",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Postman collection (all endpoints)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Create a Gooten account; API keys in account settings",
+   "2. Pass RecipeID on every call",
+   "3. Add PartnerBillingKey for order submission (secret)"
+  ],
+  "endpoints": [
+   {
+    "call": "Products / Print Ready Products",
+    "purpose": "catalogue, SKUs, options, image templates; create / update / delete print-ready products",
+    "notes": ""
+   },
+   {
+    "call": "Price Estimate · Shipping Options · Address Validation",
+    "purpose": "cart pricing, shipping methods, AVS",
+    "notes": ""
+   },
+   {
+    "call": "Orders: submit, search, get by id, update status / shipping / SKU / artwork, cancel item",
+    "purpose": "order lifecycle",
+    "notes": ""
+   },
+   {
+    "call": "Webhooks",
+    "purpose": "order status updates",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - PartnerBillingKey charges the partner account - HTTPS only",
+  "mcp_sdk": [
+   "Postman collection (all endpoints)"
+  ],
+  "sources": [
+   "https://www.gooten.com/api-documentation/getting-started/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.print.io",
+  "auth": {
+   "type": "query",
+   "params": {
+    "recipeid": "recipe_id"
+   },
+   "fields": [
+    {
+     "name": "recipe_id",
+     "required": true,
+     "help": "Gooten RecipeID (public key, Admin Panel > Settings > API), sent as the `recipeid` query parameter on every call."
+    },
+    {
+     "name": "partner_billing_key",
+     "required": false,
+     "help": "Gooten PartnerBillingKey (private key from the same API settings page), sent inside create_order's Payment object so Gooten bills your account; required only for create_order."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "HadError",
+   "ok_value": false,
+   "error_field": "Errors"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v/5/source/api/countries/",
+    "docs": "https://www.gooten.com/api-documentation/getting-supported-shipping-to-countries/",
+    "note": "No account endpoint; the probe lists the supported shipping countries ({Countries[{Name, Code, IsSupported, DefaultCurrency}]}) for the RecipeID."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/api/v/5/source/api/prpproducts/",
+    "params": {
+     "page": "page"
+    },
+    "result": {
+     "items": "Products",
+     "key": "products",
+     "fields": {
+      "id": "ProductName",
+      "title": "ProductName",
+      "variant_count": "NumberOfVariants"
+     }
+    },
+    "docs": "https://www.gooten.com/api-documentation/print-ready-products/",
+    "note": "Your Print Ready Products (products already combined with your artwork): {PageCount, Page, Products[{ProductName, NumberOfVariants}]}. `query`, `category` and `limit` are not accepted (Gooten sets the page size). Gooten's base catalogue is a static CDN file (productdatav3/catalog.json), not an API call."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/api/v/5/source/api/orders/",
+    "body": {
+     "ShipToAddress": "shipping_address",
+     "BillingAddress": "shipping_address",
+     "Items": "items",
+     "Payment.PartnerBillingKey": "@partner_billing_key"
+    },
+    "result": {
+     "fields": {
+      "id": "Id"
+     }
+    },
+    "docs": "https://www.gooten.com/api-documentation/submitting-an-order/",
+    "note": "Submits a LIVE order billed to your Gooten account through the PartnerBillingKey (IsInTestMode is not sent). `shipping_address` is Gooten's address {FirstName, LastName, Line1, Line2, City, State, CountryCode, PostalCode, Phone, Email} and is also used as BillingAddress; `items` are Gooten items [{SKU, Quantity, ShipType (standard|expedited|overnight), Images[{Url}]}] - the shipping method is per item, so `shipping_option` is not sent. Answers {Id} (the order id get_order takes); validation failures come back as HadError=true with Errors[{PropertyName, ErrorMessage}]."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/api/v/5/source/api/orders/",
+    "params": {
+     "id": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "Id",
+      "status": "Items.0.Status",
+      "tracking_number": "Items.0.TrackingNumber",
+      "nice_id": "NiceId",
+      "source_id": "SourceId",
+      "carrier": "Items.0.ShipCarrierName"
+     }
+    },
+    "docs": "https://www.gooten.com/api-documentation/get-order-by-id/",
+    "note": "GET orders/?id= : {Id, NiceId, SourceId, Items[{Sku, Quantity, Status, TrackingNumber, TrackingUrl, ShipCarrierName, Price{Price, CurrencyCode}, Shipments[]}], ShipToAddress, ...}. Gooten tracks status per item; `status`/`tracking_number` are the first item's. Order totals are per item (Items[].Price) and not mapped to `total`."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/api/v/5/source/api/orders/",
+    "params": {
+     "id": "order_id"
+    },
+    "result": {
+     "items": "Items",
+     "key": "events",
+     "fields": {
+      "sku": "Sku",
+      "status": "Status",
+      "tracking_number": "TrackingNumber",
+      "tracking_url": "TrackingUrl",
+      "carrier": "ShipCarrierName"
+     }
+    },
+    "docs": "https://www.gooten.com/api-documentation/get-order-by-id/",
+    "note": "One row per order item with its status, carrier and tracking number/URL (Items[].Shipments holds split shipments, in `raw`)."
+   }
+  },
+  "not_offered": {
+   "get_product": "Product variants (GET productvariants/?productId=&countryCode=) return ProductVariants[{Sku, Options, PriceInfo}] without a product title or id record, and the catalogue itself is a static CDN file (productdatav3/catalog.json), so there is no single-product read to map.",
+   "quote_shipping": "GET shippriceestimate/?productId=&countryCode=&currencyCode= answers one {MinPrice, MaxPrice, EstShipDays, CanShipExpedited} estimate rather than a list of shipping options, and currencyCode is required; POST shippingprices needs a full cart (ShipToCountry, Items[{SKU, Quantity}])."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.print.io: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 302 (redirect), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

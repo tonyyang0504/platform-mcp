@@ -1,0 +1,90 @@
+{
+ "id": "jobindex",
+ "category": "jobs",
+ "label": "Jobindex",
+ "lane": "assist",
+ "kind": "aggregator",
+ "regions": [
+  "dk"
+ ],
+ "docs_url": "https://www.jobindex.dk/jobsoegning?q=udvikler&format=rss",
+ "url": "https://www.jobindex.dk/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Denmark's main job search; apply on employer site.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (RSS per search)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the per-search RSS (application/rss+xml via ?format=rss or /jobsoegning.rss?q=) is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. No developer API for candidates (developer./api. hosts redirect home; /feed requires an employer login — virksomhedsbruger). Public search RSS exists. robots.txt (129 rules) disallows the site's own /api/ and has Disallow: / for unlisted agents. Terms URL guesses 404 — no automation clause read.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.jobindex.dk/",
+   "https://www.jobindex.dk/robots.txt",
+   "https://www.jobindex.dk/jobsoegning?q=udvikler&format=rss",
+   "https://www.jobindex.dk/jobsoegning.rss?q=udvikler",
+   "https://www.jobindex.dk/feed"
+  ]
+ }
+}

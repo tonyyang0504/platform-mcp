@@ -1,0 +1,335 @@
+{
+ "id": "tiktok",
+ "category": "ads",
+ "label": "TikTok for Business (TikTok Ads Manager)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://business-api.tiktok.com/portal/docs",
+ "url": "https://ads.tiktok.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Developer registration review ~3 business days, app review 2–3 business days; a scope change is another review (TikTok API for Business portal, verified 2026-09-23)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (developer app → advertiser authorization → long-lived Access-Token header)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "catalog_products",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/tiktok/tiktok-business-api-sdk (official; Java, Python, JavaScript)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (TikTok Marketing API / TikTok API for Business).",
+  "base_urls": [
+   "https://business-api.tiktok.com",
+   "https://sandbox-ads.tiktok.com/open_api/v1.3/"
+  ],
+  "auth": [
+   "1. Create a TikTok For Business account. 2. Register as a developer. 3. Create a developer app (choose Marketing API scopes; app review).",
+   "4. Obtain authorization: the advertiser opens the app's authorization URL and approves → `auth_code` on the redirect.",
+   "5. Obtain authentication: exchange `auth_code` (`/open_api/v1.3/oauth2/access_token/` with app_id + secret) → long-lived `access_token` + `advertiser_ids`; send `Access-Token: <token>` header on every call."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /oauth2/advertiser/get/` · `GET /advertiser/info/",
+    "purpose": "authorized advertisers",
+    "notes": "advertiser_id, name, currency, status"
+   },
+   {
+    "call": "GET /campaign/get/` · `POST /campaign/create/` · `POST /campaign/update/` · `POST /campaign/status/update/",
+    "purpose": "campaigns",
+    "notes": "advertiser_id, campaign_name, objective_type, budget, budget_mode BUDGET_MODE_DAY/TOTAL, operation_status"
+   },
+   {
+    "call": "GET /adgroup/get/` · `POST /adgroup/create/` · `POST /adgroup/update/` · `POST /adgroup/status/update/",
+    "purpose": "ad groups: placements, targeting, budget, bid",
+    "notes": "adgroup_name, placement_type, location_ids, age_groups, budget, schedule_type, optimization_goal, bid_type, bid_price, billing_event"
+   },
+   {
+    "call": "POST /file/image/ad/upload/` · `POST /file/video/ad/upload/` · `GET /ad/get/` · `POST /ad/create/` · `POST /ad/update/",
+    "purpose": "creatives + ads",
+    "notes": "image_file / video_file (multipart) or url, image_id / video_id; creatives[]{ad_name, ad_text, call_to_action, landing_page_url, video_id, image_ids}"
+   },
+   {
+    "call": "GET /report/integrated/get/",
+    "purpose": "reports",
+    "notes": "report_type BASIC, data_level AUCTION_CAMPAIGN…, dimensions[stat_time_day], metrics[spend, impressions, clicks, conversions], start_date, end_date"
+   },
+   {
+    "call": "POST /dmp/custom_audience/create/` · `POST /dmp/custom_audience/file/upload/` · `GET /dmp/custom_audience/list/",
+    "purpose": "audiences",
+    "notes": "custom_audience_name, file_paths, calculate_type (EMAIL_SHA256 / PHONE_SHA256 / IDFA…)"
+   },
+   {
+    "call": "POST /pixel/track/` · `POST /event/track/` (Events API) · `GET /pixel/list/",
+    "purpose": "conversions upload",
+    "notes": "pixel_code / event_source_id, event, timestamp, context{user{email, phone hashed}}, properties{value, currency}"
+   },
+   {
+    "call": "GET /tool/language/`, `/tool/interest_category/`, `/tool/region/`, `/tool/targeting/search/",
+    "purpose": "targeting search",
+    "notes": "advertiser_id, keywords"
+   }
+  ],
+  "limits": " - Access requires app review; each advertiser must authorize the app. Rate limits per app / advertiser exist (TODO(verify) numbers). Free API; TikTok For Business Terms + Marketing API Terms.",
+  "mcp_sdk": [
+   "Official: `tiktok/tiktok-business-api-sdk` — Java (Maven `tiktok-business-api-sdk-official`), Python (pip), JavaScript (npm). No official MCP server found."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/tiktok/tiktok-business-api-sdk/main/README.md",
+   "https://raw.githubusercontent.com/tiktok/tiktok-business-api-sdk/main/python_sdk/business_api_client/configuration.py",
+   "https://business-api.tiktok.com\"`.",
+   "https://business-api.tiktok.com/portal/docs?id=1738864498580481"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://business-api.tiktok.com/open_api/v1.3",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "header",
+   "header": "Access-Token",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Long-term advertiser access token from the TikTok API for Business authorization flow (/oauth2/access_token/), sent as the `Access-Token` header."
+    },
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "Developer app id (Application Management page); sent as a query parameter only to /oauth2/advertiser/get/ (me, list_accounts)."
+    },
+    {
+     "name": "secret",
+     "required": true,
+     "help": "The developer app's secret, sent as the `secret` query parameter only to /oauth2/advertiser/get/ (me, list_accounts)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": true,
+    "help": "Advertiser (ad account) id that update_budget writes to (campaign/update requires advertiser_id in the body)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/oauth2/advertiser/get/",
+    "params": {
+     "app_id": "@app_id",
+     "secret": "@secret"
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/get-authorized-ad-accounts/v1.3",
+    "note": "GET /oauth2/advertiser/get/?app_id&secret returns {code, message, data: {list: [{advertiser_id, advertiser_name}]}}. TikTok answers HTTP 200 with a non-zero `code` on failure: check code == 0."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/oauth2/advertiser/get/",
+    "params": {
+     "app_id": "@app_id",
+     "secret": "@secret"
+    },
+    "result": {
+     "items": "data.list",
+     "key": "accounts",
+     "fields": {
+      "id": "advertiser_id",
+      "name": "advertiser_name"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/get-authorized-ad-accounts/v1.3",
+    "note": "Advertiser accounts that authorised the app. Currency is not in this response (GET /advertiser/info/ has it). A non-zero `code` in a 200 body yields an empty list."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/campaign/get/",
+    "params": {
+     "advertiser_id": "account_id",
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "data.list",
+     "key": "campaigns",
+     "total": "data.page_info.total_number",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name",
+      "status": "operation_status",
+      "budget": "budget"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/get-campaigns/v1.3",
+    "note": "GET /campaign/get/?advertiser_id&page&page_size (1-1000). `status` is operation_status ENABLE|DISABLE (secondary_status in raw); `budget` is in the account currency and its meaning follows budget_mode (BUDGET_MODE_DAY daily, BUDGET_MODE_TOTAL lifetime, BUDGET_MODE_INFINITE none). The `status` argument is not sent (filtering is a JSON object)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/report/integrated/get/",
+    "params": {
+     "advertiser_id": "account_id",
+     "start_date": "date_from",
+     "end_date": "date_to"
+    },
+    "fixed_params": {
+     "report_type": "BASIC",
+     "data_level": "AUCTION_CAMPAIGN",
+     "dimensions": "[\"campaign_id\",\"stat_time_day\"]",
+     "metrics": "[\"spend\",\"impressions\",\"clicks\",\"ctr\",\"cpc\",\"conversion\"]",
+     "page_size": "1000"
+    },
+    "result": {
+     "items": "data.list",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "dimensions.campaign_id",
+      "date": "dimensions.stat_time_day",
+      "spend": "metrics.spend",
+      "impressions": "metrics.impressions",
+      "clicks": "metrics.clicks"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/run-a-synchronous-report/v1.3",
+    "note": "Synchronous basic report, campaign level, one row per campaign per day (YYYY-MM-DD, closed interval, ad account time zone); metrics are strings. `campaign_id` is not applied (the filter is a JSON array of objects); filter the rows instead. Up to 1,000 rows (page 1)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/campaign/update/",
+    "body": {
+     "advertiser_id": "@advertiser_id",
+     "campaign_id": "campaign_id",
+     "budget": "daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "campaign_id": "campaign_id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/update-a-campaign/v1.3",
+    "note": "POST /campaign/update/ {advertiser_id (config), campaign_id, budget}. The value replaces the campaign budget in its current budget_mode (daily only for BUDGET_MODE_DAY campaigns), in the account currency; `currency` is ignored. A failed update (non-zero code, empty data) is reported as invalid_input."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/campaign/status/update/",
+    "body": {
+     "advertiser_id": "@advertiser_id",
+     "campaign_ids.0": "campaign_id",
+     "operation_status": "map:action:pause=DISABLE,resume=ENABLE"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/update-campaign-status/v1.3",
+    "note": "POST /campaign/status/update/ {advertiser_id (config), campaign_ids: [campaign_id], operation_status: DISABLE (pause) | ENABLE (resume)}; answers {code, data: {status, campaign_ids}}. Deleted campaigns cannot change status. A non-zero code (empty data) is reported as invalid_input."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host business-api.tiktok.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 308 (redirect), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/6 tool paths found verbatim on their docs pages; names not found on the page: pause_resume:advertiser_id, pause_resume:campaign_ids, pause_resume:operation_status"
+  ],
+  "notes": "Fixed: TikTok Business API answers HTTP 200 {code: 40105, message} for errors; without an envelope the tools returned empty successes. Envelope code=0 added."
+ }
+}

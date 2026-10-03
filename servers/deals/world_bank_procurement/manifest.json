@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "world_bank_procurement-mcp",
+ "display_name": "World Bank Procurement Notices MCP",
+ "version": "0.1.0",
+ "description": "World Bank Procurement Notices (deals): search_postings, get_posting. Every tool maps to a documente",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "world_bank_procurement"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /api/v2/procnotices?format=json with the World Bank Search API conventions documented on the API page: qterm (full-text query), rows (page size, default 10) and os (0-based record offset). The procnotices collection itself has no dedicated reference page (confidence medium); fields are from the live response: id, notice_type, noticedate (DD-Mon-YYYY), notice_status, project_ctry_name, project_id, project_name, bid_reference_no, bid_description, procurement_method_name, submission_date, notice_text (HTML). total is a string in the response, so total is null. buyer is the financed project's name; contract awards are included (notice_type). Some notices carry no bid_description; their title falls back to project_name (live check 2026-09-26)."
+  },
+  {
+   "name": "get_posting",
+   "description": "Same collection filtered by id (e.g. OP00470638)."
+  }
+ ]
+}

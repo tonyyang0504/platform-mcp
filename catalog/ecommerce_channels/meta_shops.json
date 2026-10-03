@@ -1,0 +1,342 @@
+{
+ "id": "meta_shops",
+ "category": "ecommerce_channels",
+ "label": "Facebook & Instagram Shops",
+ "lane": "api",
+ "kind": "social_commerce",
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/commerce-platform/",
+ "url": "https://www.facebook.com/business/shops",
+ "verified_at": "2026-09-25",
+ "terms_note": "Meta developer app + Business verification; permissions catalog_management and commerce_account_manage_orders / read_orders need App Review for use on other businesses' assets (our multi-tenant case); Commerce Manager account per tenant; Meta commerce policies on products; Graph API rate limits per app / business (BUC); the permission + review pages themselves were not reachable in this pass (404).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graph_api",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2 (Meta app + Business login / system-user token with catalog_management + commerce_account_* permissions)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Meta Business SDKs (Graph API) — https://developers.facebook.com/docs/business-sdk"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.catalog_id",
+  "config.cms_id"
+ ],
+ "rate_limits": "items_batch 5,000 items/request, 100 requests/hour/catalog (via search)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.facebook.com/v<ver>/…"
+  ],
+  "auth": [
+   "1. Create a Meta app (Business type); request catalog_management, commerce_account_manage_orders, commerce_account_read_orders, business_management.",
+   "2. Complete Business verification + App Review for the permissions (multi-tenant use).",
+   "3. Tenant connects through Facebook Login for Business / Commerce onboarding; store the long-lived or system-user token per tenant.",
+   "4. Read the user's Commerce Manager account (cms_id) and catalog id."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /{catalog_id}/products · POST /{catalog_id}/batch",
+    "purpose": "create / update products, price, availability, inventory",
+    "notes": "retailer_id, name, description, price, availability, inventory, image_url, url, brand, condition"
+   },
+   {
+    "call": "product feeds (scheduled URL fetch)",
+    "purpose": "bulk catalog sync",
+    "notes": "CSV / TSV / XML feed at a URL"
+   },
+   {
+    "call": "GET /{cms_id}/commerce_orders?state=…",
+    "purpose": "orders",
+    "notes": "states FB_PROCESSING, CREATED, IN_PROGRESS, COMPLETED; fields id, order_status, created, last_updated; cursor pagination"
+   },
+   {
+    "call": "GET /{order_id} · GET /{order_id}/items",
+    "purpose": "order detail + line items",
+    "notes": ""
+   },
+   {
+    "call": "POST /{order_id}/acknowledge_order",
+    "purpose": "acknowledge (merchant_order_reference)",
+    "notes": "Acknowledgement API"
+   },
+   {
+    "call": "POST /{order_id}/shipments",
+    "purpose": "ship with tracking",
+    "notes": "idempotency_key, items[{retailer_id"
+   },
+   {
+    "call": "POST /{order_id}/cancellations · /{order_id}/refunds",
+    "purpose": "cancel / refund",
+    "notes": "Cancellation and Refund API"
+   },
+   {
+    "call": "Returns API · Shipping Profiles API · Order Snapshot API",
+    "purpose": "returns, carrier / rate settings, unified updates",
+    "notes": ""
+   }
+  ],
+  "limits": " Graph API business-use-case rate limits per app / per business (not restated on the pages opened). - Meta Platform Terms + Commerce policies; App Review + Business verification for the commerce permissions on third-party assets. - Checkout on Facebook & Instagram is being replaced by offsite checkout per the overview — order APIs apply only to shops that still check out on Meta. - Product data must satisfy catalog specs (feed / batch validation).",
+  "mcp_sdk": [
+   "SDK: Meta Business SDKs (Graph API) — https://developers.facebook.com/docs/business-sdk"
+  ],
+  "sources": [
+   "https://developers.facebook.com/docs/commerce-platform/",
+   "https://developers.facebook.com/docs/commerce-platform/order-management/",
+   "https://developers.facebook.com/docs/commerce-platform/order-management/order-api",
+   "https://developers.facebook.com/docs/commerce-platform/order-management/fulfillment-api",
+   "https://developers.facebook.com/docs/marketing-api/catalog/",
+   "https://developers.facebook.com/docs/commerce-platform/platforms/",
+   "https://developers.facebook.com/docs/commerce-platform/order-management/using-the-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v25.0",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "System-user (or long-lived user) access token of a Meta app with catalog_management and, for orders, commerce_account_manage_orders / commerce_account_read_orders permissions on the commerce account; sent as Authorization: Bearer."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "catalog_id",
+    "required": true,
+    "help": "Product catalog id (Commerce Manager > Catalog > Settings)."
+   },
+   {
+    "name": "cms_id",
+    "required": false,
+    "help": "Commerce account (CMS) id; required for list_orders."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "ISO currency of the catalog prices, e.g. USD; required when update_listing sends a price ('9.99 USD')."
+   }
+  ],
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": null,
+   "error_field": "error"
+  },
+  "rate_per_second": 2,
+  "terms": "Meta Graph API (Commerce Platform + Catalog Batch API). Catalog batch requests are processed asynchronously; the returned handle can be polled at GET /{catalog_id}/check_batch_request_status?handle=…",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/{cid}",
+    "path_params": {
+     "cid": "@catalog_id"
+    },
+    "fixed_params": {
+     "fields": "id,name,product_count"
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/reference/product-catalog/",
+    "note": "Reads the configured product catalog {id, name, product_count} to verify the token and catalog access."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/{cid}/items_batch",
+    "path_params": {
+     "cid": "@catalog_id"
+    },
+    "body": {
+     "item_type": "=PRODUCT_ITEM",
+     "requests.0.method": "=UPDATE",
+     "requests.0.data.id": "listing_id",
+     "requests.0.data.title": "title",
+     "requests.0.data.description": "description",
+     "requests.0.data.price": "fmt:{str:price} {@currency}",
+     "requests.0.data.quantity_to_sell_on_facebook": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=batch_submitted"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/catalog-batch/reference",
+    "note": "items_batch UPDATE for one PRODUCT_ITEM: `listing_id` is the item's retailer id (data.id); price is sent as '<amount> <currency>' using the currency config field; quantity maps to quantity_to_sell_on_facebook. Changes go LIVE on Facebook/Instagram shops once processed; raw.handles[0] is the batch handle and raw.validation_status lists per-item errors."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/{cid}/items_batch",
+    "path_params": {
+     "cid": "@catalog_id"
+    },
+    "body": {
+     "item_type": "=PRODUCT_ITEM",
+     "requests.0.method": "=UPDATE",
+     "requests.0.data.id": "sku",
+     "requests.0.data.quantity_to_sell_on_facebook": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=batch_submitted"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/catalog-batch/reference",
+    "note": "items_batch UPDATE {id: sku, quantity_to_sell_on_facebook}: `sku` is the retailer id of the catalog item (required)."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/{cid}/items_batch",
+    "path_params": {
+     "cid": "@catalog_id"
+    },
+    "body": {
+     "item_type": "=PRODUCT_ITEM",
+     "requests.0.method": "=DELETE",
+     "requests.0.data.id": "listing_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=delete_submitted"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/catalog-batch/reference",
+    "note": "items_batch DELETE removes the item (retailer id = listing_id) from the catalog and therefore from Shops and catalog ads; not reversible (re-create it to restore)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/{cms}/commerce_orders",
+    "path_params": {
+     "cms": "@cms_id"
+    },
+    "params": {
+     "state": "status"
+    },
+    "fixed_params": {
+     "fields": "id,order_status,created,last_updated,estimated_payment_details"
+    },
+    "result": {
+     "items": "data",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "order_status.state",
+      "created_at": "created"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/commerce-platform/order-management/order-api",
+    "note": "GET /{cms_id}/commerce_orders?state (FB_PROCESSING|CREATED|IN_PROGRESS|COMPLETED, comma-separated; default CREATED). `since` is not applied because updated_after is a Unix timestamp. Pagination is by Graph cursors (raw paging), so only the first page is returned; amounts are in raw.estimated_payment_details. New orders must be acknowledged (POST /{order_id}/acknowledge_order) before fulfilment; not done here."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/{order_id}/shipments",
+    "body": {
+     "idempotency_key": "uuid",
+     "tracking_info.carrier": "carrier",
+     "tracking_info.tracking_number": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/commerce-platform/order-management/fulfillment-api",
+    "note": "Attach Shipment POST /{order-id}/shipments {idempotency_key, tracking_info: {carrier, tracking_number}}; items are omitted, so 'all unfulfilled quantities of items on the order' are shipped. When sending tracking_info both carrier and tracking_number are required."
+   }
+  },
+  "not_offered": {
+   "create_listing": "A PRODUCT_ITEM CREATE needs link, image_link, brand, condition and availability besides id/title/description/price; the vocabulary has no product page link, brand or condition."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "id": "mwc_barcelona",
+ "category": "sales",
+ "label": "MWC Barcelona exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "es",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.mwcbarcelona.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (5 Disallow) — /exhibitors allowed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,240 @@
+{
+ "id": "mgid",
+ "category": "ads",
+ "label": "MGID",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://help.mgid.com/api-advertisers",
+ "url": "https://www.mgid.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Advertiser REST API token is generated in the dashboard; agencies use the dedicated agency API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (MGID REST API client token from the advertiser account)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (REST API MGID for advertisers) Confidence: **high** — official reference read.",
+  "base_urls": [
+   "https://api.mgid.com/v1/…"
+  ],
+  "auth": [
+   "1. MGID advertiser account → API token (Identification section: client id + token).",
+   "2. Pass the token on every HTTPS request (query / header per the reference).",
+   "3. Work per client id: `/clients/{id}/…`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /clients/{id}` (financial status) · `GET/POST …/source-filters",
+    "purpose": "account / balance / source filters",
+    "notes": "balance, currency, filters[]"
+   },
+   {
+    "call": "GET /clients/{id}/campaigns` · `POST …/campaigns` (with all settings) · `PATCH` limits · block / unblock · trash",
+    "purpose": "campaigns + limits + status",
+    "notes": "name, language, category, limit_type, daily_limit, total_limit, utm, cta, selective auction coefficient"
+   },
+   {
+    "call": "targeting: geo countries / regions · browsers · IP · OS · site filters",
+    "purpose": "targeting",
+    "notes": "country ids, region ids, browser ids, os ids"
+   },
+   {
+    "call": "GET/POST/PUT/DELETE …/conversion-targets",
+    "purpose": "conversion targets (pixel sensor)",
+    "notes": "name, value, sensor"
+   },
+   {
+    "call": "teasers (`…/campaigns/{cid}/teasers` create / update / image upload)",
+    "purpose": "ads (creatives)",
+    "notes": "title, image, url, category, price"
+   },
+   {
+    "call": "statistics: daily · detailed daily · by site · by source · video campaigns",
+    "purpose": "reports",
+    "notes": "dateInterval, campaign ids"
+   },
+   {
+    "call": "audiences upload",
+    "purpose": "not in API (retargeting via sensor)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated; HTTPS only; free; MGID advertiser terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://help.mgid.com/api-advertisers"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.mgid.com/v1",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "32-character MGID REST API token from the MGID Ads dashboard (Settings > API), sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "client_id",
+    "required": true,
+    "help": "The advertiser's MGID client (account) id; every campaign path is /goodhits/clients/{client_id}/…"
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/clients/{client_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "docs": "https://help.mgid.com/api-advertisers",
+    "note": "GET /v1/clients/{client_id}: the client's financial status {id, timezone, wallet {balance, credit, income, currency}} (amounts in cents). API version 1 (the public reference); v2 docs are only inside the dashboard."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/goodhits/clients/{client_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "limitType": "=budget_limits",
+     "dailyLimit": "str:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://help.mgid.com/api-advertisers",
+    "note": "PATCH /v1/goodhits/clients/{client_id}/campaigns/{campaign_id} with limitType=budget_limits and dailyLimit (two decimals, account currency; the minimum depends on currency and campaign type). This spends money. Parameters are sent in the query string, as the reference's PATCH examples do. The existing overallLimit is not sent (it must stay above the daily limit). A refusal comes back as {errors: [...]}. `currency` is ignored."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/goodhits/clients/{client_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "client_id": "@client_id"
+    },
+    "params": {
+     "whetherToBlockByClient": "map:action:pause=1,resume=0"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://help.mgid.com/api-advertisers",
+    "note": "PATCH /v1/goodhits/clients/{client_id}/campaigns/{campaign_id} with whetherToBlockByClient=1 (pause: lock the campaign) or 0 (resume: unlock), sent in the query string. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The token works on one client id; there is no client list in the advertiser API (https://help.mgid.com/api-advertisers, 'Working with clients').",
+   "list_campaigns": "GET /v1/goodhits/clients/{client_id}/campaigns answers an object keyed by campaign id ({\"<campaign_id>\": {id, name, status {id, name}, limitsFilter, …}}), not an array (https://help.mgid.com/api-advertisers, 'Getting a collection of client's advertising campaigns'); the runtime's result mapping lists arrays only.",
+   "get_report": "GET /v1/goodhits/clients/{client_id}/campaigns-stat?dateInterval=interval&startDate&endDate answers an object keyed by campaign id ({\"<campaign_id>\": {campaign_id, imps, clicks, spent, avcpc}}), not an array (https://help.mgid.com/api-advertisers, 'Advertising campaigns daily statistics'); the runtime's result mapping lists arrays only."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.mgid.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

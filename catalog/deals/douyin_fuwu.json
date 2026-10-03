@@ -1,0 +1,122 @@
+{
+ "id": "douyin_fuwu",
+ "category": "deals",
+ "label": "Douyin Shop Service Market (CN)",
+ "lane": "human",
+ "kind": "gig",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://op.jinritemai.com/docs",
+ "url": "https://fuwu.jinritemai.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "ISV qualification + Douyin Shop developer agreement; Chinese entity typically required.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "app_key/app_secret (抖店开放平台 ISV 接入)",
+  "access": "partner_only",
+  "capabilities": [
+   "listing_services",
+   "shop_apis"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (抖店开放平台 ISV APIs — list software services to merchants; no bidding API). Lane `human` → **keep**. Confidence medium (r.jina.ai).",
+  "base_urls": [
+   "https://op.jinritemai.com"
+  ],
+  "auth": [
+   "1. Register as 服务商 (ISV) → app_key / app_secret → 上架服务市场."
+  ],
+  "endpoints": [
+   {
+    "call": "店铺API / 商品API / 库存API / 素材中心API",
+    "purpose": "merchant-side operations for the ISV's app",
+    "notes": "per docs"
+   }
+  ],
+  "limits": " - Partner qualification; Chinese company; platform agreement. - ISV qualification + Douyin Shop developer agreement; Chinese entity typically required.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://r.jina.ai/https://op.jinritemai.com/docs"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "The 抖店开放平台 (https://op.jinritemai.com/docs/guide-docs/10/23, opened 2026-09-25) serves registered ISV apps only: every call carries app_key + a merchant-authorised access_token and a signature over sorted param_json with a GMT+8 'yyyy-MM-dd HH:mm:ss' timestamp. The service-market side lets an ISV read orders for services merchants bought from it; there is no endpoint that lists open merchant demand to bid on, so nothing maps to search_postings/submit_bid, and access requires ISV onboarding."
+}

@@ -1,0 +1,116 @@
+{
+ "id": "salla_platform",
+ "category": "ecommerce_suppliers",
+ "label": "Salla (store platform + Merchant API)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "mea"
+ ],
+ "docs_url": "https://docs.salla.dev/ship-fulfillment-apis/getting-started",
+ "url": "https://docs.salla.dev/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Rate Limiting + Security Considerations pages in docs; app publishing review required",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks",
+   "mcp"
+  ],
+  "auth": "oauth2 (Salla Partners portal apps; Merchant API + Shipping / Fulfilment app APIs)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Salla CLI, Twilight SDK"
+  ]
+ },
+ "official_mcp": [
+  "Salla custom MCP server (docs.salla.dev)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Partners portal account; app review to publish; rate-limiting page.",
+  "mcp_sdk": [
+   "Salla custom MCP server (docs.salla.dev)",
+   "Salla CLI, Twilight SDK"
+  ],
+  "sources": [
+   "https://docs.salla.dev/ship-fulfillment-apis/getting-started"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Salla Shipping & Fulfillment APIs (https://docs.salla.dev/ship-fulfillment-apis/getting-started, opened 2026-09-25) let a Shipping or Order-Fulfilment APP registered in the Salla Partners portal manage a Salla MERCHANT store's shipments and orders under per-store OAuth; the Merchant API likewise manages a merchant's own store. Salla is a store platform, not a supplier: there is no supplier catalogue to search or order to place with a supplier, so this category's verbs have no counterpart; an adapter belongs with the sales channels."
+}

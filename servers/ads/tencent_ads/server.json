@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/tencent_ads-mcp",
+ "description": "腾讯广告 Tencent Ads (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.e.qq.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "tencent_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TENCENT_ADS_CLIENT_ID",
+     "description": "应用 id (client_id) of your Tencent Marketing API application (developers.e.qq.com > 应用程序管理).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TENCENT_ADS_CLIENT_SECRET",
+     "description": "应用 secret (client_secret) of the same application.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TENCENT_ADS_REFRESH_TOKEN",
+     "description": "refresh_token from the one-time OAuth consent (oauth/authorize → GET https://api.e.qq.com/oauth/token?grant_type=authorization_code). The runtime mints 1-day access tokens with grant_type=refresh_token; the refresh token itself expires after refresh_token_expires_in (30 days) and must then be re-authorized.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TENCENT_ADS_ACCOUNT_ID",
+     "description": "推广帐号 id (account_id) the token may operate; used by `me` and by update_budget / pause_resume (adgroups/update needs account_id). For agency tokens use the sub-account id to operate.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "id": "wadowscy",
+ "category": "automotive",
+ "label": "Wadowscy Uzywane",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://wadowscy-uzywane.otomoto.pl",
+ "domain": "wadowscy-uzywane.otomoto.pl",
+ "country": "Poland",
+ "official_api": true,
+ "docs_url": "https://www.otomoto.pl/api/doc/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key + OAuth user credentials (register as API partner)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Dealer storefront on OTOMOTO; OTOMOTO offers a free documented partner REST API for managing own adverts, no public cross-market search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.otomoto.pl/api/doc/",
+   "https://www.otomoto.pl/news/jak-uzyskac-dostep-do-api"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.otomoto.pl/api/doc/): Dealer storefront on OTOMOTO; OTOMOTO offers a free documented partner REST API for managing own adverts, no public cross-market search. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

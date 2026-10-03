@@ -1,0 +1,154 @@
+{
+ "id": "jooble",
+ "category": "jobs",
+ "label": "Jooble",
+ "lane": "api",
+ "kind": "aggregator",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jooble.org/api/about",
+ "url": "https://jooble.org/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Aggregator with a partner search API (key on request); no client yet, apply goes to the origin board.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "api_key",
+  "access": "apply",
+  "capabilities": [
+   "job_search",
+   "job_details (excerpt + redirect link)"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://jooble.org/api/about (code samples: PHP, JavaScript, Ruby, C#, Python)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Jooble REST API: request a key via the form on jooble.org/api/about (name, position, e-mail, website, phone), then POST https://jooble.org/api/<YOUR_API_KEY> with a JSON body such as ",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. 'Jooble allows webmasters of an internet portal or search engine to extend the functionality of their website … take search queries from Jooble and post the results on your website in your own design' — key issued on request (partner form); the site itself is behind a Cloudflare interstitial (403) so the page was read via r.jina.ai and the full parameter / response reference (radius, page, salary, datecreatedfrom, ResultOnPage, totalCount) was only partly visible. robots.txt disallows /employer/api and has Disallow: / for unlisted agents.",
+  "mcp_sdk": [
+   "https://jooble.org/api/about (code samples: PHP, JavaScript, Ruby, C#, Python)"
+  ],
+  "sources": [
+   "https://jooble.org/api/about",
+   "https://jooble.org/robots.txt"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jooble.org/api",
+  "auth": {
+   "type": "path",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Jooble REST API key issued after the request form on https://jooble.org/api/about; it is the last path segment of every call (POST https://jooble.org/api/{api_Key}). Each Jooble country domain has its own key; the free plan is limited to 500 requests per key in total."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "POST",
+    "path": "/{api_key}",
+    "body": {
+     "keywords": "query",
+     "location": "location",
+     "page": "page",
+     "ResultOnPage": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "totalCount",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company",
+      "location": "location",
+      "url": "link",
+      "posted_at": "updated",
+      "description": "snippet"
+     }
+    },
+    "docs": "https://help.jooble.org/en/support/solutions/articles/60001448238-rest-api-documentation",
+    "note": "POST https://jooble.org/api/{api_Key} with a JSON body: keywords, location (both documented as required by Jooble, so pass a location), page (from 1) and ResultOnPage (items per page; no documented maximum, capped here at 100). Optional documented body fields radius (0|4|8|16|26|40|80 km), salary, SearchMode and companysearch are not sent. Response: totalCount plus jobs[] {id, title, location, snippet, salary (a formatted string such as '{min} - {max} {currency}', kept in raw), source, type, link, company, updated}. Aggregator: link opens the source board. Free plan: 500 requests per key, lifetime."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint: the REST API documents a single search call whose key travels in the URL path.",
+   "get_posting": "The REST API documents only the search call; there is no per-id endpoint — the search hit's link opens the posting on the source board.",
+   "apply": "Aggregator: 'apply goes to the origin board'; no application API is documented.",
+   "list_messages": "No messaging API; the documentation covers the search call only."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "blocked",
+  "evidence": [
+   "host jooble.org: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 0/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 405 (method_not_allowed), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Cloudflare challenge ('Just a moment...') on POST https://jooble.org/api/{key} from both audit hosts; not bypassed. bot wall / access block for search"
+ }
+}

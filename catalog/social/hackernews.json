@@ -1,0 +1,215 @@
+{
+ "id": "hackernews",
+ "category": "social",
+ "label": "Hacker News",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://github.com/HackerNews/API",
+ "url": "https://news.ycombinator.com/",
+ "verified_at": "2026-09-02",
+ "terms_note": "Free, unauthenticated, read-only: https://hacker-news.firebaseio.com/v0/item/{id}.json, /user/{id}.json, /topstories.json, /newstories.json, /askstories.json, /showstories.json, /jobstories.json, /maxitem.json, /updates.json (Firebase realtime streaming too); no rate limit published; posting / voting / commenting have NO API — HN guidelines expect humans ('write your text by hand', no vote rings, no marketing accounts).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest(read-only)"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "read(items, top/new/ask/show/job lists, users)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (official read-only API; no posting).",
+  "base_urls": [
+   "https://hacker-news.firebaseio.com/v0/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "Path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "GET /v0/item/{id}.json",
+    "purpose": "story / comment / ask / job / poll (`type`, `by`, `time`, `text`, `url`, `score`, `kids`, `descendants`)",
+    "notes": ""
+   },
+   {
+    "call": "GET /v0/user/{id}.json",
+    "purpose": "karma, submitted",
+    "notes": ""
+   },
+   {
+    "call": "GET /v0/topstories.json`, `/newstories.json`, `/beststories.json`, `/askstories.json`, `/showstories.json`, `/jobstories.json",
+    "purpose": "ids",
+    "notes": ""
+   },
+   {
+    "call": "GET /v0/updates.json`, `/v0/maxitem.json",
+    "purpose": "poll for new items",
+    "notes": ""
+   },
+   {
+    "call": "walk `kids` of a story item recursively",
+    "purpose": "each kid is a comment item with `parent`, `text`",
+    "notes": ""
+   },
+   {
+    "call": "Firebase SDK `on('value')` on `/v0/topstories",
+    "purpose": "push updates instead of polling",
+    "notes": ""
+   }
+  ],
+  "limits": " - No published rate limit; be polite (Firebase quotas). The API is read-only — submitting, commenting and voting have no API, and HN guidelines expect humans (no vote rings, no marketing accounts, \"write your text by hand\"). - Item ids are monotonic (`maxitem`), so a watcher can scan the id range since its last checkpoint. - Algolia's `hn.algolia.com/api/v1/search` is a third-party full-text search over the same data (also read-only).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://github.com/HackerNews/API"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://hacker-news.firebaseio.com/v0",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/maxitem.json",
+    "docs": "https://github.com/HackerNews/API",
+    "note": "Unauthenticated read-only API: there is no account; the probe reads /v0/maxitem.json to confirm the API is reachable."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/item/{post_id}.json",
+    "result": {
+     "fields": {
+      "post_id": "id",
+      "score": "score",
+      "comments": "descendants",
+      "title": "title",
+      "author": "by",
+      "url": "url",
+      "type": "type"
+     }
+    },
+    "docs": "https://github.com/HackerNews/API",
+    "note": "Item record: `score` and `descendants` (total comment count) are the only metrics HN publishes; the runtime cannot compose a nested `metrics` object, so they are top-level fields."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Hacker News has no write API (submitting, commenting and voting are human-only per the guidelines).",
+   "publish_image": "No write API.",
+   "reply_comment": "No write API.",
+   "delete": "No write API.",
+   "read_comments": "GET /v0/item/{id}.json returns only comment ids in `kids`; each comment is a further GET /v0/item/{kid}.json and the runtime has no id-list fan-out (needs_runtime).",
+   "read_mentions": "The official API has no search or mention endpoint (hn.algolia.com is third-party)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

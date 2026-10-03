@@ -1,0 +1,111 @@
+{
+ "id": "no_brreg",
+ "category": "sales",
+ "label": "Brønnøysundregistrene",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "no"
+ ],
+ "docs_url": "https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html",
+ "url": "https://www.brreg.no/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Open REST API without a key (NLOD licence); entities include registered e-mail / phone / website where filed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://data.brreg.no/enhetsregisteret/api",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "No rate limit is documented (https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html); client-side bucket kept at the runtime default of 2/s. Result sets are capped: 'Resultatsettet er begrenset til 10 000 enheter per spørring'.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/enheter",
+    "fixed_params": {
+     "size": 1
+    },
+    "docs": "https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html",
+    "note": "Open data without credentials: verified with a one-item entity search (no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/enheter",
+    "params": {
+     "navn": "query",
+     "size": "limit",
+     "page": "page0"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "_embedded.enheter",
+     "key": "companies",
+     "total": "page.totalElements",
+     "fields": {
+      "id": "organisasjonsnummer",
+      "name": "navn",
+      "website": "hjemmeside",
+      "country": "forretningsadresse.landkode",
+      "address": "forretningsadresse.adresse.0",
+      "industry": "naeringskode1.beskrivelse",
+      "size": "str:antallAnsatte",
+      "founded": "stiftelsesdato"
+     }
+    },
+    "docs": "https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html",
+    "note": "Norwegian register only: `query` is the `navn` name search; `country` and `industry` are ignored. `page` is zero-based on the API ('page: Integer, zero-based (default 0)') — the 1-based `page` argument is converted; (page+1)*size must stay <= 10 000. `address` is the first line of forretningsadresse.adresse; `size` is the employee count (antallAnsatte); `industry` is naeringskode1.beskrivelse (Norwegian). Live check 2026-09-24: Accept: application/json returns the current (v2) representation."
+   },
+   "get_company": {
+    "method": "GET",
+    "path": "/enheter/{id}",
+    "result": {
+     "fields": {
+      "id": "organisasjonsnummer",
+      "name": "navn",
+      "website": "hjemmeside",
+      "country": "forretningsadresse.landkode",
+      "address": "forretningsadresse.adresse.0",
+      "industry": "naeringskode1.beskrivelse",
+      "size": "str:antallAnsatte",
+      "founded": "stiftelsesdato"
+     }
+    },
+    "docs": "https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html",
+    "note": "`id` is the nine-digit organisasjonsnummer. 404 when unknown; '410 Gone' when 'Fjernet av juridiske årsaker' (removed for legal reasons) → platform_error."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: size (antallAnsatte) is an integer, the vocabulary a string: schema-invalid for strict clients; mapped with str:; all read tools answered, schema-valid, pagination advances"
+ }
+}

@@ -1,0 +1,247 @@
+{
+ "id": "theprintspace",
+ "category": "ecommerce_suppliers",
+ "label": "theprintspace / creativehub",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://sell.creativehub.io/api-docs",
+ "url": "https://www.theprintspace.co.uk/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api available per site; reference not read",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "not readable (creativehub API for developers per the vendor site)",
+  "access": "signup",
+  "capabilities": [
+   "order_create",
+   "store_app_only"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://creativehub.io/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://escher-v2.creativehub.io/v1",
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "creativehub API token (Settings > API access at https://sell.creativehub.io/settings; API access must be enabled on the account, otherwise 403). Shown once at creation; sent as Authorization: Bearer <token>."
+    }
+   ]
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/drops",
+    "fixed_params": {
+     "limit": "1"
+    },
+    "docs": "https://sell.creativehub.io/api-docs#list-drops",
+    "note": "No account endpoint; the probe lists one drop (GET /v1/drops?limit=1 -> {drops[{id, title, status, slug, created_at}], limit, offset}). 401 invalid/revoked token, 403 API access disabled."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 50,
+    "max_limit": 200,
+    "result": {
+     "items": "products",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "image_url": "artwork_thumbnail_url"
+     }
+    },
+    "docs": "https://sell.creativehub.io/api-docs#list-products",
+    "note": "GET /v1/products?limit&offset: YOUR creativehub catalogue (products you created from your artwork), newest first, max 200 per page: {id, name, description, artwork_url, artwork_preview_medium_url, artwork_thumbnail_url, shopify_handle, variant_count, created_at, updated_at}. There is no keyword or category filter (query/category are ignored); prices are per variant (get_product)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "price": "variants.0.retail_price",
+      "currency": "variants.0.price_currency",
+      "sku": "variants.0.sku",
+      "image_url": "artwork_url"
+     }
+    },
+    "docs": "https://sell.creativehub.io/api-docs#get-product",
+    "note": "GET /v1/products/{product_id}: the product with variants[{id, sku, size, print_width_mm, print_height_mm, is_framed, frame_color, paper_id, retail_price, price_currency, delivery_price_uk, delivery_price_eu_na, delivery_price_row, edition_size}]. price/currency/sku are the FIRST variant's; every variant is in raw.variants, and quote_shipping/create_order take a variant id. 404 if the product does not exist or is not yours."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/orders/quote",
+    "body": {
+     "items.0.variant_id": "product_id",
+     "items.0.quantity": "quantity",
+     "delivery_country_code": "country"
+    },
+    "result": {
+     "items": "$",
+     "key": "options",
+     "fields": {
+      "currency": "currency",
+      "delivery_cost": "delivery_cost",
+      "production_cost": "production_cost",
+      "total_incl_vat": "total_incl_vat",
+      "total_excl_vat": "total_excl_vat",
+      "vat": "total_vat",
+      "ddp_total": "ddp_total"
+     }
+    },
+    "docs": "https://sell.creativehub.io/api-docs#quote-order",
+    "note": "POST /v1/orders/quote {items[{variant_id, quantity 1-50}], delivery_country_code (ISO-2)}: one priced option {currency, total_incl_vat, total_excl_vat, total_vat, production_cost, delivery_cost, addon_cost, ddp_total} (what your account will be billed). `product_id` is a VARIANT id from get_product. 409 delivery_zone_unavailable when the destination needs a manual quote."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders",
+    "body": {
+     "items": "items",
+     "delivery_name": "shipping_address.name",
+     "delivery_line1": "shipping_address.address1",
+     "delivery_line2": "shipping_address.address2",
+     "delivery_city": "shipping_address.city",
+     "delivery_postcode": "shipping_address.postcode",
+     "delivery_county": "shipping_address.state",
+     "delivery_country_code": "shipping_address.country_code",
+     "delivery_email": "shipping_address.email",
+     "delivery_phone": "shipping_address.phone"
+    },
+    "result": {
+     "fields": {
+      "id": "order_id",
+      "order_number": "order_number",
+      "total": "total_incl_vat",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://sell.creativehub.io/api-docs#create-order",
+    "note": "POST /v1/orders: `items` is sent as given, [{variant_id, quantity}] (up to 20 lines); shipping_address {name, address1, address2, city, postcode, state (county), country_code (ISO-2), email, phone} becomes delivery_name/_line1/_line2/_city/_postcode/_county/_country_code/_email/_phone. Returns 201 {order_id, order_number, currency, total_incl_vat, lines}; billed to your account's saved card on the next merchant rollup. 409 delivery_zone_unavailable: nothing placed."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{id}",
+    "result": {
+     "fields": {
+      "id": "=",
+      "order_number": "order_number",
+      "status": "status",
+      "date_due": "date_due"
+     }
+    },
+    "docs": "https://sell.creativehub.io/api-docs#list-orders",
+    "note": "GET /v1/orders/{order_id} (the order_id from create_order): order_number, status, date_due, totals, delivery summary and items[] with per-item production status (all in raw). The docs do not name the order-id or totals fields of this response, so `id` is left empty and total/currency are not mapped; read raw."
+   }
+  },
+  "not_offered": {
+   "track": "Not documented: 'Each API token can carry a webhook_uri ... intended for order-status events. Not yet active ... until then poll your store platform for order state, or GET /v1/orders/{order_id}' (get_order); no tracking endpoint exists."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host escher-v2.creativehub.io: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

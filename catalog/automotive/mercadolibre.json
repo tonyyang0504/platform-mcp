@@ -1,0 +1,137 @@
+{
+ "id": "mercadolibre",
+ "category": "automotive",
+ "label": "Mercado Libre Autos",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://listado.mercadolibre.com.ar",
+ "domain": "listado.mercadolibre.com.ar",
+ "country": "Argentina",
+ "official_api": true,
+ "docs_url": "https://developers.mercadolibre.com.ar/en_us/items-and-searches",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp"
+  ],
+  "auth": "OAuth 2.0 (app registration)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). Mercado Libre (incl. TuCarro) has a documented OAuth REST API (items, vehicle classifieds publishing, search with restrictions) and an official remote MCP server (mainly devsite/docs tooling).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://mcp.mercadolibre.com/devsite/v1/mcp (github.com/mercadolibre/mercadolibre-mcp-server)"
+  ],
+  "sources": [
+   "https://developers.mercadolibre.com",
+   "https://developers.mercadolibre.com.ar/en_us/mcp-server",
+   "https://github.com/mercadolibre/mercadolibre-mcp-server"
+  ],
+  "unofficial": [
+   "github.com/lumile/mercadolibre-mcp"
+  ]
+ },
+ "official_mcp": [
+  {
+   "name": "Mercado Libre MCP Server",
+   "url": "https://mcp.mercadolibre.com/mcp",
+   "repo": "https://github.com/mercadolibre/mercadolibre-mcp-server",
+   "transport": "http",
+   "note": "Official remote MCP (Authorization: Bearer <app access token>); docs https://developers.mercadolibre.com.ar/en_us/mcp-server"
+  }
+ ],
+ "official_mcp_url": "https://mcp.mercadolibre.com/mcp",
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.mercadolibre.com",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://developers.mercadolivre.com.br/en_us/start-testing",
+    "verified_at": "2026-09-27",
+    "notes": "Mercado Libre has no sandbox: 'We do not have a test environment or sandbox to run tests: we make it possible to use test users for verification directly in production.' Create up to 10 test users with POST https://api.mercadolibre.com/users/test_user {site_id} using a production access token, save their credentials at once (they cannot be listed later), and authorize the app as a test seller; test users only transact with other test users' listings and expire after a while."
+   }
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.mercadolibre.com/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Secret Key of the same application; sent as client_secret in the token request body."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (TG-...) from a one-time authorization-code consent of any Mercado Libre account to your app (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/mercadolibre.json, mode 0600) so it is preferred over this variable on the next start. Do not share one refresh token between this server and the ecommerce/marketplaces Mercado Libre servers."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "terms": "Mercado Libre developer terms; one app and token work across sites (MLA Argentina, MLB Brazil, MLM Mexico, MCO Colombia/TuCarro …). Prices in the item's currency_id.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developers.mercadolibre.com.ar/en_us/authentication-and-authorization",
+    "note": "GET /users/me returns the authorised user {id, nickname, site_id, country_id, ...}."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/items/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "price": "price",
+      "currency": "currency_id",
+      "condition": "condition",
+      "url": "permalink",
+      "posted_at": "date_created"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/list-vehicles",
+    "note": "GET /items/{item_id} with a Bearer token (vehicle example MLB1045563828, category MLB1744 in 'List vehicles'): works for any site, since the id carries the site prefix (MLA…, MLB…, MLM…, MCO…). Vehicle attributes (BRAND, MODEL, VEHICLE_YEAR, KILOMETERS …), location and pictures stay in raw.attributes / raw.location / raw.pictures."
+   }
+  },
+  "not_offered": {
+   "search_listings": "Items & Searches (updated 04/04/2025) documents /sites/{site_id}/search only by seller_id/nickname and replaces it with /users/{id}/items/search (the caller's own items); no keyword or category listing search is documented, so none is served.",
+   "decode_vin": "No VIN decoder in the Mercado Libre API.",
+   "get_valuation": "No valuation endpoint in the Mercado Libre API.",
+   "list_dealers": "No dealer directory endpoint in the Mercado Libre API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.mercadolibre.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.mercadolibre.com/oauth/token: 400 invalid client_id or client_secret",
+   "authorize https://auth.mercadolibre.com.ar/authorization: 403",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

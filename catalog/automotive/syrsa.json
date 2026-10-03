@@ -1,0 +1,35 @@
+{
+ "id": "syrsa",
+ "category": "automotive",
+ "label": "Syrsa",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.syrsa.com",
+ "domain": "syrsa.com",
+ "country": "Spain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Spain dealer with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://syrsa.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

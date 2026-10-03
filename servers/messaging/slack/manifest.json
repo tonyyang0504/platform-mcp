@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "slack-mcp",
+ "display_name": "Slack MCP",
+ "version": "0.1.0",
+ "description": "Slack (messaging): me, send, reply, get_thread, list_inbound, mark_read. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "slack"
+   ],
+   "env": {
+    "PLATFORM_MCP_SLACK_TOKEN": "${user_config.platform_mcp_slack_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_slack_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SLACK_TOKEN",
+   "description": "Bot token (xoxb-…) of an installed Slack app, sent as 'Authorization: Bearer' ('You must transmit your token as a bearer token in the Authorization HTTP header', https://docs.slack.dev/apis/web-api/). Scopes: chat:write (send, reply); channels:history, groups:history, im:history, mpim:history (list_inbound, get_thread); channels:manage, channels:write, groups:write, im:write or mpim:write (mark_read).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "auth.test 'checks authentication and tells you who you are' (no scopes required); account carries url, team, user, team_id, user_id, bot_id."
+  },
+  {
+   "name": "send",
+   "description": "`to` is the Slack channel argument: 'an encoded ID or channel name that represents a channel, private group, or IM channel'. `subject` and `channel` are ignored. message_id is the message `ts`. Slack allows about 1 message per second per channel."
+  },
+  {
+   "name": "reply",
+   "description": "`thread_id` is the parent message `ts` (sent as thread_ts); `channel` is REQUIRED by Slack alongside thread_ts — without it Slack answers ok:false (isError)."
+  },
+  {
+   "name": "get_thread",
+   "description": "`thread_id` is the parent message `ts`; `channel` ('Conversation ID to fetch thread from') is REQUIRED by Slack. Slack pages by cursor (response_metadata.next_cursor), not by page number: `page` is ignored and only the first `limit` messages are returned; `id` is the message ts (Unix time with fraction). New non-Marketplace commercial apps: 1 request/minute, limit <= 15."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Lists ONE channel: `channel` ('Conversation ID to fetch history for') is REQUIRED by Slack — there is no cross-conversation inbox method. `since` is not sent (Slack's `oldest` is a Unix timestamp, not ISO-8601); Slack pages by cursor, so `page` is ignored and only the newest `limit` messages are returned. New non-Marketplace commercial apps: 1 request/minute, limit <= 15."
+  },
+  {
+   "name": "mark_read",
+   "description": "'Sets the read cursor in a channel': `channel` and `message_id` (the message `ts`, 'Unique identifier of message you want marked as most recently seen') are both required by Slack; `thread_id` is not used. Slack asks not to 'make calls to this method very often'."
+  }
+ ]
+}

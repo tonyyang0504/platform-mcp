@@ -1,0 +1,241 @@
+{
+ "id": "viber",
+ "category": "messaging",
+ "label": "Viber",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu",
+  "sea"
+ ],
+ "docs_url": "https://developers.viber.com/docs/api/rest-bot-api/",
+ "url": "https://www.forbusiness.viber.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Bots only, and since 5 Feb 2024 'Viber bots can only be created on commercial terms' (no free bots). Base https://chatapi.viber.com/pa/ with header X-Viber-Auth-Token; set_webhook with event_types — message, subscribed, unsubscribed are mandatory; also conversation_started, delivered, seen. send_message only to SUBSCRIBED users (the single exception: a welcome message within 5 minutes of conversation_started); types text / picture / video / file / location / contact / sticker / rich_media (carousel) / url; keyboards; broadcast_message ≤300 receivers per call; rate limit 500 requests per 10-second window; get_account_info for identity.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "bot_token",
+  "access": "paid",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "broadcast",
+   "media",
+   "webhooks",
+   "receipts",
+   "keyboards"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official Viber bot libraries (Node.js, Python) — developers.viber.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 7000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://chatapi.viber.com/pa/<method>"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "send_message {receiver, type: text",
+    "purpose": "picture",
+    "notes": "video"
+   },
+   {
+    "call": "broadcast_message {broadcast_list[≤300], …}",
+    "purpose": "campaign to subscribers",
+    "notes": "≤ 300 receivers per call"
+   },
+   {
+    "call": "get_account_info` · `get_user_details {id}` · `get_online {ids}",
+    "purpose": "identity",
+    "notes": ""
+   },
+   {
+    "call": "Webhook callbacks `message` (`sender.id`, `message.type/text/media`, `message_token`), `subscribed`, `unsubscribed`, `delivered`, `seen`, `conversation_started` (context / referral)",
+    "purpose": "inbound + receipts",
+    "notes": ""
+   },
+   {
+    "call": "keyboards (`Buttons[]`, `ActionType reply",
+    "purpose": "open-url`) · rich_media carousels",
+    "notes": "interactive"
+   }
+  ],
+  "limits": " - **500 requests per 10-second window**; `status` non-zero in the JSON body = error (e.g. 6 notSubscribed). - Only subscribed users can be messaged → cold outreach is impossible; unsubscribe handled by Viber (`unsubscribed` event must suppress the contact). Commercial contract governs volume pricing.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.viber.com/docs/api/rest-bot-api/",
+   "https://developers.viber.com/docs/general/bots-pricing/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://chatapi.viber.com/pa",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "header",
+   "header": "X-Viber-Auth-Token",
+   "field": "auth_token",
+   "fields": [
+    {
+     "name": "auth_token",
+     "required": true,
+     "help": "Bot authentication token ('Each API request must include an HTTP Header called X-Viber-Auth-Token containing the account's authentication token'), shown in the bot's edit-info screen / Viber Admin Panel."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sender_name",
+    "required": true,
+    "help": "sender.name shown with every message ('required. Max 28 characters')."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/get_account_info",
+    "docs": "https://developers.viber.com/docs/api/rest-bot-api/#get-account-info",
+    "note": "get_account_info: id, name, uri, icon, subscribers_count, webhook."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/send_message",
+    "body": {
+     "receiver": "to",
+     "type": "=text",
+     "text": "text",
+     "sender.name": "@sender_name"
+    },
+    "result": {
+     "fields": {
+      "message_id": "message_token",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.viber.com/docs/api/rest-bot-api/#send-message",
+    "note": "`to` is the Viber user id of a subscriber (from a webhook callback); only subscribed users can be messaged. message_id is Viber's message_token. A non-zero Viber status (e.g. 6 notSubscribed) is an isError result."
+   }
+  },
+  "not_offered": {
+   "list_inbound": "Inbound messages arrive only as callbacks to the webhook set with set_webhook ('This webhook will be used for receiving callbacks and user messages from Viber', https://developers.viber.com/docs/api/rest-bot-api/#webhooks); there is no polling endpoint.",
+   "get_thread": "No conversation history endpoint exists; messages reach the bot only through webhook callbacks (https://developers.viber.com/docs/api/rest-bot-api/#callbacks).",
+   "reply": "The REST Bot API has no reply/thread parameter on send_message (https://developers.viber.com/docs/api/rest-bot-api/#send-message); use send to the same user.",
+   "mark_read": "Read state exists only as incoming `seen` callbacks (https://developers.viber.com/docs/api/rest-bot-api/#callbacks); a bot cannot mark messages read."
+  },
+  "envelope": {
+   "ok_field": "status",
+   "ok_value": 0,
+   "error_field": "status_message"
+  },
+  "envelope_note": "Viber answers HTTP 200 with 'status': 0 and 'status_message': 'ok' on success and a non-zero status with the reason in status_message on failure (https://developers.viber.com/docs/api/rest-bot-api/#error-codes); non-zero statuses become isError results."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host chatapi.viber.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

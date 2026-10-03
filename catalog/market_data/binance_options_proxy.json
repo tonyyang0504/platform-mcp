@@ -1,0 +1,15 @@
+{
+ "id": "binance_options_proxy",
+ "category": "market_data",
+ "label": "Binance European options chain proxy",
+ "provider": "Binance",
+ "lane": "api",
+ "base_urls": [
+  "https://eapi.binance.com/eapi/v1"
+ ],
+ "data_kinds": [
+  "options chain (bid/ask/mark/IV/OI)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

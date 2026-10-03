@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/lazada_open_platform-mcp",
+ "description": "Lazada Seller Center + Lazada Open Platform (ecommerce suppliers): me, list_products, get_product, g",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.lazada.com/apps/doc/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "lazada_open_platform"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_KEY",
+     "description": "App Key of your Lazada Open Platform app (App Console).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_SECRET",
+     "description": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API name (e.g. /order/get) + the parameters sorted by name as name+value. Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_ACCESS_TOKEN",
+     "description": "Seller access_token from the seller-authorisation code exchange (/auth/token/create). It expires (see expires_in); renew it with the signed system API /auth/token/refresh and update this value — the runtime does not refresh it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_DOMAIN",
+     "description": "Country gateway of the seller's shop: sg, com.my, co.th, co.id, com.ph or vn → https://api.lazada.{domain}/rest (Service Endpoints on every API page).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

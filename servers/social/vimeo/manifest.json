@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "vimeo-mcp",
+ "display_name": "Vimeo MCP",
+ "version": "0.1.0",
+ "description": "Vimeo (social): me, read_comments, delete, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "vimeo"
+   ],
+   "env": {
+    "PLATFORM_MCP_VIMEO_ACCESS_TOKEN": "${user_config.platform_mcp_vimeo_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_vimeo_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VIMEO_ACCESS_TOKEN",
+   "description": "Vimeo personal access token (developer.vimeo.com > My Apps > your app > Generate an access token, authenticated, scopes public private edit delete interact stats) or an OAuth authorization-code token; Vimeo access tokens do not expire unless revoked. Sent as 'Authorization: bearer <token>'.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me returns the token's user {uri, name, link, account (plan), metadata.connections ...}."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /videos/{video_id}/comments?page&per_page (`post_id` is the numeric video id) returns {total, page, per_page, paging, data[comment]}. A comment has no bare id field: `id` is its uri (/videos/{video_id}/comments/{comment_id}); replies are a separate connection (GET .../comments/{comment_id}/replies)."
+  },
+  {
+   "name": "delete",
+   "description": "DESTRUCTIVE: DELETE /videos/{video_id} permanently deletes the video (204; 403 when the token lacks the delete scope or does not own the video)."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /videos/{video_id} filtered with fields= to the counts: stats.plays ('The current total number of times that the video has been played', may be null when hidden), comments and likes totals. `post_id` in the result is the video uri."
+  }
+ ]
+}

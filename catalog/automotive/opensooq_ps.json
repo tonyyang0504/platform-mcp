@@ -1,0 +1,37 @@
+{
+ "id": "opensooq_ps",
+ "category": "automotive",
+ "label": "Ps",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://ps.opensooq.com",
+ "domain": "ps.opensooq.com",
+ "country": "Palestine",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OpenSooq has no official public API; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ps.opensooq.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/straightforward_hydra/opensooq-listings-scraper/api/openapi"
+  ]
+ },
+ "official_mcp": []
+}

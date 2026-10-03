@@ -1,0 +1,31 @@
+{
+ "id": "creative_market",
+ "category": "marketplaces",
+ "label": "Creative Market",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://creativemarket.com/sell",
+ "url": "https://creativemarket.com/sell",
+ "verified_at": null,
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "partner_only",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

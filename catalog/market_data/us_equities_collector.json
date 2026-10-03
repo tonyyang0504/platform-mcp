@@ -1,0 +1,19 @@
+{
+ "id": "us_equities_collector",
+ "category": "market_data",
+ "label": "US equities (Yahoo v8 chart)",
+ "provider": "Yahoo Finance",
+ "lane": "api",
+ "base_urls": [
+  "https://query1.finance.yahoo.com",
+  "https://query2.finance.yahoo.com"
+ ],
+ "data_kinds": [
+  "candles (daily full history, 1h ~730d, 1m ≤8d windows)",
+  "dividends",
+  "splits",
+  "adjclose"
+ ],
+ "auth": "none (browser-ish User-Agent required)",
+ "docs_url": null
+}

@@ -1,0 +1,44 @@
+{
+ "id": "classiccars",
+ "category": "automotive",
+ "label": "Classiccars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://classiccars.com",
+ "domain": "classiccars.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "dealer network account",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). ClassicCars.com accepts DMS inventory imports for Dealer Network members; no public API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://classiccars.com/join-the-dealer-network",
+   "https://classiccars.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/crawlerbros/classiccars-scraper/api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): ClassicCars.com accepts DMS inventory imports for Dealer Network members; no public API documentation."
+}

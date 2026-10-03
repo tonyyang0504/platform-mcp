@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/frankfurter-mcp",
+ "description": "Frankfurter (exchange rates) (market data): search_symbols, get_series. Every tool maps to a documen",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://frankfurter.dev/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "frankfurter"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FRANKFURTER_BASE_CURRENCY",
+     "description": "ISO 4217 base currency for get_series (the API's `base`, default EUR per the spec).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

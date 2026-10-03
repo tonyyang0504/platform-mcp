@@ -1,0 +1,36 @@
+{
+ "id": "se_bolagsverket",
+ "category": "sales",
+ "label": "Bolagsverket",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "se"
+ ],
+ "docs_url": null,
+ "url": "https://bolagsverket.se/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Register search ('Sök företagsfakta') sells extracts per lookup; the open 'Företagsinformation' APIs need an agreement → tenant account. robots.txt (22 Disallow) blocks print/contact variants.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "topcoder-competitions-mcp",
+ "display_name": "Topcoder MCP",
+ "version": "0.1.0",
+ "description": "Topcoder (competitions): discover, get_competition, standings. Every tool maps to a documented endpo",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "competitions/topcoder"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "discover",
+   "description": "GET /v6/challenges: `search` matches name, description and tags; `status` open→Active, completed→Completed (upcoming is not a public status and is rejected); without `status` all public challenges are listed. Page size up to 100 (`perPage`). The response is a bare array; the total is only in the X-Total header, so `total` is null. Prizes (prizeSets, overview.totalPrizes, numbers), phases, numOfRegistrants and numOfSubmissions stay in `raw`."
+  },
+  {
+   "name": "get_competition",
+   "description": "GET /v6/challenges/{challengeId} (UUID). `description` is markdown; prizeSets, phases, terms and skills stay in `raw`."
+  },
+  {
+   "name": "standings",
+   "description": "The challenge's `winners` array (placement, handle, userId) from GET /v6/challenges/{challengeId}; empty until the challenge completes. There is no public live leaderboard; `page`/`limit` do not apply."
+  }
+ ]
+}

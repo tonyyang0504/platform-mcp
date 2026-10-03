@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "yelp-mcp",
+ "display_name": "Yelp Ads MCP",
+ "version": "0.1.0",
+ "description": "Yelp Ads (ads): me, list_campaigns, pause_resume. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "yelp"
+   ],
+   "env": {
+    "PLATFORM_MCP_YELP_USERNAME": "${user_config.platform_mcp_yelp_username}",
+    "PLATFORM_MCP_YELP_PASSWORD": "${user_config.platform_mcp_yelp_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_yelp_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YELP_USERNAME",
+   "description": "Yelp Partner API username (the same Basic-auth credentials as the Data Ingestion API; issued by your Yelp account team, access is disabled by default: https://docs.developer.yelp.com/docs/ads-api).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yelp_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YELP_PASSWORD",
+   "description": "Yelp Partner API password (Basic HTTP authentication on partner-api.yelp.com).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe is GET /programs/v1?limit=1 (Program List All), which checks the Basic-auth partner credentials against the payment account."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /programs/v1?offset&limit (max 40)&program_status: every advertising program (CPC, EP, BP, …) under the credentials' payment account; `account_id` is not sent (the credentials select the account). `status` is one of current/active, paused, past/ended, future/scheduled, all (Yelp's default is CURRENT). `name` is the program type; `budget` is the MONTHLY budget in cents (program_metrics.budget); raw.program_pause_status says NOT_PAUSED/PAUSED and raw.businesses lists the Yelp business ids."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /program/{program_id}/pause/v1 or /resume/v1 (HTTP 202, empty body) for a running CPC program. Yelp marks this 'This feature is coming soon — Please get in touch if you would like to get early access', so partners without early access get an error."
+  }
+ ]
+}

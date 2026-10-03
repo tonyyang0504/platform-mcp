@@ -1,0 +1,36 @@
+{
+ "id": "mx_siem",
+ "category": "sales",
+ "label": "SIEM",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "mx"
+ ],
+ "docs_url": null,
+ "url": "https://siem.economia.gob.mx/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Redirect from siem.gob.mx to the Secretaría de Economía SPA (title 'Vue App'); public chamber-registered business search; no robots.txt served; fetcher drives the JSON endpoints rate-limited.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,143 @@
+{
+ "id": "autostrefa_mx",
+ "category": "automotive",
+ "label": "Autos TREFA",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://autostrefa.mx",
+ "domain": "autostrefa.mx",
+ "country": "Mexico",
+ "official_api": true,
+ "docs_url": "https://autostrefa.mx/documentacion",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp"
+  ],
+  "auth": "none for REST; MCP needs credentials from TREFA support",
+  "access": "open",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "inventory_stats",
+   "financing_calc"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). Autos TREFA documents a public unauthenticated REST inventory API (/api/public/inventory, /{slug}, /search, /stats) plus an official stdio MCP server (trefa-mcp-server) for AI assistants.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "trefa-mcp-server (stdio, per docs)"
+  ],
+  "sources": [
+   "https://autostrefa.mx/documentacion",
+   "https://autostrefa.mx/api/public/inventory?limit=1"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [
+  {
+   "name": "trefa-mcp-server",
+   "repo": "https://github.com/autostrefa/trefa-mcp-server",
+   "transport": "stdio",
+   "note": "Official stdio server documented at https://autostrefa.mx/documentacion (18 tools: buscar_vehiculos, obtener_vehiculo, comparar_vehiculos, financing...); needs Supabase URL/anon key from dev@trefa.mx. The public REST inventory API is also served here."
+  }
+ ],
+ "official_mcp_url": "https://github.com/autostrefa/trefa-mcp-server",
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://autostrefa.mx/api/public",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "error"
+  },
+  "rate_per_second": 1,
+  "terms": "Public read-only inventory API (no key); TREFA asks for at most 100 requests/minute per IP and honouring Cache-Control. Prices in MXN.",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/inventory",
+    "params": {
+     "marca": "make",
+     "modelo": "model",
+     "ano_min": "year_min",
+     "ano_max": "year_max",
+     "precio_min": "price_min",
+     "precio_max": "price_max",
+     "km_max": "mileage_max",
+     "ubicacion": "location",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "listings",
+     "total": "meta.total",
+     "fields": {
+      "id": "id",
+      "title": "titulo",
+      "make": "marca",
+      "model": "modelo",
+      "year": "año",
+      "price": "precio",
+      "currency": "=MXN",
+      "mileage": "kilometraje",
+      "mileage_unit": "=km",
+      "location": "ubicacion",
+      "url": "url"
+     }
+    },
+    "docs": "https://autostrefa.mx/documentacion",
+    "note": "GET /api/public/inventory (documented base https://trefa.mx/api/public, which now 301-redirects to autostrefa.mx) with marca, modelo, ano_min/ano_max, precio_min/precio_max (MXN), km_max, ubicacion (branch), page, per_page ≤ 100. Free text search is a separate endpoint (/inventory/search?q=) and `query` is not used here. The documented example names the year field `ano`; live rows carry `año`, which is what is mapped."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/inventory/{listing_id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "titulo",
+      "make": "marca",
+      "model": "modelo",
+      "year": "año",
+      "price": "precio",
+      "currency": "=MXN",
+      "mileage": "kilometraje",
+      "mileage_unit": "=km",
+      "location": "ubicacion",
+      "url": "url",
+      "description": "descripcion"
+     }
+    },
+    "docs": "https://autostrefa.mx/documentacion",
+    "note": "GET /api/public/inventory/{slug or numeric id}: full vehicle (specs, prices and offers, image gallery, warranty and invoice info, financing estimates)."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "No VIN endpoint in the public API.",
+   "get_valuation": "No valuation endpoint (the MCP server's financing calculator is not a valuation).",
+   "list_dealers": "TREFA is a single retailer; /inventory/stats aggregates the inventory but lists no dealers.",
+   "me": "The public API has no authentication or account."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,347 @@
+{
+ "id": "linkedin",
+ "category": "ads",
+ "label": "LinkedIn Ads (Campaign Manager)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/linkedin/marketing/",
+ "url": "https://business.linkedin.com/marketing-solutions/ads",
+ "verified_at": "2026-09-24",
+ "terms_note": "Marketing API is a permissioned program (\"Getting API Access\" application); console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 3-legged (scopes rw_ads, r_ads, r_ads_reporting; LinkedIn-Version header YYYYMM)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/linkedin-developers/linkedin-api-python-client (official Python client, per Microsoft Learn tooling pages — not opened this pass)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (LinkedIn Marketing API: Advertising API + Ad Analytics + Conversions API + Matched Audiences). Lane",
+  "base_urls": [
+   "https://api.linkedin.com/rest/…"
+  ],
+  "auth": [
+   "1. Create an app at developer.linkedin.com, request the **Advertising API** product (application review). Also apply for **Conversions API** and **Matched Audiences API** when needed (Advertising API approval is a prerequisite).",
+   "2. 3-legged OAuth 2.0 (authorization code) with member permissions: `rw_ads` (manage + read ad accounts where the member is ACCOUNT_BILLING_ADMIN / ACCOUNT_MANAGER / CAMPAIGN_MANAGER / CREATIVE_MANAGER), `r_ads`, `r_ads_reporting`, `rw_dmp_segments`, `rw_conversions`. Token lifetimes: TODO(verify) o",
+   "3. Tiers: **Development** — \"Read: No limits on reading data related to Ad Accounts you administer; Create: 1 test Ad Account through the API…; Edit: Make updates related to up to 5 ad accounts that you administer\". **Standard** — unlimited create / edit; \"must be requested via a support ticket … on"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /rest/adAccounts?q=search` · `GET /rest/adAccountUsers?q=authenticatedUser",
+    "purpose": "accounts + roles",
+    "notes": "`id, name, currency, status, type, reference`"
+   },
+   {
+    "call": "POST /rest/adAccounts/{id}/adCampaignGroups` · `GET …?q=search` · `POST …/{gid}` (partial update)",
+    "purpose": "campaign groups (budget envelope + schedule)",
+    "notes": "`name, status, runSchedule{start,end}, totalBudget{amount,currencyCode}`"
+   },
+   {
+    "call": "POST /rest/adAccounts/{id}/adCampaigns` · `GET …?q=search` · `POST …/{cid}",
+    "purpose": "campaigns: objective, budget, bid, targeting",
+    "notes": "`campaignGroup, name, type SPONSORED_UPDATES…, objectiveType, costType CPC/CPM, dailyBudget{amount}, unitCost{amount}, targetingCriteria{include/exclude}, status, locale`"
+   },
+   {
+    "call": "POST /rest/adAccounts/{id}/creatives` · `GET …?q=criteria` · `POST …/{urn}",
+    "purpose": "creatives (sponsored content → post URN)",
+    "notes": "`campaign, content{reference post urn}, intendedStatus, isServing`"
+   },
+   {
+    "call": "POST /rest/posts` (organization author, `adContext.dscStatus`) · `POST /rest/images?action=initializeUpload` / `videos?action=initializeUpload",
+    "purpose": "dark posts + media upload",
+    "notes": "`author, commentary, content{media{id}}, adContext{dscAdAccount, dscStatus}`"
+   },
+   {
+    "call": "GET /rest/adAnalytics?q=analytics` · `?q=statistics",
+    "purpose": "reports by campaign / creative / date",
+    "notes": "`pivot CAMPAIGN…, dateRange, timeGranularity DAILY, campaigns[], fields impressions,clicks,costInLocalCurrency,externalWebsiteConversions`"
+   },
+   {
+    "call": "POST /rest/dmpSegments` · `POST /rest/dmpSegments/{id}/users` (hashed emails / company lists)",
+    "purpose": "matched audiences",
+    "notes": "`name, account, sourcePlatform, type USER / COMPANY, elements[]`"
+   },
+   {
+    "call": "POST /rest/conversions` · `POST /rest/conversionEvents",
+    "purpose": "conversion rules + server-side conversion upload",
+    "notes": "`conversion urn, conversionHappenedAt, conversionValue{currencyCode,amount}, user{userIds[]}`"
+   },
+   {
+    "call": "GET /rest/adTargetingFacets` · `GET /rest/adTargetingEntities?q=typeahead",
+    "purpose": "targeting search",
+    "notes": "`facet, query`"
+   }
+  ],
+  "limits": " - Development tier: 5 editable ad accounts, 1 API-created test account; Standard tier: no limits. Per-app / per-member daily throttles are shown in the developer portal (TODO(verify) numbers for the Advertising API; Community Management publishes 500 / 100 per day in Development). - LinkedIn API Terms of Use govern the programmatic APIs \"unless you have executed a separate signed partnership agreement\"; LinkedIn Marketing Partner Program is optional. - Restricted APIs (Audience Insights, Media Planning) need the additional application survey; Company Intelligence is closed.",
+  "mcp_sdk": [
+   "Official: LinkedIn API Python client (github.com/linkedin-developers/linkedin-api-python-client) — listed on Microsoft Learn tooling pages, not opened this pass. No official MCP server."
+  ],
+  "sources": [
+   "https://learn.microsoft.com/en-us/linkedin/marketing/overview",
+   "https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.linkedin.com",
+  "rate_per_second": 2,
+  "headers": {
+   "Linkedin-Version": "202609",
+   "X-Restli-Protocol-Version": "2.0.0"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://www.linkedin.com/oauth/v2/accessToken",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of a LinkedIn app with the Advertising API product (scopes r_ads, rw_ads)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's client secret (form body of the refresh_token grant at https://www.linkedin.com/oauth/v2/accessToken)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Programmatic refresh token from the 3-legged flow (available to approved Marketing API partners; valid about one year). The runtime mints 60-day access tokens from it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/rest/adAccountUsers",
+    "fixed_params": {
+     "q": "authenticatedUser"
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-account-users",
+    "note": "GET /rest/adAccountUsers?q=authenticatedUser: the ad accounts and roles of the member behind the token."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/rest/adAccounts",
+    "fixed_params": {
+     "q": "search"
+    },
+    "params": {
+     "pageSize": "limit"
+    },
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "elements",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-accounts",
+    "note": "GET /rest/adAccounts?q=search (no criteria: every account the caller can access) with pageSize=1000 (the maximum; list_accounts takes no paging arguments). Paging is cursor-based (metadata.nextPageToken); only the first page is returned."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/rest/adAccounts/{account_id}/adCampaigns",
+    "fixed_params": {
+     "q": "search",
+     "search.test": "false"
+    },
+    "params": {
+     "search.status.values[0]": "status",
+     "pageSize": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "elements",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "currency": "dailyBudget.currencyCode"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-campaigns",
+    "note": "GET /rest/adAccounts/{adAccountId}/adCampaigns?q=search&search.test=false (non-test campaigns; search criteria are mandatory) with an optional single status (ACTIVE, PAUSED, ARCHIVED, COMPLETED, CANCELED, DRAFT, ...) as search.status.values[0]. dailyBudget.amount is a decimal string and runSchedule.start/end are epoch milliseconds, left in raw. Paging is cursor-based; only the first page is returned."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/rest/adAccounts/{ad_account_id}/adCampaigns/{campaign_id}",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "headers": {
+     "X-RestLi-Method": "PARTIAL_UPDATE"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-campaigns",
+    "body": {
+     "patch.$set.dailyBudget.amount": "str:daily_budget",
+     "patch.$set.dailyBudget.currencyCode": "currency"
+    },
+    "note": "Partial update: POST /rest/adAccounts/{adAccountId (config)}/adCampaigns/{campaignId} with X-RestLi-Method: PARTIAL_UPDATE and {patch: {$set: {dailyBudget: {amount: \"<decimal string>\", currencyCode}}}}; answers 204. Pass `currency` = the ad account's currency (ISO 4217): LinkedIn requires currencyCode and it must match the account."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/rest/adAccounts/{ad_account_id}/adCampaigns/{campaign_id}",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "headers": {
+     "X-RestLi-Method": "PARTIAL_UPDATE"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-campaigns",
+    "body": {
+     "patch.$set.status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "note": "Partial update with {patch: {$set: {status: PAUSED|ACTIVE}}} (pause → PAUSED, resume → ACTIVE); answers 204."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/rest/adAnalytics?q=analytics&pivot=CAMPAIGN&timeGranularity=DAILY",
+    "params": {
+     "dateRange": "fmt:(start:(year:{year:date_from},month:{month:date_from},day:{day:date_from}),end:(year:{year:date_to},month:{month:date_to},day:{day:date_to}))",
+     "accounts": "fmt:List(urn%3Ali%3AsponsoredAccount%3A{account_id})"
+    },
+    "fixed_params": {
+     "fields": "dateRange,pivotValues,impressions,clicks,costInLocalCurrency,externalWebsiteConversions"
+    },
+    "query_safe": "(),:%",
+    "result": {
+     "items": "elements",
+     "key": "rows",
+     "fields": {
+      "campaign": "pivotValues.0",
+      "year": "dateRange.start.year",
+      "month": "dateRange.start.month",
+      "day": "dateRange.start.day",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "costInLocalCurrency",
+      "conversions": "externalWebsiteConversions"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/ads-reporting",
+    "note": "GET /rest/adAnalytics?q=analytics&pivot=CAMPAIGN&timeGranularity=DAILY&dateRange=(start:(year,month,day),end:(...))&accounts=List(urn%3Ali%3AsponsoredAccount%3A<account_id>)&fields=... (the documented analytics finder; Rest.li characters sent unencoded, URN colons percent-encoded as in the docs' examples). One row per campaign per day: `campaign` is the sponsoredCampaign URN, the day is dateRange.start year/month/day, spend is costInLocalCurrency (a decimal string). `campaign_id` is not applied (filter rows by campaign URN). Daily data is retained for 6 months."
+   }
+  },
+  "config_fields": [
+   {
+    "name": "ad_account_id",
+    "required": false,
+    "help": "Sponsored ad account id (digits) that owns the campaigns update_budget and pause_resume change (POST /rest/adAccounts/{adAccountId}/adCampaigns/{campaignId}); those verbs take only a campaign id."
+   }
+  ]
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.linkedin.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token www.linkedin.com/oauth/v2/accessToken: 400 invalid_grant",
+   "authorize https://www.linkedin.com/oauth/v2/authorization: 200",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

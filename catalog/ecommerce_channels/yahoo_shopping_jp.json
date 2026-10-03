@@ -1,0 +1,281 @@
+{
+ "id": "yahoo_shopping_jp",
+ "category": "ecommerce_channels",
+ "label": "Yahoo! Shopping (JP)",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://developer.yahoo.co.jp/webapi/shopping/",
+ "url": "https://shopping.yahoo.co.jp/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Yahoo! Shopping store (ストアクリエイターPro) with a Business ID; developer app (Client ID) registered on Yahoo! Developer Network; store-API usage application reviewed in ~1–2 weeks; caller IPs must be global and listed individually (no ranges) — platform egress must be static; tokens 12 h (4 weeks with public-key auth); ~1 request / s soft limit; one test store per Yahoo! JAPAN ID.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "oauth2 (Yahoo! JAPAN ID連携 / YConnect v2 with the store's Business ID-linked account; Client ID from the Developer Network; access token 12 h, refresh extended to 4 weeks with a registered public key)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "sandbox",
+   "images",
+   "inquiries"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.seller_id"
+ ],
+ "rate_limits": "1 query/second; volume cap (error d91151)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence:",
+  "base_urls": [
+   "https://circus.shopping.yahooapis.jp/ShoppingWebService/V1/…"
+  ],
+  "auth": [
+   "1. Register a production application on Yahoo! Developer Network → Client ID (+ secret).",
+   "2. Submit the Shopping API usage application (Client ID + store account) → approved in ~1–2 weeks; list caller IPs.",
+   "3. Link the Yahoo! JAPAN ID to the store's Business ID in Store Creator Pro; optionally register a public key to extend refresh validity to 4 weeks.",
+   "4. YConnect v2 authorisation with the store account → access token (12 h) + refresh."
+  ],
+  "endpoints": [
+   {
+    "call": "editItem · submitItem",
+    "purpose": "create / update item, then publish (反映) reservation",
+    "notes": "item_code, name, price, description, images, options"
+   },
+   {
+    "call": "setStock · getStock",
+    "purpose": "stock per item / sub-code",
+    "notes": ""
+   },
+   {
+    "call": "uploadItemImage",
+    "purpose": "images",
+    "notes": ""
+   },
+   {
+    "call": "orderList · orderInfo · orderCount",
+    "purpose": "orders",
+    "notes": "status filters"
+   },
+   {
+    "call": "orderShipStatusChange · orderStatusChange",
+    "purpose": "ship status + tracking (ship_company_code, ship_invoice_number)",
+    "notes": ""
+   },
+   {
+    "call": "定期購入 (subscription) APIs · 問い合わせ管理 (inquiry) APIs",
+    "purpose": "recurring orders, customer inquiries",
+    "notes": ""
+   },
+   {
+    "call": "store categories · design · real-store inventory",
+    "purpose": "store management",
+    "notes": ""
+   }
+  ],
+  "limits": " Soft: repeated rapid access to identical URLs is blocked temporarily (~1 query / second). - Store-API usage application with review; caller IP allow-list (individual global IPs). - Developer Network terms; store account consent.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developer.yahoo.co.jp/webapi/shopping/",
+   "https://developer.yahoo.co.jp/webapi/shopping/introduction.html",
+   "https://developer.yahoo.co.jp/webapi/shopping/help/application.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://circus.shopping.yahooapis.jp",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://auth.login.yahoo.co.jp/yconnect/v2/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Yahoo! JAPAN Client ID (アプリケーションID) of an app approved for the Shopping store APIs, linked to the store's Business ID."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's シークレット (sent as HTTP Basic to the YConnect v2 token endpoint)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "YConnect v2 refresh token from one authorization-code consent by the store's Yahoo! JAPAN ID (https://developer.yahoo.co.jp/webapi/shopping/help/#accesstoken). It lasts 4 weeks; re-consent afterwards."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "seller_id",
+    "required": true,
+    "help": "ストアアカウント (store account id, lower-case letters, digits, - and _)."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Yahoo!ショッピング store APIs (circus.shopping.yahooapis.jp) with YConnect v2 access tokens minted from the refresh token (access token 1 h, refresh token 4 weeks). Answers are XML. Item edits (updateItems) are staged in the store editor and go live only after 全反映予約 (reservePublish or ストアクリエイターPro); stock updates (setStock) apply directly. Order APIs are deliberately not mapped: without public-key authentication any call to them shortens the refresh token to 12 hours for every API. Limit: 1 query/second per URL.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/ShoppingWebService/V1/stCategoryList",
+    "params": {
+     "seller_id": "@seller_id"
+    },
+    "docs": "https://developer.yahoo.co.jp/webapi/shopping/stCategoryList.html",
+    "note": "No account endpoint; the probe lists the store's top-level store categories (ストアカテゴリ一覧API) to verify the token and seller_id."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/ShoppingWebService/V1/setStock",
+    "body_format": "form",
+    "body": {
+     "seller_id": "@seller_id",
+     "item_code": "sku",
+     "quantity": "str:quantity"
+    },
+    "result": {
+     "root": "ResultSet.Result",
+     "fields": {
+      "status": "=stock_updated",
+      "item_code": "ItemCode",
+      "sub_code": "SubCode",
+      "stock": "Quantity",
+      "error_code": "ErrorCode"
+     }
+    },
+    "docs": "https://developer.yahoo.co.jp/webapi/shopping/setStock.html",
+    "note": "在庫更新API: sets the stock of one item. `sku` is the 商品コード, or 商品コード:個別商品コード for a variant (e.g. item-01:sub-01); the quantity replaces the current stock. Applies immediately (no publish step). If Yahoo answers 207 the item carries an error_code (e.g. st-02104) and was NOT updated — check error_code."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/ShoppingWebService/V1/updateItems",
+    "body_format": "form",
+    "body": {
+     "seller_id": "@seller_id",
+     "item1": "fmt:item_code={listing_id}&price={price}&sale_price="
+    },
+    "result": {
+     "root": "ResultSet",
+     "fields": {
+      "status": "Status"
+     }
+    },
+    "docs": "https://developer.yahoo.co.jp/webapi/shopping/updateItems.html",
+    "note": "商品一括更新API for one item (listing_id = 商品コード): sets 通常販売価格 (price, whole yen, required). The docs require price and sale_price together, so sale_price is sent empty — this REMOVES any 特価 on the item. The change is staged: status is OK/NG (per-field errors under raw.Result) and it goes live only after 全反映予約 (reservePublish / ストアクリエイターPro). Title/description are not changed here; stock is set_inventory."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/ShoppingWebService/V1/updateItems",
+    "body_format": "form",
+    "body": {
+     "seller_id": "@seller_id",
+     "item1": "fmt:item_code={listing_id}&display=0"
+    },
+    "result": {
+     "root": "ResultSet",
+     "fields": {
+      "status": "Status"
+     }
+    },
+    "docs": "https://developer.yahoo.co.jp/webapi/shopping/updateItems.html",
+    "note": "Sets ページ公開 display=0 (非公開) for one item via 商品一括更新API; reversible (display=1) and not a deletion. Staged until the next 全反映予約 (reservePublish / ストアクリエイターPro). status is OK or NG."
+   }
+  },
+  "not_offered": {
+   "create_listing": "商品登録API (https://developer.yahoo.co.jp/webapi/shopping/editItem.html) overwrites every omitted field with defaults and needs path (store category), product_category and the item's full data; images go through a separate upload API and the item must then be published with 全反映予約API. The vocabulary cannot supply the required fields.",
+   "list_orders": "注文検索API (POST /ShoppingWebService/V1/orderList, XML <Req><Search>…, https://developer.yahoo.co.jp/webapi/shopping/orderList.html) is one of the APIs for which, without public-key authentication, \"リフレッシュトークンの有効期限は「12時間」に制限されます\" (https://developer.yahoo.co.jp/webapi/shopping/help/#aboutapipublickey) — one call would shorten the token for every tool. Public-key authentication needs an X-sws-signature header = Base64(RSA-PKCS1 ENCRYPTION of \"sellerId:unixtime\" with the store's public key), which the runtime cannot compute (it signs, it does not RSA-encrypt).",
+   "mark_shipped": "出荷ステータス変更API (https://developer.yahoo.co.jp/webapi/shopping/orderShipStatusChange.html) is an order API: the same 12-hour refresh-token restriction applies unless each call carries the RSA-encrypted X-sws-signature header, which the runtime cannot produce."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host circus.shopping.yahooapis.jp: DNS ok, TLSv1.3 (Cybertrust Japan Co., Ltd.)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token auth.login.yahoo.co.jp/yconnect/v2/token: 401 invalid_client",
+   "authorize https://auth.login.yahoo.co.jp/yconnect/v2/authorization: 400",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

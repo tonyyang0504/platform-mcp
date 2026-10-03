@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "trademe_nz-automotive-mcp",
+ "display_name": "Trade Me Motors MCP",
+ "version": "0.1.0",
+ "description": "Trade Me Motors (automotive): search_listings, get_listing. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "automotive/trademe_nz"
+   ],
+   "env": {
+    "PLATFORM_MCP_TRADEME_NZ_CONSUMER_KEY": "${user_config.platform_mcp_trademe_nz_consumer_key}",
+    "PLATFORM_MCP_TRADEME_NZ_CONSUMER_SECRET": "${user_config.platform_mcp_trademe_nz_consumer_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_trademe_nz_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_NZ_CONSUMER_KEY",
+   "description": "Trade Me API consumer key of your registered application (My Trade Me → Developer options; API access is granted after Trade Me reviews the application).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trademe_nz_consumer_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_NZ_CONSUMER_SECRET",
+   "description": "The application's consumer secret: sent as the OAuth 1.0a PLAINTEXT signature '<consumer secret>&' over HTTPS (Trade Me's documented PLAINTEXT workflow).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET /v1/Search/Motors/Used.json ('filtered keyword search in the Used cars section of Trade Me Motors') with the application-level OAuth 1.0a PLAINTEXT header; rows ≤ 25 without a member token. make is a Trade Me Used-cars subcategory name (e.g. Toyota), model a model name; condition New|Used; location is not a search filter here (user_region takes a numeric motors region id, not mapped). price is StartPrice (NZD; for classifieds the asking price, see raw.PriceDisplay and raw.BuyNowPrice); StartDate uses Trade Me's '/Date(ms)/' format. Listing page: https://www.trademe.co.nz/a/<ListingId>."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /v1/Listings/<ListingId>.json (ListedItemDetail): title, StartPrice/BuyNowPrice/PriceDisplay, Region, Body, Attributes (make, model, year, odometer … as name/value pairs) and Photos stay in raw."
+  }
+ ]
+}

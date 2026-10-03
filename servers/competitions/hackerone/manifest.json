@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "hackerone-mcp",
+ "display_name": "HackerOne MCP",
+ "version": "0.1.0",
+ "description": "HackerOne (competitions): me, discover, get_competition, my_entries. Every tool maps to a documented",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hackerone"
+   ],
+   "env": {
+    "PLATFORM_MCP_HACKERONE_API_USERNAME": "${user_config.platform_mcp_hackerone_api_username}",
+    "PLATFORM_MCP_HACKERONE_API_TOKEN": "${user_config.platform_mcp_hackerone_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_hackerone_api_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HACKERONE_API_USERNAME",
+   "description": "API token identifier from https://hackerone.com/settings/api_token/edit (used as the Basic auth username).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_hackerone_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HACKERONE_API_TOKEN",
+   "description": "API token value generated on the same page (used as the Basic auth password).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no profile endpoint in the Hacker API; GET /hackers/payments/balance verifies the credentials and returns {data: {balance}}."
+  },
+  {
+   "name": "discover",
+   "description": "GET /hackers/programs (page[number], page[size] ≤ 100): the programs visible to you. `id` is the program handle that get_competition takes. No text or status filter, so `query`, `kind` and `status` are not sent; no total in the response. offers_bounties, currency, state and your report counts stay in `raw`."
+  },
+  {
+   "name": "get_competition",
+   "description": "GET /hackers/programs/{handle}. `description` is the program policy (markdown). Scope lives at /hackers/programs/{handle}/structured_scopes (not mapped)."
+  },
+  {
+   "name": "my_entries",
+   "description": "GET /hackers/me/reports: your reports across programs (no program filter, so `competition_id` is not sent). Title, weakness and bounty timestamps stay in `raw`."
+  }
+ ]
+}

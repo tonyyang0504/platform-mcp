@@ -1,0 +1,209 @@
+{
+ "id": "smartrecruiters",
+ "category": "jobs",
+ "label": "SmartRecruiters",
+ "lane": "api",
+ "kind": "ats",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.smartrecruiters.com/docs/posting-api",
+ "url": "https://www.smartrecruiters.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Posting API: public company postings + public POST candidates/apply per posting (no key). Includes SmartRecruiters' own job board (jobs.smartrecruiters.com).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "webhooks"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit (company/partner token only)",
+   "application_status (company/partner token only)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developers.smartrecruiters.com/llms.txt (markdown + OpenAPI index)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public company postings; apply + status need a company / partner token).",
+  "base_urls": [
+   "https://api.smartrecruiters.com/v1/companies/{companyIdentifier}/postings",
+   "https://api.smartrecruiters.com/postings/{uuid}/candidates",
+   "https://api.smartrecruiters.com/candidate-status-api/status/{applicationUuid}",
+   "https://api.smartrecruiters.com/feed/publications"
+  ],
+  "auth": [
+   "1. Public postings: no credential (OpenAPI security `{}`), or an API key / OAuth client-credentials token with `internal_postings_read` for internal postings.",
+   "2. Apply: `X-SmartToken` company API key or OAuth scope `candidate_applications_manage`; status: `candidate_view_application_status_read`. Both are customer / partner credentials."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/companies/{c}/postings",
+    "purpose": "list active public postings",
+    "notes": "`q`, `limit`, `offset`, `destination` (PUBLIC"
+   },
+   {
+    "call": "GET /v1/companies/{c}/postings/{id}",
+    "purpose": "posting details",
+    "notes": "jobAd sections, location, department, industry, function, experienceLevel, typeOfEmployment, applyUrl, postingUrl, releasedDate"
+   },
+   {
+    "call": "GET /postings/{uuid}/configuration` (token)",
+    "purpose": "screening questions + privacy policies",
+    "notes": "questions with required flags, consent model"
+   },
+   {
+    "call": "POST /postings/{uuid}/candidates` (X-SmartToken / OAuth)",
+    "purpose": "create a candidate application",
+    "notes": "firstName*, lastName*, email*, answers (required screening questions; INPUT_TEXT ≤4 kB), consentDecisions {SINGLE} or {SMART_RECRUIT, SMART_CRM, SMART_MESSAGE_SMS, SMART_MESSAGE_WHATSAPP}, attachments (base64), internal, createJoinLink → smartrJoinUrl"
+   },
+   {
+    "call": "GET /candidate-status-api/status/{applicationUuid}` (key / OAuth)",
+    "purpose": "application status",
+    "notes": "NEW, IN_REVIEW, INTERVIEW, OFFERED, HIRED, ARCHIVED (+ REJECTED, WITHDRAWN_BY_APPLICANT, TRANSFERRED, DELETED_BY_COMPANY)"
+   }
+  ],
+  "limits": " 10 requests/second on most endpoints, 2 requests/second on a listed subset, plus a concurrency limiter; `429` on excess. - Public postings need no credential and are meant for company career sites; the operation on `/postings/{uuid}/candidates` is 'done on behalf of a candidate' but authenticated with the company's or a partner's credential. - No public unauthenticated apply endpoint is in the current docs, so candidate-side apply → assist (applyUrl). Registry `api.apply: true` / 'no key' contradicted.",
+  "mcp_sdk": [
+   "https://developers.smartrecruiters.com/llms.txt (markdown + OpenAPI index). No official MCP server found."
+  ],
+  "sources": [
+   "https://developers.smartrecruiters.com/docs/posting-api",
+   "https://developers.smartrecruiters.com/reference/v1listpostings.md",
+   "https://developers.smartrecruiters.com/reference/v1getposting.md",
+   "https://developers.smartrecruiters.com/docs/post-an-application.md",
+   "https://developers.smartrecruiters.com/reference/createcandidate-1.md",
+   "https://developers.smartrecruiters.com/reference/getstatus.md",
+   "https://developers.smartrecruiters.com/docs/rate-limiting.md",
+   "https://developers.smartrecruiters.com/docs/get-job-postings.md",
+   "https://developers.smartrecruiters.com/llms.txt"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.smartrecruiters.com/v1",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "company_identifier",
+    "required": true,
+    "help": "The company identifier as it appears at the end of its SmartRecruiters career site, e.g. 'smartrecruiters' in https://careers.smartrecruiters.com/smartrecruiters."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/companies/{company_identifier}/postings",
+    "path_params": {
+     "company_identifier": "@company_identifier"
+    },
+    "params": {
+     "q": "query",
+     "city": "location",
+     "country": "country",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "content",
+     "key": "postings",
+     "total": "totalFound",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "company.name",
+      "location": "location.fullLocation",
+      "posted_at": "releasedDate"
+     }
+    },
+    "docs": "https://developers.smartrecruiters.com/docs/endpoints",
+    "note": "Public Posting API for ONE company (config company_identifier): GET /v1/companies/{companyIdentifier}/postings 'Lists active postings published by given company' without credentials (public postings only). q is the 'full-text search query based on a job title, location'; location is sent as the exact city filter and country as the country-code filter; limit ('max value is 100') and offset page the results (total = totalFound). id is the posting id (use it with get_posting, which adds the job-ad text and URLs). List rows carry no description or URL; department, function, typeOfEmployment, experienceLevel, location.remote/hybrid, uuid and customField[] are in raw."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/companies/{company_identifier}/postings/{id}",
+    "path_params": {
+     "company_identifier": "@company_identifier"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "company.name",
+      "location": "location.fullLocation",
+      "url": "postingUrl",
+      "posted_at": "releasedDate",
+      "description": "jobAd.sections.jobDescription.text"
+     }
+    },
+    "docs": "https://developers.smartrecruiters.com/reference/v1getposting",
+    "note": "GET /v1/companies/{companyIdentifier}/postings/{postingId} (posting id or uuid). description is the job-ad 'Job Description' section as HTML; companyDescription, qualifications and additionalInformation sections, applyUrl and referralUrl are in raw."
+   }
+  },
+  "not_offered": {
+   "me": "The public Posting API needs no credentials and has no account endpoint.",
+   "apply": "The Application API (https://developers.smartrecruiters.com/docs/application-api) 'enables our customers and partners' to submit applications: 'All endpoints are protected' (customer API key or OAuth scope candidate_applications_manage) and the flow must present the posting's screening/diversity questions and privacy policies, which this vocabulary cannot carry; candidates apply at the posting's applyUrl.",
+   "list_messages": "The Posting API has no messaging endpoints."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "verified against the public company BoschGroup; all read tools answered, schema-valid, pagination advances"
+ }
+}

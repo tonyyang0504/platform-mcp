@@ -1,0 +1,39 @@
+{
+ "id": "dubizzle_sa",
+ "category": "automotive",
+ "label": "Dubizzle",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://dubizzle.sa",
+ "domain": "dubizzle.sa",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dubizzle Group publishes no public listings API; only unofficial scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dubizzle.sa/"
+  ],
+  "unofficial": [
+   "https://github.com/aksiksi/dubizzle",
+   "https://github.com/mahmoudfelfel/dubizzle-api-documentation",
+   "https://rapidapi.com/jobykjoseph10/api/dubizzle1/playground"
+  ]
+ },
+ "official_mcp": []
+}

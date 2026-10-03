@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/blanka-mcp",
+ "description": "Blanka (ecommerce suppliers): me, list_products, create_order. Every tool maps to a documented endpo",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://documenter.getpostman.com/view/10905449/2sA35LWzqV",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "blanka"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BLANKA_API_KEY",
+     "description": "Blanka API key (VIP membership; request it from the merchant success team, hello@blankabrand.com). Blanka's Postman reference sends it as the Authorization header value, exactly as issued.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

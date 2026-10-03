@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "feishu-mcp",
+ "display_name": "Feishu / Lark MCP",
+ "version": "0.1.0",
+ "description": "Feishu / Lark (messaging): me, list_inbound, get_thread, send, reply. Every tool maps to a documente",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "feishu"
+   ],
+   "env": {
+    "PLATFORM_MCP_FEISHU_APP_ID": "${user_config.platform_mcp_feishu_app_id}",
+    "PLATFORM_MCP_FEISHU_APP_SECRET": "${user_config.platform_mcp_feishu_app_secret}",
+    "PLATFORM_MCP_FEISHU_RECEIVE_ID_TYPE": "${user_config.platform_mcp_feishu_receive_id_type}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_feishu_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FEISHU_APP_ID",
+   "description": "App ID of a Feishu custom (self-built) app with the bot capability (cli_…); exchanged with app_secret at POST /open-apis/auth/v3/tenant_access_token/internal for a tenant_access_token (max 2 hours).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_feishu_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FEISHU_APP_SECRET",
+   "description": "App Secret of the same app (developer console, Credentials & Basic Info).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_feishu_receive_id_type": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FEISHU_RECEIVE_ID_TYPE",
+   "description": "How `send`'s `to` is interpreted (receive_id_type query parameter): chat_id (group or p2p chat oc_…, the usual choice), open_id, union_id, user_id or email. Set it to chat_id unless you address users directly.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Bot info: account.bot carries app_name, open_id, activate_status. Needs the bot capability enabled."
+  },
+  {
+   "name": "list_inbound",
+   "description": "History of ONE chat (`channel` = chat_id oc_…, required; the bot must be in the chat), newest first; page_size 1–50. text is body.content, a JSON string such as {\"text\":\"…\"}; sent_at is create_time in milliseconds. Paging is by page_token, so `page` is ignored; `since` is not sent (start_time takes Unix seconds)."
+  },
+  {
+   "name": "get_thread",
+   "description": "All messages of a topic thread (`thread_id` = omt_… from a message's thread_id), oldest first; `page` is ignored."
+  },
+  {
+   "name": "send",
+   "description": "Text message to `to`, interpreted per config receive_id_type (chat_id oc_… by default choice; the bot must be in the chat, or the user within the app's availability scope). `content` is sent as the serialized JSON string {\"text\": …} the API requires; `uuid` de-duplicates retries. `subject`/`channel` are ignored."
+  },
+  {
+   "name": "reply",
+   "description": "Replies to the message `thread_id` (a message id om_…, e.g. a list_inbound id) with a text message; `channel` is not needed."
+  }
+ ]
+}

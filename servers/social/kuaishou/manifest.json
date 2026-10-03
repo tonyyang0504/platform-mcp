@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "kuaishou-mcp",
+ "display_name": "Kuaishou MCP",
+ "version": "0.1.0",
+ "description": "Kuaishou (social): me, delete, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kuaishou"
+   ],
+   "env": {
+    "PLATFORM_MCP_KUAISHOU_APP_ID": "${user_config.platform_mcp_kuaishou_app_id}",
+    "PLATFORM_MCP_KUAISHOU_APP_SECRET": "${user_config.platform_mcp_kuaishou_app_secret}",
+    "PLATFORM_MCP_KUAISHOU_REFRESH_TOKEN": "${user_config.platform_mcp_kuaishou_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kuaishou_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_APP_ID",
+   "description": "app_id of your Kuaishou Open Platform application (https://open.kuaishou.com/platform).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kuaishou_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_APP_SECRET",
+   "description": "app_secret of the same application; sent only to /oauth2/refresh_token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kuaishou_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_REFRESH_TOKEN",
+   "description": "The user's refresh_token from the 快手登录 authorization-code exchange (/oauth2/access_token, scopes user_info, user_video_info, user_video_delete; valid 180 days). It is single-use: every refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set; 'refreshToken.discarded' means an old one was reused).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /openapi/user_info (scope user_info): name, sex, fan, follow, head, city of the authorising user."
+  },
+  {
+   "name": "delete",
+   "description": "POST /openapi/photo/delete (删除视频) removes one of the user's works by photo_id; 120001 = work does not exist."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /openapi/photo/info (查询单一视频详情, scope user_video_info): like_count, comment_count, view_count, caption, create_time (ms), pending."
+  }
+ ]
+}

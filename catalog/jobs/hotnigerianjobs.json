@@ -1,0 +1,128 @@
+{
+ "id": "hotnigerianjobs",
+ "category": "jobs",
+ "label": "Hot Nigerian Jobs",
+ "lane": "assist",
+ "kind": "aggregator",
+ "regions": [
+  "ng"
+ ],
+ "docs_url": "https://www.hotnigerianjobs.com/feed/rss.xml",
+ "url": "https://www.hotnigerianjobs.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Nigerian listings; apply by employer link/e-mail.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist for apply; the RSS (text/xml, latest recruitment posts) is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Public RSS feed; no developer API (guessed paths hit the 404 page). robots.txt blocks ClaudeBot, GPTBot, CCBot, Bytespider, CloudflareBrowserRenderingCrawler with Disallow: / for unlisted agents. No terms page linked.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.hotnigerianjobs.com/",
+   "https://www.hotnigerianjobs.com/robots.txt",
+   "https://www.hotnigerianjobs.com/feed/rss.xml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.hotnigerianjobs.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/feed/rss.xml",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.hotnigerianjobs.com/feed/rss.xml",
+    "note": "Hot Nigerian Jobs RSS 2.0 feed (the latest ~600 postings, ~500 KB). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<Role> at <Employer>'. id is the posting link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

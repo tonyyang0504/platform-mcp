@@ -1,0 +1,36 @@
+{
+ "id": "apollo",
+ "category": "sales",
+ "label": "Apollo.io",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.apollo.io/",
+ "url": "https://www.apollo.io/",
+ "verified_at": "2026-09-05",
+ "terms_note": "REST API with the user's Apollo API key (credit-metered); robots.txt (11 Disallow, tracking params).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

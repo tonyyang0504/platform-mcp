@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/macro_collector-mcp",
+ "description": "FRED macro series (CSV) (market data): me, get_series, search_symbols. Every tool maps to a document",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://fred.stlouisfed.org/docs/api/fred/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "macro_collector"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MACRO_COLLECTOR_API_KEY",
+     "description": "FRED API key ('32 character alpha-numeric lowercase string') requested at https://fredaccount.stlouisfed.org/apikeys; sent as the api_key query parameter (https://fred.stlouisfed.org/docs/api/api_key.html). Terms: show 'This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.'",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,335 @@
+{
+ "id": "messenger",
+ "category": "messaging",
+ "label": "Messenger",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/messenger-platform/send-messages",
+ "url": "https://www.messenger.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Page-scoped: POST /{PAGE_ID}/messages (or /me/messages) with a Page access token holding pages_messaging (App Review for public apps); recipient is a PSID — the user must message the Page first (or click a CTA / plugin), no cold outreach. messaging_type RESPONSE / UPDATE inside the 24-hour standard window ('businesses have up to 24 hours to respond … messages sent within the 24-hour window may contain promotional content'); outside it only MESSAGE_TAG with an approved tag — HUMAN_AGENT (7-day manual response, app-review permission); CONFIRMED_EVENT_UPDATE / POST_PURCHASE_UPDATE / ACCOUNT_UPDATE non-promotional and per the send-messages page returning error 100 from 27 April 2026. sender_action typing_on / typing_off / mark_seen; text, images, audio, video, files, GIFs, buttons, templates, quick replies. Rate limits referenced but not enumerated on the pages read. Caution (docs read 2026-09-24): 'Advanced Access is required to access conversations between your business and people who do not have a role on your messaging app, your Instagram Professional account, your Facebook Page, or your business' (https://developers.facebook.com/docs/messenger-platform/conversations) - Advanced Access for pages_messaging comes through Meta App Review.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "media",
+   "webhooks",
+   "receipts",
+   "typing",
+   "reactions",
+   "templates",
+   "quick_replies"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Meta Graph API — plain HTTPS; Business SDKs (developers.facebook.com/docs/messenger-platform)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "Webhook `messages` field; backfill GET /{page-id}/conversations?platform=messenger and GET /{conversation-id}/messages",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/messages with `recipient.id` = PSID, `messaging_type`",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{page-id}/messages `{recipient, sender_action: 'mark_seen'}`",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.facebook.com/v{N}/{PAGE_ID}/messages"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /{PAGE_ID}/messages` `{recipient{id: PSID}, messaging_type: RESPONSE, message{text",
+    "purpose": "attachment, quick_replies}}`",
+    "notes": "reply"
+   },
+   {
+    "call": "same with `messaging_type: UPDATE",
+    "purpose": "proactive follow-up inside the window",
+    "notes": ""
+   },
+   {
+    "call": "same with `messaging_type: MESSAGE_TAG, tag: HUMAN_AGENT",
+    "purpose": "outside the window",
+    "notes": "7-day manual response window; permission via App Review; CONFIRMED_EVENT_UPDATE / POST_PURCHASE_UPDATE / ACCOUNT_UPDATE non-promotional only and (per the send-messages page) error 100 from 27 Apr 2026"
+   },
+   {
+    "call": "POST …/messages` `{recipient, sender_action: typing_on",
+    "purpose": "typing_off",
+    "notes": "mark_seen}` · `reaction`"
+   },
+   {
+    "call": "POST /{PAGE_ID}/message_attachments` (reusable `attachment_id`)",
+    "purpose": "media",
+    "notes": "images, audio, video, files, GIFs"
+   },
+   {
+    "call": "Webhooks `messages`, `messaging_postbacks`, `message_reactions`, `message_reads`, `message_deliveries",
+    "purpose": "inbound + receipts",
+    "notes": ""
+   },
+   {
+    "call": "GET /{PAGE_ID}/conversations?platform=messenger` · `GET /{conversation_id}/messages",
+    "purpose": "thread backfill",
+    "notes": ""
+   },
+   {
+    "call": "POST /me/messenger_profile` (persistent menu, ice breakers, get started)",
+    "purpose": "conversation entry points",
+    "notes": ""
+   }
+  ],
+  "limits": " - Rate limits are referenced (\"Messenger Platform rate limits\") without numbers on the pages read; 429 / error 4, 613 → back-off. - No business-initiated first contact, no group messaging; \"use of tags outside of approved use cases may result in restrictions\". Sponsored Messages / One-time Notifications are separate products.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.facebook.com/docs/messenger-platform/send-messages",
+   "https://developers.facebook.com/docs/messenger-platform/policy/policy-overview"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v26.0",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "page_access_token",
+   "fields": [
+    {
+     "name": "page_access_token",
+     "required": true,
+     "help": "Page access token requested by a person who can perform the MESSAGING (or MODERATE) task on the Page, with pages_messaging, pages_manage_metadata and pages_read_engagement (https://developers.facebook.com/docs/messenger-platform/conversations); sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "page_id",
+    "required": true,
+    "help": "Numeric id of the Facebook Page whose Messenger inbox is used; every call goes to /<page_id>/... Env: PLATFORM_MCP_MESSENGER_PAGE_ID."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/{page_id}",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "fixed_params": {
+     "fields": "id,name,link"
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/page/",
+    "note": "GET /{page_id}?fields=id,name,link: the Page that sends and receives Messenger messages."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/{page_id}/conversations",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "platform": "messenger",
+     "fields": "id,updated_time,messages.limit(1){id,message,from,to,created_time}"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "require": [
+      "id"
+     ],
+     "fields": {
+      "id": "messages.data.0.id",
+      "thread_id": "id",
+      "from": "messages.data.0.from.name",
+      "from_id": "messages.data.0.from.id",
+      "text": "messages.data.0.message",
+      "sent_at": "messages.data.0.created_time",
+      "updated_at": "updated_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/messenger-platform/conversations",
+    "note": "GET /{page_id}/conversations?platform=messenger with field expansion messages.limit(1){...}: one row per conversation carrying its most recent message (which may be the Page's own outbound message - compare from_id with the Page / account id). thread_id is the conversation id for get_thread; from_id is the PSID for send. 'Conversations that are within the Requests folder that have not been active for 30 days will not be returned'. `since`/`channel` are not sent; cursor paging, so `page` is ignored."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/{thread_id}/messages",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,message,from,to,created_time"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "from": "from.name",
+      "from_id": "from.id",
+      "to": "to.data.0.name",
+      "text": "message",
+      "sent_at": "created_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/conversation/messages/",
+    "note": "GET /{conversation_id}/messages?fields=id,message,from,to,created_time (newest first). 'you can only get details about the 20 most recent messages in the conversation' (https://developers.facebook.com/docs/messenger-platform/conversations), so limit is capped at 20."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/{page_id}/messages",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "body": {
+     "recipient.id": "to",
+     "messaging_type": "=RESPONSE",
+     "message.text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent",
+      "recipient_id": "recipient_id"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages",
+    "note": "POST /{page_id}/messages {recipient: {id: PSID}, messaging_type: RESPONSE, message: {text}} answers {recipient_id, message_id}. `to` must be a Page-scoped ID (list_inbound from_id); 'the conversation must be initiated by that person' and RESPONSE messages 'must be sent during the standard messaging window' (24 hours after the person's last message). `subject`/`channel` are ignored."
+   },
+   "mark_read": {
+    "method": "POST",
+    "path": "/{page_id}/messages",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "body": {
+     "recipient.id": "thread_id",
+     "sender_action": "=mark_seen"
+    },
+    "result": {
+     "fields": {
+      "status": "=ok"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions",
+    "note": "Sender action mark_seen: POST /{page_id}/messages {recipient: {id}, sender_action: mark_seen} answers {recipient_id}. Here `thread_id` must be the person's PSID (list_inbound from_id), NOT the conversation id; `message_id` is not used. 'Requests to display sender action should only include the sender_action parameter and the recipient object.'"
+   }
+  },
+  "not_offered": {
+   "reply": "The Send API addresses a person, not a conversation: 'Set the ID for a person receiving the message in the recipient object parameter' (PSID, user_ref or post/comment id - https://developers.facebook.com/docs/messenger-platform/send-messages); a conversation id cannot be a recipient. Use send with the PSID (list_inbound from_id)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

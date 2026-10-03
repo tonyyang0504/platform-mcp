@@ -1,0 +1,35 @@
+{
+ "id": "goianiaveiculos_br",
+ "category": "automotive",
+ "label": "Goianiaveiculos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.goianiaveiculos.com.br",
+ "domain": "goianiaveiculos.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Brazil); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://goianiaveiculos.com.br/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

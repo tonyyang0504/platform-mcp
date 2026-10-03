@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "mytarget-mcp",
+ "display_name": "myTarget (folded into VK Ads) MCP",
+ "version": "0.1.0",
+ "description": "myTarget (folded into VK Ads) (ads): me, list_campaigns, get_report, update_budget, pause_resume. Ev",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mytarget"
+   ],
+   "env": {
+    "PLATFORM_MCP_MYTARGET_CLIENT_ID": "${user_config.platform_mcp_mytarget_client_id}",
+    "PLATFORM_MCP_MYTARGET_CLIENT_SECRET": "${user_config.platform_mcp_mytarget_client_secret}",
+    "PLATFORM_MCP_MYTARGET_REFRESH_TOKEN": "${user_config.platform_mcp_mytarget_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mytarget_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MYTARGET_CLIENT_ID",
+   "description": "VK Ads (formerly myTarget) API client_id (issued on request in the ad account settings; https://ads.vk.ru/ru/doc/api/info/Авторизация в API).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mytarget_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MYTARGET_CLIENT_SECRET",
+   "description": "The API client's client_secret (form body of the token request).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mytarget_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MYTARGET_REFRESH_TOKEN",
+   "description": "refresh_token from one POST /api/v2/oauth2/token.json with grant_type=client_credentials (your own account) or agency_client_credentials (an agency client). Refreshing does not create a new token instance, which keeps you under VK's per-user token limit; a token unused for a month is deleted and must be issued again.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v3/user.json: the account the token belongs to ({id, username, status, currency, types})."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /api/v2/ad_plans.json (campaigns = ad plans of the token's account; account_id is not sent) with limit/offset and _status (active, blocked, deleted). `budget` is budget_limit_day (a decimal string in the account currency; raw.budget_limit is the total budget)."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /api/v2/statistics/ad_plans/day.json?id={campaign_id}&date_from&date_to&metrics=base: daily rows for one campaign (id is required by VK, so pass campaign_id). Up to 366 days back; spent is a decimal string in the account currency."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /api/v2/ad_plans/{id}.json {budget_limit_day}: the campaign's daily budget in the account currency (`currency` is ignored); spends money. Campaigns budgeted per ad group ignore it. Answers 204; validation errors come back as 400."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /api/v2/ad_plans/{id}.json {status: blocked|active}. Resuming restarts spending."
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "id": "turkey_g3_ayvens",
+ "category": "automotive",
+ "label": "Carmarket",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://carmarket.ayvens.com",
+ "domain": "carmarket.ayvens.com",
+ "country": "Turkey",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). B2B remarketing platform for registered traders; no public or documented API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://carmarket.ayvens.com/en-nl/content/trading/how-it-works"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

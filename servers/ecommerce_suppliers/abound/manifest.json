@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "abound-mcp",
+ "display_name": "Abound (acquired — now Carro) MCP",
+ "version": "0.1.0",
+ "description": "Abound (acquired — now Carro) (ecommerce suppliers): me, list_products, get_product, get_order. Ever",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "abound"
+   ],
+   "env": {
+    "PLATFORM_MCP_ABOUND_API_KEY": "${user_config.platform_mcp_abound_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_abound_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ABOUND_API_KEY",
+   "description": "Modern Dropship (Carro) API key generated under Settings > Dropshipping > Integrations, sent raw as `Authorization: <key>` (securityScheme ApiKeyAuth, no Bearer prefix). A buyer (retailer) key reaches the Buyer + Shared endpoints used here.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /auth/me returns {data: {user, company, flags, subscriptions}} for the key's user and company."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /buyer/products lists the products the buyer has access to ({data: [{id, title, brand, description, images[{source}], variants[{id, sku, basePrice, baseCurrency, retailPrice, inventoryAmount}]}], hasMore}); `page` is 0-based, `query` is the case-insensitive `title` substring filter and `category` is passed as `companyId` (a seller company id from GET /partners). Price/sku/stock are taken from the first variant."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /buyer/products/{product_id} -> {data: product}; all variants [{id, sku, basePrice, baseCurrency, retailPrice, inventoryAmount, options}] are in `raw.variants` (variant ids are what an order needs)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /buyer/orders/{order_id} -> {data: {id, buyerReference, created, items[], sellerOrders[{id, posted, fulfilled, fulfillments[{carrier, trackingCode, trackingUrls}]}]}}. There is no single order status or total: per-seller `posted`/`fulfilled` flags are in `raw.sellerOrders`."
+  }
+ ]
+}

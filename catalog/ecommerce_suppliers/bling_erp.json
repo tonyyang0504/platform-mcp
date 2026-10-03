@@ -1,0 +1,252 @@
+{
+ "id": "bling_erp",
+ "category": "ecommerce_suppliers",
+ "label": "Bling ERP (BR integration hub — not a supplier)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "latam"
+ ],
+ "docs_url": "https://developer.bling.com.br/home",
+ "url": "https://www.bling.com.br/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Termos de serviço linked",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "oauth",
+   "webhooks"
+  ],
+  "auth": "oauth2 authorization code (app registered in the Bling developer portal with redirect URL + scopes; POST /oauth/token with Basic client_id:client_secret; access_token Bearer JWT, refresh_token valid 30 days; code expires in 1 minute; /oauth/revoke)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "webhooks",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI 3.0 schema for API v3 (linked from /referencia)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Developer account + app registration (Termos de serviço); per-account limits 3 rps / 120k per day; IP blocking on error bursts; opaque tokens discontinued in favour of JWT.",
+  "mcp_sdk": [
+   "OpenAPI 3.0 schema for API v3 (linked from /referencia)"
+  ],
+  "sources": [
+   "https://developer.bling.com.br/home",
+   "https://developer.bling.com.br/referencia",
+   "https://developer.bling.com.br/aplicativos",
+   "https://developer.bling.com.br/limites"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bling.com.br/Api/v3",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.bling.com.br/Api/v3/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your Bling app (Central de Extensões > Área do Integrador); sent with the client secret as HTTP Basic on the token request ('não é permitida a inserção destes parâmetros no body')."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret of the same Bling app."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from a one-time authorization-code exchange (the code expires in 1 minute); valid 30 days. Access tokens last 6 hours (expires_in 21600) and are re-minted from it; a new refresh_token returned by Bling replaces the old one in memory, and with PLATFORM_MCP_STATE_DIR set it is also saved and preferred on the next start."
+    }
+   ]
+  },
+  "rate_per_second": 3,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/empresas/me/dados-basicos",
+    "docs": "https://developer.bling.com.br/referencia",
+    "note": "GET /empresas/me/dados-basicos: {data: {id, nome, cnpj, email, dataContrato}} of the connected Bling company."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/produtos",
+    "params": {
+     "pagina": "page",
+     "limite": "limit",
+     "nome": "query",
+     "idCategoria": "category"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "nome",
+      "sku": "codigo",
+      "price": "preco",
+      "currency": "=BRL",
+      "image_url": "imagemURL",
+      "cost_price": "precoCusto",
+      "status": "situacao",
+      "type": "tipo",
+      "stock_balance": "estoque.saldoVirtualTotal"
+     }
+    },
+    "docs": "https://developer.bling.com.br/referencia",
+    "note": "GET /produtos: the products registered in YOUR Bling ERP (Bling is an ERP/integration hub, not a supplier) [{id, nome, codigo (SKU), preco, precoCusto, estoque.saldoVirtualTotal, tipo, situacao (A active / I inactive), imagemURL}]; `query` filters by nome, `category` is idCategoria. Prices are BRL. stock_balance is estoque.saldoVirtualTotal (a decimal)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/produtos/{idProduto}",
+    "path_params": {
+     "idProduto": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "nome",
+      "sku": "codigo",
+      "price": "preco",
+      "currency": "=BRL",
+      "image_url": "imagemURL",
+      "cost_price": "precoCusto",
+      "status": "situacao",
+      "type": "tipo",
+      "brand": "marca",
+      "gtin": "gtin",
+      "supplier_id": "fornecedor.id",
+      "supplier_code": "fornecedor.codigo",
+      "purchase_price": "fornecedor.precoCompra",
+      "stock_balance": "estoque.saldoVirtualTotal"
+     }
+    },
+    "docs": "https://developer.bling.com.br/referencia",
+    "note": "GET /produtos/{idProduto}: full product with stock (estoque), default supplier (fornecedor {id, codigo, precoCusto, precoCompra}), dimensions and tax data."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/pedidos/compras/{idPedidoCompra}",
+    "path_params": {
+     "idPedidoCompra": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "number": "numero",
+      "total": "total",
+      "currency": "=BRL",
+      "created_at": "data",
+      "expected_at": "dataPrevista",
+      "supplier_id": "fornecedor.id",
+      "freight": "transporte.frete",
+      "status_code": "situacao.valor"
+     }
+    },
+    "docs": "https://developer.bling.com.br/referencia",
+    "note": "GET /pedidos/compras/{idPedidoCompra}: a purchase order recorded in Bling (pedido de compra to a supplier) {id, numero, data, dataPrevista, total, fornecedor{id}, situacao{id, valor}, transporte, itens[], parcelas[]}. status_code is situacao.valor (0 em aberto, 1 atendido, 2 cancelado, 3 em andamento); `status` is left null because Bling returns a numeric code."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "Bling is an ERP; it has no carrier-rate endpoint for a product and destination (logistics endpoints manage shipping objects/labels of existing sales).",
+   "create_order": "POST /pedidos/compras only records a purchase order inside Bling (fornecedor id, itens[{produto{id}, quantidade, valor}]); it is not transmitted to or paid at any supplier, and the vocabulary's shipping_address has no counterpart.",
+   "track": "No tracking-events endpoint for purchase orders; logistics objects (GET /logisticas/objetos/{idObjeto}) belong to sales shipments and take an object id, not an order id."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bling.com.br: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token api.bling.com.br/Api/v3/oauth/token: 400 {",
+   "authorize https://www.bling.com.br/Api/v3/oauth/authorize: 302",
+   "HTML docs spot-check (render-doc): 0/4 tool paths found verbatim on their docs pages; names not found on the page: list_products:idCategoria, list_products:limite, list_products:nome, list_products:pagina"
+  ],
+  "notes": "-"
+ }
+}

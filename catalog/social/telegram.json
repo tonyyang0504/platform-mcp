@@ -1,0 +1,290 @@
+{
+ "id": "telegram",
+ "category": "social",
+ "label": "Telegram",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://core.telegram.org/bots/api",
+ "url": "https://telegram.org/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free, no review: create a bot with @BotFather and use its token; the bot must be an ADMINISTRATOR of a channel to post there; bots cannot message a user who has not started them; bots in groups see only commands / replies unless privacy mode is off; limits ≈ 30 messages/s overall, 20 messages/min per group, 1 message/s per chat (429 with retry_after); user-account automation (MTProto) is a different product and is off-limits for the suite (human lane).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token",
+  "access": "open",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "reply",
+   "inbox_dm",
+   "edit",
+   "delete",
+   "webhooks",
+   "schedule(none — platform side)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "python-telegram-bot / aiogram / telegraf (community; Telegram lists them)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.telegram.org/bot<token>/sendMessage (chat_id, text ≤ 4096, parse_mode)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "sendPhoto (≤ 10 MB) / sendMediaGroup (2–10 items)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "sendVideo / sendDocument / sendAnimation (≤ 50 MB via the cloud API)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "getUpdates (long polling) / setWebhook — channel discussion replies arrive as updates",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "sendMessage with `reply_parameters.message_id`",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "same update stream (entities of type `mention`)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "sendMessage with the user's chat_id",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "getUpdates / webhook",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "deleteMessage (chat_id, message_id)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no per-message analytics for bots; channel view counts are not exposed to the Bot API)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (getChatMemberCount only)",
+   "docs": "https://core.telegram.org/bots/api"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.telegram.org/bot<token>/<method>"
+  ],
+  "auth": [
+   "1. The tenant creates a bot with **@BotFather** → token (stored encrypted as the account secret).",
+   "2. Add the bot as **administrator** of the channel (post messages right) or to the group.",
+   "3. Updates: `setWebhook` (HTTPS URL, `secret_token` header check) OR `getUpdates` long polling — mutually exclusive.",
+   "4. No review, no fee. Bots cannot initiate chats with users who never messaged them."
+  ],
+  "endpoints": [
+   {
+    "call": "Method",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "sendMessage` {chat_id (@channelusername or id), text ≤ 4096, parse_mode HTML",
+    "purpose": "MarkdownV2, link_preview_options, reply_markup}",
+    "notes": ""
+   },
+   {
+    "call": "sendPhoto`, `sendVideo`, `sendDocument`, `sendAnimation`, `sendMediaGroup` (2–10 items)",
+    "purpose": "multipart upload ≤ 50 MB via API, or URL / file_id",
+    "notes": ""
+   },
+   {
+    "call": "sendMessage` with `reply_parameters{message_id}`; in discussion groups reply to the forwarded post",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "editMessageText`, `editMessageCaption`, `editMessageMedia`, `deleteMessage`, `pinChatMessage",
+    "purpose": "edits allowed indefinitely in channels",
+    "notes": ""
+   },
+   {
+    "call": "webhook `Update` objects: message, channel_post, edited_channel_post, callback_query, message_reaction",
+    "purpose": "privacy mode hides non-command group messages unless disabled",
+    "notes": ""
+   },
+   {
+    "call": "getChatMemberCount`, `getChat`; channel post `views` only through MTProto — no Bot API analytics",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "getFile` → `file_path",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - ~30 messages/s overall, 20 messages/min into one group, 1 message/s per chat; HTTP 429 with `parameters.retry_after`. - Bot API Terms of Service: no spam / unsolicited messages; a bot's content is the operator's responsibility. - Automating **user** accounts (MTProto) is out of scope — human lane per the Messaging rules.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://core.telegram.org/bots/api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.telegram.org/bot{token}",
+  "auth": {
+   "type": "path",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Bot token from @BotFather. It is part of the URL path: 'All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: https://api.telegram.org/bot<token>/METHOD_NAME' (https://core.telegram.org/bots/api#making-requests). The bot must be an administrator of the target channel with the right to post (and delete) messages. Same field as the messaging entry (env PLATFORM_MCP_TELEGRAM_TOKEN)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "chat_id",
+    "required": true,
+    "help": "The channel (or group) the bot publishes to, sent as `chat_id`: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)', e.g. @mychannel or -1001234567890; env PLATFORM_MCP_TELEGRAM_CHAT_ID. Message ids are unique only inside this chat, so `post_id` values are message_ids of this chat."
+   }
+  ],
+  "envelope": {
+   "ok_field": "ok",
+   "error_field": "description"
+  },
+  "envelope_note": "Every response is 'a JSON object, which always has a Boolean field ok' with `description`, `error_code` and `parameters` (retry_after) on failure (https://core.telegram.org/bots/api#making-requests). ok:false answers become isError results.",
+  "rate_per_second": 1,
+  "rate_note": "Bot FAQ: 'avoid sending more than one message per second' in a chat, 'not more than 20 messages per minute' in a group, 'about 30 messages per second' overall; 429 with retry_after (https://core.telegram.org/bots/faq). One client-side bucket at 1/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/getMe",
+    "docs": "https://core.telegram.org/bots/api#getme",
+    "note": "getMe: 'A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object' (id, is_bot, first_name, username)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/sendMessage",
+    "body": {
+     "chat_id": "@chat_id",
+     "text": "text",
+     "reply_parameters.message_id": "reply_to"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "message_id"
+     }
+    },
+    "docs": "https://core.telegram.org/bots/api#sendmessage",
+    "note": "sendMessage {chat_id: <configured chat_id>, text ('Text of the message to be sent, 1-4096 characters after entities parsing'), reply_parameters?} - 'On success, the sent Message is returned'; `id` is the Message's message_id ('Unique message identifier inside this chat'), so it identifies the post only together with the configured chat. `reply_to` (a message_id in the same chat) is sent as reply_parameters.message_id ('Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified'; the Bot API server parses integer fields from JSON strings as well as numbers, tdlib JsonBuilder get_integer_field). parse_mode is not sent (plain text); no url, and `date` is a Unix timestamp under raw.date, so created_at is not mapped."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/deleteMessage",
+    "body": {
+     "chat_id": "@chat_id",
+     "message_id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://core.telegram.org/bots/api#deletemessage",
+    "note": "deleteMessage {chat_id: <configured chat_id>, message_id: post_id ('Identifier of the message to delete')} 'Returns True on success' (the runtime answers {status: 'deleted'}; a failure is an ok:false envelope error). Limitations: 'A message can only be deleted if it was sent less than 48 hours ago', 'Bots granted can_post_messages permissions can delete outgoing messages in channels', 'If the bot is an administrator of a group, it can delete any message there', 'If the bot has can_delete_messages administrator right in a supergroup or a channel, it can delete any message there'. A message outside the configured chat cannot be addressed."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/sendPhoto",
+    "body": {
+     "chat_id": "@chat_id",
+     "photo": "image_urls.0",
+     "caption": "text"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "message_id"
+     }
+    },
+    "docs": "https://core.telegram.org/bots/api#sendphoto",
+    "note": "sendPhoto {chat_id: <configured chat_id>, photo: image_urls[0] ('pass an HTTP URL as a String for Telegram to get a photo from the Internet ... The photo must be at most 10 MB in size'), caption: text ('Photo caption ..., 0-1024 characters after entities parsing')} - 'On success, the sent Message is returned'; `id` is the message_id inside the configured chat. Only the FIRST image URL is sent (sendMediaGroup, the 2-10 item album method, is not used); further image_urls are ignored. parse_mode is not sent; no url / created_at (raw.date is a Unix timestamp)."
+   }
+  },
+  "not_offered": {
+   "read_comments": "The Bot API has no method that returns the messages or replies of a chat: comments on channel posts live in the linked discussion group and reach the bot only as updates through getUpdates or a webhook (https://core.telegram.org/bots/api#getting-updates).",
+   "reply_comment": "A comment is a message in the channel's linked discussion group, a different chat from the configured chat_id; the bot cannot list comments (no read method) and sendMessage with reply_parameters needs that group's chat_id, which the vocabulary does not carry (https://core.telegram.org/bots/api#sendmessage).",
+   "read_mentions": "No mention feed: mentions arrive only as `mention` / `text_mention` entities on incoming messages delivered through getUpdates or a webhook, and bots in groups see other messages only when privacy mode is off (https://core.telegram.org/bots/api#getting-updates).",
+   "analytics_post": "The Bot API documents no per-message statistics method and its Message object carries no view or reaction counters; the only counter available to bots is getChatMemberCount for the whole chat (https://core.telegram.org/bots/api#available-methods)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.telegram.org: DNS ok, TLSv1.3 (GoDaddy.com, Inc.)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/4 tool paths found verbatim on their docs pages, 3 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

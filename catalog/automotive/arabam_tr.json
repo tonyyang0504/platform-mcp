@@ -1,0 +1,40 @@
+{
+ "id": "arabam_tr",
+ "category": "automotive",
+ "label": "Arabam",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.arabam.com",
+ "domain": "arabam.com",
+ "country": "Turkey",
+ "official_api": "unknown",
+ "docs_url": "https://arabam.com/api/documentation",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). An /api/documentation path exists on arabam.com but is Cloudflare/robots blocked; could not confirm whether it is a public or dealer-only API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://arabam.com/api/documentation"
+  ],
+  "unofficial": [
+   "https://apify.com/fatihtahta/arabam-com-scraper",
+   "https://carapis.com/platforms/mena-africa/arabam",
+   "https://github.com/danabasi/arabam-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: An /api/documentation path exists on arabam.com but is Cloudflare/robots blocked; could not confirm whether it is a public or dealer-only API."
+}

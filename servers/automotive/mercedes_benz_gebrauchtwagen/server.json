@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mercedes_benz_gebrauchtwagen-mcp",
+ "description": "Mercedes-Benz Vehicle Specification (automotive): decode_vin. Every tool maps to a documented endpoi",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.mercedes-benz.com/products/vehicle_specification/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "mercedes_benz_gebrauchtwagen"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_API_KEY",
+     "description": "Secret API key of a Mercedes-Benz /developers console project subscribed to Vehicle Specification (commercial plan); sent as x-api-key.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCEDES_BENZ_GEBRAUCHTWAGEN_LOCALE",
+     "description": "Market locale for descriptions, e.g. de_DE or en_GB (required by the API; only some locales are supported).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

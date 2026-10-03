@@ -1,0 +1,42 @@
+{
+ "id": "trovit_br",
+ "category": "automotive",
+ "label": "Carros",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://carros.trovit.com.br",
+ "domain": "carros.trovit.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). Trovit (Lifull Connect/Thribee) aggregator ingests partner XML listing feeds; no search/read API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed",
+   "https://corporate.trovit.com/feed-in-cars/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Trovit (Lifull Connect/Thribee) aggregator ingests partner XML listing feeds; no search/read API. No request/response API to serve."
+}

@@ -1,0 +1,35 @@
+{
+ "id": "gurumalist_th",
+ "category": "automotive",
+ "label": "Gurumalist",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.gurumalist.com",
+ "domain": "gurumalist.com",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). dealer site (Thailand); no developer/API/partner-feed pages on the domain and no official API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://gurumalist.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

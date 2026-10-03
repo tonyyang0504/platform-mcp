@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "pictorem-mcp",
+ "display_name": "Pictorem PRO (white-label dropship + API Print on Demand) MCP",
+ "version": "0.1.0",
+ "description": "Pictorem PRO (white-label dropship + API Print on Demand) (ecommerce suppliers): me, list_products, ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "pictorem"
+   ],
+   "env": {
+    "PLATFORM_MCP_PICTOREM_ARTFLOW_KEY": "${user_config.platform_mcp_pictorem_artflow_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_pictorem_artflow_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PICTOREM_ARTFLOW_KEY",
+   "description": "Your ArtFlowKey, issued on request through your Pictorem account (can be a test-mode key).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getorderlist with limit 1: verifies the ArtFlowKey and shows the account's order count (data.total)."
+  },
+  {
+   "name": "list_products",
+   "description": "getartworklist: your own Pictorem artworks (name, keywords, categories, orientation, image set). Pictorem sells made-to-order prints: a sellable product is an artwork plus a preordercode (numCopies|material|type|orientation|width|height|options…, see the code builder) priced with getprice. `query`/`category` are not applied."
+  },
+  {
+   "name": "create_order",
+   "description": "sendorder (multipart form). `items`: up to 5 lines in Pictorem form [{code: preordercode, fileurl + filetype (jpg/png/tiff) OR collectionID, bordercolorhex (when the code needs it), comment}]; `shipping_address`: {firstname, lastname, company?, address1, address2?, city, province (state code), country (ISO or name), cp (postal code), phone?, po? (your unique reference; makes retries safe), ordercomment?}. Without a getshippingquote quote the order is created with no shipping charge; `shipping_option` is not applied. Returns the Pictorem orderid."
+  },
+  {
+   "name": "get_order",
+   "description": "getorderstatus by Pictorem order id: order_status (commercial: Processing, Shipped, Canceled…) and production_status (workshop stage, progress %), billing status, tracking, delivery and lines in raw."
+  },
+  {
+   "name": "track",
+   "description": "getorderstatus: tracking_number/tracking_carrier once shipped (UPS), order and production status; per-line tracking under events (lines)."
+  }
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "manifest_version": "0.2",
+ "name": "google_merchant-mcp",
+ "display_name": "Google Merchant Center MCP",
+ "version": "0.1.0",
+ "description": "Google Merchant Center (ecommerce channels): me, update_listing, end_listing. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "google_merchant"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_ID": "${user_config.platform_mcp_google_merchant_client_id}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_SECRET": "${user_config.platform_mcp_google_merchant_client_secret}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_REFRESH_TOKEN": "${user_config.platform_mcp_google_merchant_refresh_token}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_ACCOUNT_ID": "${user_config.platform_mcp_google_merchant_account_id}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_DATA_SOURCE": "${user_config.platform_mcp_google_merchant_data_source}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_CONTENT_LANGUAGE": "${user_config.platform_mcp_google_merchant_content_language}",
+    "PLATFORM_MCP_GOOGLE_MERCHANT_FEED_LABEL": "${user_config.platform_mcp_google_merchant_feed_label}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_google_merchant_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_ID",
+   "description": "OAuth 2.0 client ID of your Google Cloud project (with the Merchant API enabled and the project registered with the Merchant Center account).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_merchant_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_CLIENT_SECRET",
+   "description": "OAuth client secret of the same client.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_merchant_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time consent with scope https://www.googleapis.com/auth/content by a user of the Merchant Center account; the runtime mints access tokens at https://oauth2.googleapis.com/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_merchant_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_ACCOUNT_ID",
+   "description": "Numeric Merchant Center account id.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_merchant_data_source": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_DATA_SOURCE",
+   "description": "API product data source to write to, in the form accounts/<account>/dataSources/<id> (Merchant Center > Data sources, or the Data Sources API); only API data sources can be edited.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_merchant_content_language": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_CONTENT_LANGUAGE",
+   "description": "Two-letter content language of your products, e.g. en; part of the product input id <language>~<feedLabel>~<offerId>.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_merchant_feed_label": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_MERCHANT_FEED_LABEL",
+   "description": "Feed label of your products, e.g. US; part of the product input id.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "accounts.get: {name, accountId, accountName, adultContent, timeZone, languageCode} of the configured Merchant Center account."
+  },
+  {
+   "name": "update_listing",
+   "description": "productInputs.patch on accounts/{account}/productInputs/{language}~{feedLabel}~{offerId} (listing_id = your offerId) without an updateMask, so only the attributes sent (title, description) change. `price` is NOT applied: Merchant API prices are amountMicros (price x 1,000,000 as an integer string), which cannot be derived here; `quantity` has no Merchant Center equivalent."
+  },
+  {
+   "name": "end_listing",
+   "description": "productInputs.delete removes the product input (offerId = listing_id) from the configured data source; the product stops serving on Google once processed. Not reversible (insert it again to restore)."
+  }
+ ]
+}

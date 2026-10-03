@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "microsoft_marketplace-mcp",
+ "display_name": "Microsoft Marketplace / AppSource MCP",
+ "version": "0.1.0",
+ "description": "Microsoft Marketplace / AppSource (marketplaces): me, list_products, get_product. Every tool maps to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "microsoft_marketplace"
+   ],
+   "env": {
+    "PLATFORM_MCP_MICROSOFT_MARKETPLACE_CLIENT_ID": "${user_config.platform_mcp_microsoft_marketplace_client_id}",
+    "PLATFORM_MCP_MICROSOFT_MARKETPLACE_CLIENT_SECRET": "${user_config.platform_mcp_microsoft_marketplace_client_secret}",
+    "PLATFORM_MCP_MICROSOFT_MARKETPLACE_TENANT_ID": "${user_config.platform_mcp_microsoft_marketplace_tenant_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_microsoft_marketplace_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_MARKETPLACE_CLIENT_ID",
+   "description": "Microsoft Entra application (client) ID added to the Partner Center account.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_marketplace_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_MARKETPLACE_CLIENT_SECRET",
+   "description": "Client secret of that Entra application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_marketplace_tenant_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_MARKETPLACE_TENANT_ID",
+   "description": "Microsoft Entra tenant ID of the publisher (Partner Center > Account settings).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one product (GET product?$maxpagesize=1&$version=...) to confirm the Entra app is authorised on the Partner Center account."
+  },
+  {
+   "name": "list_products",
+   "description": "GET product?$maxpagesize=&$version= ('Query string parameters are used to query details pertaining to your products'). name is the product alias; type (softwareAsAService, azureContainer, ...) and identity.externalID is in raw; id is the durable id 'product/<guid>'. A continuationToken from a previous response may be passed as cursor; the response field that carries it is not named in the docs, so next_cursor is not set - read raw if a further page exists."
+  },
+  {
+   "name": "get_product",
+   "description": "GET <resource-durableID>?$version= returns the draft configuration of the product; pass the id returned by list_products ('product/<guid>'). Plans, listings and price-and-availability live in GET resource-tree/<product-durableID>."
+  }
+ ]
+}

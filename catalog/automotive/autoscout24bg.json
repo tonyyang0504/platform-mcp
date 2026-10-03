@@ -1,0 +1,44 @@
+{
+ "id": "autoscout24bg",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autoscout24.bg",
+ "domain": "autoscout24.bg",
+ "country": "Bulgaria",
+ "official_api": true,
+ "docs_url": "https://listing-creation.api.autoscout24.com/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client credentials for registered dealers/DMS integration partners",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). AutoScout24 group documents a Listing Creation API for dealers/DMS integrators (create/update/delete own listings); no public search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://listing-creation.api.autoscout24.com/docs",
+   "https://service.autoscout24.com/dealer/s/article/Dove-posso-trovare-la-documentazione-tecnica-della-Listing-Creation-API?language=it"
+  ],
+  "unofficial": [
+   "Apify/Carapis AutoScout24 scrapers"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://listing-creation.api.autoscout24.com/docs): AutoScout24 group documents a Listing Creation API for dealers/DMS integrators (create/update/delete own listings); no public search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

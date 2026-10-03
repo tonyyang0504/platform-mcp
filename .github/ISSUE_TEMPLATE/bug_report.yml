@@ -1,0 +1,17 @@
+name: Bug report
+description: A server, the CLI or a runtime does something wrong
+labels: [bug]
+body:
+  - type: input
+    id: platform
+    attributes: { label: Platform id and category, placeholder: "jobs/reed" }
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "The command or tool call, what you expected and what you got. Remove credentials and personal data." }
+    validations: { required: true }
+  - type: dropdown
+    id: runtime
+    attributes: { label: Runtime, options: [Python, TypeScript, both, not sure] }
+  - type: input
+    id: version
+    attributes: { label: Version or commit, placeholder: "platform-mcp-hub --version" }

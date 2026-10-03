@@ -1,0 +1,36 @@
+{
+ "id": "snov",
+ "category": "sales",
+ "label": "Snov.io",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://snov.io/api",
+ "url": "https://snov.io/",
+ "verified_at": "2026-09-05",
+ "terms_note": "OAuth client-credentials API on the user's Snov.io account; curl saw a 301 loop, WebFetch opened the page; robots.txt (91 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

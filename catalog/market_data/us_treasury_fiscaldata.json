@@ -1,0 +1,53 @@
+{
+ "id": "us_treasury_fiscaldata",
+ "category": "market_data",
+ "label": "U.S. Treasury Fiscal Data",
+ "lane": "api",
+ "country": "US",
+ "docs_url": "https://fiscaldata.treasury.gov/api-documentation/",
+ "url": "https://fiscaldata.treasury.gov",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Open data, no key, no documented rate limit. HTML docs (no OpenAPI). Filters are one `filter` parameter of comma-joined field:operator:value conditions; pagination is page[number]/page[size] with meta.total-count. An unknown security description answers 200 {\"data\":[]} (no error); a malformed date answers 200 with no data as well (live 2026-10-01).",
+ "adapter": {
+  "base_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "get_series": {
+    "method": "GET",
+    "path": "/v2/accounting/od/avg_interest_rates",
+    "params": {
+     "fields": "=record_date,security_desc,avg_interest_rate_amt",
+     "filter": "fmt:security_desc:eq:{series_id}[?,record_date:gte:{date:start}][?,record_date:lte:{date:end}]",
+     "sort": "=record_date",
+     "page[size]": "=10000"
+    },
+    "result": {
+     "items": "data",
+     "key": "points",
+     "fields": {
+      "time": "record_date",
+      "value": "num:avg_interest_rate_amt"
+     }
+    },
+    "docs": "https://fiscaldata.treasury.gov/datasets/average-interest-rates-treasury-securities/average-interest-rates-on-u-s-treasury-securities",
+    "note": "Monthly average interest rate (percent) of one kind of Treasury security. series_id is the security description exactly as published, e.g. 'Treasury Bills', 'Treasury Notes', 'Treasury Bonds', 'Treasury Inflation-Protected Securities (TIPS)', 'Total Marketable'. start/end are YYYY-MM-DD."
+   }
+  },
+  "not_offered": {
+   "me": "Open data: no accounts.",
+   "get_candles": "No OHLC data in Fiscal Data.",
+   "search_symbols": "No series search endpoint; the security descriptions are listed in the dataset's data dictionary (see get_series note).",
+   "get_news": "No news endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

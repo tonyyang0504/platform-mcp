@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "discord-messaging-mcp",
+ "display_name": "Discord MCP",
+ "version": "0.1.0",
+ "description": "Discord (messaging): me, send, reply, list_inbound, get_thread. Every tool maps to a documented endp",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/discord"
+   ],
+   "env": {
+    "PLATFORM_MCP_DISCORD_BOT_TOKEN": "${user_config.platform_mcp_discord_bot_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_discord_bot_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DISCORD_BOT_TOKEN",
+   "description": "Bot token from the app's Bot page in the Developer Portal, pasted WITHOUT the 'Bot ' prefix: the runtime adds it and sends 'Authorization: Bot <token>' ('authentication is performed with the Authorization HTTP header in the format Authorization: TOKEN_TYPE TOKEN', https://docs.discord.com/developers/reference#authentication). Channel permissions needed: VIEW_CHANNEL + READ_MESSAGE_HISTORY (list_inbound, get_thread), SEND_MESSAGES (send, reply); the MESSAGE_CONTENT privileged intent to read other users' message content.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "'Returns the user object of the requester's account' — for a bot token the bot's own user (id, username, discriminator, global_name, bot: true)."
+  },
+  {
+   "name": "send",
+   "description": "`to` is a CHANNEL id (snowflake), not a user or address: 'Post a message to a guild text or DM channel' — to reach a user, first open a DM channel with POST /users/@me/channels (not offered) and pass that channel id. `text` is `content`, 'Message contents (up to 2000 characters)'; `subject` and `channel` are ignored. Needs SEND_MESSAGES in the channel. message_id is the created message's id."
+  },
+  {
+   "name": "reply",
+   "description": "A Discord reply is a message carrying a message_reference to the parent: 'Replies are created by including a message_reference when sending a message. When sending, only message_id is required'. `thread_id` is that parent message id and `channel` (the channel the parent lives in) is REQUIRED — without it the runtime reports missing argument 'channel'. Needs READ_MESSAGE_HISTORY as well as SEND_MESSAGES ('The referenced message must exist and cannot be a system message')."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Lists ONE channel: `channel` (a channel or thread id) is REQUIRED — bots have no cross-channel inbox endpoint (inbound push is the Gateway). 'Returns an array of message objects from newest to oldest'; Discord pages by message id (before / after / around), so `page` is ignored and only the newest `limit` (1-100, Discord default 50) messages are returned; `since` is not sent. 'If the current user is missing the READ_MESSAGE_HISTORY permission in the channel, then no messages will be returned', and other users' `content` is empty without the MESSAGE_CONTENT intent. `from` is author.id (username under raw.author); `thread_id` is the channel id; `sent_at` is the ISO-8601 `timestamp`."
+  },
+  {
+   "name": "get_thread",
+   "description": "A Discord thread is itself a channel, so `thread_id` is the thread's channel id (a message's `thread.id`, or the id from a THREAD_CREATE event) and the same Get Channel Messages endpoint lists it; the vocabulary's `channel` is ignored. Same newest-first / id-cursor caveats as list_inbound (`page` ignored, newest `limit` messages only)."
+  }
+ ]
+}

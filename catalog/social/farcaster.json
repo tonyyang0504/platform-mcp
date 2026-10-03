@@ -1,0 +1,381 @@
+{
+ "id": "farcaster",
+ "category": "social",
+ "label": "Farcaster",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.neynar.com/reference/publish-cast",
+ "url": "https://farcaster.xyz/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Neynar API key on a paid plan; casts consume storage rent (~$7/year per unit = 5,000 casts, oldest pruned). Warpcast spam labels penalise low-quality automation.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest(hub / Neynar)",
+   "protocol",
+   "sdk"
+  ],
+  "auth": "keypair",
+  "access": "paid",
+  "capabilities": [
+   "post(casts ≤ 320 chars; long casts ≤ 1024 bytes)",
+   "reply",
+   "read_comments",
+   "search(Neynar)",
+   "delete",
+   "upload_media(embeds by URL, ≤ 2)",
+   "webhooks(Neynar)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "@neynar/nodejs-sdk (Neynar)",
+   "@farcaster/hub-nodejs (protocol)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1024,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (protocol + hub providers).",
+  "base_urls": [
+   "https://api.neynar.com/v2/farcaster/…"
+  ],
+  "auth": [
+   "1. Tenant has a Farcaster account (fid). The app needs a **signer**: an Ed25519 key added to the fid via the Key",
+   "2. Neynar API key (plans: free tier then paid); `signer_uuid` must be paired with the same API key."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/farcaster/cast/` {signer_uuid, text, embeds[≤ 2 {url}], parent (cast hash or channel URL), channel_id, idem}",
+    "purpose": "→ cast hash",
+    "notes": ""
+   },
+   {
+    "call": "same with `parent` = cast hash",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "DELETE /v2/farcaster/cast/` {signer_uuid, target_hash}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/farcaster/cast/conversation?identifier=&type=hash",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/farcaster/notifications?fid=&type=mentions,replies",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/farcaster/feed/user/casts?fid=",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/farcaster/cast/search?q=",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "Neynar webhooks (cast.created with mention / parent filters)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Cast text ≤ 1024 bytes UTF-8: `CAST` type 0–320 characters, `LONG_CAST` 321–1024 (protocol spec); ≤ 2 embeds (URLs ≤ 256 bytes); mentions stored as fids + byte positions. - Storage rent: 1 unit ≈ $7/year = 5,000 casts, 2,500 reactions, 2,500 links; oldest pruned beyond the limit (30-day grace after expiry). - Neynar rate limits / pricing follow the plan; Warpcast spam labels reduce reach for low-quality automation.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.farcaster.xyz/learn/what-is-farcaster/messages",
+   "https://raw.githubusercontent.com/farcasterxyz/protocol/main/docs/SPECIFICATION.md",
+   "https://docs.neynar.com/reference/publish-cast"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.neynar.com",
+  "auth": {
+   "type": "header",
+   "header": "x-api-key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Neynar API key from https://dev.neynar.com: 'All API endpoints require an API key. Include the following header with every request: x-api-key' (https://docs.neynar.com/reference). Writes additionally need a signer (config field signer_uuid) created and approved for the same API key."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "signer_uuid",
+    "required": false,
+    "help": "UUID of an approved signer for the publishing account ('signer_uuid is paired with API key, can't use a uuid made with a different API key'; 'In order to post a cast signer_uuid must be approved', https://docs.neynar.com/reference/publish-cast). Required for publish_text, reply_comment and delete; env PLATFORM_MCP_FARCASTER_SIGNER_UUID."
+   },
+   {
+    "name": "fid",
+    "required": true,
+    "help": "Farcaster id (integer) of the connected account, used by `me` (GET /v2/farcaster/user/bulk/?fids=) and read_mentions (GET /v2/farcaster/notifications/?fid=); env PLATFORM_MCP_FARCASTER_FID."
+   }
+  ],
+  "rate_per_second": 5,
+  "rate_note": "Neynar meters requests per minute by subscription plan (the endpoint references state no numbers) and answers 429 when exceeded; one client-side bucket at 5/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/farcaster/user/bulk/",
+    "params": {
+     "fids": "@fid"
+    },
+    "docs": "https://docs.neynar.com/reference/fetch-bulk-users",
+    "note": "GET /v2/farcaster/user/bulk/?fids=<fid> ('Comma separated list of FIDs, up to 100 at a time') returns BulkUsersResponse {users[{fid, username, display_name, custody_address, follower_count, following_count, profile{bio}, verifications, ...}]}; the connected account is account.users[0]. This verifies the API key and describes the configured fid; it does not prove the signer is approved."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/v2/farcaster/cast/",
+    "body": {
+     "signer_uuid": "@signer_uuid",
+     "text": "text",
+     "parent": "reply_to"
+    },
+    "result": {
+     "fields": {
+      "id": "cast.hash"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/publish-cast",
+    "note": "POST /v2/farcaster/cast/ {signer_uuid (required, 'UUID of the signer'), text, parent?} returns {success, cast{hash, author{fid}, text}}; `id` is the cast hash (0x-prefixed, used by read_comments / delete / analytics_post). `reply_to` is sent as `parent` ('parent URL of channel or hash of cast being replied to'), so it may be a cast hash or a channel URL; channel_id, embeds and idem are not sent. No url / created_at in the response."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/v2/farcaster/cast/conversation/",
+    "params": {
+     "identifier": "post_id",
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "type": "hash",
+     "reply_depth": "1"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "conversation.cast.direct_replies",
+     "key": "comments",
+     "fields": {
+      "id": "hash",
+      "author": "author.username",
+      "text": "text",
+      "created_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/lookup-cast-conversation",
+    "note": "GET /v2/farcaster/cast/conversation/?identifier=<hash>&type=hash&reply_depth=1&limit=N ('Cast identifier (It's either a URL or a hash)'; reply_depth 0-5, default 2; limit 1-50, default 20; sort_type default chron) returns {conversation{cast{..., direct_replies[{hash, author{fid, username}, text, timestamp, direct_replies[]}]}, chronological_parent_casts}, next{cursor}}; `comments` are the direct replies. Pagination is cursor-based, so `page` is not sent."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/v2/farcaster/cast/",
+    "body": {
+     "signer_uuid": "@signer_uuid",
+     "text": "text",
+     "parent": "comment_id"
+    },
+    "result": {
+     "fields": {
+      "id": "cast.hash"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/publish-cast",
+    "note": "A reply is a cast whose `parent` is the comment's hash ('parent URL of channel or hash of cast being replied to'); parent_author_fid is optional and not sent. Needs the approved signer_uuid."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/v2/farcaster/notifications/",
+    "params": {
+     "fid": "@fid",
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "type": "mentions"
+    },
+    "default_limit": 15,
+    "max_limit": 25,
+    "result": {
+     "items": "notifications",
+     "key": "mentions",
+     "fields": {
+      "id": "cast.hash",
+      "author": "cast.author.username",
+      "text": "cast.text",
+      "created_at": "cast.timestamp"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/fetch-all-notifications",
+    "note": "GET /v2/farcaster/notifications/?fid=<configured fid>&type=mentions&limit=N (type is an array parameter of follows | recasts | likes | mentions | replies | quotes, sent as the single value mentions; limit 1-25, default 15) returns {unseen_notifications_count, notifications[{type, most_recent_timestamp, seen, cast{hash, author{username}, text, timestamp}}], next{cursor}}. Cursor pagination, so `page` and `since` are not sent. Neynar recommends webhooks for bot mentions ('It's more real time and cheaper compute')."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/v2/farcaster/cast/",
+    "body": {
+     "signer_uuid": "@signer_uuid",
+     "target_hash": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/delete-cast",
+    "note": "DELETE /v2/farcaster/cast/ with a JSON body {signer_uuid (required), target_hash (required, the cast hash)} returns {success, message} (the runtime answers {status: 'deleted'}; the upstream body is under raw). 'In order to delete a cast signer_uuid must be approved', and the signer must belong to the cast's author."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/v2/farcaster/cast/",
+    "params": {
+     "identifier": "post_id"
+    },
+    "fixed_params": {
+     "type": "hash"
+    },
+    "result": {
+     "root": "cast",
+     "fields": {
+      "post_id": "hash",
+      "likes": "reactions.likes_count",
+      "recasts": "reactions.recasts_count",
+      "replies": "replies.count"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/lookup-cast-by-hash-or-url",
+    "note": "GET /v2/farcaster/cast/?identifier=<hash>&type=hash returns CastResponse {cast{hash, author, text, timestamp, reactions{likes_count, recasts_count}, replies{count}, embeds, ...}}. The runtime cannot compose a nested `metrics` object, so counts are top-level fields (likes, recasts, replies)."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/v2/farcaster/cast/",
+    "body": {
+     "signer_uuid": "@signer_uuid",
+     "text": "text",
+     "embeds.0.url": "image_urls.0",
+     "embeds.1.url": "image_urls.1"
+    },
+    "result": {
+     "fields": {
+      "id": "cast.hash"
+     }
+    },
+    "docs": "https://docs.neynar.com/reference/publish-cast",
+    "note": "POST /v2/farcaster/cast/ {signer_uuid, text?, embeds: [{url}]}: `embeds` is an array with maxItems 2 of URL embeds ({url: string}) or cast embeds ({cast_id: {fid, hash}}), so the first TWO image_urls are sent as URL embeds and any further ones are ignored; Farcaster clients render image URLs inline. `id` is the cast hash; no url / created_at in the response. Needs the approved signer_uuid."
+   }
+  },
+  "not_offered": {}
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.neynar.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/neynarxyz/OAS/main/src/api/spec.yaml: 8/8 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

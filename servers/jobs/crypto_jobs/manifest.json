@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "crypto_jobs-mcp",
+ "display_name": "crypto.jobs MCP",
+ "version": "0.1.0",
+ "description": "crypto.jobs (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "crypto_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "crypto.jobs RSS 2.0 feed (latest 50 jobs). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<Role> at <Company>'; description (HTML) starts with Company / Location lines; category stays in raw. id is the posting link (with utm parameters)."
+  }
+ ]
+}

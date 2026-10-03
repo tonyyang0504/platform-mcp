@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "coinbase_exchange-mcp",
+ "display_name": "Coinbase Exchange MCP",
+ "version": "0.1.0",
+ "description": "Coinbase Exchange (trading): list_markets, get_ticker, get_candles. Every tool maps to a documented ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "coinbase_exchange"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Every product including delisted ones (type = status: online, delisted ...); paged locally."
+  },
+  {
+   "name": "get_ticker",
+   "description": ""
+  },
+  {
+   "name": "get_candles",
+   "description": "interval: 1m 5m 15m 1h 6h 1d. Newest first; up to 300 per call; the newest `limit` are returned."
+  }
+ ]
+}

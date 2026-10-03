@@ -1,0 +1,36 @@
+{
+ "id": "us_california_bizfile",
+ "category": "sales",
+ "label": "California bizfile Online business search",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://bizfileonline.sos.ca.gov/search/business",
+ "verified_at": "2026-09-05",
+ "terms_note": "Public SPA search (statements of information list officers); no robots.txt served; the fetcher must drive the JSON endpoints the page uses — rate-limited.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

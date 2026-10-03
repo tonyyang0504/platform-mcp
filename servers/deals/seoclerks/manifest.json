@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "seoclerks-mcp",
+ "display_name": "SEOClerks MCP",
+ "version": "0.1.0",
+ "description": "SEOClerks (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "seoclerks"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET https://www.seoclerks.com/api?type=inlinead&dt=wtb&s=<query>&c=<category>&am=<limit>&oby=bidstart&f=json — the Service Ads API builder with 'Search Where' = Jobs (dt=wtb, buyers' want-to-buy requests), 'Search Term' s (matched against titles), 'Category' c (numeric id from the builder's category list, e.g. 64 Graphics & Logos), 'Amount to Select' am (Max: 40), 'Order By' Start Date (oby=bidstart, newest first) and 'Output Type' JSON. The API has no paging, so only the first `limit` matches are returned (page is ignored). No match answers a bare JSON null body: the Python runtime returns an empty list, the TypeScript runtime currently reports it as an internal_error (treat that as 'no results'). The buyer's budget is raw.price (a string, USD) and delivery days raw.days; create_date/last_update are Unix timestamps in raw. min_budget is not sent (the 'Minimum Price' option applies to services, not job requests)."
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "olist_tiny_erp-mcp",
+ "display_name": "Olist Tiny ERP (BR integration hub — not a supplier) MCP",
+ "version": "0.1.0",
+ "description": "Olist Tiny ERP (BR integration hub — not a supplier) (ecommerce suppliers): me, list_products, get_p",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "olist_tiny_erp"
+   ],
+   "env": {
+    "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_ID": "${user_config.platform_mcp_olist_tiny_erp_client_id}",
+    "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_SECRET": "${user_config.platform_mcp_olist_tiny_erp_client_secret}",
+    "PLATFORM_MCP_OLIST_TINY_ERP_REFRESH_TOKEN": "${user_config.platform_mcp_olist_tiny_erp_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_olist_tiny_erp_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_ID",
+   "description": "Client ID of the API v3 app created in your Olist ERP (Tiny) account (Configurações > Aplicativos; https://api-docs.erp.olist.com/).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_olist_tiny_erp_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_SECRET",
+   "description": "Client secret of the same app, sent in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_olist_tiny_erp_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OLIST_TINY_ERP_REFRESH_TOKEN",
+   "description": "refresh_token from the one-time authorization-code exchange (https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/auth ... then /token with grant_type=authorization_code). Access tokens expire after 4 hours and are re-minted from it; the refresh token 'tem duração de 1 dia' and each refresh returns a new one, which replaces it in memory (set PLATFORM_MCP_STATE_DIR to persist it across restarts).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /info: the connected ERP company {razaoSocial, cpfCnpj, fantasia, enderecoEmpresa, fone, email, regimeTributario}."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /produtos: the products registered in YOUR Olist ERP (an ERP/integration hub, not a supplier) [{id, sku, descricao, tipo, situacao (A/I/E), unidade, gtin, precos{preco, precoPromocional, precoCusto, precoCustoMedio}}]; `query` searches the name (nome). Prices are BRL. `category` is not a filter of this endpoint."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /produtos/{idProduto}: full product with stock (estoque.quantidade), suppliers (fornecedores[{id, nome, codigoProdutoNoFornecedor}]), category, brand, dimensions, variations and attachments in `raw`."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /ordem-compra/{idOrdemCompra}: a purchase order recorded in the ERP (ordem de compra to a supplier) {id, numeroPedido, data, dataPrevista, situacao, totalProdutos, frete, totalPedidoCompra, contato (supplier), itens[{produto, quantidade, preco}]}. Currency BRL."
+  }
+ ]
+}

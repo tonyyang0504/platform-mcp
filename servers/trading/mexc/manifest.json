@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "mexc-mcp",
+ "display_name": "MEXC (spot) MCP",
+ "version": "0.1.0",
+ "description": "MEXC (spot) (trading): list_markets, get_ticker, get_candles. Every tool maps to a documented endpoi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mexc"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Every spot symbol (BTCUSDT style) with base/quote; paged locally; query matches symbol, assets or the coin's full name."
+  },
+  {
+   "name": "get_ticker",
+   "description": ""
+  },
+  {
+   "name": "get_candles",
+   "description": "interval: 1m 5m 15m 30m 1h 4h 1d 1w 1M (sent as MEXC's 60m, 1W ...); oldest first."
+  }
+ ]
+}

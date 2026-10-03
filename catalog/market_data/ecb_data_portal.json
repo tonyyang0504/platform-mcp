@@ -1,0 +1,60 @@
+{
+ "label": "ECB Data Portal (SDMX time series)",
+ "lane": "api",
+ "kind": "macro_series",
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://data.ecb.europa.eu/help/api/data",
+ "url": "https://data.ecb.europa.eu/",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "terms_note": "European Central Bank statistical data, SDMX 2.1 REST web service, public and keyless. Responses are SDMX-ML (XML) by default.",
+ "adapter": {
+  "base_url": "https://data-api.ecb.europa.eu/service",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "get_series": {
+    "method": "GET",
+    "path": "/data/{series_id}",
+    "params": {
+     "startPeriod": "start",
+     "endPeriod": "end"
+    },
+    "fixed_params": {
+     "detail": "dataonly"
+    },
+    "result": {
+     "items": "GenericData.DataSet.Series.Obs",
+     "key": "points",
+     "fields": {
+      "time": "ObsDimension.@value",
+      "value": "num:ObsValue.@value"
+     }
+    },
+    "docs": "https://data.ecb.europa.eu/help/api/data",
+    "note": "series_id is '<flowRef>/<key>' naming ONE series, e.g. EXR/D.USD.EUR.SP00.A (daily USD per EUR reference rate) or FM/M.U2.EUR.4F.KR.MRR_FR.LEV. start/end are ISO dates or SDMX periods (2024-01, 2024-Q1). Without start the whole history is returned. A key matching no series is a 404. The Accept header pins SDMX-ML generic data (XML): the API content-negotiates and would answer SDMX-JSON to application/json, and its format= parameter does not override Accept."
+   }
+  },
+  "not_offered": {
+   "me": "Public statistical API without accounts or keys.",
+   "get_candles": "Statistical time series only; no OHLC market candles.",
+   "search_symbols": "The API lists dataflows (GET /service/dataflow) but offers no search over series keys.",
+   "get_news": "No news in the statistical data API."
+  },
+  "headers": {
+   "Accept": "application/vnd.sdmx.genericdata+xml;version=2.1"
+  }
+ },
+ "id": "ecb_data_portal",
+ "category": "market_data",
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

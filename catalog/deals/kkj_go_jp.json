@@ -1,0 +1,180 @@
+{
+ "id": "kkj_go_jp",
+ "category": "deals",
+ "label": "Kankojyu Information Portal",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://www.kkj.go.jp/doc/ja/api_guide.pdf",
+ "url": "https://www.kkj.go.jp/s/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Japanese government open data; API spec downloadable; no key noted on the page.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (official search API + RSS). Lane `assist` → **keep**; API/RSS for discovery. Confidence high.",
+  "base_urls": [
+   "https://www.kkj.go.jp/api/"
+  ],
+  "auth": [
+   "1. None noted."
+  ],
+  "endpoints": [
+   {
+    "call": "search API (keyword, 入札件名, 機関名, 地域 — AND combination)",
+    "purpose": "search",
+    "notes": "notice list"
+   },
+   {
+    "call": "RSS of search results",
+    "purpose": "feed",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Government data; bids follow each agency's procedure. - Japanese government open data; API spec downloadable; no key noted on the page.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.kkj.go.jp/s/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.kkj.go.jp",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "官公需情報ポータルサイト (中小企業庁) search API; use is subject to the portal's terms of use. Bids follow each agency's own procedure.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/",
+    "params": {
+     "Query": "query",
+     "Count": "limit",
+     "CFT_Issue_Date": "fmt:{days_ago:60}/"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "Results.SearchResults.SearchResult",
+     "key": "postings",
+     "fields": {
+      "id": "Key",
+      "title": "ProjectName",
+      "buyer": "OrganizationName",
+      "url": "ExternalDocumentURI",
+      "posted_at": "CftIssueDate",
+      "deadline": "TenderSubmissionDeadline",
+      "description": "ProjectDescription"
+     }
+    },
+    "docs": "https://www.kkj.go.jp/doc/ja/api_guide.pdf",
+    "note": "GET /api/?Query=…&Count=…&CFT_Issue_Date=<60 days ago>/ (XML; guide §3). `query` is required in practice (Query is the one mandatory search string; AND/OR/ANDNOT operators allowed; a single kana character is rejected). Count is the maximum number of results (the API has no offset or page parameter, so page is not sent — ignore next_page); results are limited to notices dated in the last 60 days. posted_at is 公告日 (CftIssueDate), deadline 入札開始日 (TenderSubmissionDeadline, often absent); category (物品/工事/役務), prefecture, OpeningTendersEvent and Attachments are in raw. A malformed query answers <Results><Error>…</Error></Results> with no results (postings is then empty)."
+   }
+  },
+  "not_offered": {
+   "me": "Keyless API ('ユーザー ID などのパラメーター…現時点では、用意していません'); no account.",
+   "get_posting": "The API has search only (Query etc.); there is no lookup by Key.",
+   "submit_bid": "Bids follow each agency's own procedure (the notice at url); the portal only aggregates notices.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "Keyless API; no account or credits."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

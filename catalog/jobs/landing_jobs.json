@@ -1,0 +1,162 @@
+{
+ "id": "landing_jobs",
+ "category": "jobs",
+ "label": "Landing.jobs",
+ "lane": "assist",
+ "kind": "tech",
+ "regions": [
+  "pt",
+  "eu"
+ ],
+ "docs_url": "https://github.com/landingjobs/LandingJobs-api/blob/master/README.md",
+ "url": "https://landing.jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "European tech jobs (Lisbon HQ); apply with the Landing profile.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "atom"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search (undocumented public JSON)",
+   "feed_xml"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET https://landing.jobs/api/v1/jobs (JSON: id, currency_code, expires_at, main_requirements, nice_to_have, title, company, city, remote, salary …) and the Atom feed at /feed can be read as a feed, but t",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No published developer terms or rate limits; No published developer terms or rate limits; the endpoint is keyless. Terms page not linked from the home page. Treat the JSON as a courtesy endpoint and honour robots.txt (Disallow: /api/) — prefer the Atom feed.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://landing.jobs/",
+   "https://landing.jobs/robots.txt",
+   "https://landing.jobs/api/v1/jobs?limit=1",
+   "https://landing.jobs/feed",
+   "https://landing.jobs/api",
+   "https://github.com/landingjobs/api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://landing.jobs/api/v1",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "Official API description published by Landing.jobs in its GitHub organisation (landingjobs/LandingJobs-api, 'Documentation of Landing.jobs API'): 'Companies and Job endpoints do not require authentication'; 'currently only JSON representation is supported'. No rate limit is published; kept to one request per second.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobs",
+    "params": {
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "location": "locations.0.city",
+      "url": "url",
+      "posted_at": "published_at",
+      "salary_min": "gross_salary_low",
+      "salary_max": "gross_salary_high",
+      "currency": "currency_code",
+      "description": "role_description"
+     }
+    },
+    "docs": "https://github.com/landingjobs/LandingJobs-api/blob/master/README.md#list-of-jobs",
+    "note": "Keyless list of open jobs. The documented query parameters are only offset and limit ('The default is 50 items. 50 is also the maximum number of items per page'), so query, location and remote are not sent - filter the returned postings client-side (remote, tags[], type, expires_at and locations[] are in raw). description is role_description (HTML); main_requirements, nice_to_have and perks are in raw. The company name is not in the job record."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/jobs/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "location": "locations.0.city",
+      "url": "url",
+      "posted_at": "published_at",
+      "salary_min": "gross_salary_low",
+      "salary_max": "gross_salary_high",
+      "currency": "currency_code",
+      "description": "role_description"
+     }
+    },
+    "docs": "https://github.com/landingjobs/LandingJobs-api/blob/master/README.md#jobs-1",
+    "note": "'Returns the job offer with the given id' (URL https://landing.jobs/api/v1/jobs/[id]); keyless."
+   }
+  },
+  "not_offered": {
+   "me": "The only account endpoint, GET /api/v1/user, needs a user API token ('Authorization: Token token=<API token>'), while 'Companies and Job endpoints do not require authentication'; this adapter is keyless, so there is no credential to verify.",
+   "apply": "The API lists applications read-only ('Returns the list of applications made by the current user', GET /api/v1/user/applications); no endpoint creates an application - apply on the posting's url.",
+   "list_messages": "No messaging endpoint; the documentation covers companies, jobs, the user, applications and referrals only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

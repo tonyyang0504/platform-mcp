@@ -1,0 +1,45 @@
+{
+ "id": "autoline_br",
+ "category": "automotive",
+ "label": "Autoline",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://autoline.com.br",
+ "domain": "autoline.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "leads"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Autoline Brasil exposes an internal 'Veyron.API' and accepts stock via homologated integrators (IntegraCarros, Cockpit); no public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autoline.com.br/api"
+  ],
+  "unofficial": [
+   "https://home.integracarros.com.br/",
+   "https://ajuda.cockpit.com.br/hc/pt-br/articles/5028134683284-Quais-os-canais-homologados-com-a-Webmotors"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Autoline Brasil exposes an internal 'Veyron.API' and accepts stock via homologated integrators (IntegraCarros, Cockpit); no public docs."
+}

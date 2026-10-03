@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/deribit-mcp",
+ "description": "Deribit Options & Futures (trading): me, list_markets, get_ticker, get_balances, list_orders, place_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.deribit.com/articles/authentication",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "deribit"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DERIBIT_CLIENT_ID",
+     "description": "Client ID of a Deribit API key (Account > API). Give it trade:read_write and NOT wallet:read_write or account:read_write. A test-environment key comes from https://test.deribit.com and works only against https://test.deribit.com/api/v2 (set adapter.base_url to it).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DERIBIT_CLIENT_SECRET",
+     "description": "The key's Client Secret; sent as HTTP Basic credentials (Authorization: Basic base64(client_id:client_secret)) on each request over TLS.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

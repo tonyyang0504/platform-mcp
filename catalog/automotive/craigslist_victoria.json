@@ -1,0 +1,43 @@
+{
+ "id": "craigslist_victoria",
+ "category": "automotive",
+ "label": "Victoria",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://victoria.craigslist.org",
+ "domain": "victoria.craigslist.org",
+ "country": "Canada",
+ "official_api": true,
+ "docs_url": "https://www.craigslist.org/about/bulk_posting_interface",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "craigslist paid posting account credentials",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Craigslist offers an official Bulk Posting Interface/Bulkpost API for high-volume paid posters (e.g. for-sale-by-dealer), granted case-by-case; no search/read API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.craigslist.org/about/bulk_posting_interface",
+   "https://bapi.craigslist.org/bulkpost-docs/v1/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.craigslist.org/about/bulk_posting_interface): Craigslist offers an official Bulk Posting Interface/Bulkpost API for high-volume paid posters (e.g. for-sale-by-dealer), granted case-by-case; no search/read API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

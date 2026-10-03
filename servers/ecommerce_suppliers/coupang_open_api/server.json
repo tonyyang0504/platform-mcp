@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/coupang_open_api-mcp",
+ "description": "Coupang Wing (seller) + Coupang Open API (ecommerce suppliers): me, list_products, get_product, get_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.coupang.com/ko/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "coupang_open_api"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_COUPANG_OPEN_API_ACCESS_KEY",
+     "description": "Coupang Open API Access Key issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급) after business verification; calls must come from one of the (up to 10) allow-listed IPs, and keys expire and must be re-issued.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_COUPANG_OPEN_API_SECRET_KEY",
+     "description": "The matching Secret Key: signs every request (HMAC-SHA256 hex over signed-date + method + path + query, sent as `Authorization: CEA algorithm=HmacSHA256, access-key=..., signed-date=..., signature=...`). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_COUPANG_OPEN_API_VENDOR_ID",
+     "description": "Coupang vendorId (업체코드, e.g. A00012345), shown in WING after login; used in every path/query.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "br_brasilapi",
+ "category": "sales",
+ "label": "BrasilAPI",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "br"
+ ],
+ "docs_url": "https://brasilapi.com.br/docs",
+ "url": "https://brasilapi.com.br/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Community open API over the Receita bulk CNPJ data, no key, fair-use rate limit → platform-side; robots.txt (1 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

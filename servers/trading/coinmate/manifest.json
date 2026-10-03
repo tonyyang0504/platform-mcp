@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "coinmate-mcp",
+ "display_name": "Coinmate MCP",
+ "version": "0.1.0",
+ "description": "Coinmate (trading): list_markets, get_ticker. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "coinmate"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": ""
+  },
+  {
+   "name": "get_ticker",
+   "description": "symbol is a pair such as BTC_EUR or BTC_CZK; volume is the 24h amount in the base currency."
+  }
+ ]
+}

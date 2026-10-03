@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "woocommerce-mcp",
+ "display_name": "WooCommerce MCP",
+ "version": "0.1.0",
+ "description": "WooCommerce (ecommerce channels): me, create_listing, update_listing, end_listing, set_inventory, li",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "woocommerce"
+   ],
+   "env": {
+    "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_KEY": "${user_config.platform_mcp_woocommerce_consumer_key}",
+    "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_SECRET": "${user_config.platform_mcp_woocommerce_consumer_secret}",
+    "PLATFORM_MCP_WOOCOMMERCE_STORE_HOST": "${user_config.platform_mcp_woocommerce_store_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_woocommerce_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_KEY",
+   "description": "WooCommerce REST API consumer key (WooCommerce > Settings > Advanced > REST API > Add key, Read/Write) sent as the HTTP Basic username over HTTPS.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_woocommerce_consumer_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_SECRET",
+   "description": "The consumer secret shown once when the key is created; sent as the HTTP Basic password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_woocommerce_store_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WOOCOMMERCE_STORE_HOST",
+   "description": "Host (and any path prefix) of the merchant's WooCommerce store without scheme, e.g. shop.example.com or example.com/shop; every call goes to https://<store_host>/wp-json/wc/v3/... (HTTPS only: Basic auth with the consumer key/secret is documented for HTTPS; plain-HTTP stores need OAuth 1.0a, not supported).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /wp-json/wc/v3/system_status (manage_woocommerce capability) returns the store's environment {home_url, site_url, version, wp_version, ...}, database, active_plugins, theme and settings; it verifies the key pair and identifies the store."
+  },
+  {
+   "name": "create_listing",
+   "description": "POST /wp-json/wc/v3/products creates a simple product: name, type=simple, regular_price (sent as the documented decimal string, e.g. \"21.99\"), description, sku, stock_quantity and manage_stock=true (so stock_quantity takes effect); the response is the product {id, permalink, status (publish by default), ...}. `currency` is the store's currency (not per product) and `image_urls` need images[{src}] objects, so both are ignored."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /wp-json/wc/v3/products/{id} with only the given fields (name, regular_price as the documented decimal string, description, stock_quantity); stock_quantity only applies when the product has manage_stock on (see set_inventory). Returns the product; `status` is the product status (publish/draft/...)."
+  },
+  {
+   "name": "end_listing",
+   "description": "Unpublishes the product by setting status=draft (reversible; the product keeps its data). DELETE /products/{id} (trash, or force=true to delete permanently) is not used."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /wp-json/wc/v3/products/{id} {manage_stock: true, stock_quantity} sets product-level stock. `listing_id` (the product id) is required: the endpoint is addressed by id, and a lookup by `sku` (GET /products?sku=) would be a second call the runtime does not chain. Variation stock is per variation (PUT /products/{id}/variations/{vid}, not mapped)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /wp-json/wc/v3/orders?page&per_page(max 100)&status(any|pending|processing|on-hold|completed|cancelled|refunded|failed|trash)&after(ISO8601). Returns an array of orders; `total` is a decimal string (\"29.35\") as WooCommerce returns it; the total count is only in the X-WP-Total header, so `total` of the page is null."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "PUT /wp-json/wc/v3/orders/{id} {status: completed} (WooCommerce's fulfilled state). Core WooCommerce has no tracking fields: `carrier` and `tracking_number` are NOT recorded (they would need meta_data [{key, value}] objects or the Shipment Tracking extension's wc-shipment-tracking/v3 endpoint, neither expressible here)."
+  }
+ ]
+}

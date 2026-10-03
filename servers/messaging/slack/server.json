@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/slack-mcp",
+ "description": "Slack (messaging): me, send, reply, get_thread, list_inbound, mark_read. Every tool maps to a docume",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.slack.dev/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "slack"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SLACK_TOKEN",
+     "description": "Bot token (xoxb-…) of an installed Slack app, sent as 'Authorization: Bearer' ('You must transmit your token as a bearer token in the Authorization HTTP header', https://docs.slack.dev/apis/web-api/). Scopes: chat:write (send, reply); channels:history, groups:history, im:history, mpim:history (list_inbound, get_thread); channels:manage, channels:write, groups:write, im:write or mpim:write (mark_read).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

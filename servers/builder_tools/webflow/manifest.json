@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "webflow-mcp",
+ "display_name": "Webflow MCP",
+ "version": "0.1.0",
+ "description": "Webflow (builder tools): me, list_items, get_item, create_item, update_item, delete_item. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "webflow"
+   ],
+   "env": {
+    "PLATFORM_MCP_WEBFLOW_TOKEN": "${user_config.platform_mcp_webflow_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_webflow_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WEBFLOW_TOKEN",
+   "description": "Webflow site API token (Site settings > Apps & integrations > API access) or OAuth access token with CMS:read/CMS:write (and authorized_user:read for me).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/token/authorized_by: the user who authorized the token (id, email, name)."
+  },
+  {
+   "name": "list_items",
+   "description": "GET /v2/collections/{collection_id}/items?offset&limit (≤100)&name: staged CMS items of the collection (collection is required: a collection id). query filters by exact item name; url is the item slug."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /v2/collections/{collection_id}/items/{item_id}: one staged item; content is its fieldData object."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /v2/collections/{collection_id}/items {fieldData: {name, slug, …}}: fields is the fieldData (slug is required by Webflow; rich-text fields take HTML), title sets name. The item is staged; publish it with the site/items publish endpoints. content is not sent (field slugs differ per collection)."
+  },
+  {
+   "name": "update_item",
+   "description": "PATCH /v2/collections/{collection_id}/items/{item_id} {fieldData}: updates the given fields of the staged item."
+  },
+  {
+   "name": "delete_item",
+   "description": "DELETE /v2/collections/{collection_id}/items/{item_id}: deletes the staged item (a published copy stays live until unpublished)."
+  }
+ ]
+}

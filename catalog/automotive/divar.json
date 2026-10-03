@@ -1,0 +1,124 @@
+{
+ "id": "divar",
+ "category": "automotive",
+ "label": "Divar",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://divar.ir",
+ "domain": "divar.ir",
+ "country": "Iran",
+ "official_api": true,
+ "docs_url": "https://kenar.divar.dev/post/search_post",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "OAuth2 / API key per Kenar app",
+  "access": "apply",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "messaging",
+   "listing_addons"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Divar Open Platform (Kenar): official docs + SDKs (Python/Go/JS) in github.com/divar-ir; finder endpoints search_post/get_post (incl. car category), chat and add-ons; app registration required.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://kenar.divar.dev/",
+   "https://github.com/divar-ir/kenar-api",
+   "https://github.com/divar-ir/kenar-docs",
+   "https://github.com/divar-ir/kenar-sdk-go"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://open-api.divar.ir",
+  "auth": {
+   "type": "header",
+   "header": "x-api-key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "API key of a Kenar app (https://kenar.divar.dev/management/api-keys); search needs the SEARCH_POST permission."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "Kenar Divar API limits (https://kenar.divar.dev/scopes/). The finder search may be called only 100 times in total per app, even in production.",
+  "tools": {
+   "search_listings": {
+    "method": "POST",
+    "path": "/v2/open-platform/finder/post",
+    "body": {
+     "category": "=light",
+     "city": "location",
+     "query.brand_model.0": "model",
+     "query.production_year.min": "year_min",
+     "query.production_year.max": "year_max",
+     "query.usage.max": "mileage_max"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "posts",
+     "key": "listings",
+     "fields": {
+      "id": "token",
+      "title": "title",
+      "location": "city",
+      "posted_at": "last_modified_at"
+     }
+    },
+    "docs": "https://kenar.divar.dev/post/search_post",
+    "note": "QUOTA: Divar allows this search only 100 times IN TOTAL per app (even published apps) — use sparingly. POST /v2/open-platform/finder/post {category: light (cars), city, query: {brand_model: [model], production_year {min,max}, usage {max}}}; no pagination (up to 100 newest posts). location is a Divar city slug (e.g. tehran); model is a Divar brand_model value (e.g. 'Pride 111 EX'); years are Solar Hijri (e.g. 1400–1403); mileage in km. price.value and vehicles_fields.usage are strings and stay in raw."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/v1/open-platform/finder/post/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "token",
+      "title": "data.title",
+      "price": "data.price.value",
+      "location": "city",
+      "description": "data.description",
+      "images": "data.images"
+     }
+    },
+    "docs": "https://kenar.divar.dev/post/get_post",
+    "note": "GET /v1/open-platform/finder/post/{post token} with the API key only (no OAuth needed): category, city, district and data {title, description, price {mode, value}, images, brand_model, …}; absent fields mean zero/false. Prices in rials."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "No VIN lookup in the Kenar API.",
+   "get_valuation": "No valuation endpoint in the Kenar API.",
+   "list_dealers": "No dealer directory endpoint in the Kenar API.",
+   "me": "User endpoints need an OAuth grant from a Divar user; this adapter uses the app API key."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host open-api.divar.ir: DNS ok, TLSv1.3 (Asseco Data Systems S.A.)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/2 tool paths found verbatim on their docs pages, 1 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

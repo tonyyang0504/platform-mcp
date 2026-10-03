@@ -1,0 +1,43 @@
+{
+ "id": "classic_trader_nl",
+ "category": "automotive",
+ "label": "Classic Trader",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.classic-trader.com",
+ "domain": "classic-trader.com",
+ "country": "Netherlands",
+ "official_api": false,
+ "docs_url": "https://www.classic-trader.com/uk/import/car-ad/documentation",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "dealer account",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). Classic Trader documents an XML car-ad import (importId-based upsert) for dealer accounts; no read/search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.classic-trader.com/uk/import/car-ad/documentation"
+  ],
+  "unofficial": [
+   "https://apify.com/rastriq/classic-trader-scraper"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Classic Trader documents an XML car-ad import (importId-based upsert) for dealer accounts; no read/search API. No request/response API to serve."
+}

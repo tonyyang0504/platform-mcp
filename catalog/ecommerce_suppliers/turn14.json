@@ -1,0 +1,108 @@
+{
+ "id": "turn14",
+ "category": "ecommerce_suppliers",
+ "label": "Turn 14 Distribution",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.turn14.com/",
+ "url": "https://www.turn14.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "dealer agreement; API access for dealers",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "dealer API credentials (api.turn14.com — 401 unauthenticated per earlier research)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Dealer agreement.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.turn14.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Turn 14's API is for dealers only: https://turn14.com/api/ renders the home page with a dealer LOG IN form (2026-09-25), https://www.turn14.com/api_settings.php answers 401, and the API host https://api.turn14.com answers 404 at its root and /documentation, /docs, with only /v1/token responding (405 to GET). The reference is behind the dealer login."
+}

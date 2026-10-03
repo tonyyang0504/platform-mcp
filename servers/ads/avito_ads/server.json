@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/avito_ads-mcp",
+ "description": "Avito Advertising (Авито Реклама) (ads): me, list_accounts, list_campaigns, get_report. Every tool m",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://ads-help.avito.com/external/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "avito_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AVITO_ADS_CLIENT_ID",
+     "description": "Client Key created by an Admin in the Avito Advertising cabinet settings (API keys); exchanged at POST https://api.avito.ru/token (grant_type=client_credentials, form body) for a bearer token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AVITO_ADS_CLIENT_SECRET",
+     "description": "The matching Client Secret. Tokens are re-requested automatically on expiry or 401.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AVITO_ADS_ACCOUNT_ID",
+     "description": "Numeric Avito Advertising account id (every path is /ads/v1/account/{account_id}/…); used by `me`.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

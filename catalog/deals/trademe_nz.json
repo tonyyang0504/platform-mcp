@@ -1,0 +1,211 @@
+{
+ "id": "trademe_nz",
+ "category": "deals",
+ "label": "Trade Me Jobs",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "nz"
+ ],
+ "docs_url": "https://developer.trademe.co.nz/api-reference/search-methods/jobs-search",
+ "url": "https://www.trademe.co.nz/a/jobs",
+ "verified_at": "2026-09-25",
+ "terms_note": "Trade Me API terms: in-trade only; application review; OAuth.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth (registered application; in-trade sellers)",
+  "access": "apply",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Trade Me API for in-trade sellers / vertical partners). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://api.trademe.co.nz/v1/"
+  ],
+  "auth": [
+   "1. Apply for API access (in-trade) → consumer key/secret → OAuth."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/Search/…",
+    "purpose": "search",
+    "notes": "listings by category / Services / Jobs"
+   },
+   {
+    "call": "GET /v1/Listings/{id}.json",
+    "purpose": "details",
+    "notes": "—"
+   }
+  ],
+  "limits": " - In-trade requirement; no casual / buyer-side tools. - Trade Me API terms: in-trade only; application review; OAuth.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.trademe.co.nz/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.trademe.co.nz/v1",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "consumer_key",
+     "required": true,
+     "help": "Trade Me API consumer key of your registered application (My Trade Me → Developer options; API access is granted after Trade Me reviews the application)."
+    },
+    {
+     "name": "consumer_secret",
+     "required": true,
+     "help": "The application's consumer secret: sent as the OAuth 1.0a PLAINTEXT signature '<consumer secret>&' over HTTPS (Trade Me's documented PLAINTEXT workflow)."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "payload": "{method}",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "Authorization": "OAuth oauth_consumer_key={@consumer_key}, oauth_signature_method=PLAINTEXT, oauth_signature={@consumer_secret}%26"
+    }
+   }
+  },
+  "rate_per_second": 1,
+  "terms": "Trade Me API terms: applications are reviewed and access is for approved (in-trade) uses; calls are rate-limited. Applying for a job happens on Trade Me.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/Search/Jobs.json",
+    "params": {
+     "search_string": "query",
+     "category": "category",
+     "page": "page",
+     "rows": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 25,
+    "result": {
+     "items": "List",
+     "key": "postings",
+     "total": "TotalCount",
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "buyer": "Company",
+      "description": "ShortDescription"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/search-methods/jobs-search",
+    "note": "GET /v1/Search/Jobs.json with an application-level OAuth 1.0a PLAINTEXT Authorization header (consumer key + '<consumer secret>&', no member token; rows ≤ 25 without a member token). category is a Trade Me jobs category id. These are employment listings: buyer is the employer (Company); StartDate/EndDate use Trade Me's '/Date(ms)/' JSON format and stay in raw with JobLocation, JobType and pay-range fields. The listing page is https://www.trademe.co.nz/a/jobs/listing/<id>."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/Listings/{id}.json",
+    "result": {
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "buyer": "Company",
+      "description": "Body"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/listing-methods/retrieve-the-details-of-a-single-listing",
+    "note": "GET /v1/Listings/<ListingId>.json (full body; job listings add Company, ShortDescription and application details in raw)."
+   }
+  },
+  "not_offered": {
+   "me": "Member endpoints (/v1/MyTradeMe/Summary) need a member access token from the OAuth 1.0a RequestToken → Authorize → AccessToken flow; this adapter signs as the application only.",
+   "submit_bid": "Job applications are made on Trade Me (Apply Online); Trade Me's bidding API applies to auctions, not job listings.",
+   "withdraw_bid": "No job-application API (see submit_bid).",
+   "bid_status": "No job-application API (see submit_bid).",
+   "list_messages": "Member messaging needs a member token (not offered by this application-signed adapter).",
+   "send_message": "Asking an employer a question needs a member token (not offered by this application-signed adapter).",
+   "credits": "No credit balance for job seekers."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires consumer_key, consumer_secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

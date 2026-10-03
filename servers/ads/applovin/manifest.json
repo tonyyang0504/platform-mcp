@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "applovin-mcp",
+ "display_name": "AppLovin Ads (AXON) MCP",
+ "version": "0.1.0",
+ "description": "AppLovin Ads (AXON) (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "applovin"
+   ],
+   "env": {
+    "PLATFORM_MCP_APPLOVIN_CAMPAIGN_API_KEY": "${user_config.platform_mcp_applovin_campaign_api_key}",
+    "PLATFORM_MCP_APPLOVIN_REPORT_KEY": "${user_config.platform_mcp_applovin_report_key}",
+    "PLATFORM_MCP_APPLOVIN_ACCOUNT_ID": "${user_config.platform_mcp_applovin_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_applovin_campaign_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLOVIN_CAMPAIGN_API_KEY",
+   "description": "Campaign Management API key (AppLovin dashboard > your account, top right > Keys; not the Ad Unit Management key), sent as the raw `Authorization` header value on api.ads.axon.ai.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_applovin_report_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLOVIN_REPORT_KEY",
+   "description": "Report Key (dashboard > account > Keys), sent as the api_key query parameter of GET https://r.applovin.com/report; needed only for get_report.",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_applovin_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_APPLOVIN_ACCOUNT_ID",
+   "description": "Numeric AppLovin account id (dashboard > account > Go to settings: the number after the account name); every Campaign Management call carries it as ?account_id=.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe is GET /campaign/list?account_id=…&size=1, which verifies the Campaign Management key against the configured account."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /campaign/list?account_id=…&page=…&size=… (a JSON array of Campaign objects, at most 100 per page). status is LIVE or PAUSED. `budget` is the global daily budget (a decimal string); campaigns with per-country budgets have it in raw.budget.country_code_to_daily_budget. `status` is not sent (no status filter is documented)."
+  },
+  {
+   "name": "get_report",
+   "description": "GET https://r.applovin.com/report?api_key=<Report Key>&start&end&columns=day,campaign,campaign_id_external,impressions,clicks,conversions,cost&format=json&report_type=advertiser (UTC; the request window is the last 45 days). Rows are read from `results`. `account_id` is not sent (the Report Key selects the account) and `campaign_id` is not applied: the report identifies campaigns by campaign_id_external (the campaign's hashed_id), not the numeric id list_campaigns returns."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /campaign/update?account_id=… {id, type: APP, budget: {daily_budget_for_all_countries}} sets one uniform daily budget (account currency, USD) across all targeted countries; this spends money and replaces any per-country budgets. `currency` is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /campaign/update?account_id=… {id, type: APP, status: PAUSED|LIVE} (pause → PAUSED, resume → LIVE). Resuming restarts spend."
+  }
+ ]
+}

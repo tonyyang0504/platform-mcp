@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "seznam_sklik-mcp",
+ "display_name": "Seznam Sklik MCP",
+ "version": "0.1.0",
+ "description": "Seznam Sklik (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Ever",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "seznam_sklik"
+   ],
+   "env": {
+    "PLATFORM_MCP_SEZNAM_SKLIK_REFRESH_TOKEN": "${user_config.platform_mcp_seznam_sklik_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_seznam_sklik_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SEZNAM_SKLIK_REFRESH_TOKEN",
+   "description": "Sklik API Fénix refresh token (log in at https://www.sklik.cz/ > Tools > API > create token; you choose its validity and access level r / rw). Exchanged at POST https://api.sklik.cz/v1/user/token (grant_type=refresh_token, form) for a 1-hour access token, re-requested on expiry or 401; the token acts on the refresh token owner's own Sklik account.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/user/me: {userId, userName, actor, scope} of the account the token acts on (API Fénix; spec https://api.sklik.cz/v1/openapi.json)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v1/user/linked-accounts: own and managed accounts the token can access (id, username, access r|rw|rwa, agencyStatus, relationStatus). The other tools act on the refresh token owner's account; reaching a managed account needs a token issued with its user_id, which is not configured here. Currency is CZK."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v1/sklik/campaigns/?a=id&a=name&a=status&…&isDeleted=false&status=&limit&offset (API Fénix 'List campaigns'). status is active or suspend. `budget` is budget.dayBudget in HELLERS (100 hellers = 1 CZK). `account_id` is not sent (the token selects the account)."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /v1/sklik/campaigns/ with statistic attributes (impressions, clicks, ctr, avgCpc, totalMoney, conversions), statisticsDateFrom/To and statisticsGranularity=daily: one row per campaign and day (firstDate). Daily granularity allows at most one month per call. Money is in HELLERS: spend_hellers = totalMoney (clicks + impressions, 100 hellers = 1 CZK). With campaign_id only that campaign is returned. Up to 1000 rows per call."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /v1/sklik/campaigns/{campaign_id}/ {budget: {dayBudget}} answers 204. daily_budget is an INTEGER IN HELLERS (100 hellers = 1 CZK; e.g. 50000 = 500 CZK) and fractional values are refused. It changes the campaign's daily budget, which is its own budget object (shared budgets are managed separately). This spends money. `currency` is ignored (CZK)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /v1/sklik/campaigns/{campaign_id}/ {status: suspend|active} (pause → suspend, resume → active); answers 204. Resuming restarts spend. Needs a refresh token with write (rw) access."
+  }
+ ]
+}

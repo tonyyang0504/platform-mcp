@@ -1,0 +1,282 @@
+{
+ "id": "reddit",
+ "category": "social",
+ "label": "Reddit",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.reddit.com/dev/api/",
+ "url": "https://www.reddit.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Reddit Data API Terms §3.1/§3.2: commercial use needs a separate written agreement with Reddit; automated voting is vote manipulation — the suite never votes.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "search",
+   "delete",
+   "edit"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "PRAW (community Python, de-facto standard)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 40000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/submit (sr, kind=self, title ≤ 300, text, api_type=json)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/media/asset.json (upload lease) → POST /api/submit (kind=image) · gallery via /api/submit_gallery_post.json",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same media-asset lease flow (kind=video, plus a thumbnail asset)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /comments/{id36}",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/comment (thing_id t3_… / t1_…, text)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /message/mentions (also /message/inbox|unread|sent)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/compose (to, subject ≤ 100, text)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /message/inbox|unread (+ POST /api/read_message)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST /api/del (fullname)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (score / upvote_ratio / num_comments on the listing only; no insights API)",
+   "docs": "https://www.reddit.com/dev/api/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (karma on GET /api/v1/me)",
+   "docs": "https://www.reddit.com/dev/api/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://oauth.reddit.com/…",
+   "https://www.reddit.com/api/v1/"
+  ],
+  "auth": [
+   "1. Register an app at reddit.com/prefs/apps (type `web` for the platform; `script` for a tenant's own account).",
+   "2. `GET https://www.reddit.com/api/v1/authorize?client_id&response_type=code&state&redirect_uri&duration=permanent&scope=…`",
+   "3. Scopes for our use: `identity`, `read`, `submit`, `edit`, `privatemessages`, `history`, `flair`, `vote`.",
+   "4. Mandatory unique User-Agent `platform:app-id:version (by /u/username)`; default UAs are heavily throttled."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/submit",
+    "purpose": "`sr`, `kind=self",
+    "notes": "link"
+   },
+   {
+    "call": "POST /api/comment",
+    "purpose": "`thing_id` (t3_ post or t1_ comment), `text`",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/editusertext`, `POST /api/del",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /message/inbox`, `GET /message/unread`, `POST /api/read_message",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/compose",
+    "purpose": "`to`, `subject`, `text`",
+    "notes": ""
+   },
+   {
+    "call": "GET /user/{name}/submitted`, `/user/{name}/comments",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /search?q=&sort=&t=`, `GET /r/{sr}/search?restrict_sr=1`, `GET /subreddits/search",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /r/{sr}/about/rules`, `GET /api/submit_text",
+    "purpose": "check before posting",
+    "notes": ""
+   }
+  ],
+  "limits": " - Free access: **100 queries per minute per OAuth client id** (10-minute averaging window); headers `X-Ratelimit-Used / -Remaining / -Reset`; unauthenticated traffic blocked. - Developer Terms + Data API Terms + Responsible Builder Policy; commercial / high-volume access requires a Reddit agreement; never retain deleted content; never misrepresent the User-Agent. - Subreddit self-promotion rules are enforced by moderators — the agents must read `about/rules` first.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.reddit.com/dev/api/",
+   "https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki",
+   "https://github.com/reddit-archive/reddit/wiki/OAuth2"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://oauth.reddit.com",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://www.reddit.com/api/v1/access_token",
+   "grant": "client_credentials",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of a `script` or `web` app registered at https://www.reddit.com/prefs/apps; sent as the HTTP Basic username to POST https://www.reddit.com/api/v1/access_token (grant_type=client_credentials)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's secret (HTTP Basic password on the token request). The resulting app-only bearer expires after `expires_in` seconds and is re-requested automatically; it carries no user context, so only read endpoints are offered."
+    }
+   ]
+  },
+  "user_agent_field": "user_agent",
+  "config_fields": [
+   {
+    "name": "user_agent",
+    "required": true,
+    "help": "Reddit requires a unique, descriptive User-Agent of the form \"<platform>:<app ID>:<version string> (by /u/<reddit username>)\", e.g. \"server:com.example.myapp:v1.0 (by /u/you)\"; default or misrepresented agents are throttled or blocked (https://github.com/reddit-archive/reddit/wiki/API). The runtime appends it to its own platform-mcp/reddit token."
+   }
+  ],
+  "rate_per_second": 1.5,
+  "tools": {
+   "read_comments": {
+    "method": "GET",
+    "path": "/comments/{post_id}",
+    "params": {
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "1.data.children",
+     "key": "comments",
+     "fields": {
+      "id": "data.id",
+      "author": "data.author",
+      "text": "data.body"
+     }
+    },
+    "docs": "https://www.reddit.com/dev/api/#GET_comments_{article}",
+    "note": "GET /comments/{article} (scope read; article = the post's id36 without the t3_ prefix; `limit` is documented only as an optional integer, so the runtime's default cap of 100 applies) returns two Listings: [0] the link, [1] the comment tree; `comments` come from the second Listing's data.children (things of kind t1 whose data carries id, name, author, body, body_html, created_utc (epoch seconds), score, parent_id, link_id, replies: https://github.com/reddit-archive/reddit/wiki/JSON). `created_at` is not mapped: comments carry only `created_utc` (epoch seconds, a number, available as raw.data.created_utc) and the vocabulary's created_at is a string. Nested replies stay under raw.data.replies. Reddit paginates with after/before fullnames, so `page` is not sent. `more` stubs (kind more) map to rows with an id but no author/body."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/api/info",
+    "params": {
+     "id": "post_id"
+    },
+    "result": {
+     "root": "data.children.0.data",
+     "fields": {
+      "post_id": "name",
+      "score": "score",
+      "ups": "ups",
+      "num_comments": "num_comments",
+      "permalink": "permalink"
+     }
+    },
+    "docs": "https://www.reddit.com/dev/api/#GET_api_info",
+    "note": "GET /api/info?id=<fullname> (scope read) returns a Listing whose data.children[0].data is the link object (name, score, ups, downs, num_comments, permalink, title, url, ...: https://github.com/reddit-archive/reddit/wiki/JSON). Callers pass the post's fullname `t3_<id36>` as post_id: the runtime cannot add the t3_ prefix. The runtime cannot compose a nested `metrics` object, so counts are top-level fields; the response is empty (404 result) for an unknown fullname."
+   }
+  },
+  "not_offered": {
+   "me": "GET /api/v1/me (scope identity) 'returns the identity of the user'; an application-only client_credentials token is issued to a client 'not acting on behalf of' a user (https://github.com/reddit-archive/reddit/wiki/OAuth2), so there is no account to describe.",
+   "publish_text": "POST /api/submit (scope submit) posts as a user; it needs a user-context token from the authorization-code flow, which the runtime cannot obtain (app-only tokens have no user).",
+   "publish_image": "POST /api/media/asset.json upload lease + POST /api/submit kind=image needs a user-context token and a file upload; neither is available to the runtime.",
+   "reply_comment": "POST /api/comment (scope submit) needs a user-context token from the authorization-code flow; the app-only token cannot comment.",
+   "read_mentions": "GET /message/inbox|unread and /message/mentions (scope privatemessages) read a user's inbox and need a user-context token; the app-only token has no inbox.",
+   "delete": "POST /api/del (scope edit) deletes the user's own thing and needs a user-context token; the app-only token owns nothing."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host oauth.reddit.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token www.reddit.com/api/v1/access_token: 401 Unauthorized",
+   "authorize https://www.reddit.com/api/v1/authorize: 302",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

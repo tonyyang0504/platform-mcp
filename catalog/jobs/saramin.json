@@ -1,0 +1,168 @@
+{
+ "id": "saramin",
+ "category": "jobs",
+ "label": "사람인 Saramin",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://oapi.saramin.co.kr/",
+ "url": "https://www.saramin.co.kr/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Open API for job search (key on approval; no client yet); online CV apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "xml_feed"
+  ],
+  "auth": "api_key",
+  "access": "apply",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://oapi.saramin.co.kr/guide/example (PHP / Java call samples)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Saramin 채용정보 API (GET https://oapi.saramin.co.kr/job-search?access-key=…, JSON or XML) after the application → approval → app registration flow;",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " the job-postings API allows at most 500 calls per day (채용정보 API는 1일 최대 500회 호출 가능). Developer must apply for use (이용신청) and be approved by e-mail, then register an app to receive an access-key; the job- postings API allows at most 500 calls per day (채용정보 API는 1일 최대 500회 호출 가능). Intended for custom job-search sites, widgets and mash-ups; user notice (서비스 이용자 주의사항) page exists; contact api@saramin.co.kr. Nothing about applying — candidates apply on saramin.co.kr.",
+  "mcp_sdk": [
+   "https://oapi.saramin.co.kr/guide/example (PHP / Java call samples)"
+  ],
+  "sources": [
+   "https://oapi.saramin.co.kr/",
+   "https://oapi.saramin.co.kr/guide/info",
+   "https://oapi.saramin.co.kr/guide/1",
+   "https://oapi.saramin.co.kr/guide/job-search",
+   "https://oapi.saramin.co.kr/guide/job-search-id",
+   "https://oapi.saramin.co.kr/guide/employment-url",
+   "https://oapi.saramin.co.kr/introduce",
+   "https://oapi.saramin.co.kr/job-search"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://oapi.saramin.co.kr",
+  "auth": {
+   "type": "query",
+   "param": "access-key",
+   "field": "access_key",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "access-key issued after Saramin approves your API application (이용신청) and you register an app at https://oapi.saramin.co.kr/."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "rate_per_second": 0.5,
+  "rate_note": "채용정보 API는 1일 최대 500회 호출 가능 (500 calls per day); error code 4 means the daily quota is exhausted.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/job-search",
+    "params": {
+     "keywords": "query",
+     "start": "page0",
+     "count": "limit"
+    },
+    "fixed_params": {
+     "fields": "posting-date"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "jobs.job",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "position.title",
+      "company": "company.detail.name",
+      "location": "position.location.name",
+      "url": "url",
+      "posted_at": "posting-date"
+     }
+    },
+    "docs": "https://oapi.saramin.co.kr/guide/job-search",
+    "note": "GET /job-search with Accept: application/json: keywords (company, title, keyword and duty text), start = 0-based page number, count ≤ 110 (default 10); fields=posting-date adds the ISO posting date. loc_cd takes region codes, so location is not sent. jobs.total is a string in the sample, so total is null. salary is a code + text range (in raw). Failures arrive as {code, message} (1/2 bad key, 3 bad parameter, 4 daily quota)."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint; the access-key is the only credential.",
+   "get_posting": "The guide documents only the job-search operation (no per-id detail call); each hit's url is the Saramin posting page.",
+   "apply": "No application endpoint; applicants apply on saramin.co.kr.",
+   "list_messages": "No messaging API is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host oapi.saramin.co.kr: DNS ok, TLSv1.2 (Sectigo Limited)",
+   "probe: 1/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "Fixed: errors come back as HTTP 200 {code, message}; envelope code=0 added so they are errors, not empty result lists."
+ }
+}

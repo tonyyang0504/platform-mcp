@@ -1,0 +1,302 @@
+{
+ "id": "bigbuy",
+ "category": "ecommerce_suppliers",
+ "label": "BigBuy",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "europe",
+  "global"
+ ],
+ "docs_url": "https://api.bigbuy.eu/rest/doc",
+ "url": "https://www.bigbuy.eu/",
+ "verified_at": "2026-09-24",
+ "terms_note": "none found (API is the intended channel)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "sandbox"
+  ],
+  "auth": "Bearer JWT API key (`Authorization: Bearer <key>` from the BigBuy control panel; GET /rest/user/auth/status checks it)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "tracking",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI 3 spec https://api.bigbuy.eu/rest/doc.json (Redoc)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — the OpenAPI 3 do",
+  "base_urls": [
+   "https://api.bigbuy.eu",
+   "https://api.sandbox.bigbuy.eu"
+  ],
+  "auth": [
+   "1. Tenant buys a BigBuy pack that includes API access and copies the API key from the control panel",
+   "2. Send `Authorization: Bearer <key>` (JWT bearer scheme in the spec)",
+   "3. Verify with GET /rest/user/auth/status; check prepaid balance with GET /rest/user/purse"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /rest/catalog/products · /product/{id} · /productsinformation (per isoCode) · /productsimages · /productprices",
+    "purpose": "catalogue, per-language texts, images, prices",
+    "notes": "paged; `new-products` for deltas"
+   },
+   {
+    "call": "GET /rest/catalog/productsvariations · /productvariationprices · /productsvariationsstockbyhandlingdays · /productsstockbyhandlingdays",
+    "purpose": "variants, variant prices, stock",
+    "notes": ""
+   },
+   {
+    "call": "GET /rest/catalog/taxonomies · /categories · /manufacturers · /attributes · /productcompliance/{id}",
+    "purpose": "taxonomy + GPSR compliance data",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/shipping/orders · /lowest-shipping-cost-by-country · GET /rest/shipping/carriers",
+    "purpose": "shipping quote per order / product",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/order/check → POST /rest/order/create (multishipping variants)",
+    "purpose": "simulate then place the order",
+    "notes": "returns order id; invoice upload for PENDING INVOICE"
+   },
+   {
+    "call": "GET /rest/order/{orderId} · /order/reference/{ref} · /order/orderstatuses · /order/delivery-notes/{id}",
+    "purpose": "order status + documents",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/tracking/orders · GET /rest/tracking/order/{idOrder} · GET /rest/tracking/carriers",
+    "purpose": "tracking",
+    "notes": ""
+   }
+  ],
+  "limits": " Not stated in the OpenAPI document. - Paid BigBuy pack with API entitlement - Prepaid purse funds orders - EU GPSR compliance data available per product",
+  "mcp_sdk": [
+   "OpenAPI 3 spec https://api.bigbuy.eu/rest/doc.json (Redoc)"
+  ],
+  "sources": [
+   "https://api.bigbuy.eu/rest/doc",
+   "https://api.bigbuy.eu/rest/doc.json",
+   "https://api.bigbuy.eu",
+   "https://api.sandbox.bigbuy.eu;",
+   "https://www.bigbuy.eu/en/dropshipping-api.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bigbuy.eu",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "BigBuy API key from the control panel (API access is part of BigBuy's paid packs), sent as `Authorization: Bearer` (JWT bearer scheme in the OpenAPI spec). Sandbox keys need base https://api.sandbox.bigbuy.eu, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "iso_code",
+    "required": false,
+    "help": "Two-letter language for product texts and tracking descriptions (the `isoCode` query parameter, e.g. en); BigBuy defaults to es when unset."
+   },
+   {
+    "name": "payment_method",
+    "required": false,
+    "help": "paymentMethod for create_order: paypal, moneybox (prepaid purse, see GET /rest/user/purse) or bankwire; left out of the body when unset."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/rest/user/auth/status.json",
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "GET /rest/user/auth/status.json answers {code: 200, message} when the key is valid (rate limit 1 request/s)."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/rest/catalog/productsinformation.json",
+    "params": {
+     "page": "page0",
+     "pageSize": "limit",
+     "parentTaxonomy": "category",
+     "isoCode": "@iso_code"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "sku": "sku",
+      "url": "url",
+      "description": "description"
+     }
+    },
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "GET /rest/catalog/productsinformation.json (per-language product texts: [{id, sku, name, description, url, isoCode}]); pages are 0-based (`page`, `pageSize`), `category` is the parentTaxonomy tree id and `query` is not accepted by the endpoint. Rate limit 24 requests/hour. Prices come from GET /rest/catalog/productprices.json and stock from /rest/catalog/productsstockbyhandlingdays.json (not mapped); `url` is the product slug, not an absolute link."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/rest/catalog/productinformation/{id}.json",
+    "params": {
+     "isoCode": "@iso_code"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "sku": "sku",
+      "url": "url",
+      "description": "description"
+     }
+    },
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "GET /rest/catalog/productinformation/{id}.json: {id, sku, name, description, url, isoCode} (rate limit 1 request/5 s). Wholesale/retail prices are in GET /rest/catalog/product/{id}.json and stock by handling days in GET /rest/catalog/productstockbyhandlingdays/{id}.json (not mapped)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/rest/order/create.json",
+    "body": {
+     "order.shippingAddress": "shipping_address",
+     "order.products": "items",
+     "order.paymentMethod": "@payment_method",
+     "order.language": "@iso_code"
+    },
+    "result": {
+     "fields": {
+      "id": "order_id"
+     }
+    },
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "POST /rest/order/create.json submits a real order (201 -> {order_id}) and charges the account (paymentMethod from the payment_method setting: paypal, moneybox or bankwire). `shipping_address` is BigBuy's shippingAddress {firstName, lastName, country (ISO-2), postcode, town, address, phone, email, vatNumber, companyName, comment}; `items` are products [{reference (SKU, e.g. S12435678), quantity}]. `shipping_option` is not sent: BigBuy's carriers[{name}] list cannot be built from a string, so the platform picks the carrier. Simulate first with POST /rest/order/check.json (not mapped)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/rest/order/{orderId}.json",
+    "path_params": {
+     "orderId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "totalPaidTaxIncl",
+      "created_at": "dateAdd"
+     }
+    },
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "GET /rest/order/{orderId}.json: {id, internalReference, dateAdd, totalPaidTaxIncl, totalPaidTaxExcl, totalShippingTaxIncl, status, carriers[{id, name, price}], shippingAddress, products[{id, reference, quantity, name, priceTaxIncl}]}. Amounts are EUR; tracking numbers come from the track tool."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/rest/tracking/order/{idOrder}.json",
+    "path_params": {
+     "idOrder": "order_id"
+    },
+    "params": {
+     "isoCode": "@iso_code"
+    },
+    "result": {
+     "items": "0.trackings",
+     "key": "events",
+     "fields": {
+      "tracking_number": "trackingNumber",
+      "status": "statusDescription",
+      "date": "statusDate",
+      "carrier_id": "carrier.id"
+     }
+    },
+    "docs": "https://api.bigbuy.eu/rest/doc",
+    "note": "GET /rest/tracking/order/{idOrder}.json returns [{id, reference, trackings[{trackingNumber, statusDescription, statusDate, carrier{id}, descriptionTranslated}]}]; the events are the trackings of the first (only) order element. Answers 404 while no tracking exists yet."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /rest/shipping/orders.json takes nested order{products[{reference, quantity}], delivery{isoCountry, postCode}} and POST /rest/shipping/lowest-shipping-cost-by-country.json answers a single {reference, cost, carrierId, carrierName} object rather than an options list; neither fits the vocabulary's product_id/country/quantity -> options[] shape."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bigbuy.eu: DNS ok, TLSv1.2 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 400 (client_error), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 0/6 tool paths found verbatim on their docs pages, 3 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

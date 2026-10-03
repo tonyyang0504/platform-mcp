@@ -1,0 +1,44 @@
+{
+ "id": "autoscout24_ch",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autoscout24.ch",
+ "domain": "autoscout24.ch",
+ "country": "Switzerland",
+ "official_api": true,
+ "docs_url": "https://developers.autoscout24.ch/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API credentials issued to dealers/DMS partners",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). AutoScout24 Switzerland (SMG) publishes an OpenAPI developer portal for DMS/HCI listing APIs; credentials for dealers and DMS partners.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.autoscout24.ch/",
+   "https://developers.autoscout24.ch/api-docs/api-reference.html",
+   "https://help.autoscout24.ch/hc/de/articles/34448520065170-Was-ist-die-DMS-API"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developers.autoscout24.ch/): AutoScout24 Switzerland (SMG) publishes an OpenAPI developer portal for DMS/HCI listing APIs; credentials for dealers and DMS partners. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

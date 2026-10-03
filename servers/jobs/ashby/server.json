@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ashby-mcp",
+ "description": "Ashby (jobs): search. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.ashbyhq.com/reference/jobpostinglist",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ashby"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ASHBY_JOB_BOARD_NAME",
+     "description": "The organisation's Ashby jobs page name: the last path segment of its hosted board, e.g. 'Ashby' in https://jobs.ashbyhq.com/Ashby.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

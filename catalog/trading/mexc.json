@@ -1,0 +1,105 @@
+{
+ "id": "mexc",
+ "category": "trading",
+ "label": "MEXC (spot)",
+ "lane": "api",
+ "docs_url": "https://mexcdevelop.github.io/apidocs/spot_v3_en/",
+ "url": "https://www.mexc.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only (no key). Mapped from MEXC's own Postman collection (github.com/mexcdevelop/mexc-api-postman, 'MEXC V3', collection v2.1; base URL from its 'V3 MEXC GLOBAL' environment: https://api.mexc.com) and the HTML docs. The collection's kline example uses interval=1m and calls the values only 'ENUM: Kline interval'; live 2026-10-01 the hour interval is '60m' ('1h' answers 400 {\"msg\":\"Invalid interval.\",\"code\":-1121}). An unknown symbol answers 400 {\"msg\":\"invalid symbol\",\"code\":-1121}. exchangeInfo lists about 1,900 symbols.",
+ "adapter": {
+  "base_url": "https://api.mexc.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/api/v3/exchangeInfo",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "symbols",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "base",
+        "quote",
+        "raw.fullName"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "symbol",
+      "base": "baseAsset",
+      "quote": "quoteAsset"
+     }
+    },
+    "docs": "https://mexcdevelop.github.io/apidocs/spot_v3_en/#exchange-information",
+    "note": "Every spot symbol (BTCUSDT style) with base/quote; paged locally; query matches symbol, assets or the coin's full name."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/api/v3/ticker/24hr",
+    "params": {
+     "symbol": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "symbol",
+      "last": "num:lastPrice",
+      "bid": "num:bidPrice",
+      "ask": "num:askPrice",
+      "volume": "num:volume"
+     }
+    },
+    "docs": "https://mexcdevelop.github.io/apidocs/spot_v3_en/#24hr-ticker-price-change-statistics"
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/api/v3/klines",
+    "params": {
+     "symbol": "symbol",
+     "interval": "map:interval:1m=1m,5m=5m,15m=15m,30m=30m,1h=60m,4h=4h,1d=1d,1w=1W,1M=1M",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "iso:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://mexcdevelop.github.io/apidocs/spot_v3_en/#kline-candlestick-data",
+    "note": "interval: 1m 5m 15m 30m 1h 4h 1d 1w 1M (sent as MEXC's 60m, 1W ...); oldest first."
+   }
+  },
+  "not_offered": {
+   "me": "Account endpoints need X-MEXC-APIKEY and an HMAC-SHA256 signature over the query (the collection's {{signature}}/{{timestamp}}); public-data entry only.",
+   "get_balances": "GET /api/v3/account is signed; public-data entry only.",
+   "list_orders": "GET /api/v3/openOrders is signed; public-data entry only.",
+   "place_order": "POST /api/v3/order is signed and spends money; not mapped.",
+   "cancel_order": "DELETE /api/v3/order is signed; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "customcat-mcp",
+ "display_name": "CustomCat MCP",
+ "version": "0.1.0",
+ "description": "CustomCat (ecommerce suppliers): me, list_products, create_order, get_order, track. Every tool maps ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "customcat"
+   ],
+   "env": {
+    "PLATFORM_MCP_CUSTOMCAT_API_KEY": "${user_config.platform_mcp_customcat_api_key}",
+    "PLATFORM_MCP_CUSTOMCAT_SANDBOX": "${user_config.platform_mcp_customcat_sandbox}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_customcat_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CUSTOMCAT_API_KEY",
+   "description": "CustomCat API key (generated per 'API Custom Integrations' store; Settings in the app shows a read-only and a read-write key — create_order needs the read-write one), sent as the `api_key` parameter.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_customcat_sandbox": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CUSTOMCAT_SANDBOX",
+   "description": "Set to 1 to send `sandbox: 1` with create_order and get_order (CustomCat's sandbox flag); left out when unset, so orders are real and charged.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "CustomCat has no account endpoint; the probe lists the catalogue categories ([{category, category_url_slug, subcategories}]), so `account` is empty on success."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /product: the products you set up in CustomCat ({products[{product{product_id, title, product_type, description, options, variants[{sku, title, price, cost, instock, option1, option2}]}}]}); `sku`/`price` are the first variant's. `query` and `category` are not accepted. The blank catalogue (GET /catalog) is not mapped."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /order/{order_id} submits a real, charged order (unless the sandbox setting is 1) under a fresh UUID order id, which get_order and track take. `shipping_address` is {first_name, last_name, email, phone, address1, address2, city, state, zip, country (ISO-2)} (all but address2 required); `items` are [{sku, quantity}] for products made in CustomCat or [{catalog_sku, design_url, design_url_back, quantity}]; `shipping_option` is the shipping_method name from GET /shipping (required by CustomCat)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /order/status/{order_id} (your order id): {ORDER_ID, CUSTOMCAT_ORDER_ID, ORDER_STATUS (Pending, Verified, Shipped), ORDER_TOTAL, ORDER_DATE, SHIPMENTS[{TRACKING_ID, METHOD, VENDOR}], LINE_ITEMS[{STATUS, PRODUCT_NAME}]}. ORDER_DATE is a text date such as 'March, 27 2018 12:14:45'."
+  },
+  {
+   "name": "track",
+   "description": "The SHIPMENTS[{TRACKING_ID, METHOD, VENDOR, NUMBER_ITEMS}] of GET /order/status/{order_id}; one event per shipment."
+  }
+ ]
+}

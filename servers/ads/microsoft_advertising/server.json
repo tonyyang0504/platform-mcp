@@ -1,0 +1,87 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/microsoft_advertising-mcp",
+ "description": "Microsoft Advertising (Bing Ads) (ads): me, list_accounts, list_campaigns, update_budget, pause_resu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://learn.microsoft.com/en-us/advertising/guides/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "microsoft_advertising"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_ID",
+     "description": "Application (client) id of the Microsoft Entra app registration used for the Microsoft Advertising consent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_SECRET",
+     "description": "The app's client secret; required for web apps, omit for native/public clients.",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_REFRESH_TOKEN",
+     "description": "Refresh token from the authorization-code flow with scope https://ads.microsoft.com/msads.manage offline_access; the runtime mints access tokens from it at https://login.microsoftonline.com/common/oauth2/v2.0/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_DEVELOPER_TOKEN",
+     "description": "Microsoft Advertising developer token (Developer Portal > Account), sent as the DeveloperToken header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CUSTOMER_ID",
+     "description": "Manager account (customer) id sent as the CustomerId header; list_accounts searches this customer's accounts.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_ACCOUNT_ID",
+     "description": "Ad account id sent as the CustomerAccountId header; it must equal the AccountId in campaign calls, so pass the same id as list_campaigns' account_id.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_ENV",
+     "description": "Vendor environment (default production): sandbox = https://campaign.api.sandbox.bingads.microsoft.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_ADVERTISING_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

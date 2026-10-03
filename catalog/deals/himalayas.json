@@ -1,0 +1,182 @@
+{
+ "id": "himalayas",
+ "category": "deals",
+ "label": "Himalayas",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://himalayas.app/jobs/api",
+ "url": "https://himalayas.app/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Keyless JSON feed; the payload asks that jobs carry the 'Originally posted on Himalayas' credit; no published rate limit.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://himalayas.app/jobs/api"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://himalayas.app/jobs/api?limit=100",
+   "docs": "https://himalayas.app/jobs/api"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://himalayas.app/jobs/api"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search) Confidence high (live endpoint opened).",
+  "base_urls": [
+   "https://himalayas.app/jobs/api"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /jobs/api?limit=100&cursor=<nextCursor>",
+    "purpose": "search + details",
+    "notes": "jobs[]: title, excerpt, companyName, companySlug, employmentType, min/maxSalary, currency, seniority[], locationRestrictions[], categories[], description, applicationLink, pubDate, expiryDate; totalCount, nextCursor"
+   }
+  ],
+  "limits": " - Keyless; payload embeds 'Originally posted on Himalayas' — keep that credit. - Client should switch from offset to nextCursor (audit finding).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://himalayas.app/jobs/api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://himalayas.app",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "https://himalayas.app/api (read 2026-09-25): 'The service applies rate limiting; exceeding limits returns a 429'; no figure is published and the page size is capped at 20. One request per second.",
+  "terms": "Attribution required: 'link back to the URL found on Himalayas AND mention Himalayas as the original source'; do not submit Himalayas jobs to third-party job aggregators.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/jobs/api/search",
+    "params": {
+     "q": "query",
+     "employment_type": "category",
+     "page": "page"
+    },
+    "fixed_params": {
+     "sort": "recent"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "totalCount",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "buyer": "companyName",
+      "budget_min": "minSalary",
+      "budget_max": "maxSalary",
+      "currency": "currency",
+      "skills": "categories",
+      "url": "applicationLink",
+      "description": "excerpt"
+     }
+    },
+    "docs": "https://himalayas.app/api",
+    "note": "GET https://himalayas.app/jobs/api/search (q free text, page 1-based, sort; also country, worldwide, seniority, employment_type, company, timezone). `query` → q; `category` → employment_type (one of Full Time, Part Time, Contractor, Temporary, Intern, Volunteer, Other — use Contractor for freelance/contract gigs); newest first (sort=recent). Pages hold 20 jobs (the documented maximum), so limit is not sent. min_budget is not sent (no salary filter). budget_min/budget_max are the salary range (salaryPeriod in raw, often annual), skills = categories, description = excerpt (full HTML in raw.description); pubDate/expiryDate are Unix seconds in raw. Attribution: link back to the Himalayas URL and name Himalayas as the source."
+   }
+  },
+  "not_offered": {
+   "me": "Keyless public API; no account endpoint.",
+   "get_posting": "Only the browse feed (/jobs/api) and search (/jobs/api/search) are documented; there is no per-job endpoint — re-read the record (id = guid) from the search hit.",
+   "submit_bid": "No application API; candidates apply at applicationLink (Himalayas or the employer).",
+   "withdraw_bid": "No application API (see submit_bid).",
+   "bid_status": "No application API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the jobs feed and search only.",
+   "send_message": "No messaging API; the page documents the jobs feed and search only.",
+   "credits": "Free API; no account or credit endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

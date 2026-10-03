@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/google_sheets-mcp",
+ "description": "Google Sheets / Drive (builder tools): me, list_items, get_item, create_item, update_item, delete_it",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.google.com/sheets/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "google_sheets"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_ID",
+     "description": "OAuth 2.0 client id (Google Cloud console > Credentials) of a project with the Google Sheets API enabled.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_SECRET",
+     "description": "The OAuth client's secret, sent in the form body of the refresh_token grant.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_SHEETS_REFRESH_TOKEN",
+     "description": "Refresh token from Google's consent flow (offline access) with scope https://www.googleapis.com/auth/spreadsheets (or drive.file for files the app created); the runtime mints hourly access tokens from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_SHEETS_SPREADSHEET_ID",
+     "description": "The spreadsheet id (the long id in https://docs.google.com/spreadsheets/d/<id>/edit) that every tool reads and writes.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

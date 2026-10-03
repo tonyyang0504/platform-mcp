@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/sunsky_online-mcp",
+ "description": "Sunsky Online (ecommerce suppliers): me, list_products, get_product, quote_shipping, create_order, g",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://doc.sunsky-online.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "sunsky_online"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SUNSKY_ONLINE_KEY",
+     "description": "SUNSKY Open API key, issued by your SUNSKY sales manager (https://doc.sunsky-online.com/).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SUNSKY_ONLINE_SECRET",
+     "description": "SUNSKY Open API secret issued with the key; signs every call (MD5 of the parameter values sorted by name, then '@' + secret) and is never sent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SUNSKY_ONLINE_LANGUAGE",
+     "description": "Product text language code (Appendix E), e.g. en, fr, de, es, it, zh_CN; default en.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "bigbuy-mcp",
+ "display_name": "BigBuy MCP",
+ "version": "0.1.0",
+ "description": "BigBuy (ecommerce suppliers): me, list_products, get_product, create_order, get_order, track. Every ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bigbuy"
+   ],
+   "env": {
+    "PLATFORM_MCP_BIGBUY_API_KEY": "${user_config.platform_mcp_bigbuy_api_key}",
+    "PLATFORM_MCP_BIGBUY_ISO_CODE": "${user_config.platform_mcp_bigbuy_iso_code}",
+    "PLATFORM_MCP_BIGBUY_PAYMENT_METHOD": "${user_config.platform_mcp_bigbuy_payment_method}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bigbuy_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BIGBUY_API_KEY",
+   "description": "BigBuy API key from the control panel (API access is part of BigBuy's paid packs), sent as `Authorization: Bearer` (JWT bearer scheme in the OpenAPI spec). Sandbox keys need base https://api.sandbox.bigbuy.eu, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bigbuy_iso_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BIGBUY_ISO_CODE",
+   "description": "Two-letter language for product texts and tracking descriptions (the `isoCode` query parameter, e.g. en); BigBuy defaults to es when unset.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_bigbuy_payment_method": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BIGBUY_PAYMENT_METHOD",
+   "description": "paymentMethod for create_order: paypal, moneybox (prepaid purse, see GET /rest/user/purse) or bankwire; left out of the body when unset.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /rest/user/auth/status.json answers {code: 200, message} when the key is valid (rate limit 1 request/s)."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /rest/catalog/productsinformation.json (per-language product texts: [{id, sku, name, description, url, isoCode}]); pages are 0-based (`page`, `pageSize`), `category` is the parentTaxonomy tree id and `query` is not accepted by the endpoint. Rate limit 24 requests/hour. Prices come from GET /rest/catalog/productprices.json and stock from /rest/catalog/productsstockbyhandlingdays.json (not mapped); `url` is the product slug, not an absolute link."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /rest/catalog/productinformation/{id}.json: {id, sku, name, description, url, isoCode} (rate limit 1 request/5 s). Wholesale/retail prices are in GET /rest/catalog/product/{id}.json and stock by handling days in GET /rest/catalog/productstockbyhandlingdays/{id}.json (not mapped)."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /rest/order/create.json submits a real order (201 -> {order_id}) and charges the account (paymentMethod from the payment_method setting: paypal, moneybox or bankwire). `shipping_address` is BigBuy's shippingAddress {firstName, lastName, country (ISO-2), postcode, town, address, phone, email, vatNumber, companyName, comment}; `items` are products [{reference (SKU, e.g. S12435678), quantity}]. `shipping_option` is not sent: BigBuy's carriers[{name}] list cannot be built from a string, so the platform picks the carrier. Simulate first with POST /rest/order/check.json (not mapped)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /rest/order/{orderId}.json: {id, internalReference, dateAdd, totalPaidTaxIncl, totalPaidTaxExcl, totalShippingTaxIncl, status, carriers[{id, name, price}], shippingAddress, products[{id, reference, quantity, name, priceTaxIncl}]}. Amounts are EUR; tracking numbers come from the track tool."
+  },
+  {
+   "name": "track",
+   "description": "GET /rest/tracking/order/{idOrder}.json returns [{id, reference, trackings[{trackingNumber, statusDescription, statusDate, carrier{id}, descriptionTranslated}]}]; the events are the trackings of the first (only) order element. Answers 404 while no tracking exists yet."
+  }
+ ]
+}

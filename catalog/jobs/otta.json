@@ -1,0 +1,66 @@
+{
+ "id": "otta",
+ "category": "jobs",
+ "label": "Otta",
+ "lane": "assist",
+ "kind": "startup",
+ "regions": [
+  "uk",
+  "us"
+ ],
+ "docs_url": "https://uk.welcometothejungle.com/",
+ "url": "https://app.welcometothejungle.com/jobs",
+ "verified_at": "2026-09-04",
+ "terms_note": "Otta became Welcome to the Jungle (UK/US) in 2024; app.otta.com now serves under the WTTJ brand. Apply links go to the company ATS.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

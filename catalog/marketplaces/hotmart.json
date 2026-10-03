@@ -1,0 +1,332 @@
+{
+ "id": "hotmart",
+ "category": "marketplaces",
+ "label": "Hotmart",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "latam",
+  "global"
+ ],
+ "docs_url": "https://developers.hotmart.com",
+ "url": "https://app.hotmart.com",
+ "verified_at": "2026-09-25",
+ "terms_note": "Any producer account can self-serve credentials (Tools > Developer Credentials); 500 calls/min read+write with RateLimit-* headers; sandbox included; product Registration API (POST /physicalproducts/api/v2/product) is for 'authorized business partners' and physical goods only; Hotmart help centre calls the APIs 'read-only for extracting data'.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk",
+   "mcp",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "list_products",
+   "product_offers",
+   "product_plans",
+   "product_configuration",
+   "payment_link_create",
+   "coupons",
+   "orders",
+   "sales_stats",
+   "subscriptions",
+   "refund",
+   "webhooks",
+   "members_area",
+   "create_physical_product_partner_only"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/murilloimparavel/hotmart-cli",
+   "https://github.com/thaleslaray/hotmart-mcp"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/thaleslaray/hotmart-mcp",
+  "https://github.com/murilloimparavel/hotmart-cli",
+  "https://glama.ai/mcp/servers/thaleslaray/hotmart-mcp"
+ ],
+ "auth_fields": [
+  "client_id",
+  "client_secret",
+  "basic_token"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high**",
+  "base_urls": [
+   "https://developers.hotmart.com/<service>/api/v1/…",
+   "https://sandbox.hotmart.com/<service>/api/v1/…",
+   "https://api-sec-vlc.hotmart.com/security/oauth/token"
+  ],
+  "auth": [
+   "1. Tenant logs into Hotmart → **Tools > Developer Credentials** → *Create Credential* (name it; tick *sandbox* for a test credential).",
+   "2. Hotmart shows `client_id`, `client_secret` and a **Basic** token once (download it — not shown again). These are our",
+   "3. `POST https://api-sec-vlc.hotmart.com/security/oauth/token?grant_type=client_credentials&client_id=…&client_secret=…`",
+   "4. Every call: `Authorization: Bearer <access_token>`, `Content-Type: application/json`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /products/api/v1/products",
+    "purpose": "list the producer's products. Query `max_results` (default 50), `page_token`, `id`, `status` (DRAFT, ACTIVE, PAUSED, NOT_APPROVED, IN_REVIEW, DELETED, CHANGES_PENDING_ON_PRODUCT), `format` (EBOOK, SOF",
+    "notes": ""
+   },
+   {
+    "call": "GET /products/api/v1/products/:ucode/offers",
+    "purpose": "offers = prices. Items: `code` (offer code → checkout `https://pay.hotmart.com/<code>`), `name`, `description`, `price.value`, `price.currency_code`, `payment_mode` (PAY_IN_FULL…), `is_main_offer`, `i",
+    "notes": ""
+   },
+   {
+    "call": "GET /products/api/v1/products/:ucode/plans` · `GET /products/api/v1/product/configuration/:product_id",
+    "purpose": "subscription plans; product configuration (read-only).",
+    "notes": ""
+   },
+   {
+    "call": "POST /payments/api/v1/link",
+    "purpose": "**Create a Payment Link** (the one sell-side write). Body: `name`, `value` (decimal, e.g. 10.25), `currency` (BRL, COP, EUR, MXN, USD), `checkout_configuration{is_offer_pix, is_offer_paypal, is_offer_",
+    "notes": "offer`. Note: a Payment Link is a checkout for an amount — Hotmart does **not** deliver a file for it."
+   },
+   {
+    "call": "POST /products/api/v1/product/:product_id/coupon` · `GET /coupon/product/:product_id` · `DELETE /coupon/:coupon_id",
+    "purpose": "discount coupons per product.",
+    "notes": ""
+   },
+   {
+    "call": "GET /payments/api/v1/sales/history",
+    "purpose": "orders. Query `product_id`, `transaction_status` (APPROVED, COMPLETE, CANCELLED, REFUNDED, CHARGEBACK…), `start_date/end_date` (ms), `buyer_email`, `max_results`, `page_token`.",
+    "notes": ""
+   },
+   {
+    "call": "GET /payments/api/v1/sales/summary` · `/sales/users` · `/sales/commissions` · `/sales/price/details",
+    "purpose": "sales stats (totals per product / period), buyers, commissions, price breakdown.",
+    "notes": ""
+   },
+   {
+    "call": "POST /payments/api/v1/sales/:transaction_code/refund",
+    "purpose": "refund a transaction.",
+    "notes": ""
+   },
+   {
+    "call": "GET /payments/api/v1/subscriptions` (+ `/summary`, `/transactions`, `/:code/purchases`, `POST /:code/cancel",
+    "purpose": "reactivate`, `/switch-plan`, `/installments/negotiate`)",
+    "notes": "subscription management."
+   },
+   {
+    "call": "Webhook 2.0 (UI-configured)",
+    "purpose": "`PURCHASE_APPROVED`, `PURCHASE_COMPLETE`, `PURCHASE_CANCELED`, `PURCHASE_REFUNDED`, `PURCHASE_CHARGEBACK`, `PURCHASE_BILLET_PRINTED`, `PURCHASE_PROTEST`, `PURCHASE_DELAYED`, `SUBSCRIPTION_CANCELLATION",
+    "notes": ""
+   },
+   {
+    "call": "POST /physicalproducts/api/v2/product` (+ v1 `/product`, `/product/:ucode`, `/status`, `/variants`, `/webhook`, `/credentials`)",
+    "purpose": "\"Registration API\" — **authorized business partners, physical goods only** (body needs `partner_url`, `partner_product_id`, `category`, `sub_category`, `dimensions`, `address`…). Not usable for our bu",
+    "notes": ""
+   }
+  ],
+  "limits": " 500 calls / minute per application (read + write combined); `429` when exceeded. Headers: `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Remaining-Minute`. - Self-serve for any producer account (no application, no fee beyond Hotmart's sale commission); sandbox credentials free. - Product creation / file upload / approval happen in the Hotmart producer UI (products go through `IN_REVIEW` → `ACTIVE`). - Registration API = partner-only; Payment Link API asks the seller to make all fees transparent to the buyer. - No public \"API terms\" page b",
+  "mcp_sdk": [
+   "Community MCP: https://github.com/thaleslaray/hotmart-mcp (auto-generated from the OpenAPI; env `HOTMART_CLIENT_ID`,",
+   "No official Hotmart SDK or MCP server; official integrations are Zapier / Make (triggers only: new sale, refund, cancellation)."
+  ],
+  "sources": [
+   "https://developers.hotmart.com/docs/en/",
+   "https://developers.hotmart.com/docs/en/v1/product/product-list/",
+   "https://developers.hotmart.com/docs/en/v1/payment-link/before-starting/",
+   "https://developers.hotmart.com/docs/en/v1/physical-product/pp-about/",
+   "https://developers.hotmart.com/docs/page-data/sq/d/3996864857.json",
+   "https://help.hotmart.com/en/article/4403617024013/how-do-i-use-hotmart-apis-and-hotmart-developers-to-integrate-my-business-",
+   "https://github.com/thaleslaray/hotmart-mcp",
+   "https://github.com/murilloimparavel/hotmart-cli",
+   "https://glama.ai/mcp/servers/thaleslaray/hotmart-mcp",
+   "https://zapier.com/apps/hotmart-7006/integrations"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://developers.hotmart.com",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api-sec-vlc.hotmart.com/security/oauth/token?grant_type=client_credentials&client_id={client_id}&client_secret={client_secret}",
+   "client_auth": "body",
+   "token_body": "json",
+   "token_headers": {
+    "Authorization": "Basic {@basic_token}"
+   },
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID from Hotmart Tools > Developer Credentials."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret from the same credential."
+    },
+    {
+     "name": "basic_token",
+     "required": true,
+     "help": "The 'Basic' value shown with the credential (without the 'Basic ' prefix)."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "Hotmart Developers: tokens from POST https://api-sec-vlc.hotmart.com/security/oauth/token (client_credentials); 'Only the access token expires.' Sandbox uses https://sandbox.hotmart.com with sandbox credentials.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user/api/v1/me",
+    "docs": "https://developers.hotmart.com/docs/en/v1/user/get-user-me/",
+    "note": "GET /user/api/v1/me: the account (id, name, email, ucode, locale, currency_code_commission, time_zone)."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products/api/v1/products",
+    "params": {
+     "status": "status",
+     "max_results": "limit",
+     "page_token": "cursor"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "items",
+     "key": "products",
+     "next_cursor": "page_info.next_page_token",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/product/product-list/",
+    "note": "GET /products/api/v1/products: max_results ('Default value for this endpoint is 50'), page_token = the previous page_info.next_page_token (pass next_cursor back as cursor; page is not used), status one of DRAFT, ACTIVE, PAUSED, NOT_APPROVED, IN_REVIEW, DELETED, CHANGES_PENDING_ON_PRODUCT. Products carry no price (prices live in offers/plans); ucode, format, is_subscription and warranty_period are in raw; created_at (epoch ms) stays in raw because the output field is a string."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/api/v1/products",
+    "params": {
+     "id": "product_id"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/product/product-list/",
+    "note": "The product list filtered by id ('Unique identifier (ID) of the product (7-digit number)'); an unknown id returns no record (invalid_input)."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/payments/api/v1/sales/history",
+    "params": {
+     "product_id": "product_id",
+     "start_date": "epoch_ms:since",
+     "max_results": "limit",
+     "page_token": "cursor"
+    },
+    "default_limit": 50,
+    "max_limit": 500,
+    "result": {
+     "items": "items",
+     "key": "sales",
+     "next_cursor": "page_info.next_page_token",
+     "total": "page_info.total_results",
+     "fields": {
+      "id": "purchase.transaction",
+      "product_id": "product.id",
+      "product_name": "product.name",
+      "amount": "purchase.price.value",
+      "currency": "purchase.price.currency_code",
+      "status": "purchase.status",
+      "customer_email": "buyer.email"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/sales/sales-history/",
+    "note": "GET /payments/api/v1/sales/history: start_date in epoch ms from since; 'if you do not set up the transaction or transaction_status filters for this endpoint, it'll only return the \"APPROVED\" and \"COMPLETE\" statuses'. id is the transaction code (use it with refund); amount is purchase.price.value in major units ('Total amount paid by the buyer, including taxes and interest'); the order date (purchase.order_date, epoch ms) stays in raw. Pass next_cursor back as cursor."
+   },
+   "get_sales_stats": {
+    "method": "GET",
+    "path": "/payments/api/v1/sales/summary",
+    "params": {
+     "start_date": "epoch_ms:since",
+     "end_date": "epoch_ms:until",
+     "product_id": "product_id"
+    },
+    "result": {
+     "fields": {
+      "revenue": "items.0.total_value.value",
+      "currency": "items.0.total_value.currency_code",
+      "sales": "items.0.total_items"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/sales/sales-summary/",
+    "note": "GET /payments/api/v1/sales/summary 'displays the total commission values per currency' for APPROVED and COMPLETE sales in the window (start_date / end_date epoch ms). revenue / currency / sales are the FIRST currency bucket (items[0]: total_value, total_items = 'Number of commissions paid'); other currencies are in raw.items. refunds is not reported."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/payments/api/v1/sales/history",
+    "params": {
+     "start_date": "epoch_ms:since",
+     "max_results": "limit",
+     "page_token": "cursor"
+    },
+    "fixed_params": {
+     "transaction_status": "REFUNDED"
+    },
+    "default_limit": 50,
+    "max_limit": 500,
+    "result": {
+     "items": "items",
+     "key": "refunds",
+     "next_cursor": "page_info.next_page_token",
+     "fields": {
+      "id": "purchase.transaction",
+      "sale_id": "purchase.transaction",
+      "amount": "purchase.price.value",
+      "currency": "purchase.price.currency_code",
+      "status": "purchase.status"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/sales/sales-history/",
+    "note": "Sales history filtered to transaction_status=REFUNDED (PARTIALLY_REFUNDED and CHARGEBACK are separate statuses, not included). Hotmart has no refund object, so id and sale_id are both the transaction code; since filters by order date; purchase.order_date (epoch ms) is in raw."
+   },
+   "refund": {
+    "method": "PUT",
+    "path": "/payments/api/v1/sales/{sale_id}/refund",
+    "result": {
+     "fields": {
+      "status": "=requested"
+     }
+    },
+    "docs": "https://developers.hotmart.com/docs/en/v1/sales/sales-refund/",
+    "note": "PUT /payments/api/v1/sales/{transaction_code}/refund refunds the whole sale; 'The return from this route is empty. Consider only HTTP codes.' Only Approved/Completed, non-trial, non-BACS/SEPA sales qualify. amount and reason are not sent (no partial refunds)."
+   }
+  },
+  "not_offered": {
+   "create_product": "Products are created in the Hotmart dashboard; the product API documents only listing, offers, plans and PUT /products/api/v1/product/configuration/:product_id (is_allowed_to_email_the_buyer).",
+   "update_price": "Prices belong to offers (GET /products/api/v1/products/:ucode/offers is read-only); no endpoint changes an offer's price."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host developers.hotmart.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "token api-sec-vlc.hotmart.com/security/oauth/token: 401 unauthorized",
+   "HTML docs spot-check (render-doc): 7/7 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

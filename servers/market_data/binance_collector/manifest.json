@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "binance_collector-mcp",
+ "display_name": "Binance (ccxt) candles MCP",
+ "version": "0.1.0",
+ "description": "Binance (ccxt) candles (market data): me, get_candles, search_symbols. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "binance_collector"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public market-data host, no credentials: the probe is GET /api/v3/ping (weight 1, empty object)."
+  },
+  {
+   "name": "get_candles",
+   "description": "Kline/candlestick rows are positional arrays [openTime, open, high, low, close, volume, closeTime, quoteVolume, trades, takerBuyBase, takerBuyQuote, ignore] mapped by index (`raw.values` keeps the row). `interval`: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M. `start`/`end` are startTime/endTime in epoch MILLISECONDS (pass the number as a string); `time` is the open time in ms and prices/volume are Binance's decimal strings. limit default 500, max 1000 (weight 2). Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+  },
+  {
+   "name": "search_symbols",
+   "description": "exchangeInfo has no text search: `query` is sent as the exact `symbol` filter (e.g. BTCUSDT; an unknown symbol is a 400 'Invalid symbol' error) and the whole symbol list comes back when it is omitted — pagination is not supported, `page`/`limit` are ignored. `name` is the baseAsset, `type` the trading status; quoteAsset, precisions, orderTypes, permissions and filters stay in `raw`."
+  }
+ ]
+}

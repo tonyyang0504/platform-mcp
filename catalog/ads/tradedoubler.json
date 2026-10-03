@@ -1,0 +1,122 @@
+{
+ "id": "tradedoubler",
+ "category": "ads",
+ "label": "Tradedoubler",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "eu",
+  "se",
+  "gb",
+  "fr",
+  "de",
+  "pl",
+  "es",
+  "it",
+  "nl"
+ ],
+ "docs_url": "https://developers.tradedoubler.com/",
+ "url": "https://www.tradedoubler.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Advertiser contract; publisher API self-serve; advertiser-side API access via account manager.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (Tradedoubler developer portal — publisher API documented; advertiser API by request)",
+  "access": "partner_only",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (publisher-facing developer portal; advertiser API via account management) Confidence: **medium**.",
+  "base_urls": [],
+  "auth": [
+   "1. Advertiser contract with Tradedoubler.",
+   "2. Request API access via the account manager.",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "advertiser reporting",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Contract-based.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.tradedoubler.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://developers.tradedoubler.com/ resolves to https://www.tradedoubler.com/, whose 'Developer Portal' and 'API Documentation' links point to https://www.tradedoubler.com/for-publishers (publisher APIs for products, vouchers and affiliate statistics). The advertiser-side API is granted through the account manager with no public reference, so no advertiser endpoint, auth scheme or response shape can be cited."
+}

@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/arbeidsplassen-mcp",
+ "description": "Arbeidsplassen (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://pam-stilling-feed.nav.no/swagger",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "arbeidsplassen"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ARBEIDSPLASSEN_TOKEN",
+     "description": "JWT for NAV's job vacancy feed, sent as Authorization: Bearer. A rotating public token for experiments is served at GET https://pam-stilling-feed.nav.no/api/publicToken; a private one comes from nav.team.arbeidsplassen@nav.no after accepting the API terms (https://arbeidsplassen.nav.no/vilkar-api).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

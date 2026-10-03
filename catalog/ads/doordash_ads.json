@@ -1,0 +1,279 @@
+{
+ "id": "doordash_ads",
+ "category": "ads",
+ "label": "DoorDash Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "na",
+  "us",
+  "ca",
+  "au"
+ ],
+ "docs_url": "https://developer.doordash.com/en-US/api/ads/",
+ "url": "https://advertising.doordash.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "Ads API Key issued to the advertiser (Ads Manager / CPG advertiser guide); Sponsored Products + Sponsored Brand campaign types; some report breakdowns restricted to Diamond & Gold tier advertisers. Rate limits: not stated on the Redoc page. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key ('Ads API Key Authentication')",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "reports",
+   "catalog_products",
+   "recommendations"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (DoorDash Ads API 1.0.29) Confidence: **high** — official Redoc read.",
+  "base_urls": [
+   "https://openapi.doordash.com/ads/…"
+  ],
+  "auth": [
+   "1. Advertiser account in DoorDash Ads Manager (CPG advertiser guide); request an **Ads API Key**.",
+   "2. Send the key per 'Ads API Key Authentication' (header — TODO(verify) name).",
+   "3. Create campaign → ad group (targeting + bid) → product ads / creatives → reports."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /campaigns/{campaignType}` · `PUT /campaigns/{id}` · `GET /campaigns` · `GET /campaigns/{id}` · `GET …/budget-capout-recommendations",
+    "purpose": "campaigns (sp",
+    "notes": "sb) + budget + recommendations"
+   },
+   {
+    "call": "POST /ad-groups` · `PUT /ad-groups/{id}` · `GET /ad-groups",
+    "purpose": "ad groups: bid config + stacked targeting (dayparting, merchant, behavioral, interest, keyword)",
+    "notes": "campaignId, bid, targeting{dayparting, merchants, behavioral, interests, keywords}"
+   },
+   {
+    "call": "POST /product-ads` · `GET` · `DELETE",
+    "purpose": "product ads",
+    "notes": "adGroupId, productIds"
+   },
+   {
+    "call": "POST /assets` · `GET /assets/{id}` · `POST /assets/register` · `POST /creatives` (SB) · `GET /creatives",
+    "purpose": "creatives upload (Sponsored Brand)",
+    "notes": "asset file, assetId, headline, logo"
+   },
+   {
+    "call": "POST /keywords/recommended` · `…/recommended-with-status",
+    "purpose": "keywords (SP)",
+    "notes": "adGroupId"
+   },
+   {
+    "call": "POST /reports` · `GET /reports/{id}/download` · `GET /reports` (reportNameContains, sortCol, sortDir)",
+    "purpose": "reports (CATEGORY_SHARE with RETAILER breakdown for Diamond & Gold tiers)",
+    "notes": "reportType, groupBys[], dateRange"
+   },
+   {
+    "call": "GET /merchants` · `POST /resources/search` · `POST /catalog/validate` · `GET /menu/dish-labels` · `POST /targeting/audience-size",
+    "purpose": "merchants, catalog, targeting estimates",
+    "notes": "query"
+   },
+   {
+    "call": "audiences upload · conversions upload",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated; API key by advertiser onboarding; tier-gated report breakdowns; free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.doordash.com/en-US/api/ads/",
+   "https://advertising.doordash.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi.doordash.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "DoorDash Ads API key; the Ads API reference's security scheme 'Ads API Key Authentication' reads: 'We will be using stateful token based API keys to authenticate clients, passed in the Authorization header as Bearer {API_KEY}' (https://developer.doordash.com/en-US/redocusaurus/plugin-redoc-11.yaml). Issued to onboarded DoorDash Ads (CPG) advertisers and partners."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "campaign_type",
+    "required": true,
+    "help": "Campaign type path segment of every campaign call: 'sp' (Sponsored Products) or 'sb' (Sponsored Brand)."
+   }
+  ],
+  "terms": "DoorDash Ads API 1.0.29 (https://developer.doordash.com/en-US/api/ads/, OpenAPI at https://developer.doordash.com/en-US/redocusaurus/plugin-redoc-11.yaml): server https://openapi.doordash.com, campaign management under /ads/api/v1/{campaignType}/campaigns and asynchronous reports under /ads/api/v1/sp/reports. Budgets are written in cents (BudgetWrite.daily.unitAmount: 'Integer representing a monetary value in cents').",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/ads/api/v1/{campaign_type}/campaigns",
+    "path_params": {
+     "campaign_type": "@campaign_type"
+    },
+    "fixed_params": {
+     "startIndex": 0,
+     "count": 1
+    },
+    "docs": "https://developer.doordash.com/en-US/api/ads/#tag/Campaigns/operation/getCampaigns",
+    "note": "No account endpoint is documented; the probe lists one campaign (GET /ads/api/v1/{campaignType}/campaigns?count=1), which verifies the API key."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/ads/api/v1/{campaign_type}/campaigns",
+    "path_params": {
+     "campaign_type": "@campaign_type"
+    },
+    "params": {
+     "startIndex": "offset",
+     "count": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "name",
+      "status": "status",
+      "currency": "budget.daily.currency",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://developer.doordash.com/en-US/api/ads/#tag/Campaigns/operation/getCampaigns",
+    "note": "GET /ads/api/v1/{campaignType}/campaigns?startIndex&count (0-indexed offset). Each CampaignResponse has campaignId, name, status, statusDescription, budget {daily, lifetime: {unitAmount (cents), currency, displayString, decimalPlaces}, pacingStrategy}, startDate/endDate ('yyyy-MM-dd HH:mm:ss'). The budget stays in raw.budget because it is in cents. account_id and status are not sent (the API key selects the advertiser; no status filter is documented)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/ads/api/v1/{campaign_type}/campaigns",
+    "path_params": {
+     "campaign_type": "@campaign_type"
+    },
+    "body": {
+     "campaignId": "campaign_id",
+     "budget.daily.unitAmount": "minor:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developer.doordash.com/en-US/api/ads/#tag/Campaigns/operation/updateCampaign",
+    "note": "PUT /ads/api/v1/{campaignType}/campaigns {campaignId, budget: {daily: {unitAmount}}} with daily_budget converted to cents; a partial update (the existing pacingStrategy is preserved). This spends money. currency is ignored (the advertiser's currency applies)."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/ads/api/v1/{campaign_type}/campaigns",
+    "path_params": {
+     "campaign_type": "@campaign_type"
+    },
+    "body": {
+     "campaignId": "campaign_id",
+     "status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developer.doordash.com/en-US/api/ads/#tag/Campaigns/operation/updateCampaign",
+    "note": "PUT /ads/api/v1/{campaignType}/campaigns {campaignId, status: ACTIVE|PAUSED} (StatusWrite enum ACTIVE, PAUSED, ENDED). Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "No account-listing operation exists in the Ads API (tags: Campaigns, Ad Groups, Product Ads, Assets, Creatives (SB), Merchants (Retailers), Keywords (SP), Resources, Catalog, Report, Menu, Targeting; https://developer.doordash.com/en-US/api/ads/); the API key is scoped to the advertiser.",
+   "get_report": "Reports are asynchronous files: 'Create report' (POST /ads/api/v1/sp/reports/{recordType}/create) returns only a reportId, and 'Download report' (GET /ads/api/v1/sp/reports/download/{reportId}) returns a status and a download url to an S3 file (https://developer.doordash.com/en-US/api/ads/#tag/Report), not metric rows."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host openapi.doordash.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://developer.doordash.com/en-US/redocusaurus/plugin-redoc-11.yaml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

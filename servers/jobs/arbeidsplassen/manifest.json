@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "arbeidsplassen-mcp",
+ "display_name": "Arbeidsplassen MCP",
+ "version": "0.1.0",
+ "description": "Arbeidsplassen (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "arbeidsplassen"
+   ],
+   "env": {
+    "PLATFORM_MCP_ARBEIDSPLASSEN_TOKEN": "${user_config.platform_mcp_arbeidsplassen_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_arbeidsplassen_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ARBEIDSPLASSEN_TOKEN",
+   "description": "JWT for NAV's job vacancy feed, sent as Authorization: Bearer. A rotating public token for experiments is served at GET https://pam-stilling-feed.nav.no/api/publicToken; a private one comes from nav.team.arbeidsplassen@nav.no after accepting the API terms (https://arbeidsplassen.nav.no/vilkar-api).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "NAV's public feed of job vacancies (OpenAPI at https://pam-stilling-feed.nav.no/api/openapi.json) has no search: GET /api/v1/feed 'Returns first page of the feed by default, or last if query param last is provided', so this returns the newest page and query, location, page and limit are not sent — filter client-side and use get_posting (id = feed line id) for the full ad. Pages are chained by next_url/next_id (uuids, not numbers); replicate the feed with a dedicated client for bulk. Items: id, url (the /api/v1/feedentry path), title, content_text, date_modified, _feed_entry{uuid, status, title, businessName, municipal, sistEndret}. Terms: https://arbeidsplassen.nav.no/vilkar-api."
+  },
+  {
+   "name": "get_posting",
+   "description": "'Returns details for the specified feed entry': the ad (FeedAd) sits under ad_content — title, description (HTML), employer{name, orgnr, homepage}, workLocations[], link (the arbeidsplassen.no listing), published, expires, applicationUrl, applicationDue, sourceurl, engagementtype, extent (all in raw)."
+  }
+ ]
+}

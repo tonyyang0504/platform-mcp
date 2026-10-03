@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/outbrain-mcp",
+ "description": "Outbrain Amplify (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.outbrain.com/home-page/amplify-api/documentation/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "outbrain"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_OUTBRAIN_OB_TOKEN",
+     "description": "Amplify API token, sent as the OB-TOKEN-V1 header. Obtain it with `curl -u USER:PASSWORD https://api.outbrain.com/amplify/v0.1/login` (Basic auth; the response is {\"OB-TOKEN-V1\": \"…\"}); tokens last 30 days, so re-issue and replace it monthly. Amplify API access requires Outbrain's approval.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

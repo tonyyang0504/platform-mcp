@@ -1,0 +1,35 @@
+{
+ "id": "mzadqatar",
+ "category": "automotive",
+ "label": "Mzadqatar",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://mzadqatar.com",
+ "domain": "mzadqatar.com",
+ "country": "Qatar",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official API documentation found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mzadqatar.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

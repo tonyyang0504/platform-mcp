@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/moloco-mcp",
+ "description": "Moloco Ads (ads): me, list_accounts, list_campaigns, get_report. Every tool maps to a documented end",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.moloco.cloud/docs/getting-started",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "moloco"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MOLOCO_API_KEY",
+     "description": "Moloco Ads API key (Moloco Ads > account settings > API key; created for the ad account's workplace). Exchanged at POST https://api.moloco.cloud/cm/v1/auth/tokens {api_key} for a 16-hour bearer token, re-requested on expiry or 401.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

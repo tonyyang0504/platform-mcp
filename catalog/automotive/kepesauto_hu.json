@@ -1,0 +1,36 @@
+{
+ "id": "kepesauto_hu",
+ "category": "automotive",
+ "label": "Kepesauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.kepesauto.hu",
+ "domain": "kepesauto.hu",
+ "country": "Hungary",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). /api is the site's own JSON backend; no documented third-party or import API found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.kepesauto.hu/api",
+   "https://www.kepesauto.hu/partners"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

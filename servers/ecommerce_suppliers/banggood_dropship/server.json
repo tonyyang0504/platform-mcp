@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/banggood_dropship-mcp",
+ "description": "Banggood Dropship Center (ecommerce suppliers): me, list_products, get_product, quote_shipping, get_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.banggood.com/help_center/question_category.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "banggood_dropship"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BANGGOOD_DROPSHIP_APP_ID",
+     "description": "app_id issued by the Banggood Open Platform (https://api.banggood.com, Manager Center) after the partner application is approved; calls must come from the registered IP address.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BANGGOOD_DROPSHIP_APP_SECRET",
+     "description": "The app_secret. GET /getAccessToken?app_id=&app_secret= returns an access_token valid 2 hours, sent as the access_token query parameter and renewed automatically.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BANGGOOD_DROPSHIP_WAREHOUSE",
+     "description": "Banggood warehouse code for quote_shipping (the `warehouse` of GetProductInfo's warehouse_list, e.g. CN, US, UK); the API rejects the call (12031) when it is missing.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_BANGGOOD_DROPSHIP_CURRENCY",
+     "description": "Currency for prices and shipping fees (e.g. USD); Banggood uses USD when unset.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

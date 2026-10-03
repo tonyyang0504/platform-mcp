@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/wordpress-mcp",
+ "description": "WordPress (builder tools): me, list_items, get_item, create_item, update_item, delete_item. Every to",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.wordpress.org/rest-api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "wordpress"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WORDPRESS_USERNAME",
+     "description": "WordPress user login name.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WORDPRESS_APPLICATION_PASSWORD",
+     "description": "Application Password for that user (Users > Profile > Application Passwords, WordPress 5.6+), sent with HTTP Basic auth over HTTPS.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WORDPRESS_SITE",
+     "description": "The site's host (and path if WordPress lives in a subdirectory), e.g. example.com or example.com/blog; pretty permalinks must be enabled so /wp-json/ resolves.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

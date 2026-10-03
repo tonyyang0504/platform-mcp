@@ -1,0 +1,125 @@
+{
+ "id": "placsp_contrataciondelestado_es",
+ "category": "deals",
+ "label": "Plataforma de Contratación del Sector Público",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "es"
+ ],
+ "docs_url": "https://contrataciondelestado.es/wps/portal/plataforma",
+ "url": "https://contrataciondelestado.es/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Spanish open data (reuse licence); Atom + CODICE XML; bids need a Spanish e-certificate.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "atom"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_atom",
+   "export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Atom syndication + monthly open-data ZIPs). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "Atom feed (licitaciones)",
+    "purpose": "search",
+    "notes": "CODICE XML entries: title, buyer, value, deadline"
+   },
+   {
+    "call": "monthly ZIP",
+    "purpose": "bulk",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Reuse licence; e-certificate to bid. - Spanish open data (reuse licence); Atom + CODICE XML; bids need a Spanish e-certificate.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/licitaciones_plataforma_contratacion.aspx"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "PLACSP open data is an Atom feed of CODICE XML entries (https://contrataciondelestado.es/sindicacion/sindicacion_643/licitacionesPerfilesContratanteCompleto3.atom; re-checked 2026-09-25): one page is ~17 MB with ~490 full CODICE entries, there is no server-side filter or page size, and the next page is only an Atom <link href=\"…_20260923_211008.atom\" rel=\"next\"/> among several <link> elements (self, first, next, per-entry deeplinks). Remaining runtime gaps: (1) link-rel pagination — using the href of the <link> whose rel is \"next\" as the next request URL (cursor paths cannot select an array element by attribute value, and a cursor is sent as a query parameter, not used as the URL); (2) truncating an oversized feed page to `limit` before mapping. Monthly ZIP archives are the only other source."
+}

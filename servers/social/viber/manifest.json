@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "viber-social-mcp",
+ "display_name": "Viber MCP",
+ "version": "0.1.0",
+ "description": "Viber (social): me, publish_text, publish_image. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/viber"
+   ],
+   "env": {
+    "PLATFORM_MCP_VIBER_AUTH_TOKEN": "${user_config.platform_mcp_viber_auth_token}",
+    "PLATFORM_MCP_VIBER_SENDER_ID": "${user_config.platform_mcp_viber_sender_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_viber_auth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VIBER_AUTH_TOKEN",
+   "description": "Viber Channel authentication token: as the channel's super admin open the Channel info screen > Developer Tools > copy token. The Channels Post API takes it as the auth_token member of every JSON request body (https://developers.viber.com/docs/tools/channels-post-api/). A webhook must have been set once with set_webhook before posting works (status 10 webhookNotSet otherwise).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_viber_sender_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VIBER_SENDER_ID",
+   "description": "Viber user id of a Channel SUPER ADMIN, sent as `from` ('Only the superadmins' ID should be used as the sender ID with this API'); listed under members[] with role superadmin in get_account_info.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "get_account_info returns {status, status_message, Id ('pa:...'), chat_hostname (channel name), background, members[{id, name, avatar, role superadmin|admin}]}."
+  },
+  {
+   "name": "publish_text",
+   "description": "PUBLISHES to the Viber Channel: POST /pa/post {auth_token, from (config sender_id), type: 'text', text (max 7000 characters)}; subscribers see the channel name as sender. A non-zero status (2 invalidAuthToken, 4 missingData, 10 webhookNotSet, 12 tooManyRequests) is an error result. The page does not show a /post response body; `id` is message_token when Viber returns it (null otherwise). `reply_to` is ignored (no reply parameter)."
+  },
+  {
+   "name": "publish_image",
+   "description": "PUBLISHES a picture message to the Viber Channel: {type: 'picture', text (description, 'Required. Max 768 characters' - pass text, an empty string is allowed), media (the first image_urls entry: a JPEG URL with a .jpeg extension, max 1 MB; 'Only JPEG format is supported')}. Only the first image is posted; no thumbnail is sent."
+  }
+ ]
+}

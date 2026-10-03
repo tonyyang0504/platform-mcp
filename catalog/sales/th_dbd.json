@@ -1,0 +1,36 @@
+{
+ "id": "th_dbd",
+ "category": "sales",
+ "label": "Department of Business Development",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "th"
+ ],
+ "docs_url": null,
+ "url": "https://www.dbd.go.th/",
+ "verified_at": "2026-09-05",
+ "terms_note": "The DBD DataWarehouse (free company search) redirected in a loop this pass (302 without a page); the department site opened → tenant session until the warehouse answers.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

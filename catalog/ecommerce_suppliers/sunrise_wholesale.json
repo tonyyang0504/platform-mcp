@@ -1,0 +1,111 @@
+{
+ "id": "sunrise_wholesale",
+ "category": "ecommerce_suppliers",
+ "label": "Sunrise Wholesale Merchandise",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "global",
+  "us_ca"
+ ],
+ "docs_url": "https://www.sunrisewholesalemerchandise.com/",
+ "url": "https://www.sunrisewholesalemerchandise.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed",
+   "app"
+  ],
+  "auth": "member login (API + feeds members-only)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "product_import",
+   "orders"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Recurring monthly / yearly membership; no cancellation refunds for the cycle.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.sunrisewholesalemerchandise.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://www.sunrisewholesalemerchandise.com/ and /api on 2026-09-25 (/api redirects to the home page): the site mentions orders arriving 'through our API' and 'Access to Product Feeds' for paid members, but no reference, base URL or auth scheme is published; API and feed documentation are members-only (login)."
+}

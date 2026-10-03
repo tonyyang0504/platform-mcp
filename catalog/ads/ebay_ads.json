@@ -1,0 +1,159 @@
+{
+ "id": "ebay_ads",
+ "category": "ads",
+ "label": "eBay Advertising (Promoted Listings)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "us",
+  "gb",
+  "de",
+  "au"
+ ],
+ "docs_url": "https://developer.ebay.com/api-docs/sell/marketing/overview.html",
+ "url": "https://www.ebay.com/sellercenter/growth/promoted-listings/promoted-listings-standard",
+ "verified_at": "2026-09-04",
+ "terms_note": "Marketing API use requires an eBay developer account and the seller's OAuth authorisation (documentation not opened this session).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (eBay developer app; user token with scope https://api.ebay.com/oauth/api_scope/sell.marketing)",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "ad_groups",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Sell Marketing API).",
+  "base_urls": [
+   "https://api.ebay.com/sell/marketing/v1/…",
+   "https://api.sandbox.ebay.com/sell/marketing/v1/"
+  ],
+  "auth": [
+   "1. eBay developer program app (client id / secret); seller authorizes with the authorization-code grant including scope `https://api.ebay.com/oauth/api_scope/sell.marketing`.",
+   "2. User access token (2 h) + refresh token (18 months) on `Authorization: Bearer`; `X-EBAY-C-MARKETPLACE-ID` where required.",
+   "3. Seller must be eligible for Promoted Listings (good standing)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /ad_campaign` · `POST /ad_campaign` · `POST /ad_campaign/setup_quick_campaign` · `POST /ad_campaign/{id}/update_bidding_strategy` · `/pause` · `/resume` · `/end",
+    "purpose": "campaigns + funding strategy (COST_PER_SALE bidPercentage / COST_PER_CLICK budget)",
+    "notes": "campaignName, fundingStrategy{fundingModel, bidPercentage, adRateStrategy}, budget{daily}, startDate, endDate, marketplaceId, channels"
+   },
+   {
+    "call": "POST /ad_campaign/{id}/ad_group` · `GET` · `PUT",
+    "purpose": "ad groups (priority campaigns)",
+    "notes": "name, defaultBid"
+   },
+   {
+    "call": "POST /ad_campaign/{id}/ad` · `/bulk_create_ads_by_listing_id` · `POST …/ad/{adId}/update_bid` · `/bulk_update_ads_bid_by_listing_id",
+    "purpose": "ads (listings) + bids",
+    "notes": "listingId, bidPercentage / bid{value,currency}, adGroupId"
+   },
+   {
+    "call": "POST /ad_campaign/{id}/keyword` · `/bulk_create_keyword` · `/bulk_update_keyword` · `/negative_keyword` · `POST …/suggest_keywords` · `suggest_bids",
+    "purpose": "keywords + bids",
+    "notes": "keywordText, matchType, bid"
+   },
+   {
+    "call": "POST /ad_report_task` → `GET /ad_report/{id}",
+    "purpose": "reports",
+    "notes": "reportType, dateFrom, dateTo, dimensions, metricKeys, campaignIds"
+   },
+   {
+    "call": "POST /promotion/item_promotion` · `/promotion_report",
+    "purpose": "promotions (markdowns, order discounts)",
+    "notes": "discountRules, inventoryCriterion"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-app daily call limits (developer portal); free; eBay API License Agreement; Promoted Listings fees are ad rate / CPC charged by eBay.",
+  "mcp_sdk": [
+   "Official eBay SDKs (Java / .NET / Python via OpenAPI) and Postman collections on developer.ebay.com (blocked this pass)."
+  ],
+  "sources": [
+   "https://developer.ebay.com/api-docs/sell/marketing/overview.html",
+   "https://developer.ebay.com/api-docs/sell/marketing/resources/methods"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "eBay's Marketing API reference is still unreadable: on 2026-09-25 headless Chromium on a datacenter host got eBay's 'SORRY Something went wrong on our end' error page for https://developer.ebay.com/api-docs/sell/marketing/overview.html, …/resources/methods, …/resources/campaign/methods/getCampaigns, …/static/overview.html and https://developer.ebay.com/develop/api/sell/marketing_api (as did plain HTTP with a browser agent: 403). The official eBay GitHub org has no Marketing API spec (its npm-public-api-mcp server fetches specs from https://api.ebay.com/developer/mcp/v1/search, which answers 'Missing access token'), so no Promoted Listings endpoint could be verified from an official page; the adapter is deferred until the reference can be read."
+}

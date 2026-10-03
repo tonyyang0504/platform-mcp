@@ -1,0 +1,67 @@
+{
+ "label": "OpenFIGI (instrument identifiers)",
+ "lane": "api",
+ "kind": "reference_data",
+ "docs_url": "https://www.openfigi.com/api/documentation",
+ "url": "https://www.openfigi.com/",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "spec_url": "https://api.openfigi.com/schema",
+ "terms_note": "Search/Filter API without a key: 5 requests per minute, 100 results per page, at most 150 pages (15,000 results); with a free key 20 per minute (https://www.openfigi.com/api/documentation#rate-limit). The published schema types the /v3/search response as an array; the live API answers an object {data: [...], next}.",
+ "adapter": {
+  "base_url": "https://api.openfigi.com/v3",
+  "auth": {
+   "type": "none",
+   "extra_headers": {
+    "X-OPENFIGI-APIKEY": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": false,
+     "help": "Optional OpenFIGI API key (sign up at https://www.openfigi.com/user/signup); raises the search limit from 5 to 20 requests per minute. Sent as X-OPENFIGI-APIKEY."
+    }
+   ]
+  },
+  "rate_per_second": 0.08,
+  "tools": {
+   "search_symbols": {
+    "method": "POST",
+    "path": "/search",
+    "body": {
+     "query": "query",
+     "start": "cursor"
+    },
+    "result": {
+     "items": "data",
+     "key": "results",
+     "next_cursor": "next",
+     "fields": {
+      "symbol": "figi",
+      "name": "name",
+      "type": "securityType"
+     },
+     "trim": true
+    },
+    "docs": "https://www.openfigi.com/api/documentation",
+    "note": "Keyword search over FIGIs (POST /v3/search {query, start}); symbol is the FIGI, raw carries ticker, exchCode, marketSector and compositeFIGI. The API always answers pages of 100 and ignores the page size, so the server returns `limit` results and a next_cursor that walks the rest of that page before asking for the next one (the page is held for 60 s, so walking it costs no extra searches). Pass next_cursor back as cursor. Without an API key only 5 searches per minute are allowed.",
+    "default_limit": 25,
+    "max_limit": 100
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint; the optional API key is only a rate-limit tier.",
+   "get_candles": "OpenFIGI serves identifiers only (mapping, search, filter), no prices.",
+   "get_series": "No time series in the API (identifiers only).",
+   "get_news": "No news endpoint in the API."
+  }
+ },
+ "id": "openfigi",
+ "category": "market_data",
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

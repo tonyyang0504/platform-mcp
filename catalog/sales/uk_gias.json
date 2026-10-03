@@ -1,0 +1,36 @@
+{
+ "id": "uk_gias",
+ "category": "sales",
+ "label": "Get Information about Schools",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": null,
+ "url": "https://get-information-schools.service.gov.uk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Open Government Licence; daily CSV downloads and public establishment pages (head teacher named); robots.txt (5 Disallow) does not hit the search.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "matterhorn-mcp",
+ "display_name": "Matterhorn MCP",
+ "version": "0.1.0",
+ "description": "Matterhorn (ecommerce suppliers): me, list_products, get_product, create_order, get_order. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "matterhorn"
+   ],
+   "env": {
+    "PLATFORM_MCP_MATTERHORN_API_KEY": "${user_config.platform_mcp_matterhorn_api_key}",
+    "PLATFORM_MCP_MATTERHORN_CURRENCY": "${user_config.platform_mcp_matterhorn_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_matterhorn_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MATTERHORN_API_KEY",
+   "description": "Matterhorn REST API key generated in the customer panel (free for registered wholesale customers), sent as the raw Authorization header value.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_matterhorn_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MATTERHORN_CURRENCY",
+   "description": "Order currency for create_order (e.g. EUR, USD, GBP); left out of the body when unset.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe reads the category dictionary with the key."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /B2BAPI/ITEMS/?page=&limit= (100 per page by default, 1000 at most); `category` is category_id (GET /B2BAPI/DICTIONARIES/CATEGORIES), `query` is not accepted. Each product carries prices in many currencies (prices{EUR, USD, GBP, ...}; EUR is mapped as price_eur) and variants[{variant_uid, name (size), stock}] - variant_uid is what orders need."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /B2BAPI/ITEMS/{id}: {id, name, description, color, category_path, brand, stock_total, url, images[], variants[{variant_uid, name, stock, max_processing_time, ean}], prices{EUR, CHF, CZK, USD, GBP, ...}}. `price` is the EUR wholesale price; other currencies are in `raw`.prices."
+  },
+  {
+   "name": "create_order",
+   "description": "PUT /B2BAPI/ACCOUNT/ORDERS/ places a wholesale order (it is not paid through the API: pay via the returned payment_url or the confirmation e-mail link). `items` are [{variant_uid, quantity}]; `shipping_address` is Matterhorn's delivery_to {first_name, second_name, country (2-letter, lower case), street, house_number, zip, city} - when omitted Matterhorn ships to the key owner's address; `shipping_option` is the numeric delivery_method_id from GET /B2BAPI/DICTIONARIES/DELIVERY/{country}."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /B2BAPI/ACCOUNT/ORDERS/{id}: {id, order_date, status, total_net, total_gross, tax, order_currency, shipping_service, shipping_number and invoice_number (after dispatch), tracking_url, payment_url, delivery_to, positions[{product_variant_uid, quantity, grossprice, status}]}."
+  }
+ ]
+}

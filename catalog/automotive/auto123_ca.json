@@ -1,0 +1,35 @@
+{
+ "id": "auto123_ca",
+ "category": "automotive",
+ "label": "Auto123",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.auto123.com",
+ "domain": "auto123.com",
+ "country": "Canada",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Canada cars_marketplace with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://auto123.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

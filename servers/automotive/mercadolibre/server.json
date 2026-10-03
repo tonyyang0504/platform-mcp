@@ -1,0 +1,69 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mercadolibre-mcp",
+ "description": "Mercado Libre Autos (automotive): me, get_listing. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.mercadolibre.com.ar/en_us/items-and-searches",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "mercadolibre"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MERCADOLIBRE_CLIENT_ID",
+     "description": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADOLIBRE_CLIENT_SECRET",
+     "description": "Secret Key of the same application; sent as client_secret in the token request body.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADOLIBRE_REFRESH_TOKEN",
+     "description": "Refresh token (TG-...) from a one-time authorization-code consent of any Mercado Libre account to your app (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/mercadolibre.json, mode 0600) so it is preferred over this variable on the next start. Do not share one refresh token between this server and the ecommerce/marketplaces Mercado Libre servers.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADOLIBRE_ENV",
+     "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADOLIBRE_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "dhgate",
+ "category": "sales",
+ "label": "DHgate seller storefronts",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.dhgate.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "www.dhgate.com serves a Cloudflare challenge; robots.txt (53 Disallow) blocks every ?query URL; the seller portal opened and names the platform. Tenant session only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

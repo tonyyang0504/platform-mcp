@@ -1,0 +1,211 @@
+{
+ "id": "zhubajie",
+ "category": "marketplaces",
+ "label": "Zhubajie (猪八戒)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.zbj.com/api/apiIndex",
+ "url": "https://www.zbj.com",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer registers on open.zbj.com (注册成为开发者 → 创建应用 → 测试 → 发布); apps go through the 工具市场 for service providers; OAuth2.0 user authorisation + signature; FAQ has a '应用API流量扩大申请' item so quotas are per-app and raised on request; seller side needs 实名认证、资质考核、保证金缴纳.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "orders",
+   "update_product"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null,
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://openapi.zbj.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "openid",
+    "required": true,
+    "help": "Your 猪八戒 openid (用户唯一标识, returned with the access token by the ZOP OAuth2.0 authorisation); every service-provider method takes it."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "appKey": "app_key",
+    "accessToken": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + params sorted by name + secret (签名算法). Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 服务商 account (https://open.zbj.com/wiki/getWikiCategoryAll?wikiId=8): valid 7 days by default (refresh at http://openapi.zbj.com/oauth2/refreshtoken), or for the purchase period for 工具市场 apps."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "algorithm": "sha1",
+    "encoding": "hex",
+    "case": "upper",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "signature_param": "sign"
+   }
+  },
+  "terms": "猪八戒开放平台 (ZOP) router API (https://open.zbj.com/wiki/getWikiCategoryAll?wikiId=9): every call is GET https://openapi.zbj.com/router with appKey, accessToken, method, v=1.0, format=json, a 13-digit timestamp and sign = uppercase hex SHA1 of appSecret + name/value pairs sorted by name + appSecret (https://open.zbj.com/wiki/getWikiCategoryAll?wikiId=11). Failures answer {errorToken, code, message, solution, subErrors}. Applications are subject to platform approval (应用运营规则); prices are CNY.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.user.getServiceUserInfo",
+     "v": "1.0",
+     "format": "json"
+    },
+    "params": {
+     "openid": "@openid"
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=15&groupId=3",
+    "note": "zbj.user.getServiceUserInfo (openid): nickname, username, mobile, userEmail, brandname (shop name) and openid of the authorised 服务商."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.service.getServiceList",
+     "v": "1.0",
+     "format": "json",
+     "state": "1"
+    },
+    "params": {
+     "openid": "@openid",
+     "pageNum": "page",
+     "pageSize": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "serviceList",
+     "key": "products",
+     "total": "total",
+     "fields": {
+      "id": "serviceId",
+      "name": "subject",
+      "price": "amount",
+      "currency": "=CNY",
+      "status": "state",
+      "url": "serviceurl",
+      "created_at": "addtime",
+      "updated_at": "lasttime"
+     }
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=22&groupId=8",
+    "note": "zbj.service.getServiceList: the 服务商's services (state 1 全部 is always requested; the status filter is not applied). state: 2 出售中, 3 已下架, 4 未通过审核; amount is the web price in CNY (amountApp the app price); sales = successful deals; addtime/lasttime are epoch seconds."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.trade.querySoldServices",
+     "v": "1.0",
+     "format": "json"
+    },
+    "params": {
+     "openid": "@openid",
+     "currentPage": "page",
+     "pageSize": "limit",
+     "startTime": "datefmt:%Y%m%d%H%M%S:since"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "tradeInfos",
+     "key": "sales",
+     "total": "total",
+     "fields": {
+      "id": "taskId",
+      "product_name": "title",
+      "amount": "amount",
+      "currency": "=CNY",
+      "status": "taskState",
+      "created_at": "createtime"
+     }
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=18&groupId=4",
+    "note": "zbj.trade.querySoldServices: service orders sold by the 服务商 (taskId, title, taskMode 11 购买服务 / 12 雇佣, taskState 0 草稿 … 4 结束并打款, amount and hostedAmount in CNY, createtime epoch seconds, employer nickname). since maps to startTime (yyyyMMddHHmmss); orders carry no service id, so product_id is not applied."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.trade.getRefundList",
+     "v": "1.0",
+     "format": "json"
+    },
+    "params": {
+     "openid": "@openid",
+     "page": "page"
+    },
+    "result": {
+     "items": "refundInfoList",
+     "key": "refunds",
+     "fields": {
+      "id": "refundId",
+      "sale_id": "taskId",
+      "amount": "refundAmount",
+      "currency": "=CNY",
+      "reason": "description",
+      "status": "refundState",
+      "created_at": "createTime"
+     }
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=84&groupId=4",
+    "note": "zbj.trade.getRefundList: refund requests on the 服务商's trades. refundState 1 待确认退款, 2 退款成功, 3 退款关闭, 4 已拒绝, 5 已撤销, 6 退款处理中; refundAmount (requested) and paidAmount in CNY; createTime epoch seconds. The page size is fixed by the platform (limit and since are not applied)."
+   }
+  },
+  "not_offered": {
+   "get_product": "zbj.service.getServiceDetail (serviceId + openid, https://open.zbj.com/api/apiDetailIndex?methodId=38&groupId=8) answers subject, amount, content, categories and cases but does not echo the service id, which the vocabulary's product record requires; use list_products (which carries serviceId, subject, amount, state and serviceurl).",
+   "create_product": "zbj.service.addService (https://open.zbj.com/api/apiDetailIndex?methodId=72&groupId=8) requires a third-level categoryId (from zbj.user.getCategoryByUserId), a cover imgurl uploaded through zbj.services.uploadCoverPic, separate PC and app prices and contents and a unit, none of which the vocabulary carries, and its success response ({successful: true}) returns no service id.",
+   "update_price": "The only way to change a service's price is zbj.service.editService (https://open.zbj.com/api/apiDetailIndex?methodId=74&groupId=8), a full replacement that requires subject, amount, amountApp, unit, imgurl, cont, contApp and categoryId together; there is no price-only call (zbj.trade.sellerEditAmount changes the amount of one hire/purchase trade, not a listing).",
+   "get_sales_stats": "No revenue or totals method is documented: the 交易API group (https://open.zbj.com/api/apiIndex) lists trades, refunds and workflow steps only.",
+   "refund": "The 服务商 cannot issue a refund through the API: refunds are requested by the employer, and the 交易API group (https://open.zbj.com/api/apiIndex) only reads them (zbj.trade.getRefundList)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, openid; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

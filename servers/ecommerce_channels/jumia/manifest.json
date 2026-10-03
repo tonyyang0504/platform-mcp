@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "jumia-mcp",
+ "display_name": "Jumia MCP",
+ "version": "0.1.0",
+ "description": "Jumia (ecommerce channels): me, set_inventory, list_orders. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jumia"
+   ],
+   "env": {
+    "PLATFORM_MCP_JUMIA_CLIENT_ID": "${user_config.platform_mcp_jumia_client_id}",
+    "PLATFORM_MCP_JUMIA_REFRESH_TOKEN": "${user_config.platform_mcp_jumia_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_jumia_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JUMIA_CLIENT_ID",
+   "description": "Client Id of a SELF AUTHORIZATION application registered in Vendor Center > Settings > Applications (Web Applications cannot refresh unattended).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_jumia_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JUMIA_REFRESH_TOKEN",
+   "description": "Refresh token from the application's 'Generate Token' action in Vendor Center. Every refresh returns a NEW refresh token; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/jumia.json (0600) so a restart uses the latest one.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "get-shops returns the shops of the authenticated user [{id, name, email, businessClients[{code (e.g. jumia-ng), countryCode, status}]}]."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Update Product Stock feed {products: [{sellerSku, id, stock}]}: BOTH `sku` (your seller SKU) and `listing_id` (the Jumia product SID, a uuid) are required by the endpoint. Asynchronous: raw.feedId, status at GET /feeds/{id}."
+  },
+  {
+   "name": "list_orders",
+   "description": "Retrieve Orders ?status(PENDING|READY_TO_SHIP|SHIPPED|DELIVERED|FAILED|CANCELED|RETURNED, comma-separated)&createdAfter(YYYY-MM-DD or 'YYYY-MM-DD hh:mm:ss'; createdBefore defaults to today, max 3-month window)&size. Paging is by the response's next-page token, so only the first page is returned. raw.number is the customer-facing order number; totals are in the local currency."
+  }
+ ]
+}

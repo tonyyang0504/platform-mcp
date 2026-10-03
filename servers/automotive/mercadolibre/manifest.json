@@ -1,0 +1,78 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercadolibre-mcp",
+ "display_name": "Mercado Libre Autos MCP",
+ "version": "0.1.0",
+ "description": "Mercado Libre Autos (automotive): me, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mercadolibre"
+   ],
+   "env": {
+    "PLATFORM_MCP_MERCADOLIBRE_CLIENT_ID": "${user_config.platform_mcp_mercadolibre_client_id}",
+    "PLATFORM_MCP_MERCADOLIBRE_CLIENT_SECRET": "${user_config.platform_mcp_mercadolibre_client_secret}",
+    "PLATFORM_MCP_MERCADOLIBRE_REFRESH_TOKEN": "${user_config.platform_mcp_mercadolibre_refresh_token}",
+    "PLATFORM_MCP_MERCADOLIBRE_ENV": "${user_config.platform_mcp_mercadolibre_env}",
+    "PLATFORM_MCP_MERCADOLIBRE_BASE_URL": "${user_config.platform_mcp_mercadolibre_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mercadolibre_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADOLIBRE_CLIENT_ID",
+   "description": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercadolibre_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADOLIBRE_CLIENT_SECRET",
+   "description": "Secret Key of the same application; sent as client_secret in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercadolibre_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADOLIBRE_REFRESH_TOKEN",
+   "description": "Refresh token (TG-...) from a one-time authorization-code consent of any Mercado Libre account to your app (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/mercadolibre.json, mode 0600) so it is preferred over this variable on the next start. Do not share one refresh token between this server and the ecommerce/marketplaces Mercado Libre servers.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercadolibre_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADOLIBRE_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_mercadolibre_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADOLIBRE_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /users/me returns the authorised user {id, nickname, site_id, country_id, ...}."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /items/{item_id} with a Bearer token (vehicle example MLB1045563828, category MLB1744 in 'List vehicles'): works for any site, since the id carries the site prefix (MLA…, MLB…, MLM…, MCO…). Vehicle attributes (BRAND, MODEL, VEHICLE_YEAR, KILOMETERS …), location and pictures stay in raw.attributes / raw.location / raw.pictures."
+  }
+ ]
+}

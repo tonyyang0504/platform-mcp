@@ -1,0 +1,37 @@
+{
+ "id": "kia_cpo",
+ "category": "automotive",
+ "label": "Cpo",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://cpo.kia.com",
+ "domain": "cpo.kia.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kia Connect business APIs are connected-car only; no API for Kia CPO listings.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cpo.kia.com/"
+  ],
+  "unofficial": [
+   "https://github.com/Hyundai-Kia-Connect/hyundai_kia_connect_api"
+  ]
+ },
+ "official_mcp": []
+}

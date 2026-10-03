@@ -1,0 +1,37 @@
+{
+ "id": "messe_frankfurt",
+ "category": "sales",
+ "label": "Messe Frankfurt exhibitor search",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "de",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.messefrankfurt.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (4 Disallow: JSON / jcr / tools paths) — the per-fair exhibitor search pages are allowed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

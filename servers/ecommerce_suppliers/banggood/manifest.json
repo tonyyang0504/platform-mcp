@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "banggood-mcp",
+ "display_name": "Banggood Dropship MCP",
+ "version": "0.1.0",
+ "description": "Banggood Dropship (ecommerce suppliers): me, list_products, get_product, quote_shipping, get_order, ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "banggood"
+   ],
+   "env": {
+    "PLATFORM_MCP_BANGGOOD_APP_ID": "${user_config.platform_mcp_banggood_app_id}",
+    "PLATFORM_MCP_BANGGOOD_APP_SECRET": "${user_config.platform_mcp_banggood_app_secret}",
+    "PLATFORM_MCP_BANGGOOD_WAREHOUSE": "${user_config.platform_mcp_banggood_warehouse}",
+    "PLATFORM_MCP_BANGGOOD_CURRENCY": "${user_config.platform_mcp_banggood_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_banggood_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BANGGOOD_APP_ID",
+   "description": "app_id issued by the Banggood Open Platform (https://api.banggood.com, Manager Center) after the partner application is approved; calls must come from the registered IP address.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_banggood_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BANGGOOD_APP_SECRET",
+   "description": "The app_secret. GET /getAccessToken?app_id=&app_secret= returns an access_token valid 2 hours, sent as the access_token query parameter and renewed automatically.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_banggood_warehouse": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BANGGOOD_WAREHOUSE",
+   "description": "Banggood warehouse code for quote_shipping (the `warehouse` of GetProductInfo's warehouse_list, e.g. CN, US, UK); the API rejects the call (12031) when it is missing.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_banggood_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BANGGOOD_CURRENCY",
+   "description": "Currency for prices and shipping fees (e.g. USD); Banggood uses USD when unset.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe obtains a token and reads the country list ({code: 0, countries[{country_id, country_name}]}), so `account` holds that list."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /product/getProductList: `category` (cat_id, a SUB-category id from GetCategoryList) is required by Banggood (12021 otherwise); `query` is not accepted. Pages hold at most 20 products; prices come from get_product (warehouse_list) and not from the list."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /product/getProductInfo?product_id=: {product_name, weight (kg), poa_list[{option_name, option_values[{poa_id, poa_name, poa_price}]}], warehouse_list[{warehouse, warehouse_price}], image_list, description}. `price` is the first warehouse's price; the response does not echo the product id, so `id` is empty and the requested id is the product. Pass poa_id and warehouse from here to orders."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "GET /product/getShipments: `country` is Banggood's English country NAME (e.g. United States, see GetCountries), not an ISO code; the warehouse comes from the `warehouse` setting. Products with attribute options also need a poa_id, which the vocabulary cannot pass (the API then answers 12033)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /order/getOrderInfo?sale_record_id= (YOUR order reference used when the order was imported): the first Banggood order under it {order_id, status, currency, total_amount, sub_amount, shipfee, product_list}; amounts are decimal strings, so they are returned as total_amount rather than the numeric `total`. `id` in the result is Banggood's order_id, which track takes."
+  },
+  {
+   "name": "track",
+   "description": "GET /order/getTrackInfo?order_id= (Banggood order_id from get_order): track_info[{event, time (UTC)}], latest and historical events."
+  }
+ ]
+}

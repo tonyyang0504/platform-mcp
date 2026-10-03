@@ -1,0 +1,276 @@
+{
+ "id": "huggingface",
+ "category": "builder_tools",
+ "label": "Hugging Face",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://huggingface.co/docs/hub/api",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation allowed (huggingface_hub is the recommended path); Hub API rate limits per 5-min window: anonymous 500 / free 1,000 / PRO 2,500 / Team 3,000 / Enterprise 6,000; resolvers 3,000-50,000; webhooks 1,000 triggers per 24 h; gated repos need a browser-side terms acceptance per user; Gradio/Docker Spaces need a paid plan (static Spaces free; free accounts get 2 ZeroGPU Spaces).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "sdk",
+   "cli",
+   "webhooks"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "download_public_and_private_repos",
+   "create_repo(model|dataset|space)",
+   "upload_files_commit",
+   "set_private_gated",
+   "spaces_create_deploy(static free; gradio/docker need PRO/Team)",
+   "inference_providers(router.huggingface.co/v1, OpenAI-compatible)",
+   "jobs_and_sandboxes(mcp)",
+   "webhooks(1000 triggers/24h)",
+   "gated_access_requests_api",
+   "revoke_leaked_token"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/huggingface/huggingface_hub",
+   "https://github.com/huggingface/huggingface.js",
+   "https://huggingface.co/.well-known/openapi.json"
+  ]
+ },
+ "official_mcp": [
+  "https://huggingface.co/mcp",
+  "https://github.com/huggingface/hf-mcp-server",
+  "https://github.com/mcp/huggingface/hf-mcp-server"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Hub REST API with OpenAPI spec, `huggingface_hub` SDK + `hf` CLI, Inference Providers,",
+  "base_urls": [
+   "https://huggingface.co/api/…",
+   "https://huggingface.co/.well-known/openapi.json",
+   "https://router.huggingface.co/v1",
+   "https://huggingface.co/mcp"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "Purpose",
+    "purpose": "Fields",
+    "notes": ""
+   },
+   {
+    "call": "verify token, plan, orgs",
+    "purpose": "—",
+    "notes": ""
+   },
+   {
+    "call": "datasets",
+    "purpose": "spaces?search=&author=&sort=&limit=`",
+    "notes": "discovery"
+   },
+   {
+    "call": "repo card + file listing (what `fetch_hf_repo` does)",
+    "purpose": "`rev`",
+    "notes": ""
+   },
+   {
+    "call": "download (highest rate-limit bucket)",
+    "purpose": "—",
+    "notes": ""
+   },
+   {
+    "call": "create model / dataset / space repo",
+    "purpose": "`type`, `name`, `organization`, `private`, `sdk` (`gradio`/`docker`/`static`)",
+    "notes": ""
+   },
+   {
+    "call": "push files (resumable, Xet-chunked; folders auto-split into commits)",
+    "purpose": "`path`, `size`, `sample`; ops add / delete / copy",
+    "notes": ""
+   },
+   {
+    "call": "visibility / gating",
+    "purpose": "`private`, `gated` (`auto`/`manual`), `gatedNotificationsEmail`",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/models/{repo}/user-access-request/{pending",
+    "purpose": "accepted",
+    "notes": "rejected"
+   },
+   {
+    "call": "remove repo",
+    "purpose": "`type`, `name`",
+    "notes": ""
+   },
+   {
+    "call": "inference with an HF token",
+    "purpose": "OpenAI schema",
+    "notes": ""
+   },
+   {
+    "call": "repo / repo.content / repo.config / discussion events",
+    "purpose": "JSON payload",
+    "notes": ""
+   },
+   {
+    "call": "agent-side Hub work",
+    "purpose": "chosen at https://huggingface.co/settings/mcp",
+    "notes": ""
+   }
+  ],
+  "limits": " 5-minute fixed windows (headers `RateLimit`, `RateLimit-Policy`): API bucket anonymous 500 · free 1,000 · PRO 2,500 · Team 3,000 · Enterprise 6,000 · Enterprise Plus 10,000 (100,000 with higher limits); resolvers 3,000 / 5,000 / 12,000 / 20,000 / 50,000 / 100,000; pages 100-1,000. Undocumented per-action caps on repo creation and commits. Webhooks 1,000 triggers per 24 h each. `huggingface_hub` ≥ 1.2 retries 429 using the header. Automation is the documented path. Gradio / Docker Spaces \"require a paid plan to create\" (PRO personal, Team / Enterprise org); static Spaces free; free accounts ma",
+  "mcp_sdk": [
+   "Official MCP `https://huggingface.co/mcp` (settings https://huggingface.co/settings/mcp; source",
+   "`pip install huggingface_hub` (`hf auth login`, `hf upload`, `hf models ls --warm`), `@huggingface/hub`,"
+  ],
+  "sources": [
+   "https://huggingface.co/api\").rstrip(\"/\")",
+   "https://router.huggingface.co/v1\").rstrip(\"/\")",
+   "https://huggingface.co/mcp\")",
+   "https://huggingface.co/{kind}s/{repo_id}",
+   "https://huggingface.co/docs/hub/api",
+   "https://huggingface.co/.well-known/openapi.md",
+   "https://huggingface.co/docs/hub/en/hf-mcp-server",
+   "https://huggingface.co/mcp",
+   "https://github.com/huggingface/hf-mcp-server",
+   "https://huggingface.co/docs/hub/security-tokens",
+   "https://huggingface.co/docs/hub/rate-limits",
+   "https://huggingface.co/docs/huggingface_hub/guides/upload",
+   "https://huggingface.co/docs/hub/spaces-overview",
+   "https://huggingface.co/docs/inference-providers/index",
+   "https://huggingface.co/docs/hub/models-gated",
+   "https://huggingface.co/docs/hub/webhooks"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://huggingface.co",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Hugging Face user access token (https://huggingface.co/settings/tokens); a write (or fine-grained repo write) token for create/update."
+    }
+   ]
+  },
+  "terms": "Subject to the Hugging Face Hub rate limits (https://huggingface.co/docs/hub/rate-limits) and each repo's license.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/whoami-v2",
+    "docs": "https://huggingface.co/.well-known/openapi.md",
+    "note": "GET /api/whoami-v2: the token's user, organisations and token role/scopes."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/api/{collection}",
+    "path_params": {
+     "collection": "=models"
+    },
+    "params": {
+     "search": "query",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "fields": {
+      "id": "id",
+      "title": "id",
+      "updated_at": "lastModified"
+     }
+    },
+    "docs": "https://huggingface.co/docs/hub/api",
+    "note": "GET /api/{models|datasets|spaces}?search&limit: Hub repositories (collection picks the repo type, default models). Only the first page is returned: the Hub paginates with a Link response header, which the runtime does not follow, so narrow with query."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/api/{collection}/{item_id}",
+    "path_params": {
+     "collection": "=models"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "id",
+      "updated_at": "lastModified",
+      "url": "cardData.homepage"
+     }
+    },
+    "docs": "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api",
+    "note": "GET /api/{models|datasets|spaces}/{namespace}/{repo}: repo info (item_id is the full repo id such as google/gemma-2b; files in raw.siblings, card metadata in raw.cardData)."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/api/repos/create",
+    "body": {
+     "type": "map:collection:models=model,datasets=dataset,spaces=space",
+     "name": "title",
+     "organization": "fields.organization",
+     "private": "fields.private",
+     "sdk": "fields.sdk",
+     "license": "fields.license"
+    },
+    "result": {
+     "fields": {
+      "id": "name",
+      "url": "url",
+      "status": "=created"
+     }
+    },
+    "docs": "https://huggingface.co/.well-known/openapi.md",
+    "note": "POST /api/repos/create {type, name, organization, private, sdk, license}: creates an empty repo. title is the repo name; collection models|datasets|spaces sets the type (default model); fields may carry organization, private (boolean), sdk (gradio|docker|static, required for spaces) and license. Files are pushed with the commit API (not mapped)."
+   },
+   "update_item": {
+    "method": "PUT",
+    "path": "/api/{collection}/{item_id}/settings",
+    "path_params": {
+     "collection": "=models"
+    },
+    "body": {
+     "private": "fields.private",
+     "visibility": "fields.visibility",
+     "gated": "fields.gated",
+     "discussionsDisabled": "fields.discussionsDisabled",
+     "gatedNotificationsEmail": "fields.gatedNotificationsEmail"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://huggingface.co/.well-known/openapi.md",
+    "note": "PUT /api/{models|datasets|spaces}/{namespace}/{repo}/settings: repo settings from fields (private, visibility private|public|protected, gated false|auto|manual, discussionsDisabled, gatedNotificationsEmail). title/content are not repo settings and are not sent."
+   }
+  },
+  "not_offered": {
+   "generate_image": "Hub inference (router.huggingface.co / hf-inference text-to-image) answers with image bytes, which a JSON tool result cannot carry; no URL/job variant is documented.",
+   "generate_video": "Hub inference text-to-video answers with video bytes; no URL/job variant is documented.",
+   "get_job": "No generation job resource on the Hub API (Jobs run compute, not generations).",
+   "delete_item": "DELETE /api/repos/delete takes the repo as separate `name` and `organization` body fields (huggingface_hub HfApi.delete_repo), while item_id is the combined namespace/repo id; the runtime cannot split one argument into two fields."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host huggingface.co: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://huggingface.co/.well-known/openapi.json: 3/5 tools match (path, method, parameters, body keys, response paths)",
+   "live read without credentials: get_item, list_items returned data that validates against the vocabulary"
+  ],
+  "notes": "list_items: spec says \"path not in spec: GET /api/models\"; waived: the Hub OpenAPI (huggingface.co/.well-known/openapi.json) omits the listing routes; GET /api/models answered 200 live and validated get_item: spec says \"path not in spec: GET /api/models/sentence-transformers/all-MiniLM-L6-v2\"; waived: omitted from the Hub OpenAPI; GET /api/models/{repo_id} answered 200 live and validated"
+ }
+}

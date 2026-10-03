@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/the_muse-mcp",
+ "description": "The Muse (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.themuse.com/developers/api/v2",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "the_muse"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_THE_MUSE_API_KEY",
+     "description": "Optional: register the app at https://www.themuse.com/developers/api/v2 to get an api_key (sent as the api_key query parameter), raising the limit from 500 to 3,600 requests/hour.",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "google_sheets-mcp",
+ "display_name": "Google Sheets / Drive MCP",
+ "version": "0.1.0",
+ "description": "Google Sheets / Drive (builder tools): me, list_items, get_item, create_item, update_item, delete_it",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "google_sheets"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_ID": "${user_config.platform_mcp_google_sheets_client_id}",
+    "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_SECRET": "${user_config.platform_mcp_google_sheets_client_secret}",
+    "PLATFORM_MCP_GOOGLE_SHEETS_REFRESH_TOKEN": "${user_config.platform_mcp_google_sheets_refresh_token}",
+    "PLATFORM_MCP_GOOGLE_SHEETS_SPREADSHEET_ID": "${user_config.platform_mcp_google_sheets_spreadsheet_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_google_sheets_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console > Credentials) of a project with the Google Sheets API enabled.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_sheets_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_SHEETS_CLIENT_SECRET",
+   "description": "The OAuth client's secret, sent in the form body of the refresh_token grant.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_sheets_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_SHEETS_REFRESH_TOKEN",
+   "description": "Refresh token from Google's consent flow (offline access) with scope https://www.googleapis.com/auth/spreadsheets (or drive.file for files the app created); the runtime mints hourly access tokens from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_sheets_spreadsheet_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_SHEETS_SPREADSHEET_ID",
+   "description": "The spreadsheet id (the long id in https://docs.google.com/spreadsheets/d/<id>/edit) that every tool reads and writes.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v4/spreadsheets/{spreadsheet_id}?fields=spreadsheetId,properties.title,sheets.properties: confirms the token can open the configured spreadsheet and lists its sheets (tabs)."
+  },
+  {
+   "name": "list_items",
+   "description": "GET /v4/spreadsheets/{id}/values/{range}: collection is an A1 range such as Sheet1!A1:F200 (default A1:Z1000 of the first sheet); each item is one row, its cell values in `cells` (trailing empty cells omitted). The range bounds the rows; page, limit and query are not used."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /v4/spreadsheets/{id}/values/{range}: item_id is an A1 range (Sheet1!B2:D4); content is the 2-D array of values."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /v4/spreadsheets/{id}/values/{range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS with {values: fields.values}: appends rows after the table found in collection (an A1 range, default A1). Pass fields = {\"values\": [[\"a\", 1], [\"b\", 2]]}; the returned id is the written range."
+  },
+  {
+   "name": "update_item",
+   "description": "PUT /v4/spreadsheets/{id}/values/{range}?valueInputOption=USER_ENTERED with {values}: overwrites the A1 range item_id with fields.values (a 2-D array)."
+  },
+  {
+   "name": "delete_item",
+   "description": "POST /v4/spreadsheets/{id}/values/{range}:clear: clears the values (not formatting) of the A1 range item_id; rows are not removed."
+  }
+ ]
+}

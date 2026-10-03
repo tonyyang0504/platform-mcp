@@ -1,0 +1,286 @@
+{
+ "id": "wykop",
+ "category": "social",
+ "label": "Wykop",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://doc.wykop.pl/",
+ "url": "https://wykop.pl/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Regulamin bans undisclosed advertising and astroturfing; the community downvotes promotion hard. NSFW content must set adult.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "post(entries — microblog)",
+   "links(submit / draft)",
+   "reply(comments)",
+   "read_comments",
+   "upload_media",
+   "delete",
+   "edit",
+   "notifications"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 5000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (v3, labelled beta).",
+  "base_urls": [
+   "https://wykop.pl/api/v3/"
+  ],
+  "auth": [
+   "1. Register an application in the Wykop developer panel → `appkey` + `secret`.",
+   "2. `POST /auth` {key, secret} → app JWT (Bearer). \"Każda aplikacja … musi autoryzować się swoim unikatowym",
+   "3. User authorization: `GET /connect` → redirect the tenant to Wykop, callback returns a user token (`connect`"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /entries` {content, photo (media key), embed (URL), adult}",
+    "purpose": "tagged with `#tag` in content",
+    "notes": ""
+   },
+   {
+    "call": "PUT /entries/{id}`, `DELETE /entries/{id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /entries/{id}/comments` {content, photo, embed}; `PUT/DELETE …/comments/{cid}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /entries/{id}`, `GET /entries/{id}/comments`, `GET /entries?sort=hot",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /links/draft` {url} → key; `POST /links/draft/{key}` {title, description, tags[], photo, adult, selected_image}",
+    "purpose": "link posts",
+    "notes": ""
+   },
+   {
+    "call": "POST /links/{linkId}/comments`, `GET …/comments",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /media/photos` (multipart or url) → key; `/media/photos/{key}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /notifications/status`, `/notifications/entries`, `/notifications/pm`, `/notifications/tags",
+    "purpose": "mentions / replies",
+    "notes": ""
+   },
+   {
+    "call": "GET /profile`, `GET /profile/users/{username}/entries/added",
+    "purpose": "own posts",
+    "notes": ""
+   },
+   {
+    "call": "GET /search/entries?query=`, `GET /tags/{tag}/stream",
+    "purpose": "research",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per-user limits on adding entries, links, related links, comments and votes → HTTP 400 `limit_exceeded` (values not in the spec); app JWT vs user JWT scopes. - Wykop regulamin: undisclosed advertising / astroturfing is banned and the community downvotes promotion hard — posts must be genuinely useful; NSFW flag (`adult`).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://doc.wykop.pl/",
+   "https://doc.wykop.pl/openapi.yaml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://wykop.pl/api/v3",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth",
+    "body": {
+     "data.key": "@app_key",
+     "data.secret": "@app_secret"
+    }
+   },
+   "token_path": "data.token",
+   "token_ttl_seconds": 3000,
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "Wykop application key (appkey) issued for the app."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "Secret paired with the app key."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "Wykop API v3 (beta): 'Każda aplikacja korzystająca z API musi autoryzować się swoim unikatowym identyfikatorem (appkey) i hasłem (secret) w celu otrzymania tokena JWT'.",
+  "tools": {
+   "read_comments": {
+    "method": "GET",
+    "path": "/entries/{post_id}/comments",
+    "params": {
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "data",
+     "key": "comments",
+     "total": "pagination.total",
+     "fields": {
+      "id": "id",
+      "author": "author.username",
+      "text": "content",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://doc.wykop.pl/resources/entries/entries_comments.yaml",
+    "note": "GET /entries/{entryId}/comments (Mikroblog - Komentarz) with the application JWT: page and limit ('Limit obiektów na stronie', 1-50, default 25). post_id is a microblog entry id; created_at is 'YYYY-MM-DD HH:MM[:SS]' (Warsaw time); votes are in raw."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/entries/{post_id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "post_id": "id",
+      "metrics": "votes"
+     }
+    },
+    "docs": "https://doc.wykop.pl/resources/entries/entries_entry.yaml",
+    "note": "GET /entries/{entryId} 'Zwraca wpis z mikrobloga'; metrics are the entry's votes.up / votes.down and comments.count."
+   }
+  },
+  "not_offered": {
+   "me": "Needs a user JWT: user sessions come from POST /refresh-token with a nested JSON body {data: {refresh_token}} that answers a NEW refresh_token every time ('otrzymujemy nowy token JWT oraz nowy refresh_token'); the runtime's session login cannot keep that rotated token and oauth2_refresh_token sends a flat grant_type=refresh_token body. Missing: a refresh-token grant with a nested JSON body and rotation read from data.refresh_token.",
+   "publish_text": "POST /entries needs a user JWT (see me: rotating refresh token in a nested JSON body).",
+   "publish_image": "Needs a user JWT (see me) and media are first uploaded through POST /media/photos (multipart upload or URL) before the entry.",
+   "reply_comment": "POST /entries/{entryId}/comments needs a user JWT (see me).",
+   "read_mentions": "Mentions are user notifications (GET /notifications/entries) and need a user JWT (see me).",
+   "delete": "DELETE /entries/{entryId} needs a user JWT (see me)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host wykop.pl: DNS ok, TLSv1.3 (Asseco Data Systems S.A.)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login wykop.pl/api/v3/auth: 401 {",
+   "spec https://doc.wykop.pl/openapi.yaml: 2/2 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

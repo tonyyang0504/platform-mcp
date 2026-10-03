@@ -1,0 +1,257 @@
+{
+ "id": "telegram",
+ "category": "messaging",
+ "label": "Telegram",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://core.telegram.org/bots/api",
+ "url": "https://telegram.org/",
+ "verified_at": "2026-09-24",
+ "terms_note": "BOT accounts only (Bot API 10.3, 24 Aug 2026): https://api.telegram.org/bot<token>/METHOD; getUpdates (offset / limit / timeout / allowed_updates) XOR setWebhook (secret_token 1-256 chars, max_connections 1-100 default 40, drop_pending_updates). Bots cannot see other bots' messages; privacy mode in groups hides non-command messages unless the bot is admin / privacy off. Limits (FAQ): ≤1 message per second per chat, ≤20 messages per minute in a group, ≈30 messages per second overall for bulk notifications (paid broadcasts lift it); send files ≤50 MB, download ≤20 MB; 429 'Too Many Requests' with retry_after. Telegram Business: a Business account owner can connect a bot (BusinessConnection, getBusinessConnection) and the bot acts in the OWNER's private chats via business_connection_id — official, consented, not an unofficial user-bot. Personal-account automation through MTProto clients is forbidden for us (registry / rules) — human lane.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "bot_token",
+  "access": "open",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "group_admin",
+   "reactions",
+   "typing",
+   "media",
+   "webhooks",
+   "business_connection"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Community libraries in every language (python-telegram-bot, telegraf, …) — the Bot API itself is plain HTTPS (core.telegram.org/bots/api)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET/POST /bot<token>/getUpdates?offset= (long-poll)",
+   "docs": "https://core.telegram.org/bots/api#getupdates"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /bot<token>/sendMessage",
+   "docs": "https://core.telegram.org/bots/api#sendmessage"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no read-state method for bots outside Business accounts' `readBusinessMessage`)",
+   "docs": "https://core.telegram.org/bots/api"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (BOT accounts).",
+  "base_urls": [
+   "https://api.telegram.org/bot<token>/<METHOD>"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "sendMessage {chat_id, text, parse_mode, message_thread_id, reply_parameters{message_id}, business_connection_id}",
+    "purpose": "send / reply / forum topic",
+    "notes": ""
+   },
+   {
+    "call": "sendPhoto` / `sendDocument` / `sendMediaGroup",
+    "purpose": "media (≤ 50 MB send, ≤ 20 MB download)",
+    "notes": ""
+   },
+   {
+    "call": "sendChatAction {action: typing}` · `setMessageReaction",
+    "purpose": "typing / reactions",
+    "notes": ""
+   },
+   {
+    "call": "editMessageText` · `deleteMessage",
+    "purpose": "edits",
+    "notes": ""
+   },
+   {
+    "call": "banChatMember` · `restrictChatMember` · `promoteChatMember` · `createChatInviteLink` · `setChatTitle` · `pinChatMessage` · `createForumTopic",
+    "purpose": "group / forum admin (bot must be admin with the right)",
+    "notes": ""
+   },
+   {
+    "call": "Updates: `message`, `edited_message`, `business_message`, `message_reaction`, `chat_member`, `my_chat_member",
+    "purpose": "inbound",
+    "notes": ""
+   }
+  ],
+  "limits": " - FAQ: ≤ 1 message / second per chat, ≤ 20 messages / minute in a group, ≈ 30 messages / second overall for bulk (paid broadcasts raise it); 429 with `retry_after`. - Bots cannot message a user who has not started them (no cold DM); bots never see other bots' messages; privacy mode hides non-command group messages unless disabled or the bot is admin. - Personal-account automation (MTProto clients, \"user bots\") is forbidden for this product — draft, human sends.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://core.telegram.org/bots/api",
+   "https://core.telegram.org/bots/faq"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.telegram.org/bot{token}",
+  "auth": {
+   "type": "path",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Bot token from @BotFather. It is part of the URL path: 'All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: https://api.telegram.org/bot<token>/METHOD_NAME' (https://core.telegram.org/bots/api#making-requests)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "ok",
+   "error_field": "description"
+  },
+  "envelope_note": "Every response is 'a JSON object, which always has a Boolean field ok' with `description`, `error_code` and `parameters` (retry_after) on failure (https://core.telegram.org/bots/api#making-requests). ok:false answers become isError results.",
+  "rate_per_second": 1,
+  "rate_note": "Bot FAQ: 'avoid sending more than one message per second' in a chat, 'not more than 20 messages per minute' in a group, 'about 30 messages per second' overall; 429 with retry_after (https://core.telegram.org/bots/faq). One client-side bucket at 1/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/getMe",
+    "docs": "https://core.telegram.org/bots/api#getme",
+    "note": "getMe returns the bot's User object (id, is_bot, first_name, username)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/sendMessage",
+    "body": {
+     "chat_id": "to",
+     "text": "text"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://core.telegram.org/bots/api#sendmessage",
+    "note": "`to` is the chat_id ('Unique identifier for the target chat or username of the target channel'). `subject` and `channel` are ignored. Bots cannot message a user who has not started them. message_id is an integer within the chat (the sent Message is under raw)."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/getUpdates",
+    "params": {
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "result",
+     "key": "messages",
+     "fields": {
+      "id": "update_id",
+      "text": "message.text"
+     }
+    },
+    "docs": "https://core.telegram.org/bots/api#getupdates",
+    "note": "Long-polling queue, not a paged inbox: getUpdates returns the pending updates (kept up to 24 hours) and 'will not work if an outgoing webhook is set up'. This tool never sends `offset`, so it does not confirm/consume updates and repeated calls return the same pending updates; `page` and `since` are ignored and next_page is not meaningful. Updates that are not messages have no text; chat and sender ids are integers under raw.message.chat.id / raw.message.from.id."
+   }
+  },
+  "not_offered": {
+   "reply": "sendMessage replies through `reply_parameters` ({message_id, chat_id, ...}), a nested object the adapter's flat body map cannot express (the former reply_to_message_id parameter is no longer in the sendMessage table, https://core.telegram.org/bots/api#sendmessage).",
+   "get_thread": "The Bot API has no method that returns the messages of a chat or thread; inbound messages arrive only through getUpdates or a webhook (https://core.telegram.org/bots/api#getting-updates).",
+   "mark_read": "No read-marking method exists in the Bot API (https://core.telegram.org/bots/api#available-methods)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.telegram.org: DNS ok, TLSv1.3 (GoDaddy.com, Inc.)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/3 tool paths found verbatim on their docs pages, 2 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

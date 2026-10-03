@@ -1,0 +1,37 @@
+{
+ "id": "hatla2ee_jo",
+ "category": "automotive",
+ "label": "Jordan",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://jordan.hatla2ee.com",
+ "domain": "jordan.hatla2ee.com",
+ "country": "Jordan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Hatla2ee (all country subdomains) has no public/partner API documentation; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jordan.hatla2ee.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/dadhalfdev/hatla2ee-scraper"
+  ]
+ },
+ "official_mcp": []
+}

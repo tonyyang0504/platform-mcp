@@ -1,0 +1,97 @@
+{
+ "manifest_version": "0.2",
+ "name": "snapchat-mcp",
+ "display_name": "Snapchat Ads (Snapchat Ads Manager) MCP",
+ "version": "0.1.0",
+ "description": "Snapchat Ads (Snapchat Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, pause_resu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "snapchat"
+   ],
+   "env": {
+    "PLATFORM_MCP_SNAPCHAT_CLIENT_ID": "${user_config.platform_mcp_snapchat_client_id}",
+    "PLATFORM_MCP_SNAPCHAT_CLIENT_SECRET": "${user_config.platform_mcp_snapchat_client_secret}",
+    "PLATFORM_MCP_SNAPCHAT_REFRESH_TOKEN": "${user_config.platform_mcp_snapchat_refresh_token}",
+    "PLATFORM_MCP_SNAPCHAT_ORGANIZATION_ID": "${user_config.platform_mcp_snapchat_organization_id}",
+    "PLATFORM_MCP_SNAPCHAT_AD_ACCOUNT_ID": "${user_config.platform_mcp_snapchat_ad_account_id}",
+    "PLATFORM_MCP_SNAPCHAT_TZ_OFFSET": "${user_config.platform_mcp_snapchat_tz_offset}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_snapchat_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_CLIENT_ID",
+   "description": "OAuth client id of your Snap Business Manager app (Business Details > OAuth apps).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_snapchat_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_CLIENT_SECRET",
+   "description": "The OAuth app's client secret (form body of the refresh request).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_snapchat_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_REFRESH_TOKEN",
+   "description": "Refresh token from one authorization-code consent with scope snapchat-marketing-api (https://developers.snap.com/api/marketing-api/Ads-API/authentication); 60-minute access tokens are minted from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_snapchat_organization_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_ORGANIZATION_ID",
+   "description": "Snap organization id whose ad accounts list_accounts returns (GET /v1/me/organizations).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_snapchat_ad_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_AD_ACCOUNT_ID",
+   "description": "Ad account id used by pause_resume (the campaign PATCH path is /v1/adaccounts/{ad_account_id}/campaigns/{campaign_id}).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_snapchat_tz_offset": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SNAPCHAT_TZ_OFFSET",
+   "description": "UTC offset of the ad account time zone, e.g. -07:00 or +01:00, used to build day-aligned start_time/end_time for get_report (Snap requires daily boundaries in the account time zone).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/me: the authenticated Snap user {me: {id, email, organization_id, display_name}}."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v1/organizations/{organization_id config}/adaccounts: the organization's ad accounts (currency and timezone per account)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v1/adaccounts/{ad_account_id}/campaigns?limit= (50-1000; first page only, paging.next_link). Budgets are micro-currency: budget_micros is daily_budget_micro (1,000,000 = 1 unit of the account currency). `status` (ACTIVE, PAUSED) is not a filter."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /v1/campaigns/{campaign_id}/stats?granularity=DAY&fields=impressions,swipes,spend with start_time/end_time at midnight in the account time zone (tz_offset config). campaign_id is required. end_time is an exclusive day boundary: pass date_to as the day AFTER the last day wanted. spend is micro-currency; metrics are final 48 hours after the day ends."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /v1/adaccounts/{ad_account_id config}/campaigns/{campaign_id} (application/json-patch+json) [{op: replace, path: /status, value: PAUSED|ACTIVE}]. Resuming restarts spending."
+  }
+ ]
+}

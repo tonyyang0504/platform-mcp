@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/apple_search_ads-mcp",
+ "description": "Apple Ads (formerly Apple Search Ads) (ads): me, list_accounts, list_campaigns, get_report, update_b",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.apple.com/documentation/apple-ads-platform-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "apple_search_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_ID",
+     "description": "Apple Ads API clientId (SEARCHADS.…) shown after uploading your public key under Account Settings > API (https://developer.apple.com/documentation/apple-ads-platform-api/implementing-oauth-for-the-apple-ads-platform-api).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_APPLE_SEARCH_ADS_CLIENT_SECRET",
+     "description": "The client secret JWT you sign yourself with your ES256 private key (header kid=keyId; claims sub=clientId, iss=teamId, aud=https://appleid.apple.com, exp at most 180 days after iat). The runtime does not sign it: regenerate and replace it before it expires.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_APPLE_SEARCH_ADS_AP_CONTEXT",
+     "description": "The full X-AP-Context header value for ad-account-scoped calls, exactly `adAccountId=<ad account id>` (ids from GET /v1/acls, i.e. list_accounts).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

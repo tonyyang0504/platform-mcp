@@ -1,0 +1,115 @@
+{
+ "id": "brandsgateway",
+ "category": "ecommerce_suppliers",
+ "label": "BrandsGateway",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "europe",
+  "global"
+ ],
+ "docs_url": "https://brandsgateway.com/pricing/",
+ "url": "https://brandsgateway.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed",
+   "app"
+  ],
+  "auth": "not published (REST API access is a plan feature; credentials issued in the account)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "product_import",
+   "orders",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable fro",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Paid plans from €180 / month; REST API + CSV on the €395 / month or Enterprise plan; luxury-brand catalogue (EU); order sync via connectors; terms not read.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://brandsgateway.com/pricing/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered 2026-09-25: https://brandsgateway.com/api/ is an empty WordPress page (title 'api', only a comment form) and /docs/, /api-documentation/ answer 404; the REST API is a paid-plan feature (https://brandsgateway.com/pricing/) whose reference and keys are only inside the logged-in account (the only official GitHub repo, brandsgateway/woocommerce-brands, is a WooCommerce plugin, not a reference). Docs behind the account login."
+}

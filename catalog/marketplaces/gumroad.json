@@ -1,0 +1,321 @@
+{
+ "id": "gumroad",
+ "category": "marketplaces",
+ "label": "Gumroad",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://gumroad.com/api",
+ "url": "https://app.gumroad.com/products",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed (OAuth app from Settings › Advanced, scopes edit_products / view_sales / …); free; rate limit undocumented (429 → back off)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "cli",
+   "webhooks",
+   "mcp"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "upload_file",
+   "set_price",
+   "publish",
+   "unpublish",
+   "orders",
+   "sales_stats",
+   "refunds",
+   "webhooks",
+   "offer_codes",
+   "variants",
+   "licenses",
+   "covers",
+   "thumbnail"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/antiwork/gumroad-cli",
+   "https://github.com/antiwork/gumroad",
+   "https://github.com/opsdisk/pygumroad",
+   "https://github.com/SamyPesse/gumroad-api"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/rmarescu/gumroad-mcp",
+  "https://github.com/keithah/gumroad-mcp"
+ ],
+ "auth_fields": [
+  "access_token",
+  "default_price_cents?",
+  "publish?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full listing API).",
+  "base_urls": [
+   "https://api.gumroad.com/v2"
+  ],
+  "auth": [
+   "1. Tenant signs in to Gumroad → **Settings › Advanced › Applications** → *Create application* (name, redirect URI).",
+   "2. *Generate access token* on that application → a non-expiring bearer for the user's own account (what the vault stores",
+   "3. Scopes (Doorkeeper): `view_public`, `edit_products`, `view_sales`, `mark_sales_as_shipped`, `refund_sales`,",
+   "4. Token lifetime: the dashboard-generated token does not expire until revoked; OAuth tokens per Doorkeeper config."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v2/products",
+    "purpose": "create product — **draft** (`draft = true`, `purchase_disabled_at = now`)",
+    "notes": "`name`, `description`, `price` (cents), `price_currency_type`, `customizable_price`, `suggested_price_cents`, `custom_permalink`, `max_purchase_count`, `native_type`, `taxonomy_id`, `tags[]`, `is_adult`, `refund_period`, `refund_fine_print`, `rich_content[]`, `files[]`, `cover_ids[]`; response `{suc"
+   },
+   {
+    "call": "PUT /v2/products/:id",
+    "purpose": "update copy / price / **attach files**",
+    "notes": "same permitted set; `files: [{id?, url, display_name, extension, position, stream_only, description}]` — `url` is the canonical `file_url` returned by `/files/complete`; `SaveFilesService` returns `file_id_mappings`"
+   },
+   {
+    "call": "POST /v2/files/presign",
+    "purpose": "start a multipart upload",
+    "notes": "`filename`, `file_size` → `{upload_id, key, file_url, parts:[{part_number, presigned_url}]}`; ≤ 20 GB, 100 MB parts, URLs expire in 900 s"
+   },
+   {
+    "call": "PUT <parts[i].presigned_url>` (S3)",
+    "purpose": "upload each part",
+    "notes": "raw bytes; keep the `ETag` response header"
+   },
+   {
+    "call": "POST /v2/files/complete",
+    "purpose": "finish the upload",
+    "notes": "`upload_id`, `key`, `parts:[{part_number, etag}]` → canonical `file_url`; **single-use** upload_id — never retry, restart from presign (or `POST /v2/files/abort` with `upload_id`, `key`)"
+   },
+   {
+    "call": "PUT /v2/products/:id/enable` · `/disable",
+    "purpose": "publish / unpublish",
+    "notes": "validates price against offer codes; error `{success:false, message}`"
+   },
+   {
+    "call": "POST /v2/products/:id/covers` · `POST …/thumbnail` · `POST /v2/direct_uploads",
+    "purpose": "images",
+    "notes": "`direct_uploads` body `blob{filename, byte_size, checksum, content_type}` → `signed_id`, `direct_upload.url/headers` (JPEG/PNG/GIF/video)"
+   },
+   {
+    "call": "GET /v2/sales` · `GET /v2/sales/:id",
+    "purpose": "orders",
+    "notes": "filters `after`, `before`, `email`, `product_id`, `license_key`, `order_id`, `page_key`"
+   },
+   {
+    "call": "GET /v2/sales/summary` · `POST /v2/sales/export",
+    "purpose": "sales stats",
+    "notes": "`group_by` = day / week / month / hour, `from`, `to`; export takes `from`, `to`, `product_id` (async)"
+   },
+   {
+    "call": "PUT /v2/resource_subscriptions` · `GET` · `DELETE /:id",
+    "purpose": "webhooks",
+    "notes": "`resource_name` (sale, refund, dispute, dispute_won, cancellation, subscription_updated / _ended / _restarted), `post_url`"
+   },
+   {
+    "call": "PUT /v2/sales/:id/refund`, `/mark_as_shipped`, offer codes, variant_categories / variants, licenses/verify, custom_fields",
+    "purpose": "extras",
+    "notes": "see routes"
+   }
+  ],
+  "limits": " Not published; the API returns 429 — exponential back-off, prefer webhooks (`resource_subscriptions`) over polling. - Automation is allowed and expected (public OAuth API, official CLI \"designed for humans and AI agents alike\"). - No partner gate, no fee for API use; Gumroad is the seller of record and collects 10 % + $0.50 per sale (30 % via Discover). - Content policy applies to what is listed (Gumroad ToS); adult flag via `is_adult`.",
+  "mcp_sdk": [
+   "Official CLI: https://github.com/antiwork/gumroad-cli (`brew install antiwork/cli/gumroad`, `GUMROAD_ACCESS_TOKEN`,",
+   "Source of truth: https://github.com/antiwork/gumroad (`app/controllers/api/v2/*`).",
+   "Community MCP (read / enable / disable / offer codes only, no create or upload): https://github.com/rmarescu/gumroad-mcp",
+   "Community clients: pygumroad (PyPI), SamyPesse/gumroad-api (Node)."
+  ],
+  "sources": [
+   "https://gumroad.com/api",
+   "https://github.com/antiwork/gumroad",
+   "https://raw.githubusercontent.com/antiwork/gumroad/main/config/routes.rb",
+   "https://raw.githubusercontent.com/antiwork/gumroad/main/app/controllers/api/v2/links_controller.rb",
+   "https://raw.githubusercontent.com/antiwork/gumroad/main/app/controllers/api/v2/files_controller.rb",
+   "https://raw.githubusercontent.com/antiwork/gumroad/main/app/controllers/api/v2/direct_uploads_controller.rb",
+   "https://raw.githubusercontent.com/antiwork/gumroad/main/app/controllers/api/v2/sales_controller.rb",
+   "https://github.com/antiwork/gumroad-cli",
+   "https://github.com/antiwork/gumroad-cli/blob/main/skills/gumroad/SKILL.md",
+   "https://github.com/rmarescu/gumroad-mcp",
+   "https://github.com/antiwork/gumroad/issues/4019"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.gumroad.com/v2",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Gumroad access token (Settings > Advanced > Applications > Create application > Generate access token; scopes view_profile, edit_products, view_sales, edit_sales) sent as Authorization: Bearer. The API page's curl examples pass the same token as the access_token parameter instead."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "message"
+  },
+  "rate_per_second": 2,
+  "terms": "Gumroad is the seller of record (10 % + 50¢ per sale, 30 % via Discover); rate limit undocumented (429 → back off).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user",
+    "docs": "https://app.gumroad.com/api",
+    "note": "GET /user (view_profile) returns {success, user{bio, name, twitter_handle, user_id, email (view_sales scope), url, profile_picture_url}}."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "products",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "price",
+      "currency": "currency",
+      "url": "short_url"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "GET /products returns ALL of the account's products unpaged: {success, products[{id, name, description, price (INTEGER in the smallest currency unit, e.g. 100 = $1.00), currency (lowercase, e.g. usd), published, deleted, short_url, thumbnail_url, sales_count, ...}]}. `page`/`limit`/`status` are not sent (ignore next_page); published/deleted are booleans in raw, so `status` is null; created/updated timestamps are not returned."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{product_id}",
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "price",
+      "currency": "currency",
+      "url": "short_url"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "GET /products/:id returns {success, product{...}} with the same fields as list_products; `price` is an integer in the smallest currency unit and `status` is null (see raw.published / raw.deleted)."
+   },
+   "create_product": {
+    "method": "POST",
+    "path": "/products",
+    "body": {
+     "name": "name",
+     "description": "description",
+     "price": "price",
+     "price_currency_type": "currency",
+     "draft": "json:true"
+    },
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "price",
+      "currency": "currency",
+      "url": "short_url"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "POST /products {name, description (HTML), price (required; INTEGER in the smallest currency unit — pass 1000 for $10.00), price_currency_type (ISO code, defaults to the account currency), draft: true} (edit_products scope) saves an UNPUBLISHED DRAFT digital product; publish it with PUT /products/:id/enable (not mapped). `url` is not accepted (custom_permalink is a slug, files/covers are separate uploads)."
+   },
+   "update_price": {
+    "method": "PUT",
+    "path": "/products/{product_id}",
+    "body": {
+     "price": "price",
+     "price_currency_type": "currency"
+    },
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "description": "description",
+      "price": "price",
+      "currency": "currency",
+      "url": "short_url"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "PUT /products/:id {price (INTEGER in the smallest currency unit, e.g. 1000 for $10.00), price_currency_type} sends only those fields (edit_products scope). Not allowed for tiered memberships (tier prices are variants). Returns the updated product."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/sales",
+    "params": {
+     "after": "since",
+     "product_id": "product_id"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "sales",
+     "key": "sales",
+     "fields": {
+      "id": "id",
+      "product_id": "product_id",
+      "product_name": "product_name",
+      "amount": "price",
+      "currency": "currency",
+      "customer_email": "email",
+      "created_at": "created_at",
+      "refunded": "refunded"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "GET /sales?after=since (DATE in the form YYYY-MM-DD; a datetime is not documented)&product_id (view_sales scope) lists successful sales, newest first: {success, next_page_key, sales[{id, email, product_id, product_name, price (INTEGER, smallest currency unit), currency, created_at, order_id, refunded, partially_refunded, chargedback, disputed, paid, license_key, ...}]}. Paging is by page_key/next_page_key, which page/limit cannot carry: `page` and `limit` are not sent and only the first page (raw next_page_key for the rest) is returned; `status` is null."
+   },
+   "refund": {
+    "method": "PUT",
+    "path": "/sales/{sale_id}/refund",
+    "body": {
+     "amount_cents": "amount"
+    },
+    "result": {
+     "root": "sale",
+     "fields": {
+      "id": "id",
+      "sale_id": "id",
+      "amount": "price",
+      "currency": "currency",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://app.gumroad.com/api",
+    "note": "DESTRUCTIVE: PUT /sales/:id/refund {amount_cents} (edit_sales scope) refunds the sale in FULL when `amount` is omitted, or partially by `amount` — which is sent as amount_cents, i.e. an INTEGER in the minor units of the sale's `currency` (200 = 2.00 USD/EUR/...; JPY has no minor unit, so 200 = ¥200). Multiple partial refunds are allowed until fully refunded. `reason` is not accepted. Returns {success, sale{... refunded, partially_refunded}}; `amount` is the sale price, `status` is null."
+   }
+  },
+  "not_offered": {
+   "get_sales_stats": "The public API reference documents only per-sale records (GET /sales, GET /sales/:id) and per-product sales_count / sales_usd_cents on GET /products; no revenue-totals endpoint is documented there.",
+   "list_refunds": "No refunds endpoint: refunds and chargebacks are the refunded, partially_refunded, chargedback and disputed flags on the GET /sales rows (filter list_sales client-side)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.gumroad.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 7/7 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

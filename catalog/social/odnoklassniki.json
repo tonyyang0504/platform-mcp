@@ -1,0 +1,375 @@
+{
+ "id": "odnoklassniki",
+ "category": "social",
+ "label": "Odnoklassniki",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://apiok.ru/",
+ "url": "https://ok.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "OK developer agreement; per-method quotas undisclosed (errors 102/103/104+). GROUP_CONTENT scope is needed to publish into a group. Russian law requires ERID labelling on advertising.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "post(mediatopic to group / user feed)",
+   "upload_media",
+   "reply(comments)",
+   "read_comments",
+   "analytics(group stats)",
+   "delete"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "ok-sdk (official Android / iOS / JS)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.ok.ru/fb.do?method=<name>"
+  ],
+  "auth": [
+   "1. Register an external application at apiok.ru → `application_id`, `application_key` (public), `application_secret_key`.",
+   "2. OAuth 2.0: `https://connect.ok.ru/oauth/authorize?client_id&scope=VALUABLE_ACCESS;GROUP_CONTENT;PHOTO_CONTENT;",
+   "3. Every call carries `application_key`, `access_token` and `sig` = MD5(sorted `name=value` params concatenated +"
+  ],
+  "endpoints": [
+   {
+    "call": "Method",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "mediatopic.post` {type GROUP_THEME (gid)",
+    "purpose": "USER",
+    "notes": "USER_STATUS"
+   },
+   {
+    "call": "photosV2.getUploadUrl` (gid) → POST file → `photosV2.commit` → token / id",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "video.getUploadUrl` → upload → id",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "mediatopic.deleteTopic",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "discussions.getComments` {discussionId, discussionType GROUP_TOPIC}, `discussions.addDiscussionComment` {comment, reply_to_comment_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "group.getTopics` / `stream.get",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "group.getStatOverview`, `group.getStatTopics`, `group.getStatTopic",
+    "purpose": "reach, engagement",
+    "notes": ""
+   },
+   {
+    "call": "notifications.get",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per-method quotas not published; errors 102 (session expired), 103 (permission), 104+ (limits) → back off. - OK developer agreement; Russian advertising labelling (ERID); the platform's sanctions review is the blocker.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://apiok.ru/dev/methods/rest/mediatopic/mediatopic.post",
+   "https://apiok.ru/dev/methods/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.ok.ru",
+  "rate_per_second": 3,
+  "envelope": {
+   "ok_field": "error_code",
+   "ok_value": null,
+   "error_field": "error_msg"
+  },
+  "config_fields": [
+   {
+    "name": "group_id",
+    "required": true,
+    "help": "Numeric id (gid) of the OK group you administer; posts, comments and statistics are for this group's topics (needs the GROUP_CONTENT permission)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "application_key",
+     "required": true,
+     "help": "Public key of your OK application (application_key, from the app registration e-mail / app settings at https://ok.ru/app/setup)."
+    },
+    {
+     "name": "application_secret_key",
+     "required": true,
+     "help": "Secret key of the same application (application_secret_key). Only used to compute sig; never sent."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "User access_token with VALUABLE_ACCESS and GROUP_CONTENT, from the OAuth flow (https://apiok.ru/ext/oauth/) or the app's permanent 'Вечный access_token' in the app settings. Sent in the POST body, excluded from sig as the convention requires."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "encoding": "hex",
+    "pre": [
+     {
+      "name": "session_secret_key",
+      "mode": "hash",
+      "algorithm": "md5",
+      "payload": "{@access_token}{@application_secret_key}"
+     }
+    ],
+    "payload": "{sorted_kv}{session_secret_key}",
+    "params": {
+     "application_key": "{@application_key}",
+     "format": "json"
+    },
+    "signature_param": "sig"
+   }
+  },
+  "tools": {
+   "me": {
+    "method": "POST",
+    "path": "/fb.do",
+    "fixed_params": {
+     "method": "users.getCurrentUser"
+    },
+    "body": {
+     "access_token": "@access_token"
+    },
+    "body_format": "form",
+    "kind": "probe",
+    "docs": "https://apiok.ru/dev/methods/rest/users/users.getCurrentUser",
+    "note": "users.getCurrentUser: the user behind the access_token (uid, name, locale, pic_*)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/fb.do",
+    "fixed_params": {
+     "method": "mediatopic.post"
+    },
+    "body": {
+     "access_token": "@access_token"
+    },
+    "body_format": "form",
+    "params": {
+     "gid": "@group_id",
+     "type": "=GROUP_THEME",
+     "attachment": "jsonstr:{\"media\": [{\"type\": \"text\", \"text\": {text}}]}"
+    },
+    "result": {
+     "fields": {
+      "status": "=published"
+     }
+    },
+    "docs": "https://apiok.ru/dev/methods/rest/mediatopic/mediatopic.post",
+    "note": "mediatopic.post (type GROUP_THEME) publishes a text topic in the configured group (GROUP_CONTENT). OK answers with the new topic id as a bare JSON string, which the runtime cannot map to a record, so this tool returns only status=published; read the id from the group feed (it is also the discussionId for read_comments). reply_to is ignored."
+   },
+   "read_comments": {
+    "method": "POST",
+    "path": "/fb.do",
+    "fixed_params": {
+     "method": "discussions.getComments"
+    },
+    "body": {
+     "access_token": "@access_token"
+    },
+    "body_format": "form",
+    "params": {
+     "discussionId": "post_id",
+     "discussionType": "=GROUP_TOPIC",
+     "count": "limit",
+     "anchor": "cursor"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "comments",
+     "key": "comments",
+     "next_cursor": "anchor",
+     "fields": {
+      "id": "id",
+      "author": "author_name",
+      "author_id": "author_id",
+      "text": "text",
+      "created_at": "date",
+      "likes": "like_count"
+     }
+    },
+    "docs": "https://apiok.ru/dev/methods/rest/discussions/discussions.getComments",
+    "note": "discussions.getComments for a group topic (discussionType GROUP_TOPIC, discussionId = the topic id). Paging is by `anchor`: pass next_cursor back as cursor."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/fb.do",
+    "fixed_params": {
+     "method": "mediatopic.deleteTopic"
+    },
+    "body": {
+     "access_token": "@access_token"
+    },
+    "body_format": "form",
+    "params": {
+     "delete_id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted",
+      "restore_id": "restore_id"
+     }
+    },
+    "docs": "https://apiok.ru/dev/methods/rest/mediatopic/mediatopic.deleteTopic",
+    "note": "mediatopic.deleteTopic (VALUABLE_ACCESS): returns {restore_id, success}; restore_id can undo it with mediatopic.restoreTopic."
+   },
+   "analytics_post": {
+    "method": "POST",
+    "path": "/fb.do",
+    "fixed_params": {
+     "method": "group.getStatTopic"
+    },
+    "body": {
+     "access_token": "@access_token"
+    },
+    "body_format": "form",
+    "params": {
+     "topic_id": "post_id",
+     "fields": "=COMMENTS,LIKES,RESHARES,VIEWS,REACH,REACH_EARNED,REACH_OWN,ENGAGEMENT,FEEDBACK,CONTENT_OPENS,LINK_CLICKS,VIDEO_PLAYS,NEGATIVES,COMPLAINTS,HIDES_FROM_FEED"
+    },
+    "result": {
+     "root": "topic",
+     "fields": {
+      "post_id": "id",
+      "metrics": "$"
+     }
+    },
+    "docs": "https://apiok.ru/dev/methods/rest/group/group.getStatTopic",
+    "note": "group.getStatTopic (GROUP_CONTENT + VALUABLE_ACCESS): reach, reach_earned/own, engagement, likes, comments, reshares, views, content_opens, link_clicks, video_plays, negatives, complaints for one group topic."
+   }
+  },
+  "not_offered": {
+   "publish_image": "mediatopic.post photo media take 'id - параметр token, передаваемый в метод photosV2.commit во время загрузки фотографий на сервер' (https://apiok.ru/dev/methods/rest/mediatopic/mediatopic.post): images must first be uploaded as multipart files to the URL from photosV2.getUploadUrl; there is no image-by-URL media type.",
+   "reply_comment": "Replying needs the discussion (topic) id and type besides the comment id; the documented comment method page https://apiok.ru/dev/methods/rest/discussions/discussions.addDiscussionComment returns 404 (checked 2026-09-25), so no documented reply call with only comment_id exists.",
+   "read_mentions": "The OK REST method list (https://apiok.ru/dev/methods/) has no mentions feed for a group or user."
+  },
+  "terms": "OK REST convention (https://apiok.ru/dev/methods/): every call is https://api.ok.ru/fb.do?method=… with application_key and sig = lower-case MD5(parameters except access_token sorted by name as name=value without separators + session_secret_key), session_secret_key = MD5(access_token + application_secret_key). The signed parameters travel in the query string and access_token in the POST form body. Errors are {error_code, error_msg} in 200 bodies. Russian law requires ERID labelling for advertising posts."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires application_key, application_secret_key, access_token, group_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

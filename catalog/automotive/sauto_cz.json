@@ -1,0 +1,42 @@
+{
+ "id": "sauto_cz",
+ "category": "automotive",
+ "label": "Sauto",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.sauto.cz",
+ "domain": "sauto.cz",
+ "country": "Czech Republic",
+ "official_api": true,
+ "docs_url": "https://www.sauto.cz/dokumentace-importu",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "xml-rpc"
+  ],
+  "auth": "client login + password (registered Sauto client)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Sauto.cz documents an XML-RPC/FastRPC import interface free for all registered (dealer) clients; upload only, no search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.sauto.cz/dokumentace-importu",
+   "https://sauto.cz/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.sauto.cz/dokumentace-importu): Sauto.cz documents an XML-RPC/FastRPC import interface free for all registered (dealer) clients; upload only, no search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

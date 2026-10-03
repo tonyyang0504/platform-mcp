@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mintegral-mcp",
+ "description": "Mintegral (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://adv-new.mintegral.com/doc/en/guide/introduction/quickStart.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "mintegral"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MINTEGRAL_ACCESS_KEY",
+     "description": "Access Key from Mintegral AppGrowth > Account Management > Basic Information; sent as the access-key header of every Open API call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MINTEGRAL_API_KEY",
+     "description": "API Key from the same Basic Information page; never sent, only used to compute the per-request token = md5(api_key + md5(timestamp)).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "emo_hannover",
+ "category": "sales",
+ "label": "EMO Hannover exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "de",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://emo-hannover.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (3 Disallow) — exhibitor list allowed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

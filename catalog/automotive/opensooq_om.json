@@ -1,0 +1,36 @@
+{
+ "id": "opensooq_om",
+ "category": "automotive",
+ "label": "Om",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://om.opensooq.com",
+ "domain": "om.opensooq.com",
+ "country": "Oman",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OpenSooq (all country subdomains) publishes no developer/partner API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://om.opensooq.com/",
+   "https://github.com/opensooq"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

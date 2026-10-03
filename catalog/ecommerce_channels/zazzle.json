@@ -1,0 +1,117 @@
+{
+ "id": "zazzle",
+ "category": "ecommerce_channels",
+ "label": "Zazzle",
+ "lane": "assist",
+ "kind": "niche",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.zazzle.com/api",
+ "url": "https://www.zazzle.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Zazzle designer store (royalty model, Zazzle prints + ships); Ambassador / API account; URL-based product generation with referral commission 35–50 %; no rate limits or seller-side terms published.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "url_api"
+  ],
+  "auth": "none (Zazzle store + Ambassador / API account; URL parameters carry the template + design)",
+  "access": "signup",
+  "capabilities": [
+   "create_product_links"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Create-a-Product API user guides (PDF) linked from zazzle.com/api"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high** — official developer documentation opened by the audi",
+  "base_urls": [
+   "https://www.zazzle.com/api/create/at-<associate id>?pd=<template product id>&tc=<tracking>&…"
+  ],
+  "auth": [
+   "1. Create a Zazzle store; open an Ambassador account for the associate id.",
+   "2. Build template products; generate linkover URLs with image / text parameters."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/create/at-{associateId}",
+    "purpose": "instantiate a template product with a design and return the product page",
+    "notes": "pd, rf, tc, image URL (100–200 ppi), text"
+   }
+  ],
+  "limits": " Not published. - Zazzle designer / Ambassador terms; Zazzle is the merchant of record.",
+  "mcp_sdk": [
+   "SDK: Create-a-Product API user guides (PDF) linked from zazzle.com/api"
+  ],
+  "sources": [
+   "https://www.zazzle.com/api"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Zazzle's only API (https://www.zazzle.com/api, read earlier on 2026-09-25) is the Create-a-Product linkover URL for Ambassador referral links (associate id + template product id + image/text URL parameters that open a customised product page); a re-open in headless Chromium the same day hit Zazzle's bot page ('Oops! Are you Human or a Robot in Disguise?'). There is no authenticated store API to list, reprice, restock or end listings or to read and ship orders, so none of the channel verbs has a call."
+}

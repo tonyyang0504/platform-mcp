@@ -1,0 +1,72 @@
+{
+ "id": "jobadder",
+ "category": "jobs",
+ "label": "JobAdder",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "anz",
+  "uk"
+ ],
+ "docs_url": "https://api.jobadder.com/v2/docs",
+ "url": "https://jobadder.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "ANZ/UK recruitment ATS; job boards apply.jobadder.com; API is agency-side.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/alibaba_1688_open-mcp",
+ "description": "1688 (Alibaba China wholesale) — 一件代发 / 跨境专供 + 1688 Open Platform (ecommerce suppliers): me, list_pr",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.1688.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "alibaba_1688_open"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_ID",
+     "description": "appKey of your 1688 Open Platform app (it is also the last URL path segment of every call).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_SECRET",
+     "description": "appSecret of the same app; signs every call (_aop_signature = uppercase hex HMAC-SHA1 over the urlPath from 'param2' + sorted name+value, https://open.1688.com/doc/signature.htm) and refreshes tokens.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIBABA_1688_OPEN_REFRESH_TOKEN",
+     "description": "refresh_token from the OAuth getToken exchange (need_refresh_token=true, https://open.1688.com/doc/apiAuth.htm); valid for the service subscription period (up to half a year). Access tokens (10 hours) are minted from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIBABA_1688_OPEN_LANGUAGE",
+     "description": "Language of translated titles for search and product detail (country: en, ja, ko, es, …; see the API's developer reference).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_ALIBABA_1688_OPEN_ORDER_FLOW",
+     "description": "fastCreateOrder flow: general (wholesale order), saleproxy / fenxiao (一件代发 dropshipping order; the seller must have authorised proxy sales), boutiquefenxiao, …",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "udbud_dk-mcp",
+ "display_name": "Udbud MCP",
+ "version": "0.1.0",
+ "description": "Udbud (deals): me, search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "udbud_dk"
+   ],
+   "env": {
+    "PLATFORM_MCP_UDBUD_DK_CLIENT_ID": "${user_config.platform_mcp_udbud_dk_client_id}",
+    "PLATFORM_MCP_UDBUD_DK_PRIVATE_KEY": "${user_config.platform_mcp_udbud_dk_private_key}",
+    "PLATFORM_MCP_UDBUD_DK_KEY_ID": "${user_config.platform_mcp_udbud_dk_key_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_udbud_dk_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UDBUD_DK_CLIENT_ID",
+   "description": "client_id issued by Udbud.dk / Erhvervsstyrelsen after registering your system (registration form linked from the SDK README) with the MU_API_DATASYNK role.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_udbud_dk_private_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UDBUD_DK_PRIVATE_KEY",
+   "description": "PEM RSA private key whose public key you expose in the JWKS endpoint registered with Udbud.dk (private_key_jwt client assertion, RS256).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_udbud_dk_key_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UDBUD_DK_KEY_ID",
+   "description": "kid of that key in your JWKS.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Mints a token with the private_key_jwt client assertion and reads one notice registered since yesterday: verifies the MU_API_DATASYNK role."
+  },
+  {
+   "name": "search_postings",
+   "description": "GET /ekstern-data/bekendtgoerelse/v1/fraKilde/DKUDBUD?since=<30 days ago>&page&size: the data-sync feed of Danish notices (DKUDBUD source) registered in the last 30 days, oldest first. Each record is noticeId, noticeVersion, publication number, registration time and the full eForms notice as base64-encoded UTF-8 XML (xml_base64 — decode it for title, buyer and deadlines). There is no keyword search: `query`/`category`/`min_budget` are not applied. For get_posting pass id as <noticeId>/<noticeVersion>."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /ekstern-data/bekendtgoerelse/v1/{noticeId}/{noticeVersion}: pass id as '<noticeId>/<noticeVersion>' (e.g. 6a26cc22-a211-41ea-867f-c34b4d726154/01). The notice is returned as base64-encoded eForms XML (xml_base64)."
+  }
+ ]
+}

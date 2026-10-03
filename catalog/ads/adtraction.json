@@ -1,0 +1,206 @@
+{
+ "id": "adtraction",
+ "category": "ads",
+ "label": "Adtraction",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "eu",
+  "se",
+  "no",
+  "dk",
+  "fi",
+  "de",
+  "pl",
+  "es",
+  "nl",
+  "gb"
+ ],
+ "docs_url": "https://apidocs.adtraction.net/nextgen/",
+ "url": "https://adtraction.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API token is issued per account in Account > Settings and sent as X-Token.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (Adtraction API token; header per 'Header parameters')",
+  "access": "signup",
+  "capabilities": [
+   "reports",
+   "account_management",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (REST v3 for partners + client channel management; advertiser programme management via UI) Confidence: **high**.",
+  "base_urls": [
+   "https://api.adtraction.com/v3/…"
+  ],
+  "auth": [
+   "1. Adtraction account → API token.",
+   "2. Token header per 'Header parameters'.",
+   "3. Partner endpoints: programs, commission types, product feed; client endpoints: channels."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v3/partner/commissiontypes` · `POST /v3/partner/programs",
+    "purpose": "programs / commissions (partner view)",
+    "notes": "market, channel"
+   },
+   {
+    "call": "POST /v3/partner/productfeed` · `GET …/productfeed/info",
+    "purpose": "product feeds",
+    "notes": "advertiser feed"
+   },
+   {
+    "call": "POST/PUT /v3/client/channels",
+    "purpose": "channels",
+    "notes": "channel data"
+   },
+   {
+    "call": "advertiser campaign / budget management",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limiting section; free API; Adtraction terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://apidocs.adtraction.net/nextgen/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.adtraction.net/v2",
+  "rate_per_second": 0.5,
+  "auth": {
+   "type": "header",
+   "header": "X-Token",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Adtraction advertiser API token (log in to Adtraction > Account > Settings), sent as the X-Token header; it determines the advertiser program the calls see."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/advertiser/account/",
+    "docs": "https://apidocs.adtraction.net/nextgen/#v2-advertiser-account-get",
+    "note": "GET /v2/advertiser/account/: the advertiser program behind the token ({programId, programName, currency, market})."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/advertiser/statistics/days/",
+    "body": {
+     "fromDate": "date:date_from",
+     "toDate": "date:date_to",
+     "transactionStatus": "json:3"
+    },
+    "result": {
+     "items": "$",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "cost",
+      "leads": "leads",
+      "sales": "sales",
+      "order_value": "orderValue"
+     }
+    },
+    "docs": "https://apidocs.adtraction.net/nextgen/#v2-advertiser-statistics-by-day-post",
+    "note": "POST /v2/advertiser/statistics/days/ {fromDate, toDate, transactionStatus: 3}: the program's statistics per day with approved + pending transactions (transactionStatus 3). `spend` is `cost` (partner commission plus platform fee, in the program currency). `account_id` is not sent (the token selects the program) and `campaign_id` is not applied (Adtraction has no campaigns; the optional channelId filter is a partner channel)."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The token belongs to one advertiser program; GET /v2/advertiser/account/ returns that single record (served as `me`) and there is no list endpoint (https://apidocs.adtraction.net/nextgen/#v2-advertiser-account-get).",
+   "list_campaigns": "Adtraction is an affiliate network: the advertiser API lists channels, clicks, transactions, segments and statistics but has no campaign resource (https://apidocs.adtraction.net/nextgen/, Advertiser section).",
+   "update_budget": "No budget endpoint: 'Advertiser' covers account, channels, clicks, transactions, segments, coupons and statistics only (https://apidocs.adtraction.net/nextgen/); commissions are paid per transaction.",
+   "pause_resume": "No campaign or program status endpoint in the Advertiser API (https://apidocs.adtraction.net/nextgen/); only channel approval status (PUT /advertiser/channels/, deprecated)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.adtraction.net: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "GET /v2/advertiser/account/ (documented) answers 415 Unsupported Media Type to every Content-Type tried, before authentication; POST /v2/advertiser/statistics/days/ answers 401 as expected. Needs a real token to see whether the account call works."
+ }
+}

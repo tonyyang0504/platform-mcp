@@ -1,0 +1,48 @@
+{
+ "id": "olx_pl",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.olx.pl",
+ "domain": "olx.pl",
+ "country": "Poland",
+ "official_api": true,
+ "docs_url": "https://developer.olx.pl/api/doc",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "list_categories",
+   "messaging"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). OLX Partner API v2 (developer.olx.pl): register an app to post/manage own adverts and messages; no public search of all listings.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.olx.pl/en",
+   "https://developer.olx.pl/api/doc",
+   "https://biznes.olx.pl/integracja-api/"
+  ],
+  "unofficial": [
+   "https://parse.bot/marketplace/6a0a3a3c-61a1-49e1-b46c-e96cac52da9e/olx-pl-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developer.olx.pl/api/doc): OLX Partner API v2 (developer.olx.pl): register an app to post/manage own adverts and messages; no public search of all listings. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

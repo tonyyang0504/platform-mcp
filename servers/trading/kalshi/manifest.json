@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "kalshi-mcp",
+ "display_name": "Kalshi (event contracts) MCP",
+ "version": "0.1.0",
+ "description": "Kalshi (event contracts) (trading): list_markets, get_ticker. Every tool maps to a documented endpoi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kalshi"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Open, non-parlay markets (ticker, its event in `base`, binary/scalar in `type`; title and prices in raw). Pages by cursor only. Kalshi has no free-text search on this endpoint, so `query` is ignored."
+  },
+  {
+   "name": "get_ticker",
+   "description": "Prices are the YES side in dollars (0-1); volume is contracts traded in 24h."
+  }
+ ]
+}

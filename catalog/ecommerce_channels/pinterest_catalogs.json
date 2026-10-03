@@ -1,0 +1,270 @@
+{
+ "id": "pinterest_catalogs",
+ "category": "ecommerce_channels",
+ "label": "Pinterest Catalogs",
+ "lane": "api",
+ "kind": "social_commerce",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.pinterest.com/docs/api/v5/catalogs-list/",
+ "url": "https://business.pinterest.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Pinterest business account per tenant with a catalog (verified merchant status for full shopping features); our app starts in trial access (1,000 requests / day across all endpoints) and needs Pinterest's app review for standard access (100 requests / s per user per app); scopes catalogs:read + catalogs:write; product data per Pinterest catalog spec; no checkout on Pinterest — clicks land on the storefront.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "sdk"
+  ],
+  "auth": "oauth2 (Pinterest app; scopes catalogs:read + catalogs:write; trial access by default, standard access after app review)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official OpenAPI spec https://github.com/pinterest/api-description",
+   "official generated Python client https://github.com/pinterest/pinterest-python-generated-api-client"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.catalog_id",
+  "config.country",
+  "config.language"
+ ],
+ "rate_limits": "Trial 1,000 requests/day; Standard 100 requests/s per user per app, plus per-category limits",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.pinterest.com/v5/catalogs"
+  ],
+  "auth": [
+   "1. Create a Pinterest app (trial access) → client id + secret; request standard access via app review for production volumes.",
+   "2. Tenant authorises with scopes catalogs:read catalogs:write (+ ads scopes if Shopping ads are wanted) → access + refresh tokens.",
+   "3. Create / select the user's RETAIL catalog; push items via batch or register a feed URL."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v5/catalogs/items/batch",
+    "purpose": "CREATE / UPDATE / UPSERT / DELETE items",
+    "notes": "catalog_type RETAIL, country, language, items[{item_id, title, description, link, image_link, price, sale_price, availability, condition, brand, …}], update_mask → batch_id"
+   },
+   {
+    "call": "GET /v5/catalogs/items/batch/{batch_id}",
+    "purpose": "batch status",
+    "notes": "PROCESSING / COMPLETED / FAILED + per-item status"
+   },
+   {
+    "call": "GET /v5/catalogs · POST /v5/catalogs",
+    "purpose": "list / create catalogs",
+    "notes": ""
+   },
+   {
+    "call": "POST /v5/catalogs/feeds · PATCH …/feeds/{id}",
+    "purpose": "scheduled product feed (URL)",
+    "notes": "format, default_currency, schedule"
+   },
+   {
+    "call": "GET /v5/catalogs/items",
+    "purpose": "read items",
+    "notes": ""
+   },
+   {
+    "call": "/v5/catalogs/product_groups",
+    "purpose": "product groups for Shopping ads",
+    "notes": ""
+   }
+  ],
+  "limits": " Trial: 1,000 requests / day for all endpoints. Standard: 100 requests / second per user per app; category-specific limits for ads / analytics; x-ratelimit-limit / remaining / reset headers; raise via support ticket. - Pinterest Developer Terms + Merchant Guidelines; app review for standard access. - No checkout / orders on Pinterest.",
+  "mcp_sdk": [
+   "SDK: official OpenAPI spec https://github.com/pinterest/api-description",
+   "SDK: official generated Python client https://github.com/pinterest/pinterest-python-generated-api-client"
+  ],
+  "sources": [
+   "https://developers.pinterest.com/docs/api/v5/catalogs-list/",
+   "https://r.jina.ai/https://developers.pinterest.com/docs/api-features/modify-items-in-batch/",
+   "https://r.jina.ai/https://developers.pinterest.com/docs/reference/rate-limits/",
+   "https://github.com/pinterest/api-description"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.pinterest.com/v5",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.pinterest.com/v5/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Pinterest app id; HTTP Basic username on POST https://api.pinterest.com/v5/oauth/token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Pinterest app secret key; HTTP Basic password on the token request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the authorization-code flow with scopes user_accounts:read, catalogs:read and catalogs:write (apps have trial access until Pinterest grants standard access). Continuous refresh tokens rotate on every refresh: the runtime keeps the new one and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/pinterest_catalogs.json (0600)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "country",
+    "required": true,
+    "help": "Two-letter country of the catalog items, e.g. US."
+   },
+   {
+    "name": "language",
+    "required": true,
+    "help": "Language of the catalog items, e.g. en-US or EN."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "ISO currency appended to prices ('24.99 USD'); required when update_listing sends a price."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Pinterest API v5 catalogs. Item batches are processed asynchronously (GET /catalogs/items/batch/{batch_id}); the UPSERT/CREATE item operations are restricted for merchants that ingest through a feed.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user_account",
+    "docs": "https://developers.pinterest.com/docs/api/v5/#operation/user_account/get",
+    "note": "user_account/get: {account_type, username, id, business_name} of the token user."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/catalogs/items/batch",
+    "body": {
+     "catalog_type": "=RETAIL",
+     "country": "@country",
+     "language": "@language",
+     "items.0.item_id": "listing_id",
+     "items.0.operation": "=UPDATE",
+     "items.0.attributes.title": "title",
+     "items.0.attributes.description": "description",
+     "items.0.attributes.price": "fmt:{str:price} {@currency}"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/#operation/items_batch/post",
+    "note": "items_batch/post with one RETAIL item {item_id, operation: UPDATE, attributes: {title, description, price: '<amount> <currency>'}} and no update_mask, so only the attributes sent are changed. `listing_id` is the catalog item id in your namespace. Asynchronous: status PROCESSING|COMPLETED|FAILED, raw.batch_id and per-item errors. Pinterest has no stock quantity (only availability), so `quantity` is not applied."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/catalogs/items/batch",
+    "body": {
+     "catalog_type": "=RETAIL",
+     "country": "@country",
+     "language": "@language",
+     "items.0.item_id": "listing_id",
+     "items.0.operation": "=DELETE"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/#operation/items_batch/post",
+    "note": "items_batch/post DELETE removes the item from the catalog (and its product Pins); not reversible. Asynchronous batch."
+   }
+  },
+  "not_offered": {
+   "create_listing": "A RETAIL item CREATE requires link, image_link, availability, condition and google_product_category-style attributes besides title/price, and CREATE/UPSERT is restricted for merchants with a feed data source; the vocabulary has no product link.",
+   "set_inventory": "Pinterest catalog items carry an availability state ('in stock' | 'out of stock' | 'preorder'), not a stock quantity.",
+   "list_orders": "Pinterest catalogs have no orders; checkout happens on the merchant's site.",
+   "mark_shipped": "No orders or shipments in the Pinterest API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.pinterest.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token api.pinterest.com/v5/oauth/token: 500 12",
+   "authorize https://www.pinterest.com/oauth/: 302",
+   "spec https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "POST /v5/oauth/token answered 500 code 12 for a numeric dummy client id and 401 'Authentication failed' for a non-numeric one (checked by hand), so the token endpoint is live; the 500 is Pinterest's handling of an unknown app id."
+ }
+}

@@ -1,0 +1,114 @@
+{
+ "manifest_version": "0.2",
+ "name": "google-mcp",
+ "display_name": "Google Ads MCP",
+ "version": "0.1.0",
+ "description": "Google Ads (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "google"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOGLE_CLIENT_ID": "${user_config.platform_mcp_google_client_id}",
+    "PLATFORM_MCP_GOOGLE_CLIENT_SECRET": "${user_config.platform_mcp_google_client_secret}",
+    "PLATFORM_MCP_GOOGLE_REFRESH_TOKEN": "${user_config.platform_mcp_google_refresh_token}",
+    "PLATFORM_MCP_GOOGLE_DEVELOPER_TOKEN": "${user_config.platform_mcp_google_developer_token}",
+    "PLATFORM_MCP_GOOGLE_CUSTOMER_ID": "${user_config.platform_mcp_google_customer_id}",
+    "PLATFORM_MCP_GOOGLE_LOGIN_CUSTOMER_ID": "${user_config.platform_mcp_google_login_customer_id}",
+    "PLATFORM_MCP_GOOGLE_ENV": "${user_config.platform_mcp_google_env}",
+    "PLATFORM_MCP_GOOGLE_BASE_URL": "${user_config.platform_mcp_google_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_google_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console > Credentials) of the app that the Google Ads user authorised with scope https://www.googleapis.com/auth/adwords.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CLIENT_SECRET",
+   "description": "The OAuth client's secret; sent in the form body of the refresh_token grant.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_REFRESH_TOKEN",
+   "description": "Refresh token obtained once through Google's consent flow (offline access, scope https://www.googleapis.com/auth/adwords); the runtime mints hourly access tokens from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_developer_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_DEVELOPER_TOKEN",
+   "description": "Google Ads API developer token (manager account > Admin > API Center), sent as the `developer-token` header on every call; Test-access tokens only work against test accounts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_customer_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CUSTOMER_ID",
+   "description": "Google Ads customer id (10 digits, no dashes) of the account being managed: pause_resume mutates campaigns under it, and list_accounts reads its customer_client hierarchy (itself plus direct clients when it is a manager). When the user reaches it through a manager account, also set login_customer_id.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_login_customer_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_LOGIN_CUSTOMER_ID",
+   "description": "Manager customer id (digits, no dashes) sent as `login-customer-id` when the user reaches client accounts through a manager account; leave unset for direct access.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_google_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_google_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v25/customers:listAccessibleCustomers lists the customers directly accessible with the OAuth token as `resourceNames` (customers/{id})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "googleAds:search on the configured customer_id with the documented account-hierarchy GAQL query (customer_client, level <= 1): the account itself plus its direct clients. Search returns fixed pages of 10,000 rows with a nextPageToken; `page` is not sent."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /v25/customers/{account_id}/googleAds:search with a fixed GAQL query (non-removed campaigns). account_id is the 10-digit customer id without dashes. `status` is not applied (GAQL is a literal; the runtime cannot splice arguments into it); the budget is campaign_budget.amountMicros in raw (micros of the account currency, not mapped to `budget`). One call returns up to 10,000 rows; `page` is not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "googleAds:search on customers/{account_id} with GAQL `FROM campaign WHERE segments.date BETWEEN '<date_from>' AND '<date_to>'` (dates YYYY-MM-DD, as in the documented custom-range example): one row per campaign per day. cost_micros is the cost in micros of the account currency (divide by 1,000,000); int64 metrics arrive as strings. `campaign_id` is not applied (filter the rows). Up to 10,000 rows (one page)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /v25/customers/{customer_id (config)}/campaigns:mutate {operations: [{update: {resourceName: customers/{customer_id}/campaigns/{campaign_id}, status: PAUSED|ENABLED}, updateMask: status}]} (\"All updates require an `updateMask` field\"). The campaign must belong to the configured customer_id; answers {results: [{resourceName}]}."
+  }
+ ]
+}

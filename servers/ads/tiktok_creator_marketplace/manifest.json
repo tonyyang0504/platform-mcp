@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "tiktok_creator_marketplace-mcp",
+ "display_name": "TikTok One (Creator Marketplace) MCP",
+ "version": "0.1.0",
+ "description": "TikTok One (Creator Marketplace) (ads): me, list_campaigns. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "tiktok_creator_marketplace"
+   ],
+   "env": {
+    "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_ACCESS_TOKEN": "${user_config.platform_mcp_tiktok_creator_marketplace_access_token}",
+    "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_APP_SECRET": "${user_config.platform_mcp_tiktok_creator_marketplace_app_secret}",
+    "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_APP_ID": "${user_config.platform_mcp_tiktok_creator_marketplace_app_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tiktok_creator_marketplace_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_ACCESS_TOKEN",
+   "description": "Access token authorized by a TikTok One Creator Marketplace account (auth_code exchanged at /oauth2/access_token/); it does not expire unless the account revokes it (https://business-api.tiktok.com/portal/docs/obtain-authorization-and-authentication-from-a-tto-creator-marketplace-account/v1.3).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_creator_marketplace_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_APP_SECRET",
+   "description": "Secret of your TikTok for Business developer app, needed by the account-listing call used by me.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_creator_marketplace_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_CREATOR_MARKETPLACE_APP_ID",
+   "description": "App ID of your TikTok for Business developer app (My Apps > App Detail > Basic Information).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /tto/oauth2/tcm/?app_id&secret: {data: {tto_tcm_account_ids: [...]}}, the TTO Creator Marketplace accounts that authorised the app (use one as account_id)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /tto/tcm/campaign/?tto_tcm_account_id={account_id} (page_size at most 5). These are creator-collaboration campaigns (brand, creators invited, video ids), not paid ad campaigns: there is no budget or delivery status."
+  }
+ ]
+}

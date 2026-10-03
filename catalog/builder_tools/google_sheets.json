@@ -1,0 +1,213 @@
+{
+ "id": "google_sheets",
+ "category": "builder_tools",
+ "label": "Google Sheets / Drive",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://developers.google.com/sheets/api",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "spreadsheets.get",
+   "spreadsheets.values.get",
+   "values.batchGet",
+   "values.update",
+   "values.append",
+   "spreadsheets.create",
+   "drive.files.export_csv",
+   "push_notifications(Drive)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/googleapis/google-api-python-client",
+   "https://github.com/googleapis/google-api-nodejs-client"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/googleapis/google-api-python-client",
+   "https://github.com/googleapis/google-api-nodejs-client"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://sheets.googleapis.com/v4",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console > Credentials) of a project with the Google Sheets API enabled."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret, sent in the form body of the refresh_token grant."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from Google's consent flow (offline access) with scope https://www.googleapis.com/auth/spreadsheets (or drive.file for files the app created); the runtime mints hourly access tokens from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "spreadsheet_id",
+    "required": true,
+    "help": "The spreadsheet id (the long id in https://docs.google.com/spreadsheets/d/<id>/edit) that every tool reads and writes."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/spreadsheets/{spreadsheet_id}",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id"
+    },
+    "fixed_params": {
+     "fields": "spreadsheetId,properties.title,sheets.properties"
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/get",
+    "note": "GET /v4/spreadsheets/{spreadsheet_id}?fields=spreadsheetId,properties.title,sheets.properties: confirms the token can open the configured spreadsheet and lists its sheets (tabs)."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/spreadsheets/{spreadsheet_id}/values/{collection}",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id",
+     "collection": "=A1:Z1000"
+    },
+    "default_limit": 100000,
+    "max_limit": 100000,
+    "result": {
+     "items": "values",
+     "fields": {
+      "cells": "$"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/get",
+    "note": "GET /v4/spreadsheets/{id}/values/{range}: collection is an A1 range such as Sheet1!A1:F200 (default A1:Z1000 of the first sheet); each item is one row, its cell values in `cells` (trailing empty cells omitted). The range bounds the rows; page, limit and query are not used."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/spreadsheets/{spreadsheet_id}/values/{item_id}",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id"
+    },
+    "result": {
+     "fields": {
+      "id": "range",
+      "content": "values"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/get",
+    "note": "GET /v4/spreadsheets/{id}/values/{range}: item_id is an A1 range (Sheet1!B2:D4); content is the 2-D array of values."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/spreadsheets/{spreadsheet_id}/values/{collection}:append",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id",
+     "collection": "=A1"
+    },
+    "fixed_params": {
+     "valueInputOption": "USER_ENTERED",
+     "insertDataOption": "INSERT_ROWS"
+    },
+    "body": {
+     "values": "fields.values"
+    },
+    "result": {
+     "fields": {
+      "id": "updates.updatedRange",
+      "status": "=appended"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/append",
+    "note": "POST /v4/spreadsheets/{id}/values/{range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS with {values: fields.values}: appends rows after the table found in collection (an A1 range, default A1). Pass fields = {\"values\": [[\"a\", 1], [\"b\", 2]]}; the returned id is the written range."
+   },
+   "update_item": {
+    "method": "PUT",
+    "path": "/spreadsheets/{spreadsheet_id}/values/{item_id}",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id"
+    },
+    "fixed_params": {
+     "valueInputOption": "USER_ENTERED"
+    },
+    "body": {
+     "values": "fields.values"
+    },
+    "result": {
+     "fields": {
+      "id": "updatedRange",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/update",
+    "note": "PUT /v4/spreadsheets/{id}/values/{range}?valueInputOption=USER_ENTERED with {values}: overwrites the A1 range item_id with fields.values (a 2-D array)."
+   },
+   "delete_item": {
+    "method": "POST",
+    "path": "/spreadsheets/{spreadsheet_id}/values/{item_id}:clear",
+    "path_params": {
+     "spreadsheet_id": "@spreadsheet_id"
+    },
+    "result": {
+     "fields": {
+      "id": "clearedRange",
+      "status": "=cleared"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/clear",
+    "note": "POST /v4/spreadsheets/{id}/values/{range}:clear: clears the values (not formatting) of the A1 range item_id; rows are not removed."
+   }
+  },
+  "not_offered": {
+   "generate_image": "Google Sheets has no generation endpoints.",
+   "generate_video": "Google Sheets has no generation endpoints.",
+   "get_job": "Sheets API calls are synchronous; there are no jobs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host sheets.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 400 (client_error), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://sheets.googleapis.com/$discovery/rest?version=v4: 6/6 tools match (path, method, parameters, body keys, response paths)",
+   "scopes spreadsheets: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

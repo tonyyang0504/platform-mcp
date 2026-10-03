@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/doba-mcp",
+ "description": "Doba (ecommerce suppliers): me, list_products, get_product, quote_shipping, create_order, get_order,",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.doba.com/apidoc/retailer/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "doba"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DOBA_APP_KEY",
+     "description": "appKey assigned by Doba (Retailer API > Generate Key, https://open.doba.com/apidoc/retailer/developer/key); sent as the appKey header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DOBA_PRIVATE_KEY",
+     "description": "Your RSA private key from the same page, as PEM: '-----BEGIN PRIVATE KEY-----' + the base64 PKCS#8 key Doba shows + '-----END PRIVATE KEY-----' (newlines may be written as \\n). Signs 'appKey=…&signType=rsa2&timestamp=…' with SHA256withRSA; never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DOBA_PLATFORM_ID",
+     "description": "Doba dsPlatformId of the marketplace your orders come from (Import Order): 1 Amazon, 2 eBay, 3 Shopify, 7 BigCommerce, 8 WooCommerce, 13 Walmart, 19 TikTok Shop, 26 Etsy, 99 Others (https://open.doba.com/apidoc/retailer).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

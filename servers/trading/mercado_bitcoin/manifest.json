@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercado_bitcoin-mcp",
+ "display_name": "Mercado Bitcoin (public market data) MCP",
+ "version": "0.1.0",
+ "description": "Mercado Bitcoin (public market data) (trading): list_markets, get_ticker, get_candles. Every tool ma",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mercado_bitcoin"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "GET /symbols returns every instrument as parallel arrays; the server filters them by `query` (substring of symbol, base or quote, case-insensitive; the API itself filters only by exact symbols), sorts them by symbol and pages them locally (page/limit)."
+  },
+  {
+   "name": "get_ticker",
+   "description": "symbol is BASE-QUOTE, e.g. BTC-BRL. Prices are in the quote currency; volume is 24h base volume. An unknown symbol answers an empty list (invalid_input)."
+  },
+  {
+   "name": "get_candles",
+   "description": "interval is one of 1m, 15m, 1h, 3h, 1d, 1w, 1M; the latest `limit` bars up to now (countback). time is the bar's Unix timestamp (seconds, UTC)."
+  }
+ ]
+}

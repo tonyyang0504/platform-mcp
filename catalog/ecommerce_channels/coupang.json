@@ -1,0 +1,281 @@
+{
+ "id": "coupang",
+ "category": "ecommerce_channels",
+ "label": "Coupang",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "kr"
+ ],
+ "docs_url": "https://developers.coupang.com/hc/en",
+ "url": "https://www.coupang.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Wing vendor account certified as a business operator (general members cannot get keys); keys issued instantly in Wing (rights may take >24 h), valid 180 days with reissue 14 days before expiry; up to 10 allow-listed caller IPs — our egress must be static; no fee for the API; no rate limit published; no sandbox — tests run against production with Postman.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "hmac (Access Key + Secret Key issued in Wing; `Authorization: CEA algorithm=HmacSHA256, access-key=…, signed-date=…, signature=…`; IP allowlist ≤ 10 IPs; keys expire after 180 days)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "promotions"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official sample code (Java / PHP / Python / Node / Classic ASP) in the developer centre"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.vendor_id",
+  "config.vendor_user_id",
+  "config.key_issued_at"
+ ],
+ "rate_limits": "not stated",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the",
+  "base_urls": [
+   "https://api-gateway.coupang.com"
+  ],
+  "auth": [
+   "1. Register as a vendor on wing.coupang.com and complete business-operator certification.",
+   "2. Wing › account menu › Seller Information / Additional Sales Information › issue Open API key; enter up to 10 caller IPs (or wing.coupang.com as URL if no homepage) → Access Key + Secret Key (+ vendorId).",
+   "3. Sign every request: message = signed-date (yyMMddTHHmmssZ) + method + path + URL-encoded query; `Authorization: CEA algorithm=HmacSHA256, access-key=…, signed-date=…, signature=…`; also `X-Requested-By: <vendorId>`.",
+   "4. Keys expire after 180 days (reissue button 14 days before; e-mails 2 and 1 weeks ahead)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v2/providers/seller_api/apis/api/v1/marketplace/seller-products",
+    "purpose": "create product",
+    "notes": "category, items (vendor items), images, attributes, delivery + return policy"
+   },
+   {
+    "call": "PUT /v2/providers/seller_api/apis/api/v1/marketplace/seller-products",
+    "purpose": "update product",
+    "notes": "full product payload"
+   },
+   {
+    "call": "PUT …/marketplace/vendor-items/{vendorItemId}/prices/{price}",
+    "purpose": "price sync",
+    "notes": ""
+   },
+   {
+    "call": "PUT …/marketplace/vendor-items/{vendorItemId}/quantities/{quantity}",
+    "purpose": "stock sync",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/providers/openapi/apis/api/v5/vendors/{vendorId}/ordersheets",
+    "purpose": "orders (ordersheets)",
+    "notes": "date range + status"
+   },
+   {
+    "call": "POST /v2/providers/openapi/apis/api/v4/vendors/{vendorId}/orders/invoices · …/orders/updateInvoices",
+    "purpose": "upload / update waybills (tracking push)",
+    "notes": "deliveryCompanyCode, invoiceNumber"
+   },
+   {
+    "call": "GET /v2/providers/openapi/apis/api/v6/vendors/{vendorId}/returnRequests · POST …/v4/vendors/{vendorId}/return-exchange-invoices/manual",
+    "purpose": "returns list, pickup waybill",
+    "notes": "7 return + 4 exchange endpoints"
+   },
+   {
+    "call": "GET /v2/providers/openapi/apis/api/v1/revenue-history · GET /v2/providers/marketplace_openapi/apis/api/v1/settlement-histories",
+    "purpose": "sales + settlement reports",
+    "notes": ""
+   },
+   {
+    "call": "Promotions / coupons (21 endpoints), categories, brands, logistics, customer service, CGF / Rocket Growth",
+    "purpose": "supporting domains",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened (developer centre lists none). - Business-certified Wing vendor only; keys are the seller's own (no third-party app model). - Caller IPs must be allow-listed (max 10). - Markets: Korea and Taiwan.",
+  "mcp_sdk": [
+   "SDK: official sample code (Java / PHP / Python / Node / Classic ASP) in the developer centre"
+  ],
+  "sources": [
+   "https://developers.coupang.com/hc/en",
+   "https://developers.coupang.com/hc/en/articles/360033395853",
+   "https://developers.coupang.com/hc/en-us/articles/20288952179993-Issue-Open-API-Key-NEW",
+   "https://developers.coupang.com/hc/en-us/articles/360033461914-Creating-HMAC-Signature",
+   "https://developers.coupang.com/hc/en-us/articles/360033988873-OPEN-API-Test-Guide"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api-gateway.coupang.com",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "Coupang Open API Access Key issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급) after business verification; calls must come from one of the (up to 10) allow-listed IPs, and keys expire and must be re-issued."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The matching Secret Key: signs every request (HMAC-SHA256 hex over signed-date + method + path + query, sent as `Authorization: CEA algorithm=HmacSHA256, access-key=..., signed-date=..., signature=...`). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{datetime_compact}{method}{path}{query}",
+    "key_field": "secret_key",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "Authorization": "CEA algorithm=HmacSHA256, access-key={@access_key}, signed-date={datetime_compact}, signature={signature}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "vendor_id",
+    "required": true,
+    "help": "Coupang vendorId (업체코드, e.g. A00012345), shown in WING after login; used by the probe."
+   }
+  ],
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "SUCCESS",
+   "error_field": "message"
+  },
+  "rate_per_second": 5,
+  "terms": "Coupang Open API keys are issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급); calls must come from one of up to 10 allow-listed IPs and keys expire (re-issue in WING). Item-level writes address the option id (vendorItemId, 옵션ID) that Coupang assigns once a product is approved.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/seller-products",
+    "params": {
+     "vendorId": "@vendor_id"
+    },
+    "fixed_params": {
+     "maxPerPage": 1
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/product-list-paging-query",
+    "note": "No account endpoint; the probe lists one registered product ({code, message, nextToken, data[]}) to verify the HMAC keys, IP allow-list and vendorId."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/vendor-items/{listing_id}/prices/{price}",
+    "fixed_params": {
+     "forceSalePriceUpdate": "true"
+    },
+    "result": {
+     "fields": {
+      "status": "=price_updated"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/changing-price-of-each-item-of-a-product",
+    "note": "UPDATE_PRODUCT_PRICE_BY_ITEM: PUT /vendor-items/{vendorItemId}/prices/{price}?forceSalePriceUpdate=true changes the SALE PRICE of one option (listing_id = vendorItemId, 옵션ID) — the price goes live on coupang.com. Only `price` is applied (KRW in Korea, whole number in steps of 10 won); forceSalePriceUpdate=true lifts the default -50%/+100% change guard, so double-check the amount. Use set_inventory for stock; title and description are product-level (modify-product) and are not changed here."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/vendor-items/{listing_id}/quantities/{quantity}",
+    "result": {
+     "fields": {
+      "status": "=quantity_updated"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/changing-quantity-of-each-product-item",
+    "note": "UPDATE_PRODUCT_QUANTITY_BY_ITEM: PUT /vendor-items/{vendorItemId}/quantities/{quantity} sets the stock of one option; `listing_id` is the vendorItemId (옵션ID) and is required (Coupang items are not addressed by SKU)."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/vendor-items/{listing_id}/sales/stop",
+    "result": {
+     "fields": {
+      "status": "=sales_stopped"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/suspend-sale-of-each-item-of-a-product",
+    "note": "STOP_PRODUCT_SALES_BY_ITEM: PUT /vendor-items/{vendorItemId}/sales/stop suspends sales of one option (reversible with /sales/resume); the product itself is not deleted."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Product creation (POST /v2/providers/seller_api/apis/api/v1/marketplace/seller-products, https://developers.coupang.com/ko/api/products/product-creation) needs displayCategoryCode, brand, delivery/return settings (outbound shipping place code, return center), required category notices and attributes per item; the vocabulary carries none of them, and new products go through Coupang approval.",
+   "list_orders": "GET /v2/providers/openapi/apis/api/v5/vendors/{vendorId}/ordersheets requires createdAtFrom AND createdAtTo (\"yyyy-mm-dd+09:00\", at most 31 days apart) and a single status (https://developers.coupang.com/ko/api/shipments/po-list-query-paging-by-day); the vocabulary has only `since` and no way to derive the required end date.",
+   "mark_shipped": "Invoice upload (POST /v2/providers/openapi/apis/api/v4/vendors/{vendorId}/orders/invoices) requires per line shipmentBoxId, vendorItemId, deliveryCompanyCode, splitShipping and preSplitShipped besides orderId and invoiceNumber (https://developers.coupang.com/ko/api/shipments/uploading-waybills); shipmentBoxId and vendorItemId are not vocabulary inputs."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key, secret_key, vendor_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

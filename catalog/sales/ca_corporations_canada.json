@@ -1,0 +1,36 @@
+{
+ "id": "ca_corporations_canada",
+ "category": "sales",
+ "label": "Corporations Canada federal corporation search",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "ca"
+ ],
+ "docs_url": null,
+ "url": "https://ised-isde.canada.ca/cc/lgcy/fdrlCrpSrch.html",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free search of federal corporations (directors listed); robots.txt (26 Disallow) does not hit the search path; Corporations Canada also publishes the dataset on open.canada.ca.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

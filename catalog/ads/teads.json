@@ -1,0 +1,121 @@
+{
+ "id": "teads",
+ "category": "ads",
+ "label": "Teads",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.teads.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "No public developer documentation; API credentials come from Teads for Ad Manager clients (connectors authenticate with account credentials). Managed service / IO buying; minimums by market.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "reporting_only",
+   "partner_program"
+  ],
+  "auth": "token (Teads Ad Manager API credentials issued to clients — TODO(verify))",
+  "access": "partner_only",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Teads Ad Manager reporting API consumed by data connectors; no public developer portal).",
+  "base_urls": [],
+  "auth": [
+   "1. Teads Ad Manager account (managed onboarding through Teads sales).",
+   "2. Connector vendors (Adverity \"Teads Ad Manager\" / \"Teads Connect\", Improvado \"Teads API\") authenticate with the client's Ad Manager credentials (TODO(verify) mechanism)."
+  ],
+  "endpoints": [
+   {
+    "call": "reporting export (via connector)",
+    "purpose": "campaign / line performance",
+    "notes": "Adverity field list: advertiser, campaign, line item, date, impressions, clicks, spend, video metrics"
+   },
+   {
+    "call": "campaigns / ads / budgets / audiences / conversions",
+    "purpose": "**not in a public API** — managed by Teads",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Managed / insertion-order buying; no published API terms or rate limits.",
+  "mcp_sdk": [
+   "None. Connectors: Adverity, Improvado (prove the reporting surface)."
+  ],
+  "sources": [
+   "https://www.teads.com/",
+   "https://docs.adverity.com/reference/connectors/connector-teads-ad-manager.html"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the Teads Developer Portal (https://developers.teads.com/) lists Engage API V2, Engage Report API, Engage External ID API, Outbrain Content API, In-Chat Recommendation API and the Amplify API (https://developers.teads.com/docs/api/amplify-api); the only advertiser (campaign/budget/report) API is Outbrain Amplify, already served by the outbrain entry. The Teads Ad Manager buying API referenced by discovery has no public reference, so no separate adapter."
+}

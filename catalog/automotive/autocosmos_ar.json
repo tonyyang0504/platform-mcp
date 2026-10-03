@@ -1,0 +1,49 @@
+{
+ "id": "autocosmos_ar",
+ "category": "automotive",
+ "label": "Autocosmos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autocosmos.com.ar",
+ "domain": "autocosmos.com.ar",
+ "country": "Argentina",
+ "official_api": true,
+ "docs_url": "https://api.autocosmos.com.ar/DocsV3",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "HMAC (AppKey + AppSecret)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "list_makes_models",
+   "leads",
+   "list_dealers"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Autocosmos API v3 (OpenAPI) for AR/CL/CO/EC/MX/PE: dealer publications, branches, leads, catalog taxonomy; keys by emailing developers@autocosmos.com; no public listings search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.autocosmos.com.ar/",
+   "https://api.autocosmos.com.ar/DocsV3",
+   "https://api.autocosmos.com.ar/docs/v3/openapi.json"
+  ],
+  "unofficial": [
+   "https://apify.com/scraperschile/autocosmos-cl"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Autocosmos API v3 (https://api.autocosmos.com.ar/DocsV3, HMAC AppKey/AppSecret by email to developers@autocosmos.com) manages a dealer's own publications, branches, leads and the catalogue taxonomy; its branch listing is the account's own, not a dealer directory, and there is no public listing search or valuation. The automotive vocabulary is read-only, so it is recorded, not served."
+}

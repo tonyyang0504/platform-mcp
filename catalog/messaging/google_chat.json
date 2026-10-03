@@ -1,0 +1,345 @@
+{
+ "id": "google_chat",
+ "category": "messaging",
+ "label": "Google Chat",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/workspace/chat",
+ "url": "https://workspace.google.com/products/chat/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed inside Google Workspace organisations (the docs address Workspace only — consumer Gmail is not covered): configure a Chat app in the Cloud project; app auth uses the app's own credentials (chat.bot self-granted; chat.app.* need one-time admin approval), user auth needs the OAuth consent screen unless admin-installed / domain-wide delegated; sensitive / restricted scope classes apply. Quotas: per project 3,000 message writes/min (create / patch / delete), 60 space writes/min, 300 membership writes/min, 3,000 message reads/min, 3,000 space reads/min; per space 1 write per second (messages + space changes), 5 reaction creates/s, 15 reads/s, 10/s import; 429 → exponential back-off.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "events",
+   "pubsub"
+  ],
+  "auth": "oauth2_or_service_account",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "group_admin",
+   "dm_initiate",
+   "reactions",
+   "media",
+   "webhooks",
+   "read_state"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Google API client libraries + Cloud Pub/Sub for Workspace Events (developers.google.com/workspace/chat/api/reference/rest)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence:",
+  "base_urls": [
+   "https://chat.googleapis.com/v1/…"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v1/spaces/{space}/messages` `{text",
+    "purpose": "cardsV2, thread{threadKey}}` (+ `messageReplyOption`)",
+    "notes": "send / reply in thread"
+   },
+   {
+    "call": "GET /v1/spaces/{space}/messages` · `GET …/messages/{msg}` · `POST …/messages:search",
+    "purpose": "read inbox",
+    "notes": ""
+   },
+   {
+    "call": "PATCH` / `DELETE …/messages/{msg}",
+    "purpose": "edit / delete",
+    "notes": ""
+   },
+   {
+    "call": "POST /v1/spaces` · `POST /v1/spaces:setup` · `GET /v1/spaces:findDirectMessage` · `spaces:findGroupChats",
+    "purpose": "create space / DM",
+    "notes": ""
+   },
+   {
+    "call": "POST /v1/spaces/{space}/members` · `DELETE` · `GET",
+    "purpose": "group admin",
+    "notes": ""
+   },
+   {
+    "call": "POST …/messages/{msg}/reactions",
+    "purpose": "reactions",
+    "notes": ""
+   },
+   {
+    "call": "POST /upload/v1/{parent}/attachments:upload` · `GET /v1/media/{name}?alt=media",
+    "purpose": "media",
+    "notes": ""
+   },
+   {
+    "call": "Chat app HTTP endpoint (MESSAGE / ADDED_TO_SPACE events) or Workspace Events subscription → Pub/Sub",
+    "purpose": "inbound push",
+    "notes": ""
+   },
+   {
+    "call": "users.spaces` read state, `messagePins`, `customEmojis`, `spaceEvents",
+    "purpose": "extras",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per project / minute: 3,000 message writes (create / patch / delete), 60 space writes (setup / create / patch / delete), 300 membership writes, 3,000 message reads, 3,000 space reads. - Per space: **1 write / second** (messages + space changes), 5 reaction creates / s, 15 reads / s, 10 / s during import. - 429 → exponential back-off. Workspace edition gates which Chat features exist (registry note: Business / Enterprise).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.google.com/workspace/chat/limits",
+   "https://developers.google.com/workspace/chat/api/reference/rest",
+   "https://developers.google.com/workspace/chat/authenticate-authorize"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://chat.googleapis.com/v1",
+  "rate_per_second": 1,
+  "rate_note": "Per-space write limit is 1 request per second for spaces.messages.create; reads 3,000 per minute per project (https://developers.google.com/workspace/chat/limits).",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/chat.messages, chat.spaces.readonly and chat.users.readstate (user authentication; app authentication needs a service-account JWT, which this runtime does not sign). 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/spaces",
+    "fixed_params": {
+     "pageSize": 1
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces/list",
+    "note": "Chat has no who-am-I method: spaces.list?pageSize=1 verifies the token; account carries the first space the user belongs to."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/spaces/{to}/messages",
+    "body": {
+     "text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "name",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/create",
+    "note": "`to` is the space ID (the part after `spaces/`, e.g. AAAAAAAAAAA). With user authentication 'The content of message can only contain text'. message_id is the message resource name (spaces/…/messages/…). `subject`/`channel` are ignored."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/spaces/{channel}/messages",
+    "fixed_params": {
+     "messageReplyOption": "REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD"
+    },
+    "body": {
+     "text": "text",
+     "thread.name": "thread_id"
+    },
+    "result": {
+     "fields": {
+      "message_id": "name",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/create",
+    "note": "`channel` is the space ID (required); `thread_id` is the thread resource name spaces/{space}/threads/{thread}. REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD: 'If it fails, the message starts a new thread instead'."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/spaces/{channel}/messages",
+    "params": {
+     "pageSize": "limit"
+    },
+    "fixed_params": {
+     "orderBy": "createTime desc"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "fields": {
+      "id": "name",
+      "thread_id": "thread.name",
+      "from": "sender.name",
+      "text": "text",
+      "sent_at": "createTime"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/list",
+    "note": "Lists ONE space: `channel` (space ID) is required, newest first. Chat pages by pageToken, so `page` is ignored; `since` is not sent."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/spaces/{channel}/messages",
+    "params": {
+     "pageSize": "limit",
+     "filter": "fmt:thread.name = {thread_id}"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "fields": {
+      "id": "name",
+      "thread_id": "thread.name",
+      "from": "sender.name",
+      "text": "text",
+      "sent_at": "createTime"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/list",
+    "note": "spaces.messages.list with filter `thread.name = spaces/{space}/threads/{thread}`: `thread_id` is that full thread name and `channel` the space ID. `page` is ignored."
+   },
+   "mark_read": {
+    "method": "PATCH",
+    "path": "/users/me/spaces/{channel}/spaceReadState",
+    "fixed_params": {
+     "updateMask": "lastReadTime"
+    },
+    "body": {
+     "lastReadTime": "now"
+    },
+    "result": {
+     "fields": {
+      "status": "=read"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/chat/api/reference/rest/v1/users.spaces/updateSpaceReadState",
+    "note": "Sets the caller's lastReadTime in the space `channel` (space ID) to now: 'To mark the space as read, set lastReadTime to any value later (larger) than the latest message create time'. Replies inside threads are unaffected. Needs chat.users.readstate."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host chat.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://chat.googleapis.com/$discovery/rest?version=v1: 6/6 tools match (path, method, parameters, body keys, response paths)",
+   "scopes chat.messages: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

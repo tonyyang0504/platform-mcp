@@ -1,0 +1,312 @@
+{
+ "id": "bilibili",
+ "category": "social",
+ "label": "Bilibili",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://openhome.bilibili.com/",
+ "url": "https://www.bilibili.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer registration with identity verification (个人 or 企业), app approval, per-scope permission (users must re-authorize when scopes are added); OAuth 2.0 (access_token + refresh); archive submission capability granted per app; Bilibili community rules (投稿规范) apply; deauthorization messages pushed to the app.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post(video archive — after 稿件分发 approval)",
+   "upload_media",
+   "analytics(own)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [
+   "https://openhome.bilibili.com/",
+   "https://account.bilibili.com/pc/account-pc/auth/oauth"
+  ],
+  "auth": [
+   "1. Complete 身份信息 (personal or enterprise) → review → create an application → apply for scopes (e.g. USER_INFO,",
+   "2. OAuth 2.0 authorization code → `access_token` / `refresh_token`; when a NEW scope is approved existing users must",
+   "3. Deauthorization / account-deletion events are pushed to the app (消息推送-用户解除授权)."
+  ],
+  "endpoints": [
+   {
+    "call": "Path (research)",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /arcopen/fn/archive/video/init` {name, utype}",
+    "purpose": "→ `upload_token`",
+    "notes": ""
+   },
+   {
+    "call": "POST /arcopen/fn/archive/video/upload?upload_token&part_number` → `/video/complete",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /arcopen/fn/archive/cover/upload",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /arcopen/fn/archive/add-by-utoken` {title, tid, tag, desc, copyright, no_reprint}",
+    "purpose": "→ `resource_id`",
+    "notes": ""
+   },
+   {
+    "call": "GET /arcopen/fn/archive/view`, `/archive/viewlist`, `/archive/type/list",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "PUT /arcopen/fn/archive/edit`, `DELETE /arcopen/fn/archive/delete",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /arcopen/fn/data/arc/*`, `/data/user/*",
+    "purpose": "own analytics",
+    "notes": ""
+   }
+  ],
+  "limits": " - Scope-gated per app; 投稿规范 (community rules, 原创 / 转载 declaration); per-app quotas in the console. - 哔哩哔哩开放平台开发者服务协议 + 隐私政策 (links on the home page).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://openhome.bilibili.com/",
+   "https://openhome.bilibili.com/doc/4/eaf0e2b5-bde9-b9a0-9be1-019bb455701c"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://member.bilibili.com",
+  "rate_per_second": 2,
+  "headers": {
+   "Content-Type": "application/json"
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.bilibili.com/x/account-oauth2/v1/refresh_token",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": null,
+    "client_secret": null,
+    "grant_type": null,
+    "refresh_token": null
+   },
+   "token_query": {
+    "client_id": "{@client_id}",
+    "client_secret": "{@client_secret}",
+    "grant_type": "refresh_token",
+    "refresh_token": "{@refresh_token}"
+   },
+   "token_path": "data.access_token",
+   "refresh_token_path": "data.refresh_token",
+   "expires_path": "data.expires_in_is_an_absolute_time",
+   "token_ttl_seconds": 86400,
+   "header": "access-token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "client_id of your Bilibili open-platform app (openhome.bilibili.com); also the x-bili-accesskeyid of every signed call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app secret (app_secret); signs every call (HMAC-SHA256) and is sent only to the refresh endpoint."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "The user's refresh_token from the OAuth2 code exchange (https://api.bilibili.com/x/account-oauth2/v1/token, scopes USER_INFO, ARC_BASE, ARC_DATA). Single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set)."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "key_field": "client_secret",
+    "pre": [
+     {
+      "name": "body_md5",
+      "mode": "hash",
+      "algorithm": "md5",
+      "payload": "{body}"
+     }
+    ],
+    "payload": "x-bili-accesskeyid:{@client_id}\nx-bili-content-md5:{body_md5}\nx-bili-signature-method:HMAC-SHA256\nx-bili-signature-nonce:{nonce}\nx-bili-signature-version:2.0\nx-bili-timestamp:{timestamp_s}",
+    "headers": {
+     "x-bili-accesskeyid": "{@client_id}",
+     "x-bili-content-md5": "{body_md5}",
+     "x-bili-signature-method": "HMAC-SHA256",
+     "x-bili-signature-nonce": "{nonce}",
+     "x-bili-signature-version": "2.0",
+     "x-bili-timestamp": "{timestamp_s}",
+     "Authorization": "{signature}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/arcopen/fn/user/account/info",
+    "docs": "https://open.bilibili.com/doc/4/feb66f99-7d87-c206-00e7-d84164cd701c",
+    "note": "获取用户公开信息 (scope USER_INFO): name, face, openid of the authorising user."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/arcopen/fn/archive/delete",
+    "body": {
+     "resource_id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://open.bilibili.com/doc/4/23d78390-4119-1e5f-2bbe-b45bd5cecdb0",
+    "note": "视频稿件删除 (scope ARC_BASE): irreversibly deletes one of the user's video submissions by resource_id (BV id)."
+   },
+   "analytics_post": {
+    "path": "/arcopen/fn/data/arc/stat",
+    "params": {
+     "resource_id": "post_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "metrics": "$",
+      "title": "title"
+     }
+    },
+    "docs": "https://open.bilibili.com/doc/4/3f46ac2e-1318-3aa0-5548-0d9fd624d520",
+    "note": "获取单个稿件数据 (scope ARC_DATA): view, danmaku, reply, favorite, coin, share, like, title and ptime of one video submission (BV id) the user authored or co-authored."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Bilibili's open platform publishes videos (服务端视频稿件投递: upload → chunk merge → submit) and 专栏 articles; 文章提交 (https://open.bilibili.com/doc/4/b14b77b6-8889-8c8b-2e83-17c5a4c550fb) requires title, category, template_id, a summary and 200–40000 characters of content, more than a text post carries.",
+   "publish_image": "Images are only uploaded as article/cover material (专栏稿件图片上传, multipart file); there is no image-post API (https://open.bilibili.com/doc/4/0eaa4d3e-c4c0-f874-6f3c-e083aa939a1b).",
+   "read_comments": "The open-platform document tree (https://member.bilibili.com/arcopen/user/open-doc/view?id=4) has no comment-reading API; 获取单个稿件数据 returns only the reply count.",
+   "reply_comment": "No comment-reply API is documented in the open-platform tree (https://member.bilibili.com/arcopen/user/open-doc/view?id=4).",
+   "read_mentions": "No mentions/@ API is documented in the open-platform tree (https://member.bilibili.com/arcopen/user/open-doc/view?id=4)."
+  },
+  "terms": "Every arcopen call carries the v2.0 signature (https://open.bilibili.com/doc/4/8673959e-f7bb-56e6-6e68-d225f971b81b): x-bili-* headers (accesskeyid = client_id, content-md5 = MD5 of the exact body, HMAC-SHA256, nonce, version 2.0, timestamp) sorted and signed with app_secret into Authorization, plus the OAuth access-token header; responses are {code: 0, message, data}. Access tokens are refreshed daily from the single-use refresh token (the token response's expires_in is an absolute time, not a duration)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host member.bilibili.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.bilibili.com/x/account-oauth2/v1/refresh_token: 200 122000",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

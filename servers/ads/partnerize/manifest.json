@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "partnerize-mcp",
+ "display_name": "Partnerize MCP",
+ "version": "0.1.0",
+ "description": "Partnerize (ads): me, list_accounts, list_campaigns, get_report. Every tool maps to a documented end",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "partnerize"
+   ],
+   "env": {
+    "PLATFORM_MCP_PARTNERIZE_APPLICATION_KEY": "${user_config.platform_mcp_partnerize_application_key}",
+    "PLATFORM_MCP_PARTNERIZE_USER_API_KEY": "${user_config.platform_mcp_partnerize_user_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_partnerize_application_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PARTNERIZE_APPLICATION_KEY",
+   "description": "Partnerize application_key (identifies the Network; Partnerize console > Settings > API credentials), the HTTP Basic username.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_partnerize_user_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PARTNERIZE_USER_API_KEY",
+   "description": "The user's user_api_key, the HTTP Basic password; results are limited to the user's brand permissions.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v3/brand: the brands the user can access ({data: [{brand_id, brand_name}]}); there is no user profile endpoint."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v3/brand: brands (advertisers) the user has access to. `id` is the brand id that list_campaigns takes as account_id; the brand currency is on GET /user/advertiser/{id} (default_currency)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /user/advertiser/{brand_id}/campaign: the brand's campaigns (programmes). status is a single letter: a = active, p = pending, r = rejected, n = inactive. Partnerize campaigns are commission-based (default_commission_rate / is_cpc in raw) and carry no budget; `status`, `page` and `limit` are not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /reporting/report_advertiser/campaign/{campaign_id}/conversion.json?start_date&end_date (whole UTC days): one row per conversion (not aggregated) for one campaign; campaign_id is REQUIRED. `spend` is the conversion's commission (what the brand pays, including the network fee) and publisher_commission the partner's share; up to 300 rows per call (count holds the total; offset paging is not followed). Totals per currency are in the response's total_* fields. `account_id` is not sent."
+  }
+ ]
+}

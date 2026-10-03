@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "bfl-mcp",
+ "display_name": "Black Forest Labs (FLUX) MCP",
+ "version": "0.1.0",
+ "description": "Black Forest Labs (FLUX) (builder tools): me, generate_image, generate_video. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bfl"
+   ],
+   "env": {
+    "PLATFORM_MCP_BFL_API_KEY": "${user_config.platform_mcp_bfl_api_key}",
+    "PLATFORM_MCP_BFL_WEBHOOK_URL": "${user_config.platform_mcp_bfl_webhook_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bfl_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BFL_API_KEY",
+   "description": "BFL API key (bfl.ai dashboard > organisation > project > API keys), sent as the x-key header. Requests spend pay-as-you-go credits (1 credit = $0.01).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bfl_webhook_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BFL_WEBHOOK_URL",
+   "description": "Optional HTTPS URL that BFL POSTs finished results to (webhook_url on every generation request); the way to receive results, since polling needs the per-task polling_url.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/credits -> {credits}: the remaining credit balance of the key's organisation (there is no user endpoint)."
+  },
+  {
+   "name": "generate_image",
+   "description": "POST /v1/{model} (default flux-kontext-pro; also flux-kontext-max, flux-2-pro, flux-2-max, flux-2-flex, flux-pro-1.1, flux-pro-1.1-ultra …) with {prompt, input_image (URL or base64, for edits), seed, aspect_ratio (21:9…9:21)} -> {id, polling_url, cost}. Generation is asynchronous: the finished image URL (result.sample) is delivered to the configured webhook_url or read from raw.polling_url with the x-key header. FLUX.2 models size with width/height instead of aspect_ratio. negative_prompt and size are not sent."
+  },
+  {
+   "name": "generate_video",
+   "description": "POST /v1/flux-3-video {mode: t2v, prompt, aspect_ratio (21:9, 16:9, 4:3, 1:1, 3:4, 9:16 … or auto), duration (5–20 s)} -> {id, polling_url}: text-to-video with native audio. Image-to-video (mode i2v) needs a keyframes array and is not mapped; image_url and model are not sent. Results are fetched from raw.polling_url: webhook_url is not sent, because every Flux 3 video input schema in https://api.bfl.ai/openapi.json (Flux3VideoT2VInputs …) forbids extra properties and has no webhook_url (FluxKontextProInputs, used by generate_image, does; auth audit 2026-09-26)."
+  }
+ ]
+}

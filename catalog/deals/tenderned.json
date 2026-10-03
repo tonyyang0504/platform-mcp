@@ -1,0 +1,178 @@
+{
+ "id": "tenderned",
+ "category": "deals",
+ "label": "TenderNed",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "nl"
+ ],
+ "docs_url": "https://data.overheid.nl/dataset/aankondigingen-van-overheidsopdrachten---tenderned",
+ "url": "https://www.tenderned.nl/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Dutch government open platform; keyless public API; bids need eHerkenning login.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for search (public TNS API). Lane `assist` → **api for search**. Confidence high.",
+  "base_urls": [
+   "https://www.tenderned.nl/papi/tenderned-rs-tns/v2/publicaties"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /papi/tenderned-rs-tns/v2/publicaties?page=&size=&…",
+    "purpose": "search",
+    "notes": "content[]: publicatieId, publicatieDatum, typePublicatie{code,omschrijving}, aanbestedingNaam, opdrachtgeverNaam, procedure, sluitingsDatum"
+   },
+   {
+    "call": "GET /papi/tenderned-rs-tns/v2/publicaties/{id}",
+    "purpose": "details",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Open platform; bids via eHerkenning in TenderNed. - Dutch government open platform; keyless public API; bids need eHerkenning login.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.tenderned.nl/papi/tenderned-rs-tns/v2/publicaties?page=0&size=1",
+   "https://www.tenderned.nl/cms/nl/over-tenderned"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.tenderned.nl/papi/tenderned-rs-tns/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "TenderNed publicatie Webservice (TNS), listed on data.overheid.nl (licence CC-0, data owner PIANOo): 'houd er rekening mee dat deze Webservice zonder voorafgaande kennisgeving gewijzigd kan worden'. Keyless JSON; bids are submitted on TenderNed with eHerkenning, not through this service.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/publicaties",
+    "params": {
+     "page": "page0",
+     "size": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "content",
+     "key": "postings",
+     "total": "totalElements",
+     "fields": {
+      "id": "publicatieId",
+      "title": "aanbestedingNaam",
+      "buyer": "opdrachtgeverNaam",
+      "posted_at": "publicatieDatum",
+      "url": "link.href",
+      "description": "opdrachtBeschrijving"
+     }
+    },
+    "docs": "https://data.overheid.nl/dataset/aankondigingen-van-overheidsopdrachten---tenderned",
+    "note": "GET /publicaties?page (0-based)&size: the latest TenderNed publications, newest first, as listed on data.overheid.nl ('publicatie Webservice (TNS)'). The dataset page documents only page and size, so `query`, `category` and `min_budget` are ignored; filter the rows yourself. Rows carry publicatieId, publicatieDatum, aanbestedingNaam, opdrachtgeverNaam, typePublicatie {code, omschrijving} (e.g. AAO aankondiging, AGO gegunde opdracht), procedure, typeOpdracht (D/L/W) and a link to the notice page (in raw). No budget is published in the list."
+   }
+  },
+  "not_offered": {
+   "me": "The TNS webservice is keyless; there is no account endpoint.",
+   "get_posting": "The only documented per-notice call is the XML API GET /publicaties/{publicatieId}/public-xml (https://www.tenderned.nl/info/swagger/), which 'is beveiligd via basic authentication' with credentials issued by functioneelbeheer@tenderned.nl and returns TED-schema XML; the keyless TNS documents only the list.",
+   "submit_bid": "Tenders are submitted on the TenderNed platform with eHerkenning; neither the TNS nor the XML API accepts submissions (https://www.tenderned.nl/info/swagger/ has a single GET operation).",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API is published (data.overheid.nl lists only the platform, RSS, TNS and XML API).",
+   "send_message": "No messaging API is published.",
+   "credits": "Free, keyless service; no quota endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

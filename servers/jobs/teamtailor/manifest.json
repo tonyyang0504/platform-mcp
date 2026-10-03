@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "teamtailor-mcp",
+ "display_name": "Teamtailor MCP",
+ "version": "0.1.0",
+ "description": "Teamtailor (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "teamtailor"
+   ],
+   "env": {
+    "PLATFORM_MCP_TEAMTAILOR_API_KEY": "${user_config.platform_mcp_teamtailor_api_key}",
+    "PLATFORM_MCP_TEAMTAILOR_API_HOST": "${user_config.platform_mcp_teamtailor_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_teamtailor_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMTAILOR_API_KEY",
+   "description": "Teamtailor API key with the Public scope (read), created at https://app.teamtailor.com/app/settings/integrations/api-keys; sent as `Authorization: Token token=<key>`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_teamtailor_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMTAILOR_API_HOST",
+   "description": "Teamtailor API host for the account's data stack: api.teamtailor.com (EU stack) or api.na.teamtailor.com (NA stack).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-job list, which a Public-scope key can read ('Can read all public data, for example, jobs, departments, and locations')."
+  },
+  {
+   "name": "search",
+   "description": "JSON:API list of the key owner's OWN published public jobs (GET /v1/jobs, filter[status]=published, filter[feed]=public), not a cross-company search. Filters take division/department/role/location ids and tags only, so query/location are not sent — filter client-side. Paging: page[number] and page[size] ('Default: 10, max: 30'); total = meta.record-count. Requests carry the required 'X-Api-Version' header (20240904). created-at 'Requires admin permission' and is null for a Public key; locations/department are relations (not included), and pitch, remote-status, employment-type, salary-time-unit, end-date and links.careersite-job-apply-url are in raw. Rate limit: '50 requests every 10 seconds' (429)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v1/jobs/{id} 'Retreive a specific job' as a JSON:API document {data: {id, attributes, links, relationships}}."
+  }
+ ]
+}

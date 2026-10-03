@@ -1,0 +1,93 @@
+{
+ "id": "bitstamp",
+ "category": "trading",
+ "label": "Bitstamp",
+ "lane": "api",
+ "docs_url": "https://www.bitstamp.net/api/",
+ "url": "https://www.bitstamp.net",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.bitstamp.net/api/v2",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "terms": "Public market data; docs: 'All clients can make 400 requests per second. There is a default limit threshold of 10,000 requests per 10 minutes in place.' The server stays far below (1 request/second).",
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/markets/",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "fields": {
+      "symbol": "market_symbol",
+      "base": "base_currency",
+      "quote": "counter_currency",
+      "type": "market_type"
+     }
+    },
+    "docs": "https://www.bitstamp.net/api/#tag/Market-info/operation/GetMarkets",
+    "note": "GET /api/v2/markets/ returns every market at once (no paging documented); the server sorts by symbol and pages locally (page/limit). `query` is not sent: the API has no text search (its only filter is `entity`). symbol is Bitstamp's url symbol, e.g. btcusd."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/ticker/{symbol}/",
+    "result": {
+     "fields": {
+      "symbol": "arg:symbol",
+      "last": "num:last",
+      "bid": "num:bid",
+      "ask": "num:ask",
+      "volume": "num:volume"
+     }
+    },
+    "docs": "https://www.bitstamp.net/api/#tag/Tickers/operation/GetMarketTicker",
+    "note": "symbol is the market_symbol from list_markets, e.g. btcusd or etheur. Prices in the counter currency; volume is the last 24h volume in the base currency."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/ohlc/{symbol}/",
+    "params": {
+     "step": "map:interval:1m=60,3m=180,5m=300,15m=900,30m=1800,1h=3600,2h=7200,4h=14400,6h=21600,12h=43200,1d=86400,3d=259200",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "data.ohlc",
+     "key": "candles",
+     "fields": {
+      "time": "iso:timestamp",
+      "open": "num:open",
+      "high": "num:high",
+      "low": "num:low",
+      "close": "num:close",
+      "volume": "num:volume"
+     }
+    },
+    "docs": "https://www.bitstamp.net/api/#tag/Market-info/operation/GetOHLCData",
+    "note": "interval is one of 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 1d, 3d (the documented step values 60…259200 seconds); returns the latest `limit` candles (max 1000), oldest first. time is the candle open in UTC."
+   }
+  },
+  "not_offered": {
+   "me": "No keyless account endpoint; every account call needs the X-Auth API-key + HMAC-SHA256 X-Auth-Signature headers (security schemes in https://www.bitstamp.net/api/). This entry serves public market data only.",
+   "get_balances": "POST /api/v2/account_balances/ requires the X-Auth / X-Auth-Signature authentication; no credentials available — public-data entry only.",
+   "list_orders": "POST /api/v2/open_orders/ requires the X-Auth / X-Auth-Signature authentication; public-data entry only.",
+   "place_order": "POST /api/v2/buy/{market_symbol}/ and /api/v2/sell/{market_symbol}/ require authentication and spend money; not mapped in this public-data entry.",
+   "cancel_order": "POST /api/v2/cancel_order/ requires the X-Auth / X-Auth-Signature authentication; not mapped in this public-data entry."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ },
+ "terms_note": "Spec vs live (2026-09-27): spot tickers (GET /api/v2/ticker/btcusd/) omit the derivatives fields the spec lists (mark_price, index_price, open_interest, open_interest_value) and do not repeat the symbol, so the symbol is echoed from the argument; GET /api/v2/markets/ spot records omit spec keys such as asset_class, tick_size, max_leverage and are not ordered by symbol; an unknown market answers HTTP 404 on /ticker/ and /ohlc/ (the spec documents no error response for it)."
+}

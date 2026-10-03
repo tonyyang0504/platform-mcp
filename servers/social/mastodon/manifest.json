@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "mastodon-mcp",
+ "display_name": "Mastodon MCP",
+ "version": "0.1.0",
+ "description": "Mastodon (social): me, publish_text, read_comments, reply_comment, read_mentions, analytics_post, de",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mastodon"
+   ],
+   "env": {
+    "PLATFORM_MCP_MASTODON_TOKEN": "${user_config.platform_mcp_mastodon_token}",
+    "PLATFORM_MCP_MASTODON_INSTANCE": "${user_config.platform_mcp_mastodon_instance}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mastodon_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MASTODON_TOKEN",
+   "description": "Mastodon user access token from the account's instance (Preferences > Development > New application, or an OAuth flow) with scopes read:accounts read:statuses read:notifications write:statuses; sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mastodon_instance": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MASTODON_INSTANCE",
+   "description": "Host of the account's Mastodon instance without scheme, e.g. mastodon.social; every call goes to https://<instance>/api/v1/...",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v1/accounts/verify_credentials (user token, read:accounts) returns the CredentialAccount {id, username, acct, display_name, url, followers_count, ...}."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /api/v1/statuses {status, in_reply_to_id} (write:statuses) returns the Status {id, uri, url, created_at, content, account}. Visibility, language, spoiler_text and scheduled_at keep the instance defaults; the Idempotency-Key header is not sent."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /api/v1/statuses/:id/context returns {ancestors, descendants}; every descendant Status (HTML `content`) is returned in one response, so page/limit are not sent."
+  },
+  {
+   "name": "reply_comment",
+   "description": "A reply is a status with in_reply_to_id set to the comment's status id."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /api/v1/notifications?types[]=mention (read:notifications); limit defaults to 40, max 80. Mastodon paginates with Link headers / max_id, so `page` is not sent: pass `since` (a notification id, sent as since_id) to read newer mentions. `text` is the mentioning status's HTML content."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /api/v1/statuses/:id returns the Status with replies_count, reblogs_count and favourites_count (https://docs.joinmastodon.org/entities/Status/); the runtime cannot compose a nested `metrics` object, so counts are top-level fields."
+  },
+  {
+   "name": "delete",
+   "description": "DELETE /api/v1/statuses/:id ('Delete one of your own statuses'; user token with write:statuses) returns 200 with the deleted Status carrying the source `text` (and poll / media_attachments) 'for reposting' - it is available under raw, and the runtime answers {status: 'deleted'}. 401 'The access token is invalid' is an auth_error; 404 'Status is not owned by you or does not exist' is an invalid_input. DELETE statuses is rate limited at 30 per 30 minutes (https://docs.joinmastodon.org/api/rate-limits/)."
+  }
+ ]
+}

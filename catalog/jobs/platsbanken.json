@@ -1,0 +1,164 @@
+{
+ "id": "platsbanken",
+ "category": "jobs",
+ "label": "Platsbanken",
+ "lane": "api",
+ "kind": "government",
+ "regions": [
+  "se"
+ ],
+ "docs_url": "https://jobtechdev.se/",
+ "url": "https://arbetsformedlingen.se/platsbanken/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Swedish PES; open JobTech API (no key needed) — client not written; apply to the employer.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "open_data"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "autocomplete",
+   "stream (JobStream API)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://gitlab.com/arbetsformedlingen/job-ads/getting-started-code-examples (official code examples)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Arbetsförmedlingen JobTech 'JobSearch' API v1.37 (Swagger): GET https://jobsearch.api.jobtechdev.se/search (q, qfields, occupation-name/-group/-field/-collection, skill, language, emp",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No rate limit stated in the Swagger; Open data from the Swedish Public Employment Service (data.arbetsformedlingen.se); the Getting Started guide says 'you need a key to authenticate yourself' (registered on jobtechdev.se, which did not resolve from the audit host) — the /search endpoint nevertheless answered 200 to an unauthenticated test call today. No rate limit stated in the Swagger; the docs recommend the Stream API for bulk.",
+  "mcp_sdk": [
+   "https://gitlab.com/arbetsformedlingen/job-ads/getting-started-code-examples (official code examples)"
+  ],
+  "sources": [
+   "https://jobtechdev.se/",
+   "https://jobsearch.api.jobtechdev.se/",
+   "https://jobsearch.api.jobtechdev.se/swagger.json",
+   "https://jobsearch.api.jobtechdev.se/search?q=python&limit=1",
+   "https://gitlab.com/arbetsformedlingen/job-ads/jobsearch-apis/-/raw/main/docs/GettingStartedJobSearchEN.md"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobsearch.api.jobtechdev.se",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "q": "query",
+     "remote": "remote",
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "hits",
+     "key": "postings",
+     "total": "total.value",
+     "fields": {
+      "id": "id",
+      "title": "headline",
+      "company": "employer.name",
+      "location": "workplace_address.municipality",
+      "url": "webpage_url",
+      "posted_at": "publication_date",
+      "description": "description.text"
+     }
+    },
+    "docs": "https://jobsearch.api.jobtechdev.se/",
+    "note": "Arbetsförmedlingen JobSearch API v1.37 (Swagger at https://jobsearch.api.jobtechdev.se/swagger.json): q = 'Freetext query. Search in ad headline, ad description and employer name', offset 'Valid range is (0-2000)', limit 'Valid range is (0-100)', remote 'True will return ads which are likely to allow remote work'. municipality/region/country take JobTech taxonomy codes, so location and country are not sent — put the place name in query instead. The getting-started guide asks for a key to use the Swagger GUI, but the Swagger declares no security scheme and /search answered without one on 2026-09-24. 429 on too many requests (no threshold published)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/ad/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "headline",
+      "company": "employer.name",
+      "location": "workplace_address.municipality",
+      "url": "webpage_url",
+      "posted_at": "publication_date",
+      "description": "description.text"
+     }
+    },
+    "docs": "https://jobsearch.api.jobtechdev.se/",
+    "note": "'Load a job ad by ID' (404 when the ad is gone). description.text is plain text; description.text_formatted, application_details (url/email/via_af) and occupation stay in raw."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint in the Swagger.",
+   "apply": "Page: 'apply to the employer' — ads carry application_details.url / email; there is no application endpoint.",
+   "list_messages": "No messaging API; the Swagger documents search, complete, ad and logo only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

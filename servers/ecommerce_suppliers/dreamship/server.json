@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/dreamship-mcp",
+ "description": "Dreamship (ecommerce suppliers): me, list_products, get_product, create_order, get_order. Every tool",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.dreamship.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "dreamship"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DREAMSHIP_API_KEY",
+     "description": "Dreamship API key from Settings (https://dreamship.com/app/settings), sent as `Authorization: Bearer <API_KEY>`.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DREAMSHIP_TEST_ORDER",
+     "description": "Set to true to send `test_order: true` on create_order (test orders are not billed or fulfilled); left out of the body when unset, so orders are real.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

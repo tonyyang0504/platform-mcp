@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/douyin_ecommerce-mcp",
+ "description": "Douyin E-commerce — 抖店 (Doudian) seller + 精选联盟 / 巨量百应 + Doudian Open Platform (ecommerce suppliers):",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://op.jinritemai.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "douyin_ecommerce"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_KEY",
+     "description": "Your Doudian app's app_key (抖店开放平台 → 应用管理).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DOUYIN_ECOMMERCE_APP_SECRET",
+     "description": "The app's app_secret; it signs every call (hmac-sha256).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DOUYIN_ECOMMERCE_ACCESS_TOKEN",
+     "description": "Shop access_token from /token/create (self-built apps: grant_type authorization_self with your shop_id). It lasts about 7 days; renew it with /token/refresh and update this value — the server does not renew it.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

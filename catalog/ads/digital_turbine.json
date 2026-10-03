@@ -1,0 +1,191 @@
+{
+ "id": "digital_turbine",
+ "category": "ads",
+ "label": "Digital Turbine (DT Ads)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api",
+ "url": "https://www.digitalturbine.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Token: ACP Edge Console → Account → Security Tokens → Add Token → Management API Token (shown once); header x-api-key; GraphQL endpoint. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql"
+  ],
+  "auth": "api_key (Management API Token from the ACP Edge console; x-api-key header; GraphQL)",
+  "access": "signup",
+  "capabilities": [
+   "budgets_bids"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (GraphQL bulk bid + activation updates only) Confidence: **high**.",
+  "base_urls": [],
+  "auth": [
+   "1. ACP Edge console → Account → Security Tokens → Add Token → Management API Token (copy once).",
+   "2. POST GraphQL with `x-api-key`.",
+   "3. Campaign creation stays in ACP Edge."
+  ],
+  "endpoints": [
+   {
+    "call": "mutation `campaignBulkBidsManage",
+    "purpose": "bulk bid updates + activation",
+    "notes": "offerCmsId (required), bids[], active"
+   },
+   {
+    "call": "campaigns · creatives · reports",
+    "purpose": "console only (Reporting section separate)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free; token per advertiser account; DT terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://acp-edge-api.fyber.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "header",
+   "header": "x-api-key",
+   "field": "management_api_token",
+   "fields": [
+    {
+     "name": "management_api_token",
+     "required": true,
+     "help": "Offerwall Advertiser Management API token (ACP Edge Console > Account > Security Tokens > Add Token > Management API Token; shown once), sent as the x-api-key header. It identifies the advertiser account."
+    }
+   ]
+  },
+  "tools": {
+   "update_budget": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation campaignBulkBidsManage($offerCmsId: ID!, $offerEnabled: Boolean, $bidsList: [OfferCampaignBulkUpdateBidItemInput!]!) { offerCampaignBulkUpdateBids(input: {offerCmsId: $offerCmsId, offerEnabled: $offerEnabled, bidsList: $bidsList}) { errors } }",
+     "operationName": "=campaignBulkBidsManage",
+     "variables.offerCmsId": "campaign_id",
+     "variables.bidsList.0.dailyBudget": "str:daily_budget"
+    },
+    "result": {
+     "root": "data.offerCampaignBulkUpdateBids",
+     "fields": {
+      "status": "=submitted",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api",
+    "note": "GraphQL mutation offerCampaignBulkUpdateBids {offerCmsId: campaign_id, bidsList: [{dailyBudget}]} sets the offer-level daily budget (a decimal string, account currency); this spends money. campaign_id is the offer's legacy CMS id shown under the product name in the ACP Edge dashboard. Rejected when country-level daily budgets are already configured ('A dailyBudget cannot be set for both the offer campaign and the country code simultaneously'). Validation failures come back in `errors` (non-empty = not applied). `currency` is ignored."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation campaignBulkBidsManage($offerCmsId: ID!, $offerEnabled: Boolean, $bidsList: [OfferCampaignBulkUpdateBidItemInput!]!) { offerCampaignBulkUpdateBids(input: {offerCmsId: $offerCmsId, offerEnabled: $offerEnabled, bidsList: $bidsList}) { errors } }",
+     "operationName": "=campaignBulkBidsManage",
+     "variables.offerCmsId": "campaign_id",
+     "variables.offerEnabled": "map:action:pause=json:false,resume=json:true",
+     "variables.bidsList": "json:[]"
+    },
+    "result": {
+     "root": "data.offerCampaignBulkUpdateBids",
+     "fields": {
+      "status": "=submitted",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api",
+    "note": "GraphQL mutation offerCampaignBulkUpdateBids {offerCmsId: campaign_id, offerEnabled: false|true, bidsList: []} ('offerEnabled — Optional, boolean: true enables an offer; false, disables an offer'). bidsList is a required list and is sent empty so no bid or budget changes. campaign_id is the offer's legacy CMS id. Failures come back in `errors` (non-empty = not applied)."
+   }
+  },
+  "not_offered": {
+   "me": "The Management API documents only the offerCampaignBulkUpdateBids mutation and a single-offer offerCampaign query that needs an offer id (https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api); there is no account or viewer query to probe.",
+   "list_accounts": "The token 'identifies the advertiser account'; no account listing is documented (https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api).",
+   "list_campaigns": "Only a single-offer query (offerCampaign by id or cmsId) is documented; there is no offer list query (https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api).",
+   "get_report": "The Offerwall Reporting API is asynchronous: POST https://reporting.fyber.com/api/v1/report/offerwall?format=csv returns a URL 'to be polled (GET request) until the body response (file) is populated' within up to an hour, as CSV, with a separate client-credentials token (https://docs.digitalturbine.com/offerwall-advertisers/reporting/reporting-api)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host acp-edge-api.fyber.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

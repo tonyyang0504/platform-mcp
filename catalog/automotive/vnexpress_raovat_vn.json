@@ -1,0 +1,35 @@
+{
+ "id": "vnexpress_raovat_vn",
+ "category": "automotive",
+ "label": "Raovat",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://raovat.vnexpress.net",
+ "domain": "raovat.vnexpress.net",
+ "country": "Vietnam",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). VnExpress Rao Vat /api is an internal JSON endpoint without docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://raovat.vnexpress.net/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

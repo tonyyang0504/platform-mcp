@@ -1,0 +1,36 @@
+{
+ "id": "panjiva",
+ "category": "sales",
+ "label": "Panjiva",
+ "lane": "assist",
+ "kind": "customs",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://panjiva.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Subscription product; robots.txt (116 Disallow) blocks the data pages. Tenant account only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

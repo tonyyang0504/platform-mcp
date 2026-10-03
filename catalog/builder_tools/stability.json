@@ -1,0 +1,53 @@
+{
+ "id": "stability",
+ "category": "builder_tools",
+ "label": "Stability AI",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://platform.stability.ai/docs/api-reference",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "stable_image_generate(ultra|core|sd3)",
+   "edit(erase|inpaint|outpaint|search_and_replace|remove_background|replace_background_relight)",
+   "upscale(fast|conservative|creative)",
+   "control(sketch|structure|style)",
+   "image_to_video",
+   "3d(stable_fast_3d,point_aware)",
+   "audio(stable_audio_2)",
+   "user_balance"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/Stability-AI/stability-sdk"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/Stability-AI/stability-sdk"
+  ],
+  "sources": []
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "Remaining gap: storing binary results and returning a link. Re-read 2026-09-25 (OpenAPI https://api.stability.ai/v2alpha/openapi): every Stable Image generate/edit call (e.g. POST /v2beta/stable-image/generate/core|ultra|sd3) and async result (GET /v2beta/results/{id}) answers only with the image itself — image/png|jpeg|webp bytes (ImageBinaryResponse) or the whole image base64-encoded in JSON (ImageJSONResponse: {image, finish_reason, seed}); no URL is ever returned. The runtime now sends multipart uploads, cookies, JWT assertions and parses CSV/XML, but it cannot persist a returned file and hand back a URL, and megabytes of base64 in a tool result are not usable, so generate_image cannot produce output_urls."
+}

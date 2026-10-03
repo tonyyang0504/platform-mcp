@@ -1,0 +1,33 @@
+{
+ "id": "comprecar_br",
+ "category": "automotive",
+ "label": "Comprecar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.comprecar.com.br",
+ "domain": "comprecar.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). /api returns internal front-end JSON (cities); no documented API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

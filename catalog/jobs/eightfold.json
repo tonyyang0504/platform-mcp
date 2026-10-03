@@ -1,0 +1,67 @@
+{
+ "id": "eightfold",
+ "category": "jobs",
+ "label": "Eightfold Talent",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://eightfold.ai/",
+ "url": "https://eightfold.ai/",
+ "verified_at": "2026-09-04",
+ "terms_note": "AI career sites for large enterprises; profile-based apply, web-only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,33 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/jolpica_f1-mcp",
+ "description": "Jolpica F1 (Ergast-compatible Formula 1 data) (competitions): discover, get_competition, standings. ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://github.com/jolpica/jolpica-f1/blob/main/docs/README.md",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "jolpica_f1"
+    }
+   ],
+   "environmentVariables": []
+  }
+ ]
+}

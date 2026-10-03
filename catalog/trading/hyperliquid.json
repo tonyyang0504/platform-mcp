@@ -1,0 +1,252 @@
+{
+ "id": "hyperliquid",
+ "category": "trading",
+ "label": "Hyperliquid (perpetuals)",
+ "lane": "api",
+ "kind": "dex",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+ "url": "https://app.hyperliquid.xyz/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public POST /info endpoint, no credentials (a wallet address is enough to read its orders). Orders go through POST /exchange with an EIP-712 wallet signature and are not mapped.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (public market data); signed private endpoints not mapped",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "candles"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": "aggregated REST weight 1200 per minute per IP; l2Book/allMids/clearinghouseState weight 2, all other documented info requests weight 20 (candleSnapshot adds weight per 60 items)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_markets",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_ticker",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_candles",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_balances",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "place_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "cancel_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "has_api: yes (public info endpoint, typed JSON bodies).",
+  "base_urls": [
+   "https://api.hyperliquid.xyz/info (mainnet)"
+  ],
+  "auth": [
+   "1. /info requests are unauthenticated: POST with Content-Type: application/json and a {\"type\": ...} body.",
+   "2. /exchange (orders, cancels, transfers) requires an EIP-712 signature from the wallet's private key (not mapped: the runtime signs with HMAC only)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /info {\"type\": \"meta\"}",
+    "purpose": "perpetuals universe",
+    "notes": "response {universe: [{name, szDecimals, maxLeverage}], marginTables: [...]}"
+   },
+   {
+    "call": "POST /info {\"type\": \"allMids\"}",
+    "purpose": "mid prices for all coins",
+    "notes": "response is an object keyed by coin: {\"APE\": \"4.33245\", ...}"
+   },
+   {
+    "call": "POST /info {\"type\": \"l2Book\", \"coin\": \"BTC\"}",
+    "purpose": "order book",
+    "notes": "response {coin, time, levels: [[{px, sz, n}, ...] (bids), [{px, sz, n}, ...] (asks)]}"
+   },
+   {
+    "call": "POST /info {\"type\": \"candleSnapshot\", \"req\": {coin, interval, startTime, endTime}}",
+    "purpose": "candles",
+    "notes": "startTime/endTime required inside req; response [{t, T, s, i, o, c, h, l, v, n}] (prices as strings); max 500 elements"
+   },
+   {
+    "call": "POST /info {\"type\": \"metaAndAssetCtxs\"}",
+    "purpose": "meta + per-asset contexts",
+    "notes": "response is a positional array [meta, [{funding, openInterest, prevDayPx, dayNtlVlm, premium, oraclePx, markPx, midPx, impactPxs, dayBaseVlm}]]"
+   },
+   {
+    "call": "POST /info {\"type\": \"openOrders\", \"user\": \"0x…\"}",
+    "purpose": "open orders",
+    "notes": "response [{coin, limitPx, oid, side (A|B), sz, timestamp}]"
+   }
+  ],
+  "limits": "REST weight 1200/minute per IP; l2Book, allMids, clearinghouseState, orderStatus, spotClearinghouseState, exchangeStatus weigh 2; other info requests 20; userRole 60.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.hyperliquid.xyz",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=meta"
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "note": "Public info endpoint, no credentials: the probe posts {\"type\": \"meta\"} (weight 20)."
+   },
+   "list_markets": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=meta"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "universe",
+     "key": "markets",
+     "fields": {
+      "symbol": "name",
+      "size_decimals": "szDecimals",
+      "max_leverage": "maxLeverage"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "note": "Perpetuals universe (weight 20); every market is quoted in USDC and returned in one response (no pagination; `query` is not sent)."
+   },
+   "get_ticker": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=l2Book",
+     "coin": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "coin",
+      "bid": "num:levels.0.0.px",
+      "ask": "num:levels.1.0.px",
+      "bid_size": "num:levels.0.0.sz",
+      "ask_size": "num:levels.1.0.sz",
+      "time": "time"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "note": "Top of the L2 book (weight 2): levels[0] are bids, levels[1] asks; prices are decimal strings on the wire and are returned as numbers (num:, as the vocabulary types bid/ask). `last`/`volume` are not available per symbol (allMids is a coin-keyed map and metaAndAssetCtxs a positional array the runtime cannot index by symbol)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=openOrders",
+     "user": "@wallet_address"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "order_id": "oid",
+      "symbol": "coin",
+      "side": "side",
+      "price": "limitPx",
+      "quantity": "sz",
+      "time": "timestamp"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "note": "Open orders of PLATFORM_MCP_HYPERLIQUID_WALLET_ADDRESS (weight 20); `side` is B (bid/buy) or A (ask/sell). `symbol`/`status` are not sent."
+   }
+  },
+  "not_offered": {
+   "get_candles": "candleSnapshot requires req.startTime and req.endTime in milliseconds (docs: both required); the vocabulary carries no time range and the runtime has no millisecond clock expression, so a latest-N request cannot be built.",
+   "get_balances": "clearinghouseState reports perp margin as one marginSummary object plus assetPositions (positions), not per-asset balance rows; spot balances are served by hyperliquid_spot.",
+   "place_order": "orders and cancels go through POST /exchange with an EIP-712 typed-data signature produced by the wallet's secp256k1 private key (docs: 'signing … is done with the private key of the agent or main wallet'); the runtime only has HMAC request signing, so writes are not offered",
+   "cancel_order": "orders and cancels go through POST /exchange with an EIP-712 typed-data signature produced by the wallet's secp256k1 private key (docs: 'signing … is done with the private key of the agent or main wallet'); the runtime only has HMAC request signing, so writes are not offered"
+  },
+  "config_fields": [
+   {
+    "name": "wallet_address",
+    "required": false,
+    "help": "Public 0x address (42 hex characters) of the MAIN wallet whose orders/balances to read. Not a secret; no private key is needed or accepted. Only list_orders/get_balances use it."
+   }
+  ]
+ },
+ "version": "0.1.0",
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://api.hyperliquid.xyz",
+  "ws": "wss://api.hyperliquid.xyz/ws",
+  "ccxt_exchange_id": "hyperliquid",
+  "sandbox": "ccxt set_sandbox_mode(True) (testnet)"
+ },
+ "notes": "An agent wallet cannot withdraw by construction; the address you paste is checked to be an approved agent of the main wallet.",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: ticker bid/ask were decimal strings (schema-invalid); now numbers. Account tools verified with the public zero address (empty lists); also: next_page now null (no page parameter); all read tools answered, schema-valid"
+ }
+}

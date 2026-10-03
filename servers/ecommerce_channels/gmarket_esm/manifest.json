@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "gmarket_esm-mcp",
+ "display_name": "Gmarket / Auction (ESM) MCP",
+ "version": "0.1.0",
+ "description": "Gmarket / Auction (ESM) (ecommerce channels): me, list_orders, mark_shipped, update_listing, set_inv",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gmarket_esm"
+   ],
+   "env": {
+    "PLATFORM_MCP_GMARKET_ESM_SECRET_KEY": "${user_config.platform_mcp_gmarket_esm_secret_key}",
+    "PLATFORM_MCP_GMARKET_ESM_MASTER_ID": "${user_config.platform_mcp_gmarket_esm_master_id}",
+    "PLATFORM_MCP_GMARKET_ESM_SITE_SELLER_IDS": "${user_config.platform_mcp_gmarket_esm_site_seller_ids}",
+    "PLATFORM_MCP_GMARKET_ESM_SITE_TYPE": "${user_config.platform_mcp_gmarket_esm_site_type}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_gmarket_esm_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMARKET_ESM_SECRET_KEY",
+   "description": "ESM Trading API Secret Key issued by Gmarket after the e-mail application (etapihelp@gmail.com); signs the HS256 JWT sent as 'Authorization: Bearer <JWT>' on every call. Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_gmarket_esm_master_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMARKET_ESM_MASTER_ID",
+   "description": "Your ESM+ master id; sent as the JWT header `kid` (selling-tool vendors put their own master id here). https://etapi.gmarket.com/pages/API-가이드",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_gmarket_esm_site_seller_ids": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMARKET_ESM_SITE_SELLER_IDS",
+   "description": "The JWT `ssi` claim: site id + seller id pairs, e.g. 'A:myauctionid,G:mygmarketid' (A = Auction, G = Gmarket; one of each at most).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_gmarket_esm_site_type": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMARKET_ESM_SITE_TYPE",
+   "description": "Site whose orders list_orders reads: 1 = Auction, 2 = Gmarket (RequestOrders siteType).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Carrier list (deliveryCompanies[{deliveryCompCode, deliveryCompName}]); verifies the JWT and API permission. The codes are what mark_shipped's `carrier` takes."
+  },
+  {
+   "name": "list_orders",
+   "description": "주문조회 API (RequestOrders) by payment date. Both `status` (paid = 결제완료/new, preparing = 배송준비중, shipping = 배송중, delivered = 배송완료, completed = 구매결정완료) and `since` (YYYY-MM-DD, at most 31 days before today on Gmarket, 180 on Auction) are required by the API; the window ends today. Claim orders (cancel/return/exchange) are not listed. Rate limit: one call per 5 seconds. OrderStatus in results: 1 new, 2 awaiting shipment, 3 shipping, 4 delivered, 5 purchase decided."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "발송처리 API: marks a confirmed order as shipped. `carrier` is the numeric DeliveryCompanyCode from `me` (e.g. 10013 CJ대한통운, 10007 한진, 10008 롯데); `tracking_number` is the waybill (InvoiceNo). ShippingDate is the call time (UTC, within the 2-day window). Re-calling updates the shipping info."
+  },
+  {
+   "name": "update_listing",
+   "description": "가격 수정 API: sets the same KRW price (10-won steps) on Gmarket (gmkt) and Auction (iac) for the master product `listing_id` (goodsNo). Only for products on sale. The item APIs report failures as resultCode 1000 with the reason in `status` (e.g. '[IAC] 상품이 없습니다.' when the product is listed on one site only)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "재고 수정 API: sets the stock (1 to 99,999) of master product `listing_id` on both Gmarket and Auction. Only single products (no options, not Fulfilment Star Delivery). Failures come back as resultCode 1000 with the reason in `status`."
+  },
+  {
+   "name": "end_listing",
+   "description": "상품 삭제 API: deletes master product `listing_id` on both sites; it must already be 판매중지 (sale stopped), otherwise resultCode 1000 '상품삭제는 요청된 모든 상품이 [판매중지] 상태일 경우에만 가능합니다.' is returned in `status`."
+  }
+ ]
+}

@@ -1,0 +1,218 @@
+{
+ "id": "blurb",
+ "category": "ecommerce_suppliers",
+ "label": "Blurb (RPI Print)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.blurb.com/print-api-software",
+ "url": "https://www.blurb.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "api_by_approval for Custom API; Self-Service API self-serve (\"free sandbox environment\")",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "HTTP Basic (API Key + Shared Secret from the Print API Dashboard › API Credentials)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (RPI Print API (Blurb Self-Service)) Confidence: **high** — official developer docume",
+  "base_urls": [
+   "https://open.api.rpiprint.com"
+  ],
+  "auth": [
+   "1. Create an RPI Print API account (free)",
+   "2. Dashboard › API Credentials → API Key + Shared Secret",
+   "3. Send HTTP Basic (key as username, secret as password)"
+  ],
+  "endpoints": [
+   {
+    "call": "POST /orders/create",
+    "purpose": "create a print order",
+    "notes": "currency, shippingClassification, webhookUrl, payload (≤512 chars), destination{…}, orderItems[{sku, quantity, retailPrice, itemDescription, product{coverUrl, gutsUrl}}]"
+   },
+   {
+    "call": "shipping methods / production pricing (pre-order)",
+    "purpose": "available shipping classifications + cost, taxes",
+    "notes": ""
+   },
+   {
+    "call": "GET order · cancel (Holding Bin)",
+    "purpose": "status, cancel while in Holding Bin",
+    "notes": ""
+   },
+   {
+    "call": "webhookUrl notifications",
+    "purpose": "order state changes incl. shipment",
+    "notes": "retried with back-off"
+   }
+  ],
+  "limits": " 50 orders created per 24 h (excess queued up to 350, then rejected); reprints exempt. - Self-service tier ships US only - Press-ready PDFs (preflighting documented) - Terms and conditions page on the docs site",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.blurb.com/print-api-software",
+   "https://docs.api.rpiprint.com/documentation/first-request",
+   "https://open.api.rpiprint.com/orders/create",
+   "https://docs.api.rpiprint.com/documentation/orders",
+   "https://docs.api.rpiprint.com/documentation/webhooks"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://open.api.rpiprint.com",
+  "auth": {
+   "type": "basic",
+   "field": "api_key",
+   "password_field": "shared_secret",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "RPI Print (Blurb Self-Service) API Key from the Print API Dashboard > API Credentials; the HTTP Basic username."
+    },
+    {
+     "name": "shared_secret",
+     "required": true,
+     "help": "RPI Print Shared Secret from the same dashboard page; the HTTP Basic password."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/orders",
+    "fixed_params": {
+     "limit": 10
+    },
+    "docs": "https://docs.api.rpiprint.com/api-reference",
+    "note": "RPI has no account endpoint; the probe lists the client's orders (GET /orders?limit=10, the documented minimum) -> {totalCount, offset, limit, nextOffset, orders[]}. The OpenAPI file behind the reference page is https://docs.api.rpiprint.com/OAS3/public-api-OAS3.yaml."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders/create",
+    "body": {
+     "currency": "=USD",
+     "destination": "shipping_address",
+     "orderItems": "items",
+     "shippingClassification": "shipping_option"
+    },
+    "result": {
+     "fields": {
+      "id": "customerOrderId",
+      "status": "statusDescription"
+     }
+    },
+    "docs": "https://docs.api.rpiprint.com/api-reference",
+    "note": "POST /orders/create queues a real print order (201 -> {customerOrderId, statusCode, statusDescription}); it is charged once validated (orders wait in the Holding Bin and can be cancelled with DELETE /orders/{customerOrderId}, not mapped). `currency` is always USD (the only documented value). `shipping_address` is RPI's destination {name, address1, address2, city, postal, country (ISO-2), regionCode or state, phone, email}; `items` are orderItems [{sku, quantity, retailPrice, itemDescription, product{coverUrl, gutsUrl}}] with press-ready PDFs; `shipping_option` is the required shippingClassification (standard, expedited, rush, express, priority, economy). Self-service tier: US destinations, 50 orders per 24 h."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{customerOrderId}",
+    "path_params": {
+     "customerOrderId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "order.customerOrderId",
+      "status": "order.status",
+      "total": "pricing.orderTotal",
+      "currency": "pricing.currency",
+      "tracking_number": "shipmentTracking.0.trackingNumber"
+     }
+    },
+    "docs": "https://docs.api.rpiprint.com/api-reference",
+    "note": "GET /orders/{customerOrderId}: {order{customerOrderId, status, shippingClassification, destination, orderItems}, pricing{orderTotal, itemsTotal, taxesTotal, shippingTotal, currency}, shipmentTracking[{trackingNumber, shipMethod, shipDate}], selectedShipping, validations[], paymentInfo{paymentStatus}}; status is QUEUED, RECEIVED, VALIDATING, VALID_HOLDING_BIN, PRINTING, SHIPPED, CANCELLED, ..."
+   }
+  },
+  "not_offered": {
+   "list_products": "No catalogue endpoint: products are SKUs documented on the Product specifications pages (https://docs.api.rpiprint.com/products-main), not served by the API.",
+   "get_product": "No product endpoint (see list_products); POST /pricing/production prices a SKU + page count + quantity but needs an orderItems array.",
+   "quote_shipping": "POST /orders/shipping/estimate takes the create-order body (destination{...} + orderItems[{sku, quantity, product}]); the vocabulary's product_id/country/quantity cannot be shaped into that body by the runtime's flat body form.",
+   "track": "No tracking-events endpoint; shipmentTracking[{trackingNumber, shipMethod, shipDate, estimatedArrival}] are part of GET /orders/{customerOrderId} (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host open.api.rpiprint.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://docs.api.rpiprint.com/OAS3/public-api-OAS3.yaml: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

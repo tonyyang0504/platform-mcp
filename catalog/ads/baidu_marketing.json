@@ -1,0 +1,354 @@
+{
+ "id": "baidu_marketing",
+ "category": "ads",
+ "label": "百度营销 Baidu Marketing",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://dev2.baidu.com/",
+ "url": "https://yingxiao.baidu.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Apply for 百度推广API permission in the Baidu Business Developer Center (dev2.baidu.com) with a 推广 account; REST + JSON over HTTPS; SDKs in Java / .NET / PHP referenced. Rate limits: not readable. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "token (百度推广 API: username + password + token from the developer center; OAuth 2.0 openapi.baidu.com for some products)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "conversions_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (百度推广API via the 百度商业开发者中心).",
+  "base_urls": [
+   "https://api.baidu.com/json/sms/service/…"
+  ],
+  "auth": [
+   "1. Have a 百度推广 (search promotion) account; register in the 百度商业开发者中心 (dev2.baidu.com) and apply for 百度推广API permission.",
+   "2. Obtain the API token (developer center) and call services with header `{username, password, token, target}` (TODO(verify) — classic 百度推广API auth) or OAuth 2.0 via openapi.baidu.com for OAuth-enabled products.",
+   "3. SDKs (Java / .NET / PHP) wrap the JSON services."
+  ],
+  "endpoints": [
+   {
+    "call": "AccountService/getAccountInfo",
+    "purpose": "account, budget, balance",
+    "notes": "accountId, budget, balance (TODO(verify))"
+   },
+   {
+    "call": "CampaignService/getCampaign` · `addCampaign` · `updateCampaign",
+    "purpose": "campaigns + daily budget + status",
+    "notes": "campaignName, budget, regionTarget, schedule, pause"
+   },
+   {
+    "call": "AdgroupService/addAdgroup` · `updateAdgroup",
+    "purpose": "ad groups + max price",
+    "notes": "adgroupName, maxPrice, negativeWords, pause"
+   },
+   {
+    "call": "KeywordService/addWord` · `updateWord",
+    "purpose": "keywords + bids + match type",
+    "notes": "keyword, price, matchType, pause"
+   },
+   {
+    "call": "CreativeService/addCreative` · `updateCreative",
+    "purpose": "creatives (text ads)",
+    "notes": "title, description1, description2, pcDestinationUrl, mobileDestinationUrl"
+   },
+   {
+    "call": "ReportService/getRealTimeData` · `getProfessionalReportId` → `getReportState` → `getReportFile",
+    "purpose": "reports",
+    "notes": "reportType, startDate, endDate, levelOfDetails, unitOfTime"
+   },
+   {
+    "call": "oCPC 转化数据回传 API (ocpx.baidu.com developer docs)",
+    "purpose": "conversions upload",
+    "notes": "token, conversionTypes[{logidUrl, newType, convertTime}]"
+   },
+   {
+    "call": "audiences upload",
+    "purpose": "not verified in a public doc this pass",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits: not readable this pass (TODO(verify)). Access by permission application at dev2.baidu.com; free API; Baidu marketing terms.",
+  "mcp_sdk": [
+   "Official SDKs referenced (Java / .NET / PHP); no MCP found."
+  ],
+  "sources": [
+   "https://pd.baidu.com/Knowledge/1780.html",
+   "https://dev2.baidu.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.baidu.com/json/sms/service",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://u.baidu.com/oauth/refreshToken",
+   "token_body": "json",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": "appId",
+    "client_secret": "secretKey",
+    "refresh_token": "refreshToken",
+    "grant_type": null
+   },
+   "token_body_extra": {
+    "userId": "int:{@user_id}"
+   },
+   "token_path": "data.accessToken",
+   "refresh_token_path": "data.refreshToken",
+   "expires_path": "data.expiresIn",
+   "header": "",
+   "token_body_path": "header.accessToken",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Your application's appId (商业开发者中心 → 应用管理 → 应用详情)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The application's secretKey (shown in the approved application's details)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refreshToken from exchanging the authorization code once at POST https://u.baidu.com/oauth/accessToken (valid 30 days; each refresh returns a new one, saved when PLATFORM_MCP_STATE_DIR is set)."
+    }
+   ]
+  },
+  "envelope": {
+   "fail_when": {
+    "header.desc": "failure"
+   }
+  },
+  "config_fields": [
+   {
+    "name": "user_id",
+    "required": true,
+    "help": "userId of the promotion account that authorized the app (returned by the OAuth callback / accessToken exchange)."
+   },
+   {
+    "name": "user_name",
+    "required": true,
+    "help": "推广账户名称 (userName) of the account to operate — sent as header.userName; with a super-admin (超管) authorization this may be any sub-account."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/AccountService/getAccountInfo",
+    "body": {
+     "header.userName": "@user_name",
+     "body.accountFields": "json:[\"userId\",\"balance\",\"budget\",\"budgetType\",\"userStat\",\"regDomain\"]"
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=100256&nodeId=63",
+    "note": "AccountService/getAccountInfo with header {userName, accessToken}: account id, balance, budget and status (userStat 2 = active)."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "https://api.baidu.com/json/feed/v1/MccFeedService/getUserListByMccid",
+    "body": {
+     "header.userName": "@user_name",
+     "body": "json:{}"
+    },
+    "result": {
+     "items": "body.data",
+     "key": "accounts",
+     "fields": {
+      "id": "userid",
+      "name": "username",
+      "manager_id": "mccid",
+      "manager_name": "fatname"
+     }
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=100182&nodeId=13",
+    "note": "MccFeedService/getUserListByMccid: the sub-accounts of an account manager (账户管家) authorization — 'this interface is only for account-manager permission'. A single-account authorization has only the user_name account (see me). The id is userid; pass the username as account_id."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/CampaignService/getCampaign",
+    "body": {
+     "header.userName": "account_id",
+     "body.campaignFields": "json:[\"campaignId\",\"campaignName\",\"budget\",\"pause\",\"status\",\"adType\",\"marketingTargetId\",\"campaignBidType\",\"createTime\"]"
+    },
+    "result": {
+     "items": "body.data",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "campaignName",
+      "status": "status",
+      "paused": "pause",
+      "budget": "budget",
+      "ad_type": "adType"
+     }
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=100260&nodeId=198",
+    "note": "CampaignService/getCampaign without campaignIds ('输入空返回整个账户的计划'): every search campaign of the account. `account_id` is the 推广账户名称 (userName) sent in the header. budget is the daily budget in CNY (null = unlimited); pause true = paused. `status` and paging are not applied."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/OpenApiReportService/getReportData",
+    "body": {
+     "header.userName": "account_id",
+     "body.reportType": "json:2290316",
+     "body.startDate": "date:date_from",
+     "body.endDate": "date:date_to",
+     "body.timeUnit": "=DAY",
+     "body.columns": "json:[\"date\",\"userName\",\"campaignId\",\"campaignName\",\"impression\",\"click\",\"cost\",\"ctr\",\"cpc\",\"conversion\"]",
+     "body.startRow": "json:0",
+     "body.rowCount": "json:10000",
+     "body.needSum": "json:false"
+    },
+    "result": {
+     "items": "body.data.rows",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "campaign_id": "campaignId",
+      "campaign": "campaignName",
+      "impressions": "impression",
+      "clicks": "click",
+      "spend": "cost",
+      "ctr": "ctr",
+      "cpc": "cpc",
+      "conversions": "conversion"
+     }
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=102474&nodeId=698",
+    "note": "OpenApiReportService/getReportData, 计划报告 (reportType 2290316) per DAY: impressions, clicks, cost (CNY), ctr, cpc and conversions per campaign; values are strings. `account_id` is the userName sent in the header. `campaign_id` is not applied — filter the rows by campaign_id (the report's campaignId column). Max range 731 days; up to 10,000 rows."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/CampaignService/updateCampaign",
+    "body": {
+     "header.userName": "@user_name",
+     "body.campaignTypes.0.campaignId": "int:campaign_id",
+     "body.campaignTypes.0.budget": "daily_budget"
+    },
+    "result": {
+     "root": "body.data.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "=updated",
+      "daily_budget": "budget"
+     }
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=100262&nodeId=200",
+    "note": "CampaignService/updateCampaign {campaignTypes: [{campaignId, budget}]}: the campaign's daily budget in CNY, range [50, min(10,000,000, account budget)]. `currency` is not applied (CNY). A refused update answers with no campaign record (the reason is in header.failures)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/CampaignService/updateCampaign",
+    "body": {
+     "header.userName": "@user_name",
+     "body.campaignTypes.0.campaignId": "int:campaign_id",
+     "body.campaignTypes.0.pause": "map:action:pause=json:true,resume=json:false"
+    },
+    "result": {
+     "root": "body.data.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "=updated",
+      "paused": "pause"
+     }
+    },
+    "docs": "https://dev2.baidu.com/content?sceneType=0&pageId=100262&nodeId=200",
+    "note": "CampaignService/updateCampaign {campaignTypes: [{campaignId, pause}]}: pause true = 暂停, false = 启用."
+   }
+  },
+  "terms": "百度营销 API (https://dev2.baidu.com/content?sceneType=0&pageId=100441&nodeId=421): developer permission and an approved application are required; the advertiser authorizes the app once through the OAuth page and the app refreshes its accessToken (24 h) with the refreshToken (30 days). Every call is a JSON POST {header: {userName, accessToken}, body: {…}}; header.status 0 = success, 1 = partial, 2 = failure (https://dev2.baidu.com/content?sceneType=0&pageId=100142&nodeId=255)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.baidu.com: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 405 (method_not_allowed), so the answers are path-specific",
+   "token u.baidu.com/oauth/refreshToken: 200 50004",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; names not found on the page: get_report:body, get_report:header, list_accounts:body, list_campaigns:body, list_campaigns:header, pause_resume:body, pause_resume:header, update_budget:body, update_budget:header"
+  ],
+  "notes": "Fixed: errors come back as HTTP 200 {header: {desc: failure, failures[]}}, which the tools reported as empty successes; envelope fail_when header.desc=failure added."
+ }
+}

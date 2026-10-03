@@ -1,0 +1,290 @@
+{
+ "id": "resend",
+ "category": "messaging",
+ "label": "Resend",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://resend.com/docs",
+ "url": "https://resend.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation is the product: HTTPS-only base https://api.resend.com, Authorization: Bearer re_… (team API key), a User-Agent header is mandatory (403 / error 1010 without it); rate limit 10 requests per second per team across all keys (raisable for approved senders); 429 on excess. Idempotency keys ensure single delivery. Broadcasts / audiences / topics carry Resend's own unsubscribe handling; domains must be verified (DKIM / SPF, optional DMARC / BIMI / custom return path). Receiving: MX records on a verified domain or an auto-managed <id>.resend.app subdomain.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks",
+   "mcp",
+   "cli",
+   "smtp"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "batch_send",
+   "schedule",
+   "read_inbox",
+   "media",
+   "templates",
+   "broadcasts",
+   "audiences_contacts",
+   "suppressions",
+   "domains",
+   "webhooks",
+   "analytics",
+   "unsubscribe_topics",
+   "logs"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Node.js, Python, PHP, Ruby, Go, Rust, Elixir, Java SDKs; Resend CLI; SMTP relay (https://resend.com/docs/llms.txt)"
+  ]
+ },
+ "official_mcp": [
+  "Resend MCP server (listed in the official docs index for the Receiving API — https://resend.com/docs/llms.txt)"
+ ],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "webhook `email.received` → GET https://api.resend.com/emails/receiving/{id}",
+   "docs": "https://resend.com/docs/api-reference/emails/retrieve-received-email"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.resend.com/emails (+ `Idempotency-Key` header)",
+   "docs": "https://resend.com/docs/api-reference/emails/send-email"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://resend.com/docs"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.resend.com"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /emails` `{from, to[≤50], subject, html",
+    "purpose": "text, cc, bcc, reply_to, headers, attachments, tags, scheduled_at}` + `Idempotency-Key`",
+    "notes": "send / reply (threading via `headers.In-Reply-To` / `References`)"
+   },
+   {
+    "call": "POST /emails/batch` (≤100)",
+    "purpose": "sequences / follow-ups in bulk",
+    "notes": ""
+   },
+   {
+    "call": "GET /emails/{id}` · `PATCH /emails/{id}` (reschedule) · `POST /emails/{id}/cancel",
+    "purpose": "status / cancel scheduled",
+    "notes": ""
+   },
+   {
+    "call": "Receiving API: received emails list / get, attachments (temporary download URLs)",
+    "purpose": "read inbox (after MX on a verified domain or `<id>.resend.app`)",
+    "notes": ""
+   },
+   {
+    "call": "POST /webhooks` …",
+    "purpose": "events: `email.sent/delivered/bounced/complained/opened/clicked`, `email.received` (Svix-signed)",
+    "notes": ""
+   },
+   {
+    "call": "POST /domains` · `POST /domains/{id}/verify` · `GET /domains/{id}",
+    "purpose": "tenant sender domain (SPF / DKIM / DMARC / return-path)",
+    "notes": ""
+   },
+   {
+    "call": "/audiences` · `/contacts` · `/segments` · `/topics` · `/broadcasts` (create / send / cancel)",
+    "purpose": "marketing sends with Resend-managed unsubscribe",
+    "notes": ""
+   },
+   {
+    "call": "/suppressions` (batch ≤100)",
+    "purpose": "bounce / complaint suppression mirror",
+    "notes": ""
+   },
+   {
+    "call": "/templates` (create / publish) · `/emails/{id}/metrics` · `/logs",
+    "purpose": "templates / analytics / debugging",
+    "notes": ""
+   }
+  ],
+  "limits": " - **10 requests per second per team** across all API keys (raisable for approved senders) → HTTP 429. - Batch ≤ 100 emails; `to` ≤ 50; attachments ≤ 40 MB encoded (client docstring, 2026-09-02 read). - Automation is the intended use; content policy + verified domains; receiving needs MX records.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://resend.com/docs/api-reference/introduction",
+   "https://resend.com/docs/llms.txt",
+   "https://resend.com/docs/dashboard/receiving/introduction"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.resend.com",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Resend team API key (re_…), sent as 'Authorization: Bearer re_xxxxxxxxx' (https://resend.com/docs/api-reference/introduction)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sender",
+    "required": true,
+    "help": "Verified-domain sender address used as `from` on every send ('Sender email address', 'Name <email@domain>' allowed; https://resend.com/docs/api-reference/emails/send-email). Env: PLATFORM_MCP_RESEND_SENDER."
+   }
+  ],
+  "rate_per_second": 10,
+  "rate_note": "'10 requests per second per team' across all API keys → HTTP 429 (https://resend.com/docs/api-reference/introduction). 'All API requests must include a User-Agent header' (403 without) — the runtime always sends one.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api-keys",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://resend.com/docs/api-reference/api-keys/list-api-keys",
+    "note": "Verified by listing one API key (Resend has no account endpoint); account carries the list envelope (object, has_more, data)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/emails",
+    "body": {
+     "from": "@sender",
+     "to": "to",
+     "subject": "subject",
+     "text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://resend.com/docs/api-reference/emails/send-email",
+    "note": "`from` comes from the per-install `sender` config field; `to` is one recipient address; `subject` is required by Resend (the API rejects a missing subject → isError); `text` is sent as the plain-text body; `channel` is ignored. message_id is the Resend email id."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/emails/receiving",
+    "params": {
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "from": "from",
+      "to": "to.0",
+      "sent_at": "created_at"
+     }
+    },
+    "docs": "https://resend.com/docs/api-reference/emails/list-received-emails",
+    "note": "Emails received by the team (needs MX on a verified domain). Resend pages by id cursor (`after` / `before`), so `page` is ignored and only the newest `limit` emails are returned; `since` and `channel` are not sent. The list carries no body: `text` is unset (subject is under raw.subject; the body is on GET /emails/receiving/{id}). `to` is the first recipient."
+   }
+  },
+  "not_offered": {
+   "reply": "Threading on POST /emails goes through a nested `headers` object (In-Reply-To / References), which the adapter's flat body map cannot express (https://resend.com/docs/api-reference/emails/send-email).",
+   "get_thread": "GET /emails/receiving/{id} returns one received email, not a conversation; no thread listing is documented (https://resend.com/docs/api-reference/emails/retrieve-received-email).",
+   "mark_read": "No read-state endpoint exists in the Resend API (https://resend.com/docs/api-reference/introduction)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.resend.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 400 too, so the host authenticates before routing",
+   "spec https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

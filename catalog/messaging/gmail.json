@@ -1,0 +1,306 @@
+{
+ "id": "gmail",
+ "category": "messaging",
+ "label": "Gmail",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/workspace/gmail/api/guides",
+ "url": "https://workspace.google.com/products/gmail/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed through OAuth 2.0 on the user's own mailbox. gmail.send is a SENSITIVE scope (OAuth app verification); gmail.readonly / gmail.modify / gmail.compose / mail.google.com are RESTRICTED scopes — restricted-scope verification plus a security assessment when restricted data is stored or transmitted on servers (a tenant's own Cloud project in testing / internal mode is exempt). Quota: 1,200,000 quota units/min per project, 6,000 units/min per user per project; messages.send = 100 units, messages.get = 20, messages.list = 5, history.list = 2, watch = 100; 500 recipients per message; 80,000,000 units/day billing threshold later in 2026. Push watch must be renewed at least every 7 days.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "push"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "drafts",
+   "labels",
+   "webhooks",
+   "media",
+   "history_sync",
+   "settings"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Google API client libraries — JavaScript, Java, Python, Apps Script, Go, Node.js quickstarts (developers.google.com/workspace/gmail/api/guides)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /gmail/v1/users/me/history?startHistoryId= · GET /gmail/v1/users/me/messages",
+   "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.history/list"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /gmail/v1/users/me/messages/send (raw RFC822, base64url)",
+   "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/send"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /gmail/v1/users/me/messages/{id}/modify {removeLabelIds:[UNREAD]}",
+   "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/modify"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full mailbox API).",
+  "base_urls": [
+   "https://gmail.googleapis.com/gmail/v1/users/{userId}"
+  ],
+  "auth": [
+   "1. Tenant's (or the platform's) Cloud project → OAuth 2.0 client (web) → consent screen.",
+   "2. Authorization-code flow with `access_type=offline` → refresh token stored by the suite (secrets stay in `messaging_db`).",
+   "3. Scopes by sensitivity (developers.google.com/workspace/gmail/api/auth/scopes):"
+  ],
+  "endpoints": [
+   {
+    "call": "POST …/messages/send",
+    "purpose": "send / reply",
+    "notes": "body `{raw: base64url(RFC 822), threadId?}`; set `In-Reply-To` / `References` in the MIME for threading; 100 quota units"
+   },
+   {
+    "call": "GET …/messages?q=&labelIds=&pageToken=` · `GET …/messages/{id}?format=",
+    "purpose": "inbox read",
+    "notes": "list 5 units, get 20 units; `format=metadata` for headers only"
+   },
+   {
+    "call": "GET …/threads/{id}` · `GET …/threads",
+    "purpose": "threads",
+    "notes": "conversation = Gmail thread"
+   },
+   {
+    "call": "GET …/history?startHistoryId=",
+    "purpose": "incremental sync",
+    "notes": "2 units; drives the ingest cursor"
+   },
+   {
+    "call": "POST …/watch` `{topicName, labelIds?}` · `POST …/stop",
+    "purpose": "push",
+    "notes": "Cloud Pub/Sub topic; grant `gmail-api-push@system.gserviceaccount.com` publish; renew **at least every 7 days**; notification = `{emailAddress, historyId}` → `history.list`"
+   },
+   {
+    "call": "POST …/drafts` · `POST …/drafts/send",
+    "purpose": "propose → approve flow",
+    "notes": "draft the proposal, send on approval"
+   },
+   {
+    "call": "POST …/messages/{id}/modify` `{addLabelIds, removeLabelIds}",
+    "purpose": "mark read / archive / label",
+    "notes": "`gmail.modify`"
+   },
+   {
+    "call": "GET …/messages/{id}/attachments/{attId}",
+    "purpose": "media",
+    "notes": "base64url data"
+   },
+   {
+    "call": "settings.*` (vacation, filters, forwarding, sendAs, delegates)",
+    "purpose": "settings",
+    "notes": "mostly `gmail.settings.basic` (restricted)"
+   }
+  ],
+  "limits": " - Quota (developers.google.com/workspace/gmail/api/reference/quota): **1,200,000 units/min per project**, **6,000 units/min per user per project**, 500 recipients per message; 80,000,000 units/day billing threshold later in 2026; new projects after 2026-05-01 get the new quotas. - Sending caps are account-level (Workspace daily limits), not API-level. No native templates, analytics or unsubscribe endpoints — the suite adds `List-Unsubscribe` / `List-Unsubscribe-Post` (RFC 8058) itself. - Automation of the user's own mailbox is allowed; the consent screen + verification tier is the only gate",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.google.com/workspace/gmail/api/guides",
+   "https://developers.google.com/workspace/gmail/api/auth/scopes",
+   "https://developers.google.com/workspace/gmail/api/reference/quota",
+   "https://developers.google.com/workspace/gmail/api/guides/push"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://gmail.googleapis.com/gmail/v1",
+  "rate_per_second": 5,
+  "rate_note": "Per-user quota 15,000 units per minute; messages.list 5 units, threads.get 10, messages.modify 5 (https://developers.google.com/workspace/gmail/api/reference/quota).",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/gmail.modify (or gmail.readonly for reading only). 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me/profile",
+    "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users/getProfile",
+    "note": "users.getProfile: account carries emailAddress, messagesTotal, threadsTotal, historyId."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/users/me/messages",
+    "params": {
+     "maxResults": "limit"
+    },
+    "fixed_params": {
+     "labelIds": "INBOX"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "total": "resultSizeEstimate",
+     "fields": {
+      "id": "id",
+      "thread_id": "threadId"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/list",
+    "note": "users.messages.list with labelIds=INBOX: 'each message resource contains only an id and a threadId' — read the text with get_thread. Gmail pages by pageToken, so `page` is ignored (first `limit` messages only); `since` is not sent; total is Gmail's resultSizeEstimate."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/users/me/threads/{thread_id}",
+    "fixed_params": {
+     "format": "metadata"
+    },
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "threadId",
+      "text": "snippet",
+      "sent_at": "internalDate"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.threads/get",
+    "note": "users.threads.get?format=metadata: every message of the thread with `snippet` ('a short part of the message text') as text and internalDate (epoch milliseconds) as sent_at; From/To/Subject are in raw.payload.headers. `page`/`limit` are ignored (the whole thread is returned)."
+   },
+   "mark_read": {
+    "method": "POST",
+    "path": "/users/me/messages/{message_id}/modify",
+    "body": {
+     "removeLabelIds.0": "=UNREAD"
+    },
+    "result": {
+     "fields": {
+      "status": "=read"
+     }
+    },
+    "docs": "https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/modify",
+    "note": "users.messages.modify with removeLabelIds [\"UNREAD\"]; `message_id` is required, `thread_id` and `channel` are not used."
+   }
+  },
+  "not_offered": {
+   "send": "users.messages.send takes a Message whose `raw` is 'The entire email message in an RFC 2822 formatted and base64url encoded string' — 'Gmail messages are sent as base64URL encoded strings within the raw field' (https://developers.google.com/workspace/gmail/api/guides/sending); the docs offer no JSON alternative and the adapter contract has no MIME/base64url encoding expression.",
+   "reply": "Replies are also users.messages.send with a base64url RFC 2822 `raw` body plus threadId and matching References/In-Reply-To headers (https://developers.google.com/workspace/gmail/api/guides/sending); not expressible without a MIME encoding expression."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host gmail.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://gmail.googleapis.com/$discovery/rest?version=v1: 4/4 tools match (path, method, parameters, body keys, response paths)",
+   "scopes gmail.modify: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

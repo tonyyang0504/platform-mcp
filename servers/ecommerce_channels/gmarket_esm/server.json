@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/gmarket_esm-mcp",
+ "description": "Gmarket / Auction (ESM) (ecommerce channels): me, list_orders, mark_shipped, update_listing, set_inv",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://etapi.gmarket.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "gmarket_esm"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GMARKET_ESM_SECRET_KEY",
+     "description": "ESM Trading API Secret Key issued by Gmarket after the e-mail application (etapihelp@gmail.com); signs the HS256 JWT sent as 'Authorization: Bearer <JWT>' on every call. Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GMARKET_ESM_MASTER_ID",
+     "description": "Your ESM+ master id; sent as the JWT header `kid` (selling-tool vendors put their own master id here). https://etapi.gmarket.com/pages/API-가이드",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GMARKET_ESM_SITE_SELLER_IDS",
+     "description": "The JWT `ssi` claim: site id + seller id pairs, e.g. 'A:myauctionid,G:mygmarketid' (A = Auction, G = Gmarket; one of each at most).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GMARKET_ESM_SITE_TYPE",
+     "description": "Site whose orders list_orders reads: 1 = Auction, 2 = Gmarket (RequestOrders siteType).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

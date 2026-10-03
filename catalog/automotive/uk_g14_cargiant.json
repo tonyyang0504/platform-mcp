@@ -1,0 +1,35 @@
+{
+ "id": "uk_g14_cargiant",
+ "category": "automotive",
+ "label": "Cargiant",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.cargiant.co.uk",
+ "domain": "cargiant.co.uk",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer site; homepage/footer scan and dev-path probes found no developer, API or partner-feed pages.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cargiant.co.uk/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

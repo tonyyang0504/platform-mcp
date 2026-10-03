@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/falabella-mcp",
+ "description": "Falabella Marketplace (ecommerce channels): me, list_orders, update_listing, set_inventory, end_list",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.falabella.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "falabella"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FALABELLA_API_KEY",
+     "description": "Seller Center API key (Mi Cuenta > Integraciones / API in Falabella Seller Center). Signs every request (HMAC-SHA256 hex over the name-sorted, RFC 3986-encoded query, sent as the Signature parameter); never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FALABELLA_USER_ID",
+     "description": "Seller Center UserID: the e-mail login the API key belongs to (sent as UserID).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_FALABELLA_OPERATOR_CODE",
+     "description": "Business unit to write to: facl (Chile), fape (Peru) or faco (Colombia).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_FALABELLA_WAREHOUSE_ID",
+     "description": "SellerWarehouseId for set_inventory when the seller has several warehouses (GetWarehouse); leave empty with a single warehouse.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

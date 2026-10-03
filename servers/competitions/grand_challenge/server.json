@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/grand_challenge-mcp",
+ "description": "Grand Challenge (competitions): me, discover, get_competition, standings. Every tool maps to a docum",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://grand-challenge.org/api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "grand_challenge"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GRAND_CHALLENGE_API_TOKEN",
+     "description": "Personal API token from https://grand-challenge.org/settings/api-tokens/ (sent as Authorization: Bearer).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

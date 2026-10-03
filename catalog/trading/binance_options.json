@@ -1,0 +1,20 @@
+{
+ "id": "binance_options",
+ "category": "trading",
+ "label": "Binance Options",
+ "lane": "api",
+ "kind": "options",
+ "docs_url": "https://www.binance.com/en/my/settings/api-management",
+ "url": null,
+ "verified_at": null,
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": false,
+ "base_urls": {
+  "rest": "https://eapi.binance.com",
+  "ccxt_exchange_id": "binance (defaultType=option)"
+ },
+ "notes": "apiRestrictions: withdrawals OFF and options trading ON (enableEuropeanOptions)."
+}

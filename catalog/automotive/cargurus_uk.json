@@ -1,0 +1,45 @@
+{
+ "id": "cargurus_uk",
+ "category": "automotive",
+ "label": "Cargurus",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.cargurus.co.uk",
+ "domain": "cargurus.co.uk",
+ "country": "UK",
+ "official_api": false,
+ "docs_url": "https://www.cargurus.com/Cars/developers/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "API key issued to dealers/partners",
+  "access": "partner_only",
+  "capabilities": [
+   "list_dealers"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). CarGurus developer docs cover dealer-facing APIs (Dealer Stats, Dealer Reviews, SMS, Car Selector) for dealers/partners; inventory arrives via dealer feeds; no public listings search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cargurus.com/Cars/developers/"
+  ],
+  "unofficial": [
+   "Carapis CarGurus UK parser",
+   "traderway.co.uk feed guide"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): CarGurus developer docs cover dealer-facing APIs (Dealer Stats, Dealer Reviews, SMS, Car Selector) for dealers/partners; inventory arrives via dealer feeds; no public listings search API."
+}

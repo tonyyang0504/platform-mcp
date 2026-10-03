@@ -1,0 +1,37 @@
+{
+ "id": "kaidee_th",
+ "category": "automotive",
+ "label": "Rod",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://rod.kaidee.com",
+ "domain": "rod.kaidee.com",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kaidee Auto has private bank integrations (Krungsri installment calc) but no public/partner listings API docs; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://rod.kaidee.com/en"
+  ],
+  "unofficial": [
+   "https://apify.com/alexist/kaidee-automotive-search-scraper"
+  ]
+ },
+ "official_mcp": []
+}

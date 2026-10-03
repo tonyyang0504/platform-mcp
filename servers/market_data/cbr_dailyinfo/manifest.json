@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "cbr_dailyinfo-mcp",
+ "display_name": "Банк России - DailyInfo (веб-сервис) MCP",
+ "version": "0.1.0",
+ "description": "Банк России - DailyInfo (веб-сервис) (market data): search_symbols, get_series. Every tool maps to a",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "cbr_dailyinfo"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_symbols",
+   "description": "Currencies quoted daily (EnumValutes, Seld=false): symbol is the CBR code (R01235 = USD), name the English name, type the ISO letter code; the Russian name is raw.Vname. query matches any of them."
+  },
+  {
+   "name": "get_series",
+   "description": "Official RUB rate per ONE unit of the currency (VunitRate; raw.Vcurs is per Vnom units) for every fixing day from start to end. series_id is the CBR code from search_symbols (R01235 USD, R01239 EUR, R01375 CNY). start and end (YYYY-MM-DD) are both REQUIRED by the service."
+  }
+ ]
+}

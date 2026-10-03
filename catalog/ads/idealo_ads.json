@@ -1,0 +1,136 @@
+{
+ "id": "idealo_ads",
+ "category": "ads",
+ "label": "idealo Business (price comparison listings)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "eu",
+  "de",
+  "at",
+  "fr",
+  "it",
+  "es",
+  "gb"
+ ],
+ "docs_url": "https://idealo.github.io/partner-web-service/docs/v2/",
+ "url": "https://partner.idealo.com/partner-idealo-com/de/preise",
+ "verified_at": "2026-09-04",
+ "terms_note": "idealo Business merchant account (CPC model, 20 EUR/month minimum on idealo.de); PWS 2.0 credentials from the Business portal; no test environment (request a test shop from tam@idealo); rate + size limits documented. Free API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "oauth2 client credentials (PWS 2.0 access token from idealo Business credentials)",
+  "access": "signup",
+  "capabilities": [
+   "catalog_products",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (offers API PWS 2.0 + click-report API; no bidding / ads API) Confidence: **high**.",
+  "base_urls": [
+   "https://import.idealo.com/…"
+  ],
+  "auth": [
+   "1. idealo Business account → API credentials (client id / secret) in the Business portal.",
+   "2. `POST …/oauth/token` client credentials → access token (+ refresh).",
+   "3. Offer resource: `GET / PUT / PATCH / DELETE /api/v2/shops/{shopId}/offers/{id}` (+ DELETE all)."
+  ],
+  "endpoints": [
+   {
+    "call": "PUT /offers/{id}` · `PATCH` · `GET` · `DELETE",
+    "purpose": "offers (price, stock, URLs)",
+    "notes": "sku, title, price, url, delivery, eans"
+   },
+   {
+    "call": "idealo Business API — Klickreport",
+    "purpose": "click reports",
+    "notes": "date, clicks, cost"
+   },
+   {
+    "call": "bids · campaigns · ads · audiences",
+    "purpose": "not in API (idealo ads are managed placements)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limit + size limit pages in PWS docs; no test environment (ask TAM for a test shop); minimum 20 EUR/month on idealo.de; CPC billing.",
+  "mcp_sdk": [
+   "Official docs on GitHub Pages (idealo/partner-web-service)."
+  ],
+  "sources": [
+   "https://idealo.github.io/partner-web-service/docs/v2/",
+   "https://partner.idealo.com/partner-idealo-com/de/idealo-academy/faqs/faq-technische-anbindung",
+   "https://partner.idealo.com/partner-idealo-com/de/preise"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: idealo's public Partner Web Service 2.0 (https://idealo.github.io/partner-web-service/docs/v2/) is 'a stateless web interface, where you are able to maintain your idealo inventory' with only the Offer resource (GET/PUT/PATCH/DELETE /shop/{shopId}/offer/{sku}, DELETE All). No campaign, budget, bid or click-report endpoint exists to map to the ads vocabulary."
+}

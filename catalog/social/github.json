@@ -1,0 +1,302 @@
+{
+ "id": "github",
+ "category": "social",
+ "label": "GitHub",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions",
+ "url": "https://github.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Acceptable Use Policies forbid spam and bulk unsolicited activity. The binding cap is the secondary limit: 80 content-generating requests per minute and 500 per hour (5,000 requests/hour primary).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "cli",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "open",
+  "capabilities": [
+   "post(discussions, releases, README/commits)",
+   "reply(discussion comments)",
+   "read_comments",
+   "search",
+   "webhooks",
+   "delete",
+   "edit"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "gh CLI (official)",
+   "octokit (official JS/Ruby), PyGithub (community)"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/github/github-mcp-server (official GitHub MCP server)"
+ ],
+ "auth_fields": null,
+ "rate_limits": 60000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.github.com",
+   "https://api.github.com/graphql"
+  ],
+  "auth": [
+   "1. Fine-grained personal access token (repo-scoped: Contents, Discussions, Issues write) or a GitHub App installation",
+   "2. `gh` CLI (`gh auth login`) covers the same surface for scripts; the official MCP server exposes it to agents."
+  ],
+  "endpoints": [
+   {
+    "call": "API",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "GraphQL `createDiscussion(input:{repositoryId, categoryId, title, body})",
+    "purpose": "categoryId from `repository.discussionCategories`",
+    "notes": ""
+   },
+   {
+    "call": "addDiscussionComment(input:{discussionId, body, replyToId})",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "updateDiscussion`, `deleteDiscussion`, `markDiscussionCommentAsAnswer",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "REST `POST /repos/{owner}/{repo}/releases` {tag_name, name, body, draft, prerelease} + upload assets",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "PUT /repos/{owner}/{repo}/contents/{path}` (base64 content, sha for updates)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /repos/{o}/{r}/issues`, `POST …/issues/{n}/comments",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /repos/{o}/{r}/discussions` (GraphQL `repository.discussions`), `GET /search/repositories?q=",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "webhooks `discussion`, `discussion_comment`, `release`, `star",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Primary: 5,000 requests/hour per user token (15,000 Enterprise Cloud; installations ≥ 5,000 scaling to 12,500), 60/hour unauthenticated; GraphQL 5,000 points/hour. - Secondary: ≤ 100 concurrent requests, 900 REST points/minute, **≤ 80 content-generating requests per minute and 500 per hour** (the binding cap for a posting agent); headers `x-ratelimit-*`, 403/429 with `retry-after`. - GitHub Acceptable Use Policies: no spam, no bulk unsolicited activity; content is public and indexed (links in READMEs are nofollow; Discussions / Releases still drive exposure).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api",
+   "https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.github.com",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "GitHub personal access token (fine-grained: repository permission Discussions read / write on the repositories used; classic: repo or public_repo scope) sent as 'Authorization: bearer TOKEN' (https://docs.github.com/en/graphql/guides/forming-calls-with-graphql)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "data",
+   "error_field": "errors"
+  },
+  "envelope_note": "GraphQL answers HTTP 200 with {data: null, errors: [...]} when a query fails as a whole (bad node id type, missing permission); such a body is an error result carrying the errors array as its message. REST GET /user has no data member and is unaffected.",
+  "rate_per_second": 2,
+  "terms": "GraphQL: 5,000 points per hour per user; mutations cost at least 5 points and secondary rate limits apply to content creation (https://docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user",
+    "docs": "https://docs.github.com/en/rest/users/users#get-the-authenticated-user",
+    "note": "GET /user returns the token's user {login, id, node_id, name, html_url, ...}."
+   },
+   "read_comments": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query($id: ID!, $first: Int!) { node(id: $id) { ... on Discussion { comments(first: $first) { totalCount nodes { id body createdAt url author { login } } } } } }",
+     "variables.id": "post_id",
+     "variables.first": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data.node.comments.nodes",
+     "key": "comments",
+     "total": "data.node.comments.totalCount",
+     "fields": {
+      "id": "id",
+      "author": "author.login",
+      "text": "body",
+      "created_at": "createdAt",
+      "url": "url"
+     }
+    },
+    "docs": "https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#discussion",
+    "note": "Top-level comments of a discussion: `post_id` is the discussion's GraphQL node id (e.g. D_kwDO...; the `id` field of a Discussion, not its number). Discussion.comments is cursor-paginated (first / after): only the first `limit` (max 100) comments are returned and `page` is not honoured; replies to comments are not included. A node id that is not a Discussion yields an empty list."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation($id: ID!) { deleteDiscussion(input: {id: $id}) { discussion { id } } }",
+     "variables.id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#deletediscussion",
+    "note": "DESTRUCTIVE: the deleteDiscussion mutation permanently deletes the discussion with node id `post_id` and all its comments (needs maintain / admin on the repository or authorship). Failures come back as a GraphQL errors array."
+   },
+   "analytics_post": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query($id: ID!) { node(id: $id) { ... on Discussion { id url title comments { totalCount } reactions { totalCount } } } }",
+     "variables.id": "post_id"
+    },
+    "result": {
+     "root": "data.node",
+     "fields": {
+      "post_id": "id",
+      "comments": "comments.totalCount",
+      "reactions": "reactions.totalCount",
+      "url": "url"
+     }
+    },
+    "docs": "https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#discussion",
+    "note": "Counts for one discussion (node id): comments.totalCount and reactions.totalCount as top-level fields; there are no view counts in the API."
+   }
+  },
+  "not_offered": {
+   "publish_text": "createDiscussion requires a title as well as a body, plus repositoryId and categoryId ('title: String! The title of the new discussion', https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#creatediscussion); the vocabulary input carries only text, and splitting a title out of it would be a guess.",
+   "publish_image": "Discussions take Markdown bodies only; there is no image upload in the GraphQL API (https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#creatediscussion).",
+   "reply_comment": "addDiscussionComment requires the discussion's node id (discussionId: ID!) besides replyToId (https://docs.github.com/en/graphql/guides/using-the-graphql-api-for-discussions#adddiscussioncomment); a comment id alone cannot address it.",
+   "read_mentions": "The GraphQL Discussions API has no mentions feed; mentions surface as notifications (REST GET /notifications) that mix every reason and cannot be filtered to mentions server-side (https://docs.github.com/en/rest/activity/notifications)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.github.com: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json, https://docs.github.com/public/fpt/schema.docs.graphql: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

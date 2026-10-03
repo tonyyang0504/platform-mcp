@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "jooble-mcp",
+ "display_name": "Jooble MCP",
+ "version": "0.1.0",
+ "description": "Jooble (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jooble"
+   ],
+   "env": {
+    "PLATFORM_MCP_JOOBLE_API_KEY": "${user_config.platform_mcp_jooble_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_jooble_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JOOBLE_API_KEY",
+   "description": "Jooble REST API key issued after the request form on https://jooble.org/api/about; it is the last path segment of every call (POST https://jooble.org/api/{api_Key}). Each Jooble country domain has its own key; the free plan is limited to 500 requests per key in total.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "POST https://jooble.org/api/{api_Key} with a JSON body: keywords, location (both documented as required by Jooble, so pass a location), page (from 1) and ResultOnPage (items per page; no documented maximum, capped here at 100). Optional documented body fields radius (0|4|8|16|26|40|80 km), salary, SearchMode and companysearch are not sent. Response: totalCount plus jobs[] {id, title, location, snippet, salary (a formatted string such as '{min} - {max} {currency}', kept in raw), source, type, link, company, updated}. Aggregator: link opens the source board. Free plan: 500 requests per key, lifetime."
+  }
+ ]
+}

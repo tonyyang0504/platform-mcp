@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "etenders_etenders_gov_za-mcp",
+ "display_name": "eTenders Portal MCP",
+ "version": "0.1.0",
+ "description": "eTenders Portal (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "etenders_etenders_gov_za"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /api/OCDSReleases (PageNumber, PageSize, dateFrom, dateTo — 'dateFrom and dateTo fields are required'). The window is fixed to releases dated from the 1st of the current month (UTC) until now; the API has NO keyword, category or value filter, so query, category and min_budget are not sent — page through and filter on title/description/raw.tender.category/raw.tender.province yourself. OCDS releases: title = tender.title (often the bid number, e.g. NB124/2026), description = tender.description (the subject), buyer = buyer.name, budget_max = tender.value.amount (frequently 0 = not disclosed) in tender.value.currency, posted_at/deadline = tender.tenderPeriod start/end; raw.tender.status tells active from awarded/cancelled, raw.tender.documents link the bid documents and raw.tender.contactPerson the contact."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /api/OCDSReleases/release/{ocid} ('Get OCDS releases by ocid'), id = the ocid from search (e.g. ocds-9t57fa-171582)."
+  }
+ ]
+}

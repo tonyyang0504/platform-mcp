@@ -1,0 +1,17 @@
+{
+ "id": "hkeq",
+ "category": "trading",
+ "label": "Hong Kong Equities",
+ "lane": "planned",
+ "kind": "equity",
+ "docs_url": null,
+ "url": null,
+ "verified_at": null,
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": false,
+ "base_urls": {},
+ "notes": "No broker adapter yet (Futu OpenD / IBKR are not installed). Accounts cannot be verified or armed on this venue."
+}

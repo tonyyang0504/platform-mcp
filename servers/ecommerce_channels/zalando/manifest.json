@@ -1,0 +1,93 @@
+{
+ "manifest_version": "0.2",
+ "name": "zalando-mcp",
+ "display_name": "Zalando Partner Program MCP",
+ "version": "0.1.0",
+ "description": "Zalando Partner Program (ecommerce channels): me, update_listing, set_inventory, end_listing, list_o",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "zalando"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZALANDO_CLIENT_ID": "${user_config.platform_mcp_zalando_client_id}",
+    "PLATFORM_MCP_ZALANDO_CLIENT_SECRET": "${user_config.platform_mcp_zalando_client_secret}",
+    "PLATFORM_MCP_ZALANDO_MERCHANT_ID": "${user_config.platform_mcp_zalando_merchant_id}",
+    "PLATFORM_MCP_ZALANDO_SALES_CHANNEL_ID": "${user_config.platform_mcp_zalando_sales_channel_id}",
+    "PLATFORM_MCP_ZALANDO_CURRENCY": "${user_config.platform_mcp_zalando_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zalando_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALANDO_CLIENT_ID",
+   "description": "Client ID of an app registered in the zDirect (Zalando Partner) portal > Applications, with the stocks, prices, orders and offer-blocker scopes granted.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalando_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALANDO_CLIENT_SECRET",
+   "description": "Client secret of the same app; sent with the client ID as HTTP Basic on POST https://api.merchants.zalando.com/auth/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalando_merchant_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALANDO_MERCHANT_ID",
+   "description": "Your zDirect merchant id (uuid; GET /auth/me lists the merchant ids the token can access).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_zalando_sales_channel_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALANDO_SALES_CHANNEL_ID",
+   "description": "Sales channel id (uuid) the offers belong to (Sales Channels API); each Zalando country shop is a channel.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_zalando_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALANDO_CURRENCY",
+   "description": "ISO currency of the sales channel, e.g. EUR; required for update_listing.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /auth/me: the token owner's scopes and the merchant ids it can access."
+  },
+  {
+   "name": "update_listing",
+   "description": "Prices API POST /merchants/{merchant-id}/prices {product_prices: [{ean, sales_channel_id, regular_price: {amount, currency}}]} sets the LIVE regular price of the offer (listing_id = the article EAN) in the configured sales channel. Only the price is applied (`price` required). Answers 207 with a per-item status."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Stocks API POST /merchants/{merchant-id}/stocks {items: [{sales_channel_id, ean, quantity}]}: `sku` must be the article EAN (GTIN-13). Answers 207 with a per-item result."
+  },
+  {
+   "name": "end_listing",
+   "description": "Article Availability (Offer Blocking) API: creates a pause blocker for the EAN in the configured sales channel with reason PAUSE_06 ('Other reasons'), taking the offer offline; delete the blocker (DELETE /offer-blockers) to reactivate. Needs the products/blockers/write scope."
+  },
+  {
+   "name": "list_orders",
+   "description": "Orders API GET /merchants/{merchant-id}/orders?order_status(initial|approved|fulfilled)&created_after(ISO-8601)&page[number]&page[size] for the configured sales channel (JSON:API). `id` is the order id (uuid) used by mark_shipped; raw.attributes.order_number is the customer-facing number."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "PATCH /merchants/{merchant-id}/orders/{order-id} {data: {type: Order, id, attributes: {tracking_number}}} records the tracking number. Marking lines shipped is a separate per-order-line PATCH ({type: OrderLine, attributes: {status: shipped}}) that this tool does not make; `carrier` is not a field of the order."
+  }
+ ]
+}

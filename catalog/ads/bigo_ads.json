@@ -1,0 +1,129 @@
+{
+ "id": "bigo_ads",
+ "category": "ads",
+ "label": "BIGO Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "sea",
+  "sg"
+ ],
+ "docs_url": "https://bigoads.com/help/detail?id=111&moduleId=11&articleId=2&currentLan=EN&isPreview=0",
+ "url": "https://www.bigoads.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Help center read; Marketing API access is by account-manager application only",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (developerId + token issued by BIGO; marketing API permission via the account manager)",
+  "access": "apply",
+  "capabilities": [
+   "conversions_upload",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Web Events / S2S conversion API for advertisers; publisher Reporting API; campaign API by manager approval) Confidence: **medium**.",
+  "base_urls": [
+   "https://www.bigossp.com/open/report/media/v1.0"
+  ],
+  "auth": [
+   "1. BIGO Ads advertiser account (bigoads.com → Get Started).",
+   "2. Pixel / Web Events API credentials from the ad account (Tracking Integration → Web S2S).",
+   "3. For campaign management via API, apply for the marketing API permission through the Bigo Ads manager."
+  ],
+  "endpoints": [
+   {
+    "call": "Web Events API `POST` (server-to-server events)",
+    "purpose": "conversions upload",
+    "notes": "pixel id, event name, event time, user data hashed, value"
+   },
+   {
+    "call": "Reporting API v1.0 (publishers) `POST …/open/report/media/v1.0",
+    "purpose": "publisher revenue reports",
+    "notes": "developerId, token, date range"
+   },
+   {
+    "call": "campaigns / ad groups / ads / budgets",
+    "purpose": "marketing API by application (undocumented publicly)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free; BIGO Ads terms; marketing API by approval.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://bigoads.com/help/detail?id=111&moduleId=11&articleId=2&currentLan=EN&isPreview=0",
+   "https://www.bigoads.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the only advertiser API page on the BIGO Ads help centre (https://bigoads.com/help/detail?id=111&moduleId=11&articleId=2&currentLan=EN&isPreview=0) is still the Web Events API ('designed to provide a reliable link between Bigo and advertisers' marketing data': POST https://api.bytegle.site/bigoad/trackingevent with bbg + pixel_id), which maps to no ads verb; https://www.bigoads.com/ links developers only to the publisher SSP (https://www.bigossp.com/register). The campaign/reporting Marketing API is granted through the account manager and has no public reference, so no adapter."
+}

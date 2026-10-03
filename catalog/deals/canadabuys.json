@@ -1,0 +1,121 @@
+{
+ "id": "canadabuys",
+ "category": "deals",
+ "label": "CanadaBuys",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "ca"
+ ],
+ "docs_url": "https://canadabuys.canada.ca/en/how-procurement-works/resources-for-suppliers",
+ "url": "https://canadabuys.canada.ca/en/tender-opportunities",
+ "verified_at": "2026-09-25",
+ "terms_note": "Open Government Licence – Canada; bids are submitted via CanadaBuys / SAP Ariba account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "export"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (open-data CSV of tender notices). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "CSV download (daily)",
+    "purpose": "search",
+    "notes": "tender notice rows"
+   }
+  ],
+  "limits": " - Open Government Licence; bids in CanadaBuys/SAP Ariba. - Open Government Licence – Canada; bids are submitted via CanadaBuys / SAP Ariba account.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://canadabuys.canada.ca/en/tender-opportunities",
+   "https://open.canada.ca/data/en/dataset/2020-openness-tender-notices"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "Remaining gap: CSV response parsing with client-side row filtering. The only machine-readable access is CSV file downloads (open.canada.ca dataset 6abd20d4-7a1c-4b38-baa2-9525d0bb2fd2): https://canadabuys.canada.ca/opendata/pub/openTenderNotice-ouvertAvisAppelOffres.csv ('Open tender notices', refreshed each morning) and newTenderNotice-…csv (every two hours); there is no query API. The runtime parses JSON and XML responses (and, since 2026-09-25, sends multipart and signed requests) but still cannot parse a CSV body or filter/page its rows. Bids go through CanadaBuys / SAP Ariba."
+}

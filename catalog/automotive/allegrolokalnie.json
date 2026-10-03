@@ -1,0 +1,38 @@
+{
+ "id": "allegrolokalnie",
+ "category": "automotive",
+ "label": "Allegrolokalnie",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://allegrolokalnie.pl",
+ "domain": "allegrolokalnie.pl",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). Allegro REST API covers allegro.pl only; Allegro states no API for Allegro Lokalnie.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.allegro.pl/",
+   "https://github.com/allegro/allegro-api/issues/2267"
+  ],
+  "unofficial": [
+   "github.com/Krasiu/allegro-lokalnie-api"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,159 @@
+{
+ "id": "hn_who_is_hiring",
+ "category": "jobs",
+ "label": "Hacker News: Who is hiring?",
+ "lane": "human",
+ "kind": "tech",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://github.com/HackerNews/API",
+ "url": "https://news.ycombinator.com/submitted?id=whoishiring",
+ "verified_at": "2026-09-24",
+ "terms_note": "Monthly comment threads; applications are e-mails to the poster. The Radar reads the public Firebase API; a person sends the mail.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://firebase.google.com/docs (Firebase client libraries recommended by the HN API README for Android / iOS / web / servers)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (official read-only Firebase API; apply is e-mail).",
+  "base_urls": [
+   "https://hacker-news.firebaseio.com/v0/",
+   "https://hn.algolia.com/api/v1/search"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET /v0/user/whoishiring.json",
+    "purpose": "find the monthly threads",
+    "notes": "`id`, `created`, `karma`, `about`, `submitted[]` (item ids, newest first; pairs of \"Who is hiring?\" + \"Who wants to be hired?\")"
+   },
+   {
+    "call": "GET /v0/item/<id>.json",
+    "purpose": "thread → job comments",
+    "notes": "`id`, `deleted`, `type` (job / story / comment / poll / pollopt), `by`, `time` (Unix), `text` (HTML), `dead`, `parent`, `kids[]`, `url`, `score`, `title` (HTML), `descendants`"
+   },
+   {
+    "call": "GET /v0/jobstories.json",
+    "purpose": "up to 200 latest YC \"job\" items",
+    "notes": "array of item ids"
+   },
+   {
+    "call": "GET /v0/maxitem.json",
+    "purpose": "newest item id (walk backward)",
+    "notes": "integer"
+   },
+   {
+    "call": "GET hn.algolia.com/api/v1/search?query=&tags=comment,story_<thread_id>&hitsPerPage=",
+    "purpose": "full-text search inside one thread",
+    "notes": "`hits[]` with `objectID`, `author`, `created_at`, `comment_text` / `story_text`, `parent_id`, `story_id`; `nbHits`, `page`, `nbPages`"
+   }
+  ],
+  "limits": " \"There is currently no rate limit.\" (Firebase API README). Algolia's HN endpoint publishes none on the page read. - ycombinator.com/legal: users \"will not engage in or use any data mining, robots, scraping or similar data gathering or extraction methods\" on the Site \"except as expressly authorized by Y Combinator\" — the public Firebase API is the authorized channel; use it, never scrape news.ycombinator.com HTML. - HN guidelines: \"Don't solicit upvotes, comments, or submissions\" — the suite must not post on HN on the user's behalf. Applying is an e-mail to the address in the comment → human",
+  "mcp_sdk": [
+   "Firebase client libraries (Android / iOS / web / server) — recommended by the README; not required.",
+   "No official MCP server; community HN MCP servers exist but were not verified."
+  ],
+  "sources": [
+   "https://github.com/HackerNews/API",
+   "https://hacker-news.firebaseio.com/v0/user/whoishiring.json",
+   "https://hn.algolia.com/api",
+   "https://hn.algolia.com/api/v1/search?query=who%20is%20hiring&tags=story,author_whoishiring&hitsPerPage=2",
+   "https://www.ycombinator.com/legal/",
+   "https://news.ycombinator.com/newsguidelines.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://hacker-news.firebaseio.com/v0",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "The API README states no rate limit. Two requests per second.",
+  "tools": {
+   "get_posting": {
+    "method": "GET",
+    "path": "/item/{id}.json",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "text",
+      "company": "by",
+      "description": "text"
+     }
+    },
+    "docs": "https://github.com/HackerNews/API#items",
+    "note": "GET /v0/item/<id>.json for one 'Who is hiring?' comment (ids are in the monthly thread's kids[]). A hiring comment has no title, so title and description both carry the comment's HTML text (its first line is usually 'Company | Role | Location'); company is the poster's HN username (`by`); time (Unix) stays in raw. A missing item answers null (invalid_input)."
+   }
+  },
+  "not_offered": {
+   "search": "Listing a month's postings takes two calls (GET /v0/user/whoishiring.json → submitted[] thread id, then GET /v0/item/<thread>.json → kids[] comment ids) plus one call per comment; the API has no search endpoint and the adapter maps one call per verb.",
+   "me": "No credentials and no account endpoint (read-only public API).",
+   "apply": "Applications are e-mails or links named in each comment; HN has no write API.",
+   "list_messages": "HN has no private messaging."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

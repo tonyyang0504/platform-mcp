@@ -1,0 +1,203 @@
+{
+ "id": "e_zamowienia",
+ "category": "deals",
+ "label": "Platforma e-Zamówienia",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "pl"
+ ],
+ "docs_url": "https://ezamowienia.gov.pl/pl/informacje-dla-integratorow/",
+ "url": "https://ezamowienia.gov.pl/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Polish public procurement; API for integrators via subscription; offers submitted in the platform with a qualified signature.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (WSO2 API portal subscription)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (integrator API behind a WSO2 portal). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [
+   "https://api.ezamowienia.gov.pl/"
+  ],
+  "auth": [
+   "1. Register on the API portal → subscribe → key."
+  ],
+  "endpoints": [
+   {
+    "call": "notices / ogłoszenia (TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Offers need a qualified e-signature inside the platform. - Polish public procurement; API for integrators via subscription; offers submitted in the platform with a qualified signature.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://ezamowienia.gov.pl/",
+   "https://api.ezamowienia.gov.pl/publisher/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ezamowienia.gov.pl/mo-board",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.2,
+  "rate_note": "https://ezamowienia.gov.pl/pl/integracja/ (opened 2026-09-25): reading BZP notices 'nie wymaga przejścia procedury integracyjnej' (no integration procedure, no key); no rate limit is published. Two requests per second.",
+  "terms": "API use is governed by the 'Regulamin korzystania z API' (https://media.ezamowienia.gov.pl/pod/2023/01/Regulamin-korzystania-z-API.pdf). Offers are submitted inside the e-Zamówienia platform with a qualified electronic signature.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/v1/notice",
+    "params": {
+     "OrderObject": "query",
+     "CpvCode": "category",
+     "PageSize": "limit",
+     "PublicationDateFrom": "fmt:{year:now}-{month:now}-01T00:00:00Z",
+     "PublicationDateTo": "now"
+    },
+    "fixed_params": {
+     "NoticeType": "ContractNotice"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "noticeNumber",
+      "title": "orderObject",
+      "buyer": "organizationName",
+      "posted_at": "publicationDate",
+      "deadline": "submittingOffersDate"
+     }
+    },
+    "docs": "https://media.ezamowienia.gov.pl/pod/2022/08/Zala%CC%A8cznik-3-Instrukcja-integracji-z-API-BZP.zip",
+    "note": "GET /mo-board/api/v1/notice (API BZP WebService, 'Notices Board API' bzp.external.API.yaml in Załącznik 3). NoticeType, PublicationDateFrom/To and PageSize are required by the API: the window is fixed to contract notices (NoticeType=ContractNotice, 'ogłoszenie o zamówieniu') published from the 1st of the current month (UTC) until now. `query` → OrderObject (subject of the contract, Polish text match), `category` → CpvCode (e.g. 34121400-5). Results come OLDEST FIRST within the window and the API pages with a SearchAfter cursor that this adapter does not follow, so only the first `limit` (≤ 100) matches are returned and page is ignored — narrow with query/category. min_budget is not sent (no value filter). id is the notice number (e.g. 2026/BZP 00415198/01); deadline = submittingOffersDate; the full notice is in raw.htmlBody, the notice page is https://ezamowienia.gov.pl/mo-client-board/bzp/notice-details/id/<raw.objectId>. Throttling: calls a second or two apart are answered 403 'Dostęp zablokowany / Access Blocked' (an HTML WAF page) for a while; calls 5 s apart pass, so the client-side limit is one call per 5 s (live check 2026-09-26)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/v1/notice",
+    "params": {
+     "NoticeNumber": "id",
+     "PublicationDateTo": "now"
+    },
+    "fixed_params": {
+     "NoticeType": "ContractNotice",
+     "PublicationDateFrom": "2021-01-01T00:00:00Z",
+     "PageSize": "1"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "noticeNumber",
+      "title": "orderObject",
+      "buyer": "organizationName",
+      "posted_at": "publicationDate",
+      "deadline": "submittingOffersDate"
+     }
+    },
+    "docs": "https://media.ezamowienia.gov.pl/pod/2022/08/Zala%CC%A8cznik-3-Instrukcja-integracji-z-API-BZP.zip",
+    "note": "GET /mo-board/api/v1/notice?NoticeNumber=<id> over the whole platform period (2021-01-01 → now; the required date window). Only contract notices (NoticeType=ContractNotice) are looked up; a number of another notice type or an unknown number returns no record (invalid_input)."
+   }
+  },
+  "not_offered": {
+   "me": "Reading BZP needs no account; the authenticated APIs (MT, MO, PP) are for integrated buyer systems after integration tests.",
+   "submit_bid": "No offer API: offers are prepared and signed with a qualified e-signature inside the platform; the published APIs (BZP, MT, MO, PP, MMiA, CRD) cover notices, plans, reports and OCDS events.",
+   "withdraw_bid": "No offer API (see submit_bid).",
+   "bid_status": "No offer API (see submit_bid).",
+   "list_messages": "Correspondence with the buyer happens inside the platform; no messaging API is published.",
+   "send_message": "Correspondence with the buyer happens inside the platform; no messaging API is published.",
+   "credits": "The platform is free; no account or credit endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: a WAF answers 403 'Dostęp zablokowany / Access Blocked' to calls 1-2 s apart (TypeScript half of the parity run was blocked); client-side limit now one call per 5 s; all read tools answered, schema-valid"
+ }
+}

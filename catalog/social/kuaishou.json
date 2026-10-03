@@ -1,0 +1,278 @@
+{
+ "id": "kuaishou",
+ "category": "social",
+ "label": "Kuaishou",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.kuaishou.com/platform/openApi?menu=13",
+ "url": "https://www.kuaishou.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Kuaishou Open Platform account (企业 developer for content publishing), per-capability application + review; user OAuth (快手登录) with scopes user_info, user_video_publish, user_video_info; published limit (research: 1,000 publishes per user per day); Kuaishou platform rules against spam / batch marketing accounts.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "analytics(own videos)",
+   "webhooks"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 500,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no text post; `caption` rides on a video)",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (图文 publishing not modelled by our client; existence unverified)",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /openapi/photo/start_upload → POST http://{endpoint}/api/upload?upload_token= → POST /openapi/photo/publish",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no comment API modelled; existence unverified — see UNREACHABLE note)",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST /openapi/photo/delete?photo_id=",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /openapi/photo/info?photo_ids= (like_count / comment_count / view_count only)",
+   "docs": "https://open.kuaishou.com/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /openapi/photo/count , GET /openapi/user_info",
+   "docs": "https://open.kuaishou.com/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (gated by capability review).",
+  "base_urls": [
+   "https://open.kuaishou.com"
+  ],
+  "auth": [
+   "1. 入驻 as a developer (enterprise for content publishing), create a 网站 / 移动 application, apply for capabilities",
+   "2. 快手登录 OAuth: `https://open.kuaishou.com/oauth2/authorize?app_id&scope=user_info,user_video_publish,user_video_info`",
+   "3. Webhook events: authorization granted / revoked."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /openapi/photo/start_upload",
+    "purpose": "→ `{upload_token, endpoint}`",
+    "notes": ""
+   },
+   {
+    "call": "POST http://{endpoint}/api/upload?upload_token=` (multipart `file`) or fragment upload",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /openapi/photo/publish` (multipart: `upload_token`, `caption`, `cover`)",
+    "purpose": "→ `photo_id`",
+    "notes": ""
+   },
+   {
+    "call": "GET /openapi/photo/list` (`count` ≤ 200, cursor = last `photo_id`), `GET /openapi/photo/info` (`photo_ids`), `GET /openapi/photo/count",
+    "purpose": "per-video counts",
+    "notes": ""
+   },
+   {
+    "call": "GET /openapi/user_info",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "callback URL for 授权事件 / 解除授权事件",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Research value: 1,000 publishes per user per day; the exact per-app quotas live in the console. - Kuaishou platform rules against batch marketing accounts and spam; enterprise onboarding.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://open.kuaishou.com/",
+   "https://open.kuaishou.com/platform/openApi?menu=1",
+   "https://open.kuaishou.com/docs/develop/open-ability/short-video/publish-video"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://open.kuaishou.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "result",
+   "ok_value": 1,
+   "error_field": "error_msg"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://open.kuaishou.com/oauth2/refresh_token",
+   "token_method": "GET",
+   "client_auth": "body",
+   "client_id_field": "app_id",
+   "client_secret_field": "app_secret",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": "app_secret"
+   },
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "refresh_token_path": "refresh_token",
+   "token_param": "access_token",
+   "params": {
+    "app_id": "app_id"
+   },
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "app_id of your Kuaishou Open Platform application (https://open.kuaishou.com/platform)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "app_secret of the same application; sent only to /oauth2/refresh_token."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "The user's refresh_token from the 快手登录 authorization-code exchange (/oauth2/access_token, scopes user_info, user_video_info, user_video_delete; valid 180 days). It is single-use: every refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set; 'refreshToken.discarded' means an old one was reused)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/openapi/user_info",
+    "docs": "https://open.kuaishou.com/platform/openApi?menu=17",
+    "note": "GET /openapi/user_info (scope user_info): name, sex, fan, follow, head, city of the authorising user."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/openapi/photo/delete",
+    "params": {
+     "photo_id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://open.kuaishou.com/platform/openApi?menu=21",
+    "note": "POST /openapi/photo/delete (删除视频) removes one of the user's works by photo_id; 120001 = work does not exist."
+   },
+   "analytics_post": {
+    "path": "/openapi/photo/info",
+    "params": {
+     "photo_id": "post_id"
+    },
+    "result": {
+     "root": "video_info",
+     "fields": {
+      "post_id": "photo_id",
+      "metrics": "$"
+     }
+    },
+    "docs": "https://open.kuaishou.com/platform/openApi?menu=22",
+    "note": "GET /openapi/photo/info (查询单一视频详情, scope user_video_info): like_count, comment_count, view_count, caption, create_time (ms), pending."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Kuaishou's content API publishes videos only (视频发布, https://open.kuaishou.com/platform/openApi?menu=20: start_upload → binary/multipart upload → publish); there is no text post.",
+   "publish_image": "Only video works can be published (https://open.kuaishou.com/platform/openApi?menu=20), via a binary or multipart file upload; no image-by-URL post exists.",
+   "read_comments": "The 内容管理 APIs (https://open.kuaishou.com/platform/openApi?menu=22) return comment_count only; no comment list endpoint is documented.",
+   "reply_comment": "No comment API is documented in the Kuaishou Open Platform content-management section (https://open.kuaishou.com/platform/openApi?menu=22).",
+   "read_mentions": "No mentions API is documented (https://open.kuaishou.com/platform/openApi?menu=22)."
+  },
+  "terms": "Kuaishou Open Platform: every OpenAPI call carries app_id and access_token as query parameters; result = 1 is success, anything else carries error_msg. Access tokens last 48 h and are minted from the rotating refresh_token."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host open.kuaishou.com: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "token open.kuaishou.com/oauth2/refresh_token: 200 unauthorized_client",
+   "authorize https://open.kuaishou.com/oauth2/authorize: 302",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,302 @@
+{
+ "id": "banggood_dropship",
+ "category": "ecommerce_suppliers",
+ "label": "Banggood Dropship Center",
+ "lane": "api",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://www.banggood.com/help_center/question_category.html",
+ "url": "https://www.banggood.com/index.php?com=dropshipcenter&t=login",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "same Open Platform app_id / app_secret / access_token as `banggood`",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Dropship centre membership (login) + partner approval; see `banggood`.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.banggood.com/help_center/question_category.html",
+   "https://www.banggood.com/index.php?com=dropshipcenter&t=login)",
+   "https://api.banggood.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.banggood.com",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "GET",
+    "path": "/getAccessToken",
+    "body": {
+     "app_id": "@app_id",
+     "app_secret": "@app_secret"
+    }
+   },
+   "token_path": "access_token",
+   "token_param": "access_token",
+   "token_ttl_seconds": 7000,
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "app_id issued by the Banggood Open Platform (https://api.banggood.com, Manager Center) after the partner application is approved; calls must come from the registered IP address."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "The app_secret. GET /getAccessToken?app_id=&app_secret= returns an access_token valid 2 hours, sent as the access_token query parameter and renewed automatically."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "msg"
+  },
+  "config_fields": [
+   {
+    "name": "warehouse",
+    "required": false,
+    "help": "Banggood warehouse code for quote_shipping (the `warehouse` of GetProductInfo's warehouse_list, e.g. CN, US, UK); the API rejects the call (12031) when it is missing."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency for prices and shipping fees (e.g. USD); Banggood uses USD when unset."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/common/getCountries",
+    "fixed_params": {
+     "lang": "en"
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=23",
+    "note": "No account endpoint; the probe obtains a token and reads the country list ({code: 0, countries[{country_id, country_name}]}), so `account` holds that list."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/product/getProductList",
+    "params": {
+     "cat_id": "category",
+     "page": "page"
+    },
+    "fixed_params": {
+     "lang": "en"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "product_list",
+     "key": "products",
+     "total": "product_total",
+     "fields": {
+      "id": "product_id",
+      "title": "product_name",
+      "image_url": "img",
+      "category_id": "cat_id",
+      "modified_at": "modify_date"
+     }
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=10",
+    "note": "GET /product/getProductList: `category` (cat_id, a SUB-category id from GetCategoryList) is required by Banggood (12021 otherwise); `query` is not accepted. Pages hold at most 20 products; prices come from get_product (warehouse_list) and not from the list."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/product/getProductInfo",
+    "params": {
+     "product_id": "id",
+     "currency": "@currency"
+    },
+    "fixed_params": {
+     "lang": "en"
+    },
+    "result": {
+     "fields": {
+      "id": "=",
+      "title": "product_name",
+      "price": "warehouse_list.0.warehouse_price",
+      "warehouse": "warehouse_list.0.warehouse",
+      "weight_kg": "weight"
+     }
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=11",
+    "note": "GET /product/getProductInfo?product_id=: {product_name, weight (kg), poa_list[{option_name, option_values[{poa_id, poa_name, poa_price}]}], warehouse_list[{warehouse, warehouse_price}], image_list, description}. `price` is the first warehouse's price; the response does not echo the product id, so `id` is empty and the requested id is the product. Pass poa_id and warehouse from here to orders."
+   },
+   "quote_shipping": {
+    "method": "GET",
+    "path": "/product/getShipments",
+    "params": {
+     "product_id": "product_id",
+     "country": "country",
+     "quantity": "quantity",
+     "warehouse": "@warehouse",
+     "currency": "@currency"
+    },
+    "fixed_params": {
+     "lang": "en"
+    },
+    "result": {
+     "items": "shipment_list",
+     "key": "options",
+     "fields": {
+      "code": "shipmethod_code",
+      "name": "shipmethod_name",
+      "days": "shipday",
+      "fee": "shipfee"
+     }
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=12",
+    "note": "GET /product/getShipments: `country` is Banggood's English country NAME (e.g. United States, see GetCountries), not an ISO code; the warehouse comes from the `warehouse` setting. Products with attribute options also need a poa_id, which the vocabulary cannot pass (the API then answers 12033)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/order/getOrderInfo",
+    "params": {
+     "sale_record_id": "id"
+    },
+    "fixed_params": {
+     "lang": "en"
+    },
+    "result": {
+     "root": "sale_record_id_list.0.order_list.0",
+     "fields": {
+      "id": "order_id",
+      "status": "status",
+      "total_amount": "total_amount",
+      "currency": "currency",
+      "shipping_method": "shipmethod_code",
+      "shipping_fee": "shipfee"
+     }
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=15",
+    "note": "GET /order/getOrderInfo?sale_record_id= (YOUR order reference used when the order was imported): the first Banggood order under it {order_id, status, currency, total_amount, sub_amount, shipfee, product_list}; amounts are decimal strings, so they are returned as total_amount rather than the numeric `total`. `id` in the result is Banggood's order_id, which track takes."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/order/getTrackInfo",
+    "params": {
+     "order_id": "order_id"
+    },
+    "fixed_params": {
+     "lang": "en"
+    },
+    "result": {
+     "items": "track_info",
+     "key": "events",
+     "fields": {
+      "event": "event",
+      "time": "time"
+     }
+    },
+    "docs": "https://api.banggood.com/index.php?com=document&article_id=16",
+    "note": "GET /order/getTrackInfo?order_id= (Banggood order_id from get_order): track_info[{event, time (UTC)}], latest and historical events."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /order/importOrder is a form post of PHP-style nested arrays (product_list[0][product_id], [warehouse], [poa_id], [shipmethod_code], ... per line, plus product_total; see the official PHP sample https://api.banggood.com/download/banggoodAPI.php.zip); the runtime's form body cannot expand an items array of arbitrary length into indexed bracket keys, and imported orders are then paid in the Banggood web ApiOrderList page."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.banggood.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.banggood.com/getAccessToken: 200 31020",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

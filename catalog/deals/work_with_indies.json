@@ -1,0 +1,167 @@
+{
+ "id": "work_with_indies",
+ "category": "deals",
+ "label": "Work With Indies",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://workwithindies.com/careers/rss.xml",
+ "url": "https://www.workwithindies.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS; no key.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://workwithindies.com/careers/rss.xml"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.workwithindies.com/jobs/rss.xml",
+   "docs": "https://workwithindies.com/careers/rss.xml"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://workwithindies.com/careers/rss.xml"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS) Confidence high.",
+  "base_urls": [
+   "https://www.workwithindies.com/careers/rss.xml"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /careers/rss.xml",
+    "purpose": "search",
+    "notes": "title, link, pubDate"
+   }
+  ],
+  "limits": " - Public RSS.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://workwithindies.com/careers/rss.xml",
+   "https://www.workwithindies.com/careers/rss.xml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.workwithindies.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "Work With Indies public RSS. Applications go through each studio's own link.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/careers/rss.xml",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.workwithindies.com/careers/rss.xml",
+    "note": "The feed answers its whole current list in one response (RSS 2.0, the latest ~100 jobs); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). Employment listings at independent game studios: title is '<studio> is hiring a <role> to work from <location>'; the description ends with the tags ('Tags: [Design] [Full Time]')."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Applications go through each studio's own link; Work With Indies publishes no API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "swag_pro_printfection-mcp",
+ "display_name": "Swag Pro (formerly Printfection) MCP",
+ "version": "0.1.0",
+ "description": "Swag Pro (formerly Printfection) (ecommerce suppliers): me, list_products, get_product, create_order",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "swag_pro_printfection"
+   ],
+   "env": {
+    "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_API_KEY": "${user_config.platform_mcp_swag_pro_printfection_api_key}",
+    "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_CAMPAIGN_ID": "${user_config.platform_mcp_swag_pro_printfection_campaign_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_swag_pro_printfection_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_API_KEY",
+   "description": "Swag Pro (Printfection) API key from https://app.printfection.com/account/api_keys.php, sent as the HTTP Basic username with an empty password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_swag_pro_printfection_campaign_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_CAMPAIGN_ID",
+   "description": "Numeric id of the Collection campaign create_order places orders in (GET /campaigns, not mapped). Only Giveaway and Collection campaigns are supported by the API.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe lists one campaign with the key (answers an array, so `account` is empty on success). Authenticated requests are hard-limited to 1000 per hour."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /items: the swag items in your account (item objects {id, name, color, product{id, name}, sizes[{id, name, short_name, stock{available}}], stock{available} (only when the item has no sizes), assets[{type, perspective, url}]}), at most 100 per response with limit/offset. `stock` is null for sized items (see raw.sizes). `query` and `category` are not accepted."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /items/:id — one item with sizes[{id, name, short_name, stock{available}}]; size ids are per item and go into create_order lineitems."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /orders creates an OPEN order in the Collection campaign from the campaign_id setting. 'Orders cannot be placed explicitly through the API': Collection orders are gathered and placed (approved, and billed) from within the Swag Pro account. `shipping_address` is ship_to {name, address, address2, company, city, state, zip, country, email, phone}; `items` are lineitems [{item_id, size_id (0 for unsized items), quantity}] (several lineitems only on Collection campaigns). `shipping_option` is not sent."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /orders/:id — status is one of open, received, approved, processed, shipped, completed (cancelled after DELETE); totals and shipments come from the order manifest {subtotal, tax, shipping, fulfillment, total, shipments[{carrier, method, tracking_numbers[]}]}."
+  },
+  {
+   "name": "track",
+   "description": "The order's manifest.shipments [{carrier, method, tracking_numbers[], created_at}] as events (one per shipment); empty until the order ships. There is no separate tracking endpoint."
+  }
+ ]
+}

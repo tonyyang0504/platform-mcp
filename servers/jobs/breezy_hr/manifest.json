@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "breezy_hr-mcp",
+ "display_name": "Breezy HR MCP",
+ "version": "0.1.0",
+ "description": "Breezy HR (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "breezy_hr"
+   ],
+   "env": {
+    "PLATFORM_MCP_BREEZY_HR_API_TOKEN": "${user_config.platform_mcp_breezy_hr_api_token}",
+    "PLATFORM_MCP_BREEZY_HR_COMPANY_ID": "${user_config.platform_mcp_breezy_hr_company_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_breezy_hr_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BREEZY_HR_API_TOKEN",
+   "description": "Breezy Personal Access Token (prefix breezy_pat_) from the Breezy app: user icon > My Settings > API Keys > Create API Key; sent as `Authorization: Bearer`. It acts as the Breezy user who created it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_breezy_hr_company_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BREEZY_HR_COMPANY_ID",
+   "description": "The Breezy company id (12-14 character hex `_id` from GET /v3/companies) whose positions are read.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v3/user returns the authenticated user (_id, email_address, name, username)."
+  },
+  {
+   "name": "search",
+   "description": "Employer ATS API: GET /v3/company/{company_id}/positions?state=published lists the configured company's OWN published positions (not a cross-company job search). There is no keyword or location filter, so query/location are not sent — filter client-side. Paging: page_size ('capped at 50') + page (1-based). id is the position _id (use it with get_posting); salary period is in raw.salary.period; department, type, experience, friendly_id and location.is_remote are in raw. There is no public posting URL field, so url is null."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v3/company/{company_id}/position/{position_id}: 'full details (name, type, state, location, department, description, application form configuration, salary range, custom attributes, and team/admin…)'."
+  }
+ ]
+}

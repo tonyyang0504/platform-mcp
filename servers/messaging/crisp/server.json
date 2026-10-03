@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/crisp-mcp",
+ "description": "Crisp (messaging): me, list_inbound, get_thread, reply, mark_read. Every tool maps to a documented e",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.crisp.chat/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "crisp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CRISP_IDENTIFIER",
+     "description": "Identifier half of the Crisp token keypair (plugin token from the Marketplace, or a website token), sent as the HTTP Basic username — 'Authorization: Basic BASE64(identifier:key)' (https://docs.crisp.chat/guides/rest-api/authentication/plugin-token/, https://docs.crisp.chat/guides/rest-api/authentication/website-token/).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CRISP_KEY",
+     "description": "Key half of the Crisp token keypair, sent as the HTTP Basic password ('--user \"{identifier}:{key}\"' in the official curl examples).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CRISP_WEBSITE_ID",
+     "description": "Crisp website (workspace) identifier that prefixes every route (/website/{website_id}/...). Env: PLATFORM_MCP_CRISP_WEBSITE_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

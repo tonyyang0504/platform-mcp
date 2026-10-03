@@ -1,0 +1,36 @@
+{
+ "id": "hunter",
+ "category": "sales",
+ "label": "Hunter",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://hunter.io/api-documentation",
+ "url": "https://hunter.io/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Domain Search / Email Finder / Verifier API v2 on the user's key (free tier + paid plans); robots.txt (56 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

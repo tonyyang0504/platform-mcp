@@ -1,0 +1,36 @@
+{
+ "id": "it_paginegialle",
+ "category": "sales",
+ "label": "PagineGialle",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "it"
+ ],
+ "docs_url": null,
+ "url": "https://www.paginegialle.it/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (20 Disallow) blocks preview pages only. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

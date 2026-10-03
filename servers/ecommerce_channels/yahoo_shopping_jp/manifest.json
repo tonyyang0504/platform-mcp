@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "yahoo_shopping_jp-mcp",
+ "display_name": "Yahoo! Shopping (JP) MCP",
+ "version": "0.1.0",
+ "description": "Yahoo! Shopping (JP) (ecommerce channels): me, set_inventory, update_listing, end_listing. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "yahoo_shopping_jp"
+   ],
+   "env": {
+    "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_ID": "${user_config.platform_mcp_yahoo_shopping_jp_client_id}",
+    "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_SECRET": "${user_config.platform_mcp_yahoo_shopping_jp_client_secret}",
+    "PLATFORM_MCP_YAHOO_SHOPPING_JP_REFRESH_TOKEN": "${user_config.platform_mcp_yahoo_shopping_jp_refresh_token}",
+    "PLATFORM_MCP_YAHOO_SHOPPING_JP_SELLER_ID": "${user_config.platform_mcp_yahoo_shopping_jp_seller_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_yahoo_shopping_jp_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_ID",
+   "description": "Yahoo! JAPAN Client ID (アプリケーションID) of an app approved for the Shopping store APIs, linked to the store's Business ID.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yahoo_shopping_jp_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_SECRET",
+   "description": "The app's シークレット (sent as HTTP Basic to the YConnect v2 token endpoint).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yahoo_shopping_jp_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_SHOPPING_JP_REFRESH_TOKEN",
+   "description": "YConnect v2 refresh token from one authorization-code consent by the store's Yahoo! JAPAN ID (https://developer.yahoo.co.jp/webapi/shopping/help/#accesstoken). It lasts 4 weeks; re-consent afterwards.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yahoo_shopping_jp_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_SHOPPING_JP_SELLER_ID",
+   "description": "ストアアカウント (store account id, lower-case letters, digits, - and _).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists the store's top-level store categories (ストアカテゴリ一覧API) to verify the token and seller_id."
+  },
+  {
+   "name": "set_inventory",
+   "description": "在庫更新API: sets the stock of one item. `sku` is the 商品コード, or 商品コード:個別商品コード for a variant (e.g. item-01:sub-01); the quantity replaces the current stock. Applies immediately (no publish step). If Yahoo answers 207 the item carries an error_code (e.g. st-02104) and was NOT updated — check error_code."
+  },
+  {
+   "name": "update_listing",
+   "description": "商品一括更新API for one item (listing_id = 商品コード): sets 通常販売価格 (price, whole yen, required). The docs require price and sale_price together, so sale_price is sent empty — this REMOVES any 特価 on the item. The change is staged: status is OK/NG (per-field errors under raw.Result) and it goes live only after 全反映予約 (reservePublish / ストアクリエイターPro). Title/description are not changed here; stock is set_inventory."
+  },
+  {
+   "name": "end_listing",
+   "description": "Sets ページ公開 display=0 (非公開) for one item via 商品一括更新API; reversible (display=1) and not a deletion. Staged until the next 全反映予約 (reservePublish / ストアクリエイターPro). status is OK or NG."
+  }
+ ]
+}

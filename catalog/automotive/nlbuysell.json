@@ -1,0 +1,42 @@
+{
+ "id": "nlbuysell",
+ "category": "automotive",
+ "label": "Nlbuysell",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://nlbuysell.com",
+ "domain": "nlbuysell.com",
+ "country": "Canada",
+ "official_api": false,
+ "docs_url": "https://nlbuysell.com/rss",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": null,
+  "access": "open",
+  "capabilities": [
+   "search_listings"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). NL Buy Sell publishes official RSS feeds of latest classifieds (hourly, rss.xml + per-category feeds page); no API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://nlbuysell.com/rss",
+   "https://nlbuysell.com/rss.xml"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): NL Buy Sell publishes official RSS feeds of latest classifieds (hourly, rss.xml + per-category feeds page); no API. No request/response API to serve."
+}

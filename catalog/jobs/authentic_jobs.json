@@ -1,0 +1,156 @@
+{
+ "id": "authentic_jobs",
+ "category": "jobs",
+ "label": "Authentic Jobs",
+ "lane": "assist",
+ "kind": "design",
+ "regions": [
+  "us",
+  "global"
+ ],
+ "docs_url": "https://authenticjobs.com/wp-json/wp/v2/job-listings",
+ "url": "https://authenticjobs.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Design + dev board (since 2005); external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (RSS)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the WordPress job_feed RSS is a usable public feed (note robots.txt disallows /feed/ — use the ?feed=job_feed URL the site itself links, at a gentle cadence)",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. The former Authentic Jobs API (/api/docs) is gone (404); what remains is a WordPress job_listing RSS 2.0 feed (title, link, dc:creator, job_listing:* fields). Terms page (11.4 k chars) has no bot / scraping clause; robots.txt disallows /feed/ and /xmlrpc.php.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://authenticjobs.com/",
+   "https://authenticjobs.com/robots.txt",
+   "https://authenticjobs.com/?feed=job_feed",
+   "https://authenticjobs.com/terms/",
+   "https://authenticjobs.com/api/docs/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://authenticjobs.com/wp-json/wp/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/job-listings",
+    "params": {
+     "search": "query",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "company": "meta._company_name",
+      "location": "meta._job_location",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#list-posts",
+    "note": "GET https://authenticjobs.com/wp-json/wp/v2/job-listings: the WP Job Manager job_listing post type through the WordPress REST API posts controller (arguments page, per_page <= 100, search = WordPress full-text search; the route's own schema is listed at that URL). location and remote are not sent (location is post meta / a region taxonomy, not a query argument). title and description are rendered HTML; company is meta._company_name, location meta._job_location, the apply link meta._application and salary meta._job_salary stay in raw.meta. Only published listings are returned; a page past the end answers 400 rest_post_invalid_page_number (upstream_error). The RSS job feed (?feed=job_feed) carries the same listings."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/job-listings/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "company": "meta._company_name",
+      "location": "meta._job_location",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#retrieve-a-post",
+    "note": "GET /wp-json/wp/v2/job-listings/<id> with the numeric post id from search; an unknown id answers 404 rest_post_invalid_id (invalid_input)."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify: the WordPress REST API is read publicly and the site offers no job-seeker account API.",
+   "apply": "Applications go to each listing's meta._application (an employer URL or e-mail); the site has no application endpoint.",
+   "list_messages": "No messaging endpoint in the site's REST index; only job listings are exposed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

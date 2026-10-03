@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "hackernews-mcp",
+ "display_name": "Hacker News MCP",
+ "version": "0.1.0",
+ "description": "Hacker News (social): me, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hackernews"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Unauthenticated read-only API: there is no account; the probe reads /v0/maxitem.json to confirm the API is reachable."
+  },
+  {
+   "name": "analytics_post",
+   "description": "Item record: `score` and `descendants` (total comment count) are the only metrics HN publishes; the runtime cannot compose a nested `metrics` object, so they are top-level fields."
+  }
+ ]
+}

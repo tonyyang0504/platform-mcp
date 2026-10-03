@@ -1,0 +1,128 @@
+{
+ "id": "google_hotel_ads",
+ "category": "ads",
+ "label": "Google Hotel Ads (hotel campaigns via Hotel Center)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/hotels",
+ "url": "https://support.google.com/hotelprices/answer/9238461?hl=en",
+ "verified_at": "2026-09-04",
+ "terms_note": "Hotel Center account (partner or hotel) + Google Ads; Hotel Prices API (transaction messages / XML) and Hotel Content (Lodging Format) feeds; free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 / Hotel Center account (Hotel Prices + Hotel Content APIs); campaigns via the Google Ads API",
+  "access": "signup",
+  "capabilities": [
+   "catalog_products",
+   "campaigns",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** as its own row — price / content feeds via the Hotel APIs; campaigns through the Google Ads API (google client) Confidence: **high**.",
+  "base_urls": [
+   "https://www.google.com/travel/hotels/uploads/…"
+  ],
+  "auth": [
+   "1. Hotel Center account linked to Google Ads.",
+   "2. Send price / content feeds (Hotel Prices API, Lodging Format).",
+   "3. Manage hotel campaigns with the google client (campaign type HOTEL, bidding percent CPC / commission)."
+  ],
+  "endpoints": [
+   {
+    "call": "Hotel Prices transaction upload",
+    "purpose": "price feed",
+    "notes": "hotel_id, itinerary, rates"
+   },
+   {
+    "call": "Hotel Content (Lodging Format)",
+    "purpose": "content feed",
+    "notes": "lodging data"
+   },
+   {
+    "call": "Google Ads API `campaigns:mutate` (HOTEL) · `hotel_performance_view",
+    "purpose": "campaigns + reports",
+    "notes": "see google.md"
+   }
+  ],
+  "limits": " - Free; Hotel Center policies.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.google.com/hotels"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://developers.google.com/hotels offers only Hotel Prices (price feeds, API/XML reference), Hotel Content (Google Lodging Format), Vacation Rentals and connectivity partners. Hotel campaigns, budgets and reports are managed through the Google Ads API (the `google` entry); no campaign, budget or ad-report call exists in the Hotel APIs to map to this vocabulary."
+}

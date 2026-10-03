@@ -1,0 +1,93 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/amazon-mcp",
+ "description": "Amazon (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Every tool",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer-docs.amazon.com/sp-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "amazon"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AMAZON_CLIENT_ID",
+     "description": "LWA client identifier of your SP-API application (Developer Central / Solution Provider Portal > app > LWA credentials).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_CLIENT_SECRET",
+     "description": "LWA client secret of the same application.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_REFRESH_TOKEN",
+     "description": "LWA refresh token (Atzr|...) from self-authorising the app for your seller account (or from the seller's OAuth authorization); exchanged at https://api.amazon.com/auth/o2/token for 1-hour access tokens sent as x-amz-access-token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_REGION",
+     "description": "SP-API endpoint region: na (Canada, US, Mexico, Brazil), eu (Europe, UK, India, Middle East, Turkey, South Africa) or fe (Japan, Australia, Singapore); calls go to https://sellingpartnerapi-<region>.amazon.com.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_SELLER_ID",
+     "description": "Selling partner (merchant token) id used in the Listings Items path /listings/2021-08-01/items/{sellerId}/{sku} (Seller Central > Settings > Account Info > Merchant Token).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_MARKETPLACE_ID",
+     "description": "Marketplace id the tools act on, e.g. ATVPDKIKX0DER (US) or A1F83G8C2ARO7P (UK); see the SP-API Marketplace IDs page.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_CURRENCY",
+     "description": "Currency of the marketplace's offers (e.g. USD, GBP, EUR); needed only when update_listing changes the price (purchasable_offer selector).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_ENV",
+     "description": "Vendor environment (default production): sandbox = https://sandbox.sellingpartnerapi-{region}.amazon.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_AMAZON_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

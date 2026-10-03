@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/autotrader_uk-mcp",
+ "description": "Autotrader UK (automotive): search_listings, get_listing, decode_vin, get_valuation. Every tool maps",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.autotrader.co.uk/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "autotrader_uk"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AUTOTRADER_UK_KEY",
+     "description": "Autotrader Connect API key (issued after Autotrader qualifies your integration; production and sandbox keys differ); POSTed form-encoded to https://api.autotrader.co.uk/authenticate.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AUTOTRADER_UK_SECRET",
+     "description": "The matching API secret. Access tokens last 15 minutes and are re-minted on expiry or 401; unused credentials are removed after 90 days.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AUTOTRADER_UK_ADVERTISER_ID",
+     "description": "Autotrader advertiser id your credentials are permitted for (sent as advertiserId on every call, as in all documented examples).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

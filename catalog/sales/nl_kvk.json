@@ -1,0 +1,36 @@
+{
+ "id": "nl_kvk",
+ "category": "sales",
+ "label": "KVK Handelsregister API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "nl"
+ ],
+ "docs_url": "https://developers.kvk.nl/",
+ "url": "https://www.kvk.nl/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Zoeken / Basisprofiel APIs on a paid KVK API key (per-call fee, contract with KVK); robots.txt (18 Disallow) irrelevant for the API.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

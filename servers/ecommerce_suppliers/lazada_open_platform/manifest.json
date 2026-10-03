@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "lazada_open_platform-mcp",
+ "display_name": "Lazada Seller Center + Lazada Open Platform MCP",
+ "version": "0.1.0",
+ "description": "Lazada Seller Center + Lazada Open Platform (ecommerce suppliers): me, list_products, get_product, g",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lazada_open_platform"
+   ],
+   "env": {
+    "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_KEY": "${user_config.platform_mcp_lazada_open_platform_app_key}",
+    "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_SECRET": "${user_config.platform_mcp_lazada_open_platform_app_secret}",
+    "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_ACCESS_TOKEN": "${user_config.platform_mcp_lazada_open_platform_access_token}",
+    "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_DOMAIN": "${user_config.platform_mcp_lazada_open_platform_domain}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lazada_open_platform_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_KEY",
+   "description": "App Key of your Lazada Open Platform app (App Console).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_open_platform_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_APP_SECRET",
+   "description": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API name (e.g. /order/get) + the parameters sorted by name as name+value. Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_open_platform_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_ACCESS_TOKEN",
+   "description": "Seller access_token from the seller-authorisation code exchange (/auth/token/create). It expires (see expires_in); renew it with the signed system API /auth/token/refresh and update this value — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_open_platform_domain": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_OPEN_PLATFORM_DOMAIN",
+   "description": "Country gateway of the seller's shop: sg, com.my, co.th, co.id, com.ph or vn → https://api.lazada.{domain}/rest (Service Endpoints on every API page).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GetSeller: the authorised seller (seller_id, name, short_code, status)."
+  },
+  {
+   "name": "list_products",
+   "description": "GetProducts: the AUTHORISED SELLER's own products (Lazada's open platform is seller-side), all statuses, 50 per page at most (offset up to 10,000). Price/SKU/stock are the FIRST SKU's, in the shop's local currency; `id` is the item_id for get_product. No keyword search (sku_seller_list matches whole Seller SKUs only)."
+  },
+  {
+   "name": "get_product",
+   "description": "GetProductItem: one product of the authorised seller by item_id; every SKU is in raw.skus."
+  },
+  {
+   "name": "get_order",
+   "description": "GetOrder: an order RECEIVED by the authorised seller. `status` is the first of statuses[] (pending, ready_to_ship, shipped, delivered, canceled, …); `total` is the order price in local currency; `created_at` is '2014-10-15 18:36:05 +0800' style. Line items: /order/items/get (not mapped)."
+  },
+  {
+   "name": "track",
+   "description": "GetOrderTrace: one row per package with its tracking number and logistic_detail_info_list[{title, description, status_code, event_time (ms)}]."
+  }
+ ]
+}

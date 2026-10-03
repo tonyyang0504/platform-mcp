@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/farcaster-mcp",
+ "description": "Farcaster (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.neynar.com/reference/publish-cast",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "farcaster"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FARCASTER_API_KEY",
+     "description": "Neynar API key from https://dev.neynar.com: 'All API endpoints require an API key. Include the following header with every request: x-api-key' (https://docs.neynar.com/reference). Writes additionally need a signer (config field signer_uuid) created and approved for the same API key.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FARCASTER_SIGNER_UUID",
+     "description": "UUID of an approved signer for the publishing account ('signer_uuid is paired with API key, can't use a uuid made with a different API key'; 'In order to post a cast signer_uuid must be approved', https://docs.neynar.com/reference/publish-cast). Required for publish_text, reply_comment and delete; env PLATFORM_MCP_FARCASTER_SIGNER_UUID.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_FARCASTER_FID",
+     "description": "Farcaster id (integer) of the connected account, used by `me` (GET /v2/farcaster/user/bulk/?fids=) and read_mentions (GET /v2/farcaster/notifications/?fid=); env PLATFORM_MCP_FARCASTER_FID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "hannover_messe",
+ "category": "sales",
+ "label": "HANNOVER MESSE exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "de",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.hannovermesse.de/en/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (156 Disallow) — none hits /en/exhibitors-products/.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

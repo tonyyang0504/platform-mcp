@@ -1,0 +1,48 @@
+{
+ "id": "finn",
+ "category": "automotive",
+ "label": "Finn",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.finn.no",
+ "domain": "finn.no",
+ "country": "Norway",
+ "official_api": false,
+ "docs_url": "https://www.finn.no/api/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "x-finn-apikey header",
+  "access": "partner_only",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence high). FINN REST API (ad-search, ad-view, import) is documented but only for advertisers/business partners who own the data.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.finn.no/api/",
+   "https://www.finn.no/api/troubleshooting",
+   "https://github.com/finn-no/lifestyle",
+   "https://finn.no/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "MCP registry com.finn.www/auto belongs to FINN car subscription (finn.com), unrelated to finn.no"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): FINN REST API (ad-search, ad-view, import) is documented but only for advertisers/business partners who own the data."
+}

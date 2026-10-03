@@ -1,0 +1,212 @@
+{
+ "id": "contracts_finder",
+ "category": "deals",
+ "label": "Contracts Finder",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://www.contractsfinder.service.gov.uk/apidocumentation/",
+ "url": "https://www.contractsfinder.service.gov.uk/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Open Government Licence data; anonymous OCDS search; no rate limit published; publishing endpoints are for approved eOpportunity providers only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none for search (OAuth2 bearer token only for notice PUBLISHING by approved providers)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "ocds_export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none)",
+   "docs": "https://www.contractsfinder.service.gov.uk/apidocumentation/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search?publishedFrom=&stages=tender&limit=",
+   "docs": "https://www.contractsfinder.service.gov.uk/apidocumentation/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /Published/Notices/OCDS/Search?ocid=",
+   "docs": "https://www.contractsfinder.service.gov.uk/apidocumentation/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for discovery (OCDS search + record/release + CSV exports) Confidence high (V1 + V2 API help pages opened).",
+  "base_urls": [
+   "https://www.contractsfinder.service.gov.uk/Published/…"
+  ],
+  "auth": [
+   "1. Anonymous for every 'Published' read endpoint.",
+   "2. Publishing (notice upload) only for approved eOpportunity providers: `POST` token endpoint → bearer `access_token` in the Authorization header (not needed by us)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /Published/Notices/OCDS/Search",
+    "purpose": "search — 'Search for published notice OCDS releases package with optional search criteria'",
+    "notes": "V2 params incl. AwardedToSME, AwardedToVCSE, ProcedureType…; pagination via `links.next`"
+   },
+   {
+    "call": "GET /Published/OCDS/Record/{ocid}",
+    "purpose": "details — OCDS record package",
+    "notes": "ocid"
+   },
+   {
+    "call": "GET /Published/OCDS/Release/{id}",
+    "purpose": "details — release package",
+    "notes": "notice id"
+   },
+   {
+    "call": "GET /Published/Notices/OCDS/Search/CSV[/{date}]",
+    "purpose": "bulk export",
+    "notes": "current date or a specific date"
+   }
+  ],
+  "limits": " - Open Government Licence; no rate limit published; standard HTTP error codes. - No proposal / message / contract endpoint exists — responses are lodged on the buyer's e-tendering system (assist card).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.contractsfinder.service.gov.uk/apidocumentation/",
+   "https://www.contractsfinder.service.gov.uk/apidocumentation/V2"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.contractsfinder.service.gov.uk",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No numeric limit published; the API pages say HTTP 403 means 'The request rate limit may have been exceeded' and to wait five minutes before retrying. Published (read) endpoints are anonymous; OAuth2 tokens are only for notice publishing.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/Published/Notices/OCDS/Search",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "stages": "tender"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "releases",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "deadline": "tender.tenderPeriod.endDate",
+      "posted_at": "date"
+     }
+    },
+    "docs": "https://www.contractsfinder.service.gov.uk/apidocumentation/Notices/1/GET-Published-Notice-OCDS-Search",
+    "note": "OCDS release package: documented parameters are publishedFrom, publishedTo (ISO 8601), stages (planning, tender, award, implementation), limit (1-100, default 100) and cursor. `stages=tender` is fixed so only tender-stage notices are listed; there is no keyword parameter, so `query`, `category` and `min_budget` are not sent (filter client-side). Paging is by cursor (`links.next`), which page/limit cannot carry: `page` is ignored and only the first `limit` releases are returned. `id` is the OCDS release `id` (notice GUID plus a version suffix) accepted by get_posting; the process `ocid` stays in raw (live check 2026-09-26: the documented Published/OCDS/Record/{ocid} answers 404 for every ocid, including the documentation's own sample); value/deadline/buyer come from the OCDS tender block documented on the Record page."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/Published/OCDS/Release/{id}",
+    "result": {
+     "root": "releases.0",
+     "fields": {
+      "id": "id",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "deadline": "tender.tenderPeriod.endDate",
+      "posted_at": "date"
+     }
+    },
+    "docs": "https://www.contractsfinder.service.gov.uk/apidocumentation/Notices/1/GET-Published-OCDS-Release",
+    "note": "GET Published/OCDS/Release/{id} ('Get the OCDS release package by the provided id'): `id` is the release id returned by search_postings (e.g. e2d9dc88-6503-4899-a4b0-76f0a5c96ffe-915593); releases[0] (tender{title, description, value, tenderPeriod}, buyer{name}, date) is mapped and the ocid stays in raw. Record/{ocid} is not used: on 2026-09-26 it answered 404 NotFound for every ocid, including the documentation's own sample. 404 when the release id is unknown."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'No proposal / message / contract endpoint exists — responses are lodged on the buyer's e-tendering system'; the only writes (draft/publish notices) are for approved eOpportunity providers.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: get_posting used Published/OCDS/Record/{ocid}, which answers 404 for every ocid (even the docs sample); now Published/OCDS/Release/{id} with the release id from search; also: next_page now null (no page parameter); all read tools answered, schema-valid"
+ }
+}

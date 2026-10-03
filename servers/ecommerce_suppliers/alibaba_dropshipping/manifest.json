@@ -1,0 +1,97 @@
+{
+ "manifest_version": "0.2",
+ "name": "alibaba_dropshipping-mcp",
+ "display_name": "Alibaba.com Dropshipping / Alibaba Open Platform MCP",
+ "version": "0.1.0",
+ "description": "Alibaba.com Dropshipping / Alibaba Open Platform (ecommerce suppliers): me, list_products, get_produ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "alibaba_dropshipping"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALIBABA_DROPSHIPPING_APP_KEY": "${user_config.platform_mcp_alibaba_dropshipping_app_key}",
+    "PLATFORM_MCP_ALIBABA_DROPSHIPPING_APP_SECRET": "${user_config.platform_mcp_alibaba_dropshipping_app_secret}",
+    "PLATFORM_MCP_ALIBABA_DROPSHIPPING_ACCESS_TOKEN": "${user_config.platform_mcp_alibaba_dropshipping_access_token}",
+    "PLATFORM_MCP_ALIBABA_DROPSHIPPING_SHIP_TO_COUNTRY": "${user_config.platform_mcp_alibaba_dropshipping_ship_to_country}",
+    "PLATFORM_MCP_ALIBABA_DROPSHIPPING_CURRENCY": "${user_config.platform_mcp_alibaba_dropshipping_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_alibaba_dropshipping_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_DROPSHIPPING_APP_KEY",
+   "description": "App Key of your Alibaba.com Open Platform app (https://openapi.alibaba.com/ App Console; admin-reviewed).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_dropshipping_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_DROPSHIPPING_APP_SECRET",
+   "description": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API path without '/rest' (e.g. /alibaba/order/get) + the parameters sorted by name as name+value (docId=61). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_dropshipping_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_DROPSHIPPING_ACCESS_TOKEN",
+   "description": "access_token from the authorisation-code exchange /auth/token/create (https://openapi.alibaba.com/doc/api.htm#/api?cid=4&path=/auth/token/create). It expires after expires_in seconds; renew it with /auth/token/refresh (a signed call) and update this value — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_dropshipping_ship_to_country": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_DROPSHIPPING_SHIP_TO_COUNTRY",
+   "description": "Two-letter destination country used for product search and cost prices (shipToCountry / ship_to_country), e.g. US.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_alibaba_dropshipping_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_DROPSHIPPING_CURRENCY",
+   "description": "ISO 4217 currency for search results and product prices, e.g. USD.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "alibaba order list (role=buyer, one row): verifies the app signature and the buyer's access_token."
+  },
+  {
+   "name": "list_products",
+   "description": "Product Search (buyer): keyword search of Alibaba.com products for the configured ship-to country and currency; `query` is required ('keyword', Required). Prices are strings in the configured currency; `id` is the product_id for get_product / quote_shipping."
+  },
+  {
+   "name": "get_product",
+   "description": "Get Product Description (buyer): title, images, skus[{sku_id, ladder_price, cost prices incl. shipping to ship_to_country}], MOQ and supplier. The mapped price/sku are the FIRST SKU's discounted procurement cost; stock comes from /eco/buyer/product/inventory (not mapped)."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "Basic Freight Cost Estimation: shipping options for `quantity` units (required) of the product to `country`; each option's `code` (vendor_code) is create_order's shipping_option (carrier_code)."
+  },
+  {
+   "name": "create_order",
+   "description": "Create BuyNow Order: places an unpaid order; pay it at `pay_url` or with /alibaba/dropshipping/order/pay. `items` are sent as product_list [{product_id, quantity, sku_id}], `shipping_option` (required) is a vendor_code from quote_shipping and `shipping_address` is Alibaba's shipment_address {address, alternate_address, city, province, country, country_code, zip, contact_person, telephone: {country, area, number}}. channel_refer_id is a fresh UUID."
+  },
+  {
+   "name": "get_order",
+   "description": "alibaba order get: trade_status (unpay, undeliver, delivering, …), amounts, order_products and shipping_address in `raw`; `created_at` is epoch ms."
+  },
+  {
+   "name": "track",
+   "description": "Logistics Tracking: one row per parcel with carrier, tracking number, current event code and event_list[{event_code, event_name, event_location, event_time}]."
+  }
+ ]
+}

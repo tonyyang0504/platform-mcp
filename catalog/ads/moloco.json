@@ -1,0 +1,263 @@
+{
+ "id": "moloco",
+ "category": "ads",
+ "label": "Moloco Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.moloco.cloud/docs/getting-started",
+ "url": "https://www.moloco.com/moloco-ads",
+ "verified_at": "2026-09-25",
+ "terms_note": "'If you don't already have an account with us, please reach out to a Moloco representative to sign up for one' — account + workplace created by Moloco; API key created in Moloco Ads → POST /cm/v1/auth/tokens → access token; TLS 1.2+; versioned (v1.10 current; deprecation emails); rate limits + entity quota pages. Free API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp"
+  ],
+  "auth": "api_key → access token (POST https://api.moloco.cloud/cm/v1/auth/tokens with the API key; bearer)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "targeting_search",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Moloco Ads MCP (official — developer.moloco.cloud 'Get started with the Moloco Ads MCP', tools reference)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Moloco Ads API v1.10 + official MCP) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.moloco.cloud/cm/v1/…"
+  ],
+  "auth": [
+   "1. Ask a Moloco representative to create the Moloco Ads account + workplace; reset the password from the welcome email.",
+   "2. Create an API key in Moloco Ads (account settings), then `POST https://api.moloco.cloud/cm/v1/auth/tokens` with the key → access token.",
+   "3. `Authorization: Bearer` on every call; TLS 1.2+; watch deprecation emails per version."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /cm/v1/workplaces` · `/ad-accounts` (user accounts guide)",
+    "purpose": "accounts",
+    "notes": "workplace id, ad account id"
+   },
+   {
+    "call": "POST /cm/v1/campaigns` · `GET` · `PUT` (tutorial 'Create and manage your campaign')",
+    "purpose": "campaigns + budget + schedule + goal",
+    "notes": "title, ad_account_id, product, budget_schedule, goal, targeting, status"
+   },
+   {
+    "call": "ad groups / creative groups / creatives (upload)",
+    "purpose": "ads + creatives",
+    "notes": "creative type, asset upload"
+   },
+   {
+    "call": "POST /cm/v1/reports` (tutorial 'Generate campaign data reports')",
+    "purpose": "reports",
+    "notes": "date range, dimensions, metrics"
+   },
+   {
+    "call": "campaign events (tutorial 'Keep track of campaign events')",
+    "purpose": "events / conversions",
+    "notes": "postback configuration"
+   },
+   {
+    "call": "targets (tutorial 'Create a target for your campaigns')",
+    "purpose": "audiences / targeting",
+    "notes": "target definition"
+   }
+  ],
+  "limits": " - Rate limits + Entity Quota pages (TODO(verify) values); account by application; free API.",
+  "mcp_sdk": [
+   "Official **Moloco Ads MCP** (get started + tools reference on the developer portal); OpenAPI spec."
+  ],
+  "sources": [
+   "https://developer.moloco.cloud/docs/getting-started"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.moloco.cloud/cm/v1",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth/tokens",
+    "body": {
+     "api_key": "@api_key"
+    }
+   },
+   "token_path": "token",
+   "token_ttl_seconds": 57000,
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Moloco Ads API key (Moloco Ads > account settings > API key; created for the ad account's workplace). Exchanged at POST https://api.moloco.cloud/cm/v1/auth/tokens {api_key} for a 16-hour bearer token, re-requested on expiry or 401."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/ad-accounts",
+    "docs": "https://developer.moloco.cloud/reference/dspapi_listadaccounts-1",
+    "note": "There is no current-user endpoint in the Campaign management API; the probe is GET /cm/v1/ad-accounts (ad accounts the token's user can access in the workplace)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/ad-accounts",
+    "result": {
+     "items": "ad_accounts",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "title",
+      "currency": "currency",
+      "timezone": "timezone"
+     }
+    },
+    "docs": "https://developer.moloco.cloud/reference/dspapi_listadaccounts-1",
+    "note": "GET /cm/v1/ad-accounts: all ad accounts accessible to the current user on the token's workplace."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/campaigns",
+    "params": {
+     "ad_account_id": "account_id",
+     "states": "status"
+    },
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "title",
+      "status": "state",
+      "currency": "currency",
+      "start": "schedule.start",
+      "end": "schedule.end"
+     }
+    },
+    "docs": "https://developer.moloco.cloud/reference/dspapi_listcampaigns-1",
+    "note": "GET /cm/v1/campaigns?ad_account_id=…&states=… (states: SUBMITTED, READY, UPCOMING, ACTIVE, PAUSED, SUSPENDED, COMPLETED; deleted campaigns are excluded). The daily budget is in raw.budget_schedule.daily_schedule.daily_budget.amount_micros (micros of the account currency), so it is not mapped to `budget`; enabling_state ENABLED|DISABLED is in raw. `page`/`limit` are not sent."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/analytics-overview",
+    "body": {
+     "ad_account_id": "account_id",
+     "date_range.start": "date:date_from",
+     "date_range.end": "date:date_to",
+     "dimensions": "json:[\"DATE\",\"CAMPAIGN_ID\",\"CAMPAIGN_TITLE\"]",
+     "metrics": "json:[\"IMPRESSIONS\",\"CLICKS\",\"INSTALLS\",\"CONVERSIONS\",\"SPEND\"]"
+    },
+    "result": {
+     "items": "rows",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "campaign_id": "campaign.id",
+      "campaign": "campaign.title",
+      "impressions": "metric.impressions",
+      "clicks": "metric.clicks",
+      "installs": "metric.installs",
+      "conversions": "metric.conversions",
+      "spend": "metric.spend"
+     }
+    },
+    "docs": "https://developer.moloco.cloud/reference/dspapi_queryanalyticsoverview",
+    "note": "POST /cm/v1/analytics-overview {ad_account_id, date_range {start, end}, dimensions [DATE, CAMPAIGN_ID, CAMPAIGN_TITLE], metrics [IMPRESSIONS, CLICKS, INSTALLS, CONVERSIONS, SPEND]} answers the rows synchronously; spend is in the ad account's currency. `campaign_id` is not applied (all campaigns of the account are returned, one row per day and campaign)."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Budgets live in campaign.budget_schedule.daily_schedule.daily_budget as {currency, amount_micros} (amount × 1,000,000 as an int64 string) and are changed with PUT /cm/v1/campaigns/{campaign_id} taking the whole dspCampaign object (https://developer.moloco.cloud/reference/dspapi_updatecampaign-1); the runtime can neither scale daily_budget to micros nor send a read-modify-write of the full campaign.",
+   "pause_resume": "Pausing sets campaign.enabling_state DISABLED/ENABLED (https://developer.moloco.cloud/docs/campaign-management-api), but the only write is PUT /cm/v1/campaigns/{campaign_id} with the whole dspCampaign object as body (https://developer.moloco.cloud/reference/dspapi_updatecampaign-1); partial updates are not documented, so a body with only enabling_state could reset other settings."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.moloco.cloud: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.moloco.cloud/cm/v1/auth/tokens: 401 16",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

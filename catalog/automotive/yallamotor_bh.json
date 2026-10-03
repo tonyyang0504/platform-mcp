@@ -1,0 +1,35 @@
+{
+ "id": "yallamotor_bh",
+ "category": "automotive",
+ "label": "Bahrain",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://bahrain.yallamotor.com",
+ "domain": "bahrain.yallamotor.com",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). YallaMotor has no official developer portal; API references are third-party scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bahrain.yallamotor.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,297 @@
+{
+ "id": "pictorem",
+ "category": "ecommerce_suppliers",
+ "label": "Pictorem PRO (white-label dropship + API Print on Demand)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.pictorem.com/apiprintondemand",
+ "url": "https://www.pictorem.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (\"Use our powerful API… build modern automated Print on demand solutions\")",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "access token key created in My Account (PRO account); all authenticated calls are POST; 401 without a valid key",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "price_feed",
+   "order_create",
+   "tracking",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Create a free PRO account",
+   "2. My Account → Access Token Key Creation",
+   "3. Get the documentation from the account; send the token with each POST"
+  ],
+  "endpoints": [
+   {
+    "call": "Get Product Listing & pricing",
+    "purpose": "product specifications + custom pricing",
+    "notes": ""
+   },
+   {
+    "call": "Place Orders",
+    "purpose": "order with image URL (downloaded by Pictorem) + customer address",
+    "notes": ""
+   },
+   {
+    "call": "Get Orders Update & Tracking",
+    "purpose": "status + tracking number",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - PRO account - Key without payment method = quote mode (never billed)",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.pictorem.com/apiprintondemand"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.pictorem.com/artflow/0.1",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "status",
+   "error_field": "msg"
+  },
+  "auth": {
+   "type": "header",
+   "header": "ArtFlowKey",
+   "field": "artflow_key",
+   "fields": [
+    {
+     "name": "artflow_key",
+     "required": true,
+     "help": "Your ArtFlowKey, issued on request through your Pictorem account (can be a test-mode key)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/getorderlist/",
+    "body_format": "multipart",
+    "body": {
+     "page": "=1",
+     "limit": "=1"
+    },
+    "docs": "https://www.pictorem.com/artflow/0.1/docs/",
+    "note": "getorderlist with limit 1: verifies the ArtFlowKey and shows the account's order count (data.total)."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "/getartworklist/",
+    "body_format": "multipart",
+    "body": {
+     "page": "str:page",
+     "limit": "str:limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "data.artworks",
+     "key": "products",
+     "total": "data.total",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "url": "url",
+      "image_url": "image.thumb",
+      "orientation": "orientation",
+      "keywords": "keywords"
+     }
+    },
+    "docs": "https://www.pictorem.com/artflow/0.1/docs/",
+    "note": "getartworklist: your own Pictorem artworks (name, keywords, categories, orientation, image set). Pictorem sells made-to-order prints: a sellable product is an artwork plus a preordercode (numCopies|material|type|orientation|width|height|options…, see the code builder) priced with getprice. `query`/`category` are not applied."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/sendorder/",
+    "body_format": "multipart",
+    "body": {
+     "orderList[0][code]": "str:items.0.code",
+     "orderList[0][fileurl]": "str:items.0.fileurl",
+     "orderList[0][filetype]": "str:items.0.filetype",
+     "orderList[0][collectionID]": "str:items.0.collectionID",
+     "orderList[0][bordercolorhex]": "str:items.0.bordercolorhex",
+     "orderList[0][comment]": "str:items.0.comment",
+     "orderList[1][code]": "str:items.1.code",
+     "orderList[1][fileurl]": "str:items.1.fileurl",
+     "orderList[1][filetype]": "str:items.1.filetype",
+     "orderList[1][collectionID]": "str:items.1.collectionID",
+     "orderList[1][bordercolorhex]": "str:items.1.bordercolorhex",
+     "orderList[1][comment]": "str:items.1.comment",
+     "orderList[2][code]": "str:items.2.code",
+     "orderList[2][fileurl]": "str:items.2.fileurl",
+     "orderList[2][filetype]": "str:items.2.filetype",
+     "orderList[2][collectionID]": "str:items.2.collectionID",
+     "orderList[2][bordercolorhex]": "str:items.2.bordercolorhex",
+     "orderList[2][comment]": "str:items.2.comment",
+     "orderList[3][code]": "str:items.3.code",
+     "orderList[3][fileurl]": "str:items.3.fileurl",
+     "orderList[3][filetype]": "str:items.3.filetype",
+     "orderList[3][collectionID]": "str:items.3.collectionID",
+     "orderList[3][bordercolorhex]": "str:items.3.bordercolorhex",
+     "orderList[3][comment]": "str:items.3.comment",
+     "orderList[4][code]": "str:items.4.code",
+     "orderList[4][fileurl]": "str:items.4.fileurl",
+     "orderList[4][filetype]": "str:items.4.filetype",
+     "orderList[4][collectionID]": "str:items.4.collectionID",
+     "orderList[4][bordercolorhex]": "str:items.4.bordercolorhex",
+     "orderList[4][comment]": "str:items.4.comment",
+     "deliveryInfo[firstname]": "shipping_address.firstname",
+     "deliveryInfo[lastname]": "shipping_address.lastname",
+     "deliveryInfo[company]": "shipping_address.company",
+     "deliveryInfo[address1]": "shipping_address.address1",
+     "deliveryInfo[address2]": "shipping_address.address2",
+     "deliveryInfo[city]": "shipping_address.city",
+     "deliveryInfo[province]": "shipping_address.province",
+     "deliveryInfo[country]": "shipping_address.country",
+     "deliveryInfo[cp]": "shipping_address.cp",
+     "deliveryInfo[phone]": "shipping_address.phone",
+     "po": "shipping_address.po",
+     "ordercomment": "shipping_address.ordercomment"
+    },
+    "result": {
+     "fields": {
+      "id": "orderid",
+      "status": "=submitted"
+     }
+    },
+    "docs": "https://www.pictorem.com/artflow/0.1/docs/",
+    "note": "sendorder (multipart form). `items`: up to 5 lines in Pictorem form [{code: preordercode, fileurl + filetype (jpg/png/tiff) OR collectionID, bordercolorhex (when the code needs it), comment}]; `shipping_address`: {firstname, lastname, company?, address1, address2?, city, province (state code), country (ISO or name), cp (postal code), phone?, po? (your unique reference; makes retries safe), ordercomment?}. Without a getshippingquote quote the order is created with no shipping charge; `shipping_option` is not applied. Returns the Pictorem orderid."
+   },
+   "get_order": {
+    "method": "POST",
+    "path": "/getorderstatus/",
+    "body_format": "multipart",
+    "body": {
+     "orderid": "id"
+    },
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "orderid",
+      "status": "order_status_label",
+      "total": "total",
+      "currency": "currency",
+      "created_at": "date",
+      "tracking_number": "tracking_number",
+      "carrier": "tracking_carrier",
+      "production_status": "production_status_label",
+      "production_progress": "production_progress",
+      "po": "po"
+     }
+    },
+    "docs": "https://www.pictorem.com/artflow/0.1/docs/",
+    "note": "getorderstatus by Pictorem order id: order_status (commercial: Processing, Shipped, Canceled…) and production_status (workshop stage, progress %), billing status, tracking, delivery and lines in raw."
+   },
+   "track": {
+    "method": "POST",
+    "path": "/getorderstatus/",
+    "body_format": "multipart",
+    "body": {
+     "orderid": "order_id"
+    },
+    "result": {
+     "root": "order",
+     "fields": {
+      "status": "order_status_label",
+      "tracking_number": "tracking_number",
+      "carrier": "tracking_carrier",
+      "production_status": "production_status_label",
+      "production_progress": "production_progress",
+      "events": "lines"
+     }
+    },
+    "docs": "https://www.pictorem.com/artflow/0.1/docs/",
+    "note": "getorderstatus: tracking_number/tracking_carrier once shipped (UPS), order and production status; per-line tracking under events (lines)."
+   }
+  },
+  "not_offered": {
+   "get_product": "There is no single-product endpoint: products are preordercodes validated with validatepreorder and priced with getprice (https://www.pictorem.com/artflow/0.1/docs/), and artworks are only listed in pages by getartworklist.",
+   "quote_shipping": "getshippingquote requires 'deliveryInfo[city] text *', 'deliveryInfo[province] text *' and 'deliveryInfo[cp] text *' plus the product code (https://www.pictorem.com/artflow/0.1/docs/); the vocabulary's quote_shipping has only product_id, country and quantity."
+  },
+  "terms": "ArtFlow API v0.1 (https://www.pictorem.com/artflow/0.1/docs/): every endpoint is HTTPS POST with multipart/form-data and the ArtFlowKey header; responses carry status true/false and msg.error[] (HTTP 422 on validation errors). A test-mode key or testmode=1 runs orders without creating them."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.pictorem.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; names not found on the page: create_order:orderList[0][collectionID], create_order:orderList[1][bordercolorhex], create_order:orderList[1][collectionID], create_order:orderList[1][comment], create_order:orderList[2][bordercolorhe"
+  ],
+  "notes": "-"
+ }
+}

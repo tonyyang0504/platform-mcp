@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "zbj-mcp",
+ "display_name": "Zhubajie MCP",
+ "version": "0.1.0",
+ "description": "Zhubajie (deals): me, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "zbj"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZBJ_APP_KEY": "${user_config.platform_mcp_zbj_app_key}",
+    "PLATFORM_MCP_ZBJ_APP_SECRET": "${user_config.platform_mcp_zbj_app_secret}",
+    "PLATFORM_MCP_ZBJ_ACCESS_TOKEN": "${user_config.platform_mcp_zbj_access_token}",
+    "PLATFORM_MCP_ZBJ_OPENID": "${user_config.platform_mcp_zbj_openid}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zbj_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZBJ_APP_KEY",
+   "description": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zbj_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZBJ_APP_SECRET",
+   "description": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + sorted name/value pairs + secret. Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zbj_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZBJ_ACCESS_TOKEN",
+   "description": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 account.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zbj_openid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZBJ_OPENID",
+   "description": "Your 猪八戒 openid (the user identifier returned by the ZOP OAuth2.0 authorisation), used by zbj.user.getUserBaseInfo.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "zbj.user.getUserBaseInfo (openid): nickname, userName, avatarPath, openid of the authorised account."
+  },
+  {
+   "name": "get_posting",
+   "description": "zbj.task.getDetailById (taskId): the 需求 with title, content, mode (1 比稿, 2 招标, 3 众包), employer nickname, amount (budget, CNY), hostedAmount, createTime (epoch seconds), remainTime (seconds), worksAvailableNum, category ids, milestones and attachments (in raw)."
+  }
+ ]
+}

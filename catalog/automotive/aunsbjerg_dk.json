@@ -1,0 +1,35 @@
+{
+ "id": "aunsbjerg_dk",
+ "category": "automotive",
+ "label": "Aunsbjerg",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.aunsbjerg.com",
+ "domain": "aunsbjerg.com",
+ "country": "Denmark",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Listings rendered by vendor carads.io widget; no Aunsbjerg API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://aunsbjerg.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

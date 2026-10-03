@@ -1,0 +1,33 @@
+{
+ "id": "heycar_fr",
+ "category": "automotive",
+ "label": "Heycar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://heycar.com",
+ "domain": "heycar.com",
+ "country": "France",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). No public heycar API; dealer stock arrives via third-party feed providers. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

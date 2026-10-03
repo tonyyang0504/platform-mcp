@@ -1,0 +1,36 @@
+{
+ "id": "crunchbase",
+ "category": "sales",
+ "label": "Crunchbase",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://data.crunchbase.com/docs",
+ "url": "https://www.crunchbase.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Crunchbase Data API needs a paid Crunchbase key; robots.txt (17 Disallow) — public pages are not fetched, the API is.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

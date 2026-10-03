@@ -1,0 +1,38 @@
+{
+ "id": "volvoselekt",
+ "category": "automotive",
+ "label": "Selekt",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://selekt.volvocars.co.th",
+ "domain": "selekt.volvocars.co.th",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Volvo Cars Developer Portal only covers connected-vehicle APIs; no API for Selekt used-car inventory.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://selekt.volvocars.co.th/"
+  ],
+  "unofficial": [
+   "https://github.com/volvo-cars/developer-portal-api-samples",
+   "https://github.com/volvo-cars/developer-portal-api-samples/blob/main/README.md"
+  ]
+ },
+ "official_mcp": []
+}

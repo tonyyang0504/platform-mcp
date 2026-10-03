@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "meta-mcp",
+ "display_name": "Meta Ads MCP",
+ "version": "0.1.0",
+ "description": "Meta Ads (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to a",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "meta"
+   ],
+   "env": {
+    "PLATFORM_MCP_META_ACCESS_TOKEN": "${user_config.platform_mcp_meta_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_meta_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_ACCESS_TOKEN",
+   "description": "Long-lived user or Business Manager system-user access token with ads_read (reads) and ads_management (budget updates), from an app with the Marketing API product; sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v26.0/me?fields=id,name: the user (or system user) behind the token."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /me/adaccounts. `id` is the `act_<ad_account_id>` form that the other tools take as account_id; account_status 1 = ACTIVE, 2 = DISABLED, 101 = CLOSED. Up to 100 accounts (list_accounts takes no paging arguments); paging is cursor-based (paging.cursors.after), so only the first page is returned."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /act_<id>/campaigns (account_id must carry the act_ prefix, as list_accounts returns it). By default only non-archived, non-deleted campaigns. `status` is not sent (the effective_status filter is a JSON list). daily_budget/lifetime_budget in raw are strings in the currency's minor unit (cents), so they are not mapped to `budget`. Paging is cursor-based; only the first page is returned."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /{campaign_id} {daily_budget} answers {success: true}. daily_budget is an integer in the account currency's MINOR unit (e.g. 5000 = 50.00 USD) and applies only to campaigns using campaign budget (Advantage+ campaign budget); ad-set budgets are set on the ad set. `currency` is ignored (the account currency applies)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /{campaign_id} {status: PAUSED|ACTIVE} (pause → PAUSED, resume → ACTIVE) answers {success: true}. Pausing a campaign stops all its ad sets and ads; ARCHIVED/DELETED are not reachable from this verb."
+  }
+ ]
+}

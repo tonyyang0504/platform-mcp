@@ -1,0 +1,36 @@
+{
+ "id": "kr_open_dart",
+ "category": "sales",
+ "label": "OpenDART",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://opendart.fss.or.kr/",
+ "url": "https://dart.fss.or.kr/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free API key from OpenDART → platform-key; listed / reporting companies only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

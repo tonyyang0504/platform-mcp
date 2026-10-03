@@ -1,0 +1,291 @@
+{
+ "id": "alimama",
+ "category": "ads",
+ "label": "阿里妈妈 Alimama",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.taobao.com/api.htm?docId=68584&docType=2",
+ "url": "https://www.alimama.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "ISV programme on the 淘宝开放平台 (open.taobao.com) with merchant authorization; search results describe the product consolidation (万相台无界版 merging 直通车 / 引力魔方 / 万相台) but no readable API reference. Free API; ISV approval.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "oauth2 (淘宝开放平台 ISV app + merchant authorization — TODO(verify))",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "keywords",
+   "reports"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (ISV-only 直通车 API family on the Taobao Open Platform; not verifiable this pass) Confidence: **low**.",
+  "base_urls": [
+   "https://eco.taobao.com/router/rest"
+  ],
+  "auth": [
+   "1. Become an ISV on the 淘宝开放平台 and apply for the 阿里妈妈 / 直通车 API category.",
+   "2. Merchant (advertiser) authorizes the app → session key.",
+   "3. Call `taobao.simba.campaign.*`, `taobao.simba.adgroup.*`, `taobao.simba.keyword.*`, `taobao.simba.rpt.*` (TODO(verify))."
+  ],
+  "endpoints": [
+   {
+    "call": "taobao.simba.campaigns.get` · `taobao.simba.campaign.add` · `…budget.update",
+    "purpose": "campaigns + budget",
+    "notes": "campaign_id, title, budget (TODO(verify))"
+   },
+   {
+    "call": "taobao.simba.adgroup.*",
+    "purpose": "ad groups + default price",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "taobao.simba.keywords.*",
+    "purpose": "keywords + bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "taobao.simba.rpt.*",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - ISV approval required; Taobao Open Platform terms; free API.",
+  "mcp_sdk": [
+   "Community affiliate MCP servers (淘宝客) exist — not advertising."
+  ],
+  "sources": [
+   "https://open.alimama.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://eco.taobao.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error_response",
+   "ok_value": null,
+   "error_field": "error_response"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "AppKey of a 淘宝开放平台 application granted the 阿里妈妈 万相台无界 API permission (https://open.taobao.com)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "AppSecret of that application; never sent, used for the MD5 request signature."
+    },
+    {
+     "name": "session",
+     "required": true,
+     "help": "Seller session key (授权信息 'session') issued when the merchant authorised the app through the TOP OAuth flow (https://open.taobao.com/doc.htm?docId=101617&docType=1: session is required for APIs marked 需要授权); renew it by re-authorising when it expires."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_fmt",
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+    "timestamp_offset": "+08:00",
+    "params": {
+     "app_key": "{@app_key}",
+     "session": "{@session}",
+     "v": "2.0",
+     "format": "json",
+     "simplify": "true",
+     "sign_method": "md5"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "config_fields": [
+   {
+    "name": "biz_code",
+    "required": true,
+    "help": "万相台无界 scene code (api业务线编码) sent in top_service_context, e.g. onebpDisplay (人群推广), onebpSearch (关键词推广) or onebpSite (全站推广); taobao.universalbp.new.account.get.can.use.bizcode lists the codes the account may use."
+   }
+  ],
+  "terms": "淘宝开放平台 TOP (https://open.taobao.com/doc.htm?docId=101617&docType=1): every call goes to https://eco.taobao.com/router/rest with method, app_key, session, timestamp ('yyyy-MM-dd HH:mm:ss，时区为GMT+8', within 10 minutes), v=2.0, sign_method=md5 and sign = MD5(secret + sorted name/value pairs + secret) in upper case; complex parameters are JSON strings. Failures answer {error_response: {code, msg, sub_code, sub_msg}}; business results carry top_result.info.ok. The 万相台无界 API group is free but 'must be authorised by the user'.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/router/rest",
+    "params": {
+     "top_service_context": "jsonstr:{\"biz_code\": {@biz_code}}"
+    },
+    "fixed_params": {
+     "method": "taobao.universalbp.new.account.get.can.use.bizcode"
+    },
+    "docs": "https://open.taobao.com/api.htm?docId=68735&docType=2",
+    "note": "taobao.universalbp.new.account.get.can.use.bizcode (获取账户可用的bizCode): the marketing scenes the authorised account can use, each {biz_code, app_id, market_name}."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/router/rest",
+    "params": {
+     "top_service_context": "jsonstr:{\"biz_code\": {@biz_code}}",
+     "campaign_query_v_o": "jsonstr:{\"offset\": {offset}, \"page_size\": {limit}}"
+    },
+    "fixed_params": {
+     "method": "taobao.universalbp.new.campaign.findpage"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "universalbp_new_campaign_findpage_response.top_result.campaign_v_o_top_bulk_data.campaign_v_o_list",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name",
+      "status": "display_status",
+      "start": "launch_time.start_time",
+      "end": "launch_time.end_time"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docId=68584&docType=2",
+    "note": "taobao.universalbp.new.campaign.findpage (查询计划分页列表) for the configured biz_code scene, paged with campaign_query_v_o {offset, page_size}. Each campaign has campaign_id, campaign_name, display_status (start 正在推广, pause 暂停推广, terminate, wait, pending, wait_pay), online_status, dmc_type and day_budget (a string in 元, left in raw), launch_time, promotion_scene, optimize_target. account_id and status are not sent (the session selects the shop; status_list would need its own JSON array)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/router/rest",
+    "params": {
+     "top_service_context": "jsonstr:{\"biz_code\": {@biz_code}}",
+     "top_campaign_report_query_v_o": "jsonstr:{\"by_page\": true, \"split_type\": \"day\", \"unify_type\": \"zhai\", \"effect_equal\": 15, \"start_time\": {date:date_from}, \"end_time\": {date:date_to}, \"query_domains\": [\"date\", \"campaign\"], \"query_field_in_list\": [\"adPv\", \"click\", \"charge\", \"ctr\", \"ecpc\"], \"offset\": 0, \"page_size\": 100}"
+    },
+    "fixed_params": {
+     "method": "taobao.universalbp.new.report.query.campaign"
+    },
+    "result": {
+     "items": "universalbp_new_report_query_campaign_response.top_result.top_report_v_o_top_bulk_data.top_report_v_o_list",
+     "key": "rows"
+    },
+    "docs": "https://open.taobao.com/api.htm?docId=68794&docType=2",
+    "note": "taobao.universalbp.new.report.query.campaign (计划报表查询): per day and campaign (query_domains date, campaign; split_type day; last-click attribution zhai over 15 days) with ad_pv, click, charge (花费, 元), ctr, ecpc; first 100 rows. campaign_id is not applied (filter rows by campaign_id); account_id is not sent (the session selects the shop)."
+   },
+   "update_budget": {
+    "method": "GET",
+    "path": "/router/rest",
+    "params": {
+     "top_service_context": "jsonstr:{\"biz_code\": {@biz_code}}",
+     "campaign_budget_list_v_o": "jsonstr:{\"budget_list\": [{\"campaign_id\": {int:campaign_id}, \"dmc_type\": \"normal\", \"day_budget\": {daily_budget}}]}"
+    },
+    "fixed_params": {
+     "method": "taobao.universalbp.new.campaign.budget.batchupdate"
+    },
+    "result": {
+     "root": "universalbp_new_campaign_budget_batchupdate_response.top_result",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docId=68722&docType=2",
+    "note": "taobao.universalbp.new.campaign.budget.batchupdate (批量更新计划预算) with budget_list [{campaign_id, dmc_type: normal (日预算), day_budget (元)}]. This spends money. A rejected campaign is reported inside a successful response (raw.campaign_budget_update_result_v_o_top_part_data.error_details, info.ok) rather than as an error. currency is ignored (CNY)."
+   },
+   "pause_resume": {
+    "method": "GET",
+    "path": "/router/rest",
+    "params": {
+     "method": "map:action:pause=taobao.universalbp.new.campaign.oneclick,resume=taobao.universalbp.new.campaign.onerecover",
+     "top_service_context": "jsonstr:{\"biz_code\": {@biz_code}}",
+     "one_click_v_o": "jsonstr:{\"campaign_id_list\": [{int:campaign_id}]}"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docId=70473&docType=2",
+    "note": "pause → taobao.universalbp.new.campaign.oneclick (一键暂停), resume → taobao.universalbp.new.campaign.onerecover (一键恢复, https://open.taobao.com/api.htm?docId=70472&docType=2), each with one_click_v_o {campaign_id_list: [campaign_id]}; the answer is top_result.info {ok, message, error_code} (see raw). Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The 万相台无界 API works on the shop whose seller authorised the session; its account calls report balances (taobao.universalbp.new.account.get.balance), usable scenes (…account.get.can.use.bizcode) and whether the shop is a 无界 user, but none lists ad accounts (https://open.taobao.com/api.htm?docId=68584&docType=2, 万相台无界API group)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, session, biz_code; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

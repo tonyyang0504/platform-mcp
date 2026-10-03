@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "x-mcp",
+ "display_name": "X MCP",
+ "version": "0.1.0",
+ "description": "X (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics_post. E",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "x"
+   ],
+   "env": {
+    "PLATFORM_MCP_X_CLIENT_ID": "${user_config.platform_mcp_x_client_id}",
+    "PLATFORM_MCP_X_CLIENT_SECRET": "${user_config.platform_mcp_x_client_secret}",
+    "PLATFORM_MCP_X_REFRESH_TOKEN": "${user_config.platform_mcp_x_refresh_token}",
+    "PLATFORM_MCP_X_USER_ID": "${user_config.platform_mcp_x_user_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_x_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_CLIENT_ID",
+   "description": "OAuth 2.0 Client ID of the X app (Developer Console > Keys and tokens). Sent as the HTTP Basic username on POST https://api.x.com/2/oauth2/token (grant_type=refresh_token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_CLIENT_SECRET",
+   "description": "OAuth 2.0 Client Secret of a CONFIDENTIAL client ('Web App and Automated App or bots are confidential clients'; 'You don't need client id for confidential clients with a valid Authorization Header'); HTTP Basic password on the token request. Public clients (Native App, Single page App) are not supported by this entry.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time OAuth 2.0 Authorization Code Flow with PKCE consent with scopes tweet.read tweet.write users.read offline.access ('If the scope offline.access is applied an OAuth 2.0 refresh token will be issued', https://docs.x.com/resources/fundamentals/authentication/oauth-2-0/authorization-code). Access tokens (2 h) are minted from it; a new refresh token returned by the grant replaces the old one in memory (and in PLATFORM_MCP_STATE_DIR/x.json when that is set).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_USER_ID",
+   "description": "Numeric X user id of the authorizing account (data.id from the `me` tool, GET /2/users/me); read_mentions calls /2/users/<user_id>/mentions. Env: PLATFORM_MCP_X_USER_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /2/users/me (users.read, tweet.read) answers {data: {id, name, username, public_metrics, ...}}; data.id is the user_id config value."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /2/tweets {text, reply.in_reply_to_tweet_id} (operationId createPosts; tweet.write) answers 201 {data: {id, text}}. The URL is https://x.com/i/web/status/<id>. Billed per request (Post: Create $0.015, $0.200 with a URL)."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /2/tweets/search/recent?query=conversation_id:<post_id> returns replies in the post's conversation from the last 7 days ('Must be within the last 7 days'); max_results is 10-100 (a smaller `limit` is rejected by X). `author` is the author_id. Pagination uses next_token, so `page` is not sent. Billed per Post read."
+  },
+  {
+   "name": "reply_comment",
+   "description": "A reply is a Post with reply.in_reply_to_tweet_id set to the comment's post id."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /2/users/{id}/mentions (operationId getUsersMentions; max_results 5-100). `since` is sent as start_time (RFC 3339 date-time, e.g. 2026-09-01T00:00:00Z). pagination_token paging, so `page` is not sent. Owned Reads pricing ($0.001 per Post) applies when id is the authenticated user."
+  },
+  {
+   "name": "delete",
+   "description": "DELETE /2/tweets/{id} (operationId deletePosts; tweet.write) answers {data: {deleted: true}}. Billed as Interaction: Delete ($0.010)."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /2/tweets/{id}?post.fields=public_metrics,created_at: `metrics` is PostPublicMetrics {repost_count, reply_count, like_count, quote_count, bookmark_count, impression_count} 'at the time of the request'."
+  }
+ ]
+}

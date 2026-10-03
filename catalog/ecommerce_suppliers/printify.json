@@ -1,0 +1,259 @@
+{
+ "id": "printify",
+ "category": "ecommerce_suppliers",
+ "label": "Printify",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.printify.com/",
+ "url": "https://printify.com/",
+ "verified_at": null,
+ "terms_note": "\"All integrations must comply with the Printify Terms and Printify API Terms\"",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "oauth",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "personal access token (per merchant) or OAuth 2.0 for platforms (access scopes); shop id per store",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "product_import",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "stock_feed",
+   "price_feed"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI specification (download on developers.printify.com); cURL / Node / Python / PHP samples"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.printify.com/v1/…"
+  ],
+  "auth": [
+   "1. Merchant creates a personal access token in Printify (or the platform registers an OAuth 2.0 app with access scopes)",
+   "2. Send `Authorization: Bearer <token>`",
+   "3. Read the shop id (GET shops) — every product / order call is per shop"
+  ],
+  "endpoints": [
+   {
+    "call": "Catalog: blueprints, print providers, variants, shipping",
+    "purpose": "blank catalogue + per-provider variants and shipping",
+    "notes": ""
+   },
+   {
+    "call": "Products: create / update / publish / delete",
+    "purpose": "the merchant's POD products (print areas, variants, prices)",
+    "notes": "publish limit 200 / 30 min"
+   },
+   {
+    "call": "Orders: create, submit for production, cancel, get, list, shipping cost estimate",
+    "purpose": "order lifecycle",
+    "notes": ""
+   },
+   {
+    "call": "Uploads",
+    "purpose": "design images",
+    "notes": ""
+   },
+   {
+    "call": "Webhooks · Events",
+    "purpose": "order:created / sent-to-production / shipment:created …",
+    "notes": ""
+   }
+  ],
+  "limits": " 600 requests / minute per account; Catalog 100 / minute; publish 200 / 30 minutes; error responses ≤ 5 % of traffic; 429 above. - Printify Terms + API Terms - Usage monitored per account",
+  "mcp_sdk": [
+   "OpenAPI specification (download on developers.printify.com); cURL / Node / Python / PHP samples"
+  ],
+  "sources": [
+   "https://developers.printify.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.printify.com/v1",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Printify personal access token (My profile > Connections) sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "shop_id",
+    "required": false,
+    "help": "Printify shop id (from GET /v1/shops.json); required by get_order and create_order, which are per shop."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/shops.json",
+    "docs": "https://developers.printify.com/#shops",
+    "note": "GET /v1/shops.json lists the merchant's shops [{id, title, sales_channel}]; take the shop id from here for the shop_id setting."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/catalog/blueprints.json",
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "images.0",
+      "brand": "brand",
+      "model": "model"
+     }
+    },
+    "docs": "https://developers.printify.com/#catalog",
+    "note": "Blank-product catalogue (blueprints [{id, title, brand, model, images[]}]); unpaginated, the full list is returned and `query`/`category` are not accepted by the endpoint. Catalog calls are limited to 100/minute."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/catalog/blueprints/{id}.json",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "images.0",
+      "brand": "brand",
+      "model": "model"
+     }
+    },
+    "docs": "https://developers.printify.com/#catalog",
+    "note": "One blueprint; variants and prices are per print provider (GET /v1/catalog/blueprints/{id}/print_providers/{ppid}/variants.json, not mapped)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/shops/{shop_id}/orders.json",
+    "path_params": {
+     "shop_id": "@shop_id"
+    },
+    "body": {
+     "line_items": "items",
+     "address_to": "shipping_address",
+     "shipping_method": "shipping_option"
+    },
+    "result": {
+     "fields": {
+      "id": "id"
+     }
+    },
+    "docs": "https://developers.printify.com/#orders",
+    "note": "POST /v1/shops/{shop_id}/orders.json creates the order in the shop; it is NOT submitted for production (a separate documented call), so nothing is charged by this tool. `items` are Printify line_items [{product_id, variant_id, quantity}], `shipping_address` is address_to {first_name, last_name, email, phone, country, region, address1, address2, city, zip}, `shipping_option` is the numeric shipping_method id from the shipping estimate. Needs the shop_id setting."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/shops/{shop_id}/orders/{id}.json",
+    "path_params": {
+     "shop_id": "@shop_id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "total_price",
+      "created_at": "created_at",
+      "tracking_number": "shipments.0.number",
+      "tracking_url": "shipments.0.url"
+     }
+    },
+    "docs": "https://developers.printify.com/#orders",
+    "note": "GET /v1/shops/{shop_id}/orders/{order_id}.json: {id, status, total_price, total_shipping, created_at, shipments[{carrier, number, url, delivered_at}]}; amounts are integers in cents. Needs the shop_id setting."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /v1/shops/{shop_id}/orders/shipping.json takes nested line_items[{product_id, variant_id, quantity}] + address_to{country, region, ...}; the vocabulary's product_id/country/quantity cannot be shaped into that body by the runtime's flat body form.",
+   "track": "No tracking-events endpoint; shipments[{carrier, number, url, delivered_at}] are part of the order record (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host api.printify.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: list_products returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

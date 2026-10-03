@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/sticker_mule-mcp",
+ "description": "Sticker Mule API (ecommerce suppliers): me, list_products, create_order. Every tool maps to a docume",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.stickermule.com/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "sticker_mule"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_STICKER_MULE_API_KEY",
+     "description": "Personal API key generated under Account settings > Store settings on stickermule.com (shown once; personal accounts only, not team accounts), sent as `Authorization: Bearer`. It can place orders on the saved payment methods.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_STICKER_MULE_PAYMENT_ID",
+     "description": "paymentId for create_order: a saved payment method id from GET /api/payments (not mapped). Orders are charged to it.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_STICKER_MULE_CURRENCY",
+     "description": "ISO 4217 currency for list_products prices (the `currency` query parameter; Sticker Mule defaults to USD).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_STICKER_MULE_LOCALE",
+     "description": "Locale for product names and prices in list_products (the `locale` query parameter; default en).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

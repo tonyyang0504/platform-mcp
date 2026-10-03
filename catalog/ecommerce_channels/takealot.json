@@ -1,0 +1,238 @@
+{
+ "id": "takealot",
+ "category": "ecommerce_channels",
+ "label": "Takealot Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "za"
+ ],
+ "docs_url": "https://seller-api.takealot.com/api-docs/",
+ "url": "https://www.takealot.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Takealot Marketplace seller (South African business, ZAR); API key self-generated in the Seller Portal; offers bind to Takealot catalogue products; sandbox / rate limits / returns not on the pages read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (generated in the Seller Portal at seller.takealot.com/api/seller-api; `Authorization: Key <api key>`)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentatio",
+  "base_urls": [
+   "https://seller-api.takealot.com/v2/…"
+  ],
+  "auth": [
+   "1. Seller Portal › API (seller.takealot.com/api/seller-api) → generate key.",
+   "2. Attach `Authorization: Key …` to every request."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/offers · GET /v2/offers/offer/{identifier}",
+    "purpose": "offers (SKU / offer id / TSIN)",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/offers/offer/{identifier}",
+    "purpose": "create offer on a catalogue product",
+    "notes": "price, RRP, leadtime stock, status"
+   },
+   {
+    "call": "PATCH /v2/offers/offer/{identifier}",
+    "purpose": "update price / stock (leadtime) / status",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/offers/batch",
+    "purpose": "bulk offer updates",
+    "notes": ""
+   },
+   {
+    "call": "GET /{version}/sales · /sales/summary · /sales/orders",
+    "purpose": "sales, summaries, order details",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read. - Takealot seller agreement (ZA); fulfilment via Takealot DC / lead-time.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://seller-api.takealot.com/api-docs/",
+   "https://r.jina.ai/https://seller-api.takealot.com/api-docs/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://seller-api.takealot.com",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "field": "authorization",
+   "fields": [
+    {
+     "name": "authorization",
+     "required": true,
+     "help": "The complete Authorization header value for your Seller API key exactly as the Takealot Seller Portal shows it (Seller Portal > API, https://seller.takealot.com/api/seller-api — generate the key there; the public reference only says to 'attach an Authorization header' and defers the format to that page)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "merchant_warehouse_id",
+    "required": false,
+    "help": "Your leadtime merchant_warehouse_id (listed at https://seller.takealot.com/api/seller-api/offers); required by set_inventory."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Takealot Seller API v2 (South Africa). Takealot fulfils from its own DCs or your leadtime stock; prices are whole rand.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/offers/count",
+    "docs": "https://seller-api.takealot.com/api-docs/#/Offers%20(v2)/get_offers_count_v2",
+    "note": "No account endpoint; the probe returns the number of your offers ({count}) to verify the key."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/v2/offers/offer/{listing_id}",
+    "body": {
+     "selling_price": "int:price"
+    },
+    "result": {
+     "root": "offer",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://seller-api.takealot.com/api-docs/#/Offers%20(v2)/update_offer_by_identifier_v2",
+    "note": "PATCH /v2/offers/offer/{identifier} {selling_price} changes the LIVE selling price. `listing_id` is Takealot's Offer ID, or your SKU/barcode prefixed as SKU<sku> / BARCODE<barcode>; `price` must be a positive whole number of rand (decimals are rejected). Stock is set_inventory; titles are catalogue data. validation_errors in raw."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/v2/offers/offer/{identifier}",
+    "path_params": {
+     "identifier": "fmt:SKU{sku}"
+    },
+    "body": {
+     "leadtime_stock.0.merchant_warehouse_id": "int:@merchant_warehouse_id",
+     "leadtime_stock.0.quantity": "quantity"
+    },
+    "result": {
+     "root": "offer",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://seller-api.takealot.com/api-docs/#/Offers%20(v2)/update_offer_by_identifier_v2",
+    "note": "PATCH /v2/offers/offer/SKU{sku} {leadtime_stock: [{merchant_warehouse_id, quantity}]} sets your LEADTIME (merchant-warehouse) stock for the offer with that SKU; stock already at Takealot DCs is not changed. Needs the merchant_warehouse_id config field."
+   },
+   "end_listing": {
+    "method": "PATCH",
+    "path": "/v2/offers/offer/{listing_id}",
+    "body": {
+     "status_action": "=Disable"
+    },
+    "result": {
+     "root": "offer",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://seller-api.takealot.com/api-docs/#/Offers%20(v2)/update_offer_by_identifier_v2",
+    "note": "status_action Disable sets the offer to 'Disabled by Seller' (reversible with Re-enable). `listing_id` is the Offer ID or SKU<sku>."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /v2/offers/offer/{barcode} creates an offer on an existing Takealot catalogue product identified by its barcode, with whole-rand selling_price/rrp and leadtime data; the vocabulary has no barcode.",
+   "list_orders": "GET /v1/sales/orders requires both start_date AND end_date (swagger get_sales_orders); the vocabulary has only `since` and the runtime cannot derive an end date.",
+   "mark_shipped": "Takealot fulfils customer orders from its distribution centres (sellers ship leadtime stock to Takealot via purchase orders); the Seller API has no customer-shipment or tracking call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host seller-api.takealot.com: DNS ok, TLSv1.3 (GoDaddy.com, Inc.)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://seller-api.takealot.com/api-docs/swagger.json: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

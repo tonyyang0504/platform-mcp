@@ -1,0 +1,37 @@
+{
+ "id": "canton_fair",
+ "category": "sales",
+ "label": "Canton Fair exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "cn",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.cantonfair.org.cn/",
+ "verified_at": "2026-09-05",
+ "terms_note": "No robots.txt served; the exhibitor directory is public on the official site (registration only for the buyer badge).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

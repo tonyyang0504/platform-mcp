@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "sticker_mule-mcp",
+ "display_name": "Sticker Mule API MCP",
+ "version": "0.1.0",
+ "description": "Sticker Mule API (ecommerce suppliers): me, list_products, create_order. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "sticker_mule"
+   ],
+   "env": {
+    "PLATFORM_MCP_STICKER_MULE_API_KEY": "${user_config.platform_mcp_sticker_mule_api_key}",
+    "PLATFORM_MCP_STICKER_MULE_PAYMENT_ID": "${user_config.platform_mcp_sticker_mule_payment_id}",
+    "PLATFORM_MCP_STICKER_MULE_CURRENCY": "${user_config.platform_mcp_sticker_mule_currency}",
+    "PLATFORM_MCP_STICKER_MULE_LOCALE": "${user_config.platform_mcp_sticker_mule_locale}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_sticker_mule_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STICKER_MULE_API_KEY",
+   "description": "Personal API key generated under Account settings > Store settings on stickermule.com (shown once; personal accounts only, not team accounts), sent as `Authorization: Bearer`. It can place orders on the saved payment methods.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_sticker_mule_payment_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STICKER_MULE_PAYMENT_ID",
+   "description": "paymentId for create_order: a saved payment method id from GET /api/payments (not mapped). Orders are charged to it.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_sticker_mule_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STICKER_MULE_CURRENCY",
+   "description": "ISO 4217 currency for list_products prices (the `currency` query parameter; Sticker Mule defaults to USD).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_sticker_mule_locale": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STICKER_MULE_LOCALE",
+   "description": "Locale for product names and prices in list_products (the `locale` query parameter; default en).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Sticker Mule has no account endpoint; the probe reads one saved item (GET /api/items?limit=1) with the key, so `account` is {items, canLoadMore}. A bad key answers 403 ForbiddenError, a missing one 401."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /api/items: only the items you have ordered before and can reorder ('Custom items, packaging tape, and vinyl lettering are not available through the API'). `id` is the item id to pass in create_order items; `price` is retailPrice at the minimum quantity in the currency setting. Rows whose productName is null (product no longer available) are dropped. `query` and `category` are not accepted; limit 1-50, offset paging."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /api/orders places a real reorder and CHARGES the saved payment method from the payment_id setting (GET /api/payments). `items` are [{id (item id from list_products), quantity (within the item's min/max/increment), size (sizeS…size7XL, apparel only)}], up to 50; `shipping_address` must carry `id`, a saved address id from GET /api/addresses (addresses cannot be created through the API). `shipping_option` is not sent. Answers {order: {number}}."
+  }
+ ]
+}

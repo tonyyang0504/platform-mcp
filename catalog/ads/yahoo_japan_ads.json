@@ -1,0 +1,318 @@
+{
+ "id": "yahoo_japan_ads",
+ "category": "ads",
+ "label": "LINEヤフー広告 (formerly Yahoo! JAPAN Ads)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://ads-developers.yahoo.co.jp/ja/ads-api/",
+ "url": "https://www.lycbiz.com/jp/service/yahoo-ads/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Application registration and approval are required before API calls (スタートアップガイド: アプリケーション登録 → API呼び出し → 承認); OAuth 2.0 authorization; 'エンジニアリソースが必要'. Separate Conversion API (server-side events). Rate limits: on the reference pages (JS-only). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (application registration + approval, then OAuth 2.0 authorization)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "creatives_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (LINEヤフー広告 API: Search Ads API + Display Ads API, plus Conversion API and Scripts) Confidence: **high** — official Developer Center pages read (reference pages are JS-only).",
+  "base_urls": [
+   "https://ads-search.yahooapis.jp/api/v{N}/…",
+   "https://ads-display.yahooapis.jp/api/v{N}/…"
+  ],
+  "auth": [
+   "1. Register an application in the Developer Center (アプリケーション登録) and wait for approval (承認).",
+   "2. OAuth 2.0 authorization by the advertiser (or agency) account → access token + refresh token.",
+   "3. Call the service endpoints with `Authorization: Bearer`; services are POST-only JSON operations (`{Service}/get`, `/add`, `/set`, `/remove`)."
+  ],
+  "endpoints": [
+   {
+    "call": "AccountService/get` (Search / Display)",
+    "purpose": "accounts",
+    "notes": "accountId, accountName, accountStatus"
+   },
+   {
+    "call": "CampaignService/get` · `/add` · `/set` · `/remove",
+    "purpose": "campaigns + daily budget",
+    "notes": "campaignName, budget{amount}, campaignType, userStatus, startDate, endDate"
+   },
+   {
+    "call": "AdGroupService/get` · `/add` · `/set",
+    "purpose": "ad groups + bid",
+    "notes": "adGroupName, bid{maxCpc}, userStatus"
+   },
+   {
+    "call": "AdGroupAdService/get` · `/add` · `/set` · `MediaService` (Display creatives)",
+    "purpose": "ads + creative upload",
+    "notes": "ad{type, headline, description, finalUrl}, media (image / video)"
+   },
+   {
+    "call": "KeywordService` (Search) · `AdGroupTargetService` / `AudienceListService` (Display)",
+    "purpose": "keywords / targeting / audiences",
+    "notes": "keywordText, matchType, bid; audienceListType, customAudience"
+   },
+   {
+    "call": "ReportDefinitionService/add` → `/get` → `/download",
+    "purpose": "reports",
+    "notes": "reportType, fields[], reportDateRangeType, reportDownloadFormat CSV"
+   },
+   {
+    "call": "ConversionTrackerService` · `OfflineConversionService/upload",
+    "purpose": "conversions",
+    "notes": "conversionName, conversionType; offline rows (yclid, conversionDateTime, value)"
+   }
+  ],
+  "limits": " - Rate limits on the reference (TODO(verify)); application approval required; free API; LINEヤフー for Business terms.",
+  "mcp_sdk": [
+   "Official Scripts (JavaScript automation without infra); SDKs / samples on the Developer Center (TODO(verify)); no MCP found."
+  ],
+  "sources": [
+   "https://ads-developers.yahoo.co.jp/ja/",
+   "https://ads-developers.yahoo.co.jp/ja/ads-api/",
+   "https://ads-developers.yahoo.co.jp/reference/ads-search-api/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ads-search.yahooapis.jp/api/v20",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://biz-oauth.yahoo.co.jp/oauth/v1/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "x-z-base-account-id": "base_account_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your approved LINEヤフー広告 API application (API管理ツール)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The application's client secret."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from one authorization-code login with a Business ID (scope yahooads, https://ads-developers.yahoo.co.jp/ja/ads-api/startup-guide/api-call.html); valid until the user revokes the app. One-hour access tokens are minted from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "base_account_id",
+    "required": true,
+    "help": "Account the Business ID directly holds rights on (MCC or ad account id from BaseAccountService/get), sent as the x-z-base-account-id header on every call."
+   },
+   {
+    "name": "account_id",
+    "required": false,
+    "help": "Search ad account id used by update_budget and pause_resume (CampaignService/set requires accountId in the body)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/BaseAccountService/get",
+    "body": {
+     "numberResults": "json:200"
+    },
+    "docs": "https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/baseaccount",
+    "note": "POST /BaseAccountService/get: the MCC and ad accounts the Business ID directly holds rights on."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "/BaseAccountService/get",
+    "body": {
+     "numberResults": "json:200"
+    },
+    "result": {
+     "items": "rval.values",
+     "key": "accounts",
+     "require": [
+      "id"
+     ],
+     "fields": {
+      "id": "account.accountId",
+      "name": "account.accountName",
+      "status": "account.accountStatus",
+      "is_mcc": "account.isMccAccount"
+     }
+    },
+    "docs": "https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/baseaccount",
+    "note": "POST /BaseAccountService/get {numberResults: 200}: accounts the Business ID directly holds rights on (MCC accounts included; raw.account.authType shows the permission). Use an id as base_account_id / account_id."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/CampaignService/get",
+    "body": {
+     "accountId": "int:account_id",
+     "userStatuses.0": "status",
+     "numberResults": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 10000,
+    "result": {
+     "items": "rval.values",
+     "key": "campaigns",
+     "total": "rval.totalNumEntries",
+     "require": [
+      "id"
+     ],
+     "fields": {
+      "id": "campaign.campaignId",
+      "name": "campaign.campaignName",
+      "status": "campaign.userStatus",
+      "budget": "campaign.budget.amount",
+      "currency": "=JPY",
+      "start": "campaign.startDate",
+      "end": "campaign.endDate"
+     }
+    },
+    "docs": "https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/campaign",
+    "note": "POST /CampaignService/get {accountId, userStatuses: [status], startIndex, numberResults} with the x-z-base-account-id header. `status` is ACTIVE or PAUSED; `budget` is the daily budget (yen) of individually budgeted campaigns (shared budgets show raw.campaign.budget.campaignBudgetId). Only the first page is returned (Yahoo's startIndex is 1-based and the adapter's offset is 0-based, so it is not sent)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/CampaignService/set",
+    "body": {
+     "accountId": "int:@account_id",
+     "operand.0.campaignId": "int:campaign_id",
+     "operand.0.budget.amount": "int:daily_budget"
+    },
+    "result": {
+     "root": "rval.values.0",
+     "fields": {
+      "status": "=submitted",
+      "operation_succeeded": "operationSucceeded",
+      "campaign_id": "campaign.campaignId",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/campaign",
+    "note": "POST /CampaignService/set {accountId (account_id config), operand: [{campaignId, budget: {amount}}]}: the daily budget in whole yen for an individually budgeted campaign (`currency` is ignored); spends money. Check operation_succeeded and errors in the result."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/CampaignService/set",
+    "body": {
+     "accountId": "int:@account_id",
+     "operand.0.campaignId": "int:campaign_id",
+     "operand.0.userStatus": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "root": "rval.values.0",
+     "fields": {
+      "status": "campaign.userStatus",
+      "operation_succeeded": "operationSucceeded",
+      "campaign_id": "campaign.campaignId",
+      "errors": "errors"
+     }
+    },
+    "docs": "https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/campaign",
+    "note": "POST /CampaignService/set {accountId, operand: [{campaignId, userStatus: PAUSED|ACTIVE}]}. Resuming restarts spending. Check operation_succeeded."
+   }
+  },
+  "not_offered": {
+   "get_report": "Search ads reports are asynchronous: ReportDefinitionService/add creates a job that is polled and then downloaded as a file (ReportDefinitionService/download, https://github.com/yahoojp-marketing/ads-search-api-documents/tree/master/design/v20/reportdefinition); the runtime has no report polling or file download."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads-search.yahooapis.jp: DNS ok, TLSv1.2 (Cybertrust Japan Co., Ltd.)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token biz-oauth.yahoo.co.jp/oauth/v1/token: 400 invalid_client",
+   "authorize https://biz-oauth.yahoo.co.jp/oauth/v1/authorize: 400",
+   "HTML docs spot-check (render-doc): 0/5 tool paths found verbatim on their docs pages; names not found on the page: list_accounts:numberResults, list_campaigns:accountId, list_campaigns:numberResults, list_campaigns:userStatuses, me:numberResults, pause_resume:accountId, pause_resume:operand, update_budget:accountI"
+  ],
+  "notes": "-"
+ }
+}

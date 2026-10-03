@@ -1,0 +1,36 @@
+{
+ "id": "cartrade_in",
+ "category": "automotive",
+ "label": "Cartrade",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.cartrade.com",
+ "domain": "cartrade.com",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official CarTrade developer/partner API documentation found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cartrade.com/",
+   "https://www.cartradetech.com/brands.html"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

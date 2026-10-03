@@ -1,0 +1,106 @@
+{
+ "id": "bitvavo",
+ "category": "trading",
+ "label": "Bitvavo",
+ "lane": "api",
+ "country": "NL",
+ "docs_url": "https://docs.bitvavo.com/docs/rest-api/introduction/",
+ "url": "https://bitvavo.com",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "terms_note": "Public market data only. Rate limit: 1000 weight points per minute per IP for unauthenticated calls, and exceeding it blocks the IP for 15 minutes (https://docs.bitvavo.com/docs/rate-limits/), so the server stays at 2 requests per second. Docs vs live (2026-09-27): GET /v2/markets answers every market in one array, in no documented order and without paging; numbers are strings and may use exponent notation (\"high\": \"7.479E+4\"); an unknown market answers HTTP 400 {errorCode: 205, error: \"market parameter is invalid.\"}.",
+ "adapter": {
+  "base_url": "https://api.bitvavo.com/v2",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/markets",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "symbol",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "base",
+        "quote"
+       ]
+      }
+     ],
+     "key": "markets",
+     "fields": {
+      "symbol": "market",
+      "base": "base",
+      "quote": "quote",
+      "type": "=spot"
+     }
+    },
+    "docs": "https://docs.bitvavo.com/docs/rest-api/get-markets/",
+    "note": "GET /v2/markets returns every market (BTC-EUR, ETH-USDC, ...) in one answer: the server filters by `query` (substring of the market, base or quote, case-insensitive), sorts by symbol and pages locally; the list is fetched once per minute at most. raw has status (trading, halted, auction, ...), order limits, tickSize and orderTypes."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/ticker/24h",
+    "params": {
+     "market": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "market",
+      "last": "num:last",
+      "bid": "num:bid",
+      "ask": "num:ask",
+      "volume": "num:volume"
+     }
+    },
+    "docs": "https://docs.bitvavo.com/docs/rest-api/get-ticker-data-24-h/",
+    "note": "symbol is a market from list_markets, e.g. BTC-EUR. 24-hour ticker: last trade price, best bid/ask and the base-currency volume of the last 24 hours; raw has open/high/low, bidSize/askSize and volumeQuote."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/{symbol}/candles",
+    "params": {
+     "interval": "interval",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "iso:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://docs.bitvavo.com/docs/rest-api/get-candlestick-data/",
+    "note": "interval is one of 1m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 1W, 1M (the documented values); returns the latest `limit` candles, newest first, as documented. time is the candle start in UTC."
+   }
+  },
+  "not_offered": {
+   "me": "Account endpoints need an API key and an HMAC-SHA256 Bitvavo-Access-Signature (https://docs.bitvavo.com/docs/rest-api/introduction/); this entry serves the public market data only.",
+   "get_balances": "GET /v2/balance requires the Bitvavo-Access-Key / Bitvavo-Access-Signature headers (https://docs.bitvavo.com/docs/rest-api/get-account-balance/); public-data entry only.",
+   "list_orders": "GET /v2/ordersOpen requires authentication (https://docs.bitvavo.com/docs/rest-api/get-open-orders/); public-data entry only.",
+   "place_order": "POST /v2/order requires authentication and spends money (https://docs.bitvavo.com/docs/rest-api/create-order/); not mapped in this public-data entry.",
+   "cancel_order": "DELETE /v2/order requires authentication (https://docs.bitvavo.com/docs/rest-api/cancel-order/); not mapped in this public-data entry."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

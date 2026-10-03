@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "topcoder-deals-mcp",
+ "display_name": "Topcoder MCP",
+ "version": "0.1.0",
+ "description": "Topcoder (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/topcoder"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Live public endpoint (no reachable reference page — confidence medium): `GET /v6/challenges?status=Active&page=&perPage=`; status=Active is fixed. No documented keyword parameter, so `query`, `category` and `min_budget` are not sent. The response is a bare array; the total comes only in X-Total / X-Total-Pages headers the runtime does not read, so `total` is null and `next_page` is derived from the page size. `budget_max`/`currency` are the first prize of the first prizeSet (prizeSets[0].prizes[0].value/type); `description` is markdown; phases, track, type, numOfRegistrants and numOfSubmissions stay in `raw`."
+  },
+  {
+   "name": "get_posting",
+   "description": "`GET /v6/challenges/{id}` (challenge UUID) returns the full challenge spec; same mapping as search_postings."
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "auto_de",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.auto.de",
+ "domain": "auto.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auto.de (JS app) only offers dealer sign-up/terms; no API or import-interface docs found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.auto.de/",
+   "https://www.auto.de/dealer/sign-up"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

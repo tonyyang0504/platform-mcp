@@ -1,0 +1,235 @@
+{
+ "id": "aws_marketplace",
+ "category": "marketplaces",
+ "label": "AWS Marketplace",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.aws.amazon.com/marketplace-catalog/",
+ "url": "https://aws.amazon.com/marketplace/management/",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "token",
+  "access": "partner_only",
+  "capabilities": [
+   "StartChangeSet(CreateProduct)",
+   "UpdateInformation",
+   "AddDeliveryOptions",
+   "UpdatePricingTerms",
+   "ReleaseProduct",
+   "ListEntities",
+   "DescribeEntity"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/marketplace-catalog.html"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "aws_access_key_id",
+  "aws_secret_access_key",
+  "aws_session_token?",
+  "entity_type?",
+  "auto_release?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/marketplace-catalog.html"
+  ],
+  "sources": []
+ },
+ "adapter": {
+  "base_url": "https://catalog.marketplace.us-east-1.amazonaws.com",
+  "rate_per_second": 1,
+  "config_fields": [
+   {
+    "name": "entity_type",
+    "required": true,
+    "help": "Catalog entity type of your listings: SaaSProduct, AmiProduct, ContainerProduct, DataProduct (or Offer)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key_id",
+     "required": true,
+     "help": "AWS access key id of the seller account's IAM principal with aws-marketplace:ListEntities, DescribeEntity and SearchAgreements (e.g. the AWSMarketplaceSellerProductsReadOnly policy plus agreement read access)."
+    },
+    {
+     "name": "secret_access_key",
+     "required": true,
+     "help": "The matching AWS secret access key; only used to derive the SigV4 signing key."
+    },
+    {
+     "name": "session_token",
+     "required": false,
+     "help": "Session token when the keys are temporary STS credentials."
+    }
+   ],
+   "sign": {
+    "mode": "aws_sigv4",
+    "service": "aws-marketplace",
+    "region": "us-east-1"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/ListEntities",
+    "body": {
+     "Catalog": "=AWSMarketplace",
+     "EntityType": "@entity_type",
+     "OwnershipType": "=SELF",
+     "MaxResults": "json:1"
+    },
+    "docs": "https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_ListEntities.html",
+    "note": "Verifies the keys by listing one of the seller's own entities (the Catalog API has no identity call)."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "/ListEntities",
+    "body": {
+     "Catalog": "=AWSMarketplace",
+     "EntityType": "@entity_type",
+     "OwnershipType": "=SELF",
+     "MaxResults": "limit",
+     "NextToken": "cursor"
+    },
+    "max_limit": 50,
+    "result": {
+     "items": "EntitySummaryList",
+     "key": "products",
+     "next_cursor": "NextToken",
+     "fields": {
+      "id": "EntityId",
+      "name": "Name",
+      "status": "Visibility",
+      "updated_at": "LastModifiedDate",
+      "entity_type": "EntityType",
+      "arn": "EntityArn"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_ListEntities.html",
+    "note": "ListEntities (Catalog AWSMarketplace, OwnershipType SELF) for the configured entity type; `status` is Visibility (Public, Limited, Restricted, Draft). The `status` input is not applied. Cursor-paginated (NextToken)."
+   },
+   "get_product": {
+    "path": "/DescribeEntity",
+    "params": {
+     "catalog": "=AWSMarketplace",
+     "entityId": "product_id"
+    },
+    "result": {
+     "fields": {
+      "id": "EntityIdentifier",
+      "name": "DetailsDocument.Description.ProductTitle",
+      "description": "DetailsDocument.Description.ShortDescription",
+      "status": "DetailsDocument.Description.Visibility",
+      "updated_at": "LastModifiedDate",
+      "entity_type": "EntityType"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_DescribeEntity.html",
+    "note": "DescribeEntity (GET /DescribeEntity?catalog=AWSMarketplace&entityId=…): the entity's DetailsDocument (Description, PromotionalResources, Dimensions, SupportInformation, Targeting…) in `raw`; `id` is EntityId@RevisionId. Prices live on Offer entities (describe an offer id for its terms)."
+   },
+   "list_sales": {
+    "method": "POST",
+    "path": "https://agreement-marketplace.us-east-1.amazonaws.com/",
+    "headers": {
+     "X-Amz-Target": "AWSMPCommerceService_v20200301.SearchAgreements",
+     "Content-Type": "application/x-amz-json-1.0"
+    },
+    "body": {
+     "catalog": "=AWSMarketplace",
+     "filters.0.name": "=PartyType",
+     "filters.0.values.0": "=Proposer",
+     "filters.1.name": "=AgreementType",
+     "filters.1.values.0": "=PurchaseAgreement",
+     "maxResults": "limit",
+     "nextToken": "cursor"
+    },
+    "max_limit": 50,
+    "result": {
+     "items": "agreementViewSummaries",
+     "key": "sales",
+     "next_cursor": "nextToken",
+     "fields": {
+      "id": "agreementId",
+      "product_id": "proposalSummary.resources.0.id",
+      "status": "status",
+      "created_at": "acceptanceTime",
+      "buyer_account_id": "acceptor.accountId",
+      "offer_id": "proposalSummary.offerId",
+      "start_time": "startTime",
+      "end_time": "endTime"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/marketplace/latest/APIReference/API_marketplace-agreements_SearchAgreements.html",
+    "note": "Agreement Service SearchAgreements (PartyType Proposer, AgreementType PurchaseAgreement): the purchase agreements buyers accepted on your offers — agreementId, buyer account, offer, product, status (ACTIVE, CANCELLED, EXPIRED, RENEWED, REPLACED, TERMINATED), epoch-second times. Amounts are not part of agreements (see the seller reports / GetAgreementTerms); `product_id` and `since` inputs are not applied."
+   },
+   "list_refunds": {
+    "method": "POST",
+    "path": "https://agreement-marketplace.us-east-1.amazonaws.com/",
+    "headers": {
+     "X-Amz-Target": "AWSMPCommerceService_v20200301.ListBillingAdjustmentRequests",
+     "Content-Type": "application/x-amz-json-1.0"
+    },
+    "body": {
+     "catalog": "=AWSMarketplace",
+     "createdAfter": "epoch:since",
+     "maxResults": "limit",
+     "nextToken": "cursor"
+    },
+    "max_limit": 50,
+    "result": {
+     "items": "items",
+     "key": "refunds",
+     "next_cursor": "nextToken",
+     "fields": {
+      "id": "billingAdjustmentRequestId",
+      "sale_id": "agreementId",
+      "amount": "adjustmentAmount",
+      "currency": "currencyCode",
+      "status": "status",
+      "created_at": "createdAt",
+      "invoice_id": "originalInvoiceId"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/marketplace/latest/APIReference/API_marketplace-agreements_ListBillingAdjustmentRequests.html",
+    "note": "Agreement Service ListBillingAdjustmentRequests: seller-initiated billing adjustments (refunds) with agreementId (the sale id from list_sales), original invoice, amount, currency, status and epoch-second createdAt; `since` filters createdAfter."
+   }
+  },
+  "not_offered": {
+   "create_product": "Products are created through StartChangeSet with a CreateProduct change whose DetailsDocument is entity-type specific (https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_StartChangeSet.html), and prices belong to a separate Offer entity (UpdatePricingTerms); a name + price + currency cannot form a valid change set.",
+   "update_price": "Prices are pricing terms on an Offer (UpdatePricingTerms change with per-dimension RateCards; https://docs.aws.amazon.com/marketplace/latest/APIReference/work-with-private-offers.html), not a single price on a product.",
+   "get_sales_stats": "Revenue figures come from the seller reports / delivery data feeds delivered to S3 (https://docs.aws.amazon.com/marketplace/latest/userguide/reports-and-data-feed.html), not from a synchronous API.",
+   "refund": "BatchCreateBillingAdjustmentRequest requires originalInvoiceId, currencyCode, adjustmentReasonCode and clientToken for each entry besides agreementId and amount (https://docs.aws.amazon.com/marketplace/latest/APIReference/API_marketplace-agreements_BatchCreateBillingAdjustmentRequest.html); the vocabulary's refund (sale_id, amount, reason) has no invoice id, so a valid request cannot be built."
+  },
+  "terms": "Catalog API (catalog.marketplace.us-east-1.amazonaws.com, REST-JSON) and Agreement Service (agreement-marketplace.us-east-1.amazonaws.com, JSON 1.0 with X-Amz-Target) are both signed with AWS SigV4, signing name aws-marketplace, Region us-east-1 (endpoint and signing metadata from the AWS SDK service models; https://docs.aws.amazon.com/general/latest/gr/aws-marketplace.html)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key_id, secret_access_key, entity_type; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

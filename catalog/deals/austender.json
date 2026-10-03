@@ -1,0 +1,130 @@
+{
+ "id": "austender",
+ "category": "deals",
+ "label": "AusTender",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "au"
+ ],
+ "docs_url": "https://www.tenders.gov.au/Help",
+ "url": "https://www.tenders.gov.au/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public government RSS, no key, no stated limit; lodging a response requires an AusTender account and is done in the portal.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://www.tenders.gov.au/Help"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.tenders.gov.au/public_data/rss/rss.xml",
+   "docs": "https://www.tenders.gov.au/Help"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://www.tenders.gov.au/Help"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public RSS only) Confidence high (feed opened; Help pages 404).",
+  "base_urls": [
+   "https://www.tenders.gov.au/public_data/rss/rss.xml"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /public_data/rss/rss.xml",
+    "purpose": "search",
+    "notes": "item title (ATM id: title), link → /Atm/Show/<guid>, description (HTML), pubDate"
+   },
+   {
+    "call": "GET /Atm/Show/<guid>",
+    "purpose": "details (HTML page)",
+    "notes": "closing date, agency, category — not machine-readable"
+   }
+  ],
+  "limits": " - Public data, no key, no limit stated. Lodging a response needs an AusTender account (portal only). - docs_url in the registry (https://www.tenders.gov.au/Help) is a 404 — point it at the RSS.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.tenders.gov.au/public_data/rss/rss.xml",
+   "https://www.tenders.gov.au/Help",
+   "https://www.tenders.gov.au/Public/Help"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "The runtime can now parse the RSS 2.0 feed (https://www.tenders.gov.au/public_data/rss/rss.xml, 'AusTender Current ATM List'), but on 2026-09-25 the site's firewall answered HTTP 403 to every non-browser client: User-Agents 'platform-mcp/0.1', 'python-httpx/0.27', 'Feedly/1.0', 'Mozilla/5.0' and 'Mozilla/5.0 (X11; Linux x86_64)' were all refused and only a full desktop-browser User-Agent string was answered. Serving it would require impersonating a browser. The JSON OCDS API (api.tenders.gov.au/ocds) returns awarded contract notices, not open tenders, and has no keyword search. Missing: an AusTender feed endpoint that accepts an honest API client User-Agent."
+}

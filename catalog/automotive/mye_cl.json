@@ -1,0 +1,35 @@
+{
+ "id": "mye_cl",
+ "category": "automotive",
+ "label": "Mye",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://mye.cl",
+ "domain": "mye.cl",
+ "country": "Chile",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dealer site; /api is an internal directory index, no documented API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mye.cl/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

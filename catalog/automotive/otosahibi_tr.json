@@ -1,0 +1,35 @@
+{
+ "id": "otosahibi_tr",
+ "category": "automotive",
+ "label": "Otosahibi",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.otosahibi.com",
+ "domain": "otosahibi.com",
+ "country": "Turkey",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Turkey); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://otosahibi.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

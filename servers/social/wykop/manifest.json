@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "wykop-mcp",
+ "display_name": "Wykop MCP",
+ "version": "0.1.0",
+ "description": "Wykop (social): read_comments, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "wykop"
+   ],
+   "env": {
+    "PLATFORM_MCP_WYKOP_APP_KEY": "${user_config.platform_mcp_wykop_app_key}",
+    "PLATFORM_MCP_WYKOP_APP_SECRET": "${user_config.platform_mcp_wykop_app_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_wykop_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WYKOP_APP_KEY",
+   "description": "Wykop application key (appkey) issued for the app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wykop_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WYKOP_APP_SECRET",
+   "description": "Secret paired with the app key.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "read_comments",
+   "description": "GET /entries/{entryId}/comments (Mikroblog - Komentarz) with the application JWT: page and limit ('Limit obiektów na stronie', 1-50, default 25). post_id is a microblog entry id; created_at is 'YYYY-MM-DD HH:MM[:SS]' (Warsaw time); votes are in raw."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /entries/{entryId} 'Zwraca wpis z mikrobloga'; metrics are the entry's votes.up / votes.down and comments.count."
+  }
+ ]
+}

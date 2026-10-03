@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "taboola-mcp",
+ "display_name": "Taboola Realize (Taboola Ads) MCP",
+ "version": "0.1.0",
+ "description": "Taboola Realize (Taboola Ads) (ads): me, list_accounts, list_campaigns, get_report, update_budget. E",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "taboola"
+   ],
+   "env": {
+    "PLATFORM_MCP_TABOOLA_CLIENT_ID": "${user_config.platform_mcp_taboola_client_id}",
+    "PLATFORM_MCP_TABOOLA_CLIENT_SECRET": "${user_config.platform_mcp_taboola_client_secret}",
+    "PLATFORM_MCP_TABOOLA_ACCOUNT_ID": "${user_config.platform_mcp_taboola_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_taboola_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TABOOLA_CLIENT_ID",
+   "description": "Backstage API client_id provided by your Taboola account manager.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taboola_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TABOOLA_CLIENT_SECRET",
+   "description": "The matching client_secret; client-credentials tokens last 12 hours (no refresh token) and are re-requested automatically.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taboola_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TABOOLA_ACCOUNT_ID",
+   "description": "Taboola account_id (the string id, e.g. demo-advertiser, from list_accounts) used by update_budget and pause_resume, whose paths are /backstage/api/1.0/{account_id}/campaigns/{campaign_id}.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /backstage/api/1.0/users/current/account: the credentials' own account (id, name, account_id, currency, time_zone_name)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /backstage/api/1.0/users/current/allowed-accounts: every account the credentials may use. `id` is the string account_id used in paths (raw.id is the numeric id)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /backstage/api/1.0/{account_id}/campaigns/?fetch_level=RAP (recent campaigns, paused included; deleted ones are never returned). `budget` is daily_cap in the account currency (0 = unlimited; applies with daily_ad_delivery_model STRICT); raw.is_active is the on/off switch and raw.spending_limit the total cap. `status` is not a filter."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /backstage/api/1.0/{account_id}/reports/campaign-summary/dimensions/campaign_day_breakdown?start_date&end_date: one row per campaign per day in the account time zone. campaign_id is not applied (this dimension has no campaign filter). Clicks can still change for 48 hours and conversions for 30 days."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /backstage/api/1.0/{account_id config}/campaigns/{campaign_id} {daily_cap}: the daily budget in the account currency (`currency` is ignored); spends money. It applies when daily_ad_delivery_model is STRICT and must stay below spending_limit; 0 means unlimited."
+  }
+ ]
+}

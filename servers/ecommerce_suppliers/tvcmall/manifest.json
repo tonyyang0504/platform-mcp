@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "tvcmall-mcp",
+ "display_name": "TVCMALL MCP",
+ "version": "0.1.0",
+ "description": "TVCMALL (ecommerce suppliers): me, get_product, quote_shipping, get_order. Every tool maps to a docu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "tvcmall"
+   ],
+   "env": {
+    "PLATFORM_MCP_TVCMALL_AUTHORIZATION_TOKEN": "${user_config.platform_mcp_tvcmall_authorization_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tvcmall_authorization_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TVCMALL_AUTHORIZATION_TOKEN",
+   "description": "AuthorizationToken returned by GET https://openapi.tvc-mall.com/Authorization/GetAuthorization?email=…&password=… once your account manager has enabled the OPEN API (1-3 working days). Sent as `Authorization: TVC <token>` ('The authorization string must start with the prefix \"TVC\"').",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe reads the top-level category list (GET /OpenApi/Category/GetChildren without ParentCode), so `account` is {CateoryList}. A rejected token answers HTTP 200 {Message: 'unauthorized'}, reported as auth_error."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /OpenApi/Product/Detail?ItemNo= — `id` is the ItemNo (SKU, e.g. 660166037C). ProductStatus: 1 Normal, 2 Out of Stock, 3 Locked, 4 Pre-sold, 5 Group-buy; PriceList gives the quantity price breaks (raw.PriceList). Prices are in the account currency (not returned here). Images are in GET /OpenApi/Product/DetailWithImages (not mapped)."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "POST /order/shippingcost {skuinfo: 'ItemNo*quantity', countrycode (ISO-2)}: Shippings [{ShippingMethodCode, ShippingMethod, ShippingCost, DeliveryCycle}] in the response Currency (raw is not returned; USD by default). Pass `quantity` explicitly: skuinfo is left out without it. When no freight exists the platform answers Success false with a Reason and an empty list."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /order/Info?orderid= (e.g. V23120200014): OrderID, Currency, OriginalAmount, DiscountedAmount (amount due), ShippingMethodName, OrderAddressInfo, Trackingnumbers[], CreatedOn, ModifiedOn, Items[{SKU, Name, UnitPrice, Quantity, Subtotal}]. The response has no status field (status is null)."
+  }
+ ]
+}

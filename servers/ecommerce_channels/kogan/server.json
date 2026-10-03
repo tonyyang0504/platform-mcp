@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kogan-mcp",
+ "description": "Kogan Marketplace (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.kogan.com/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kogan"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KOGAN_SELLER_TOKEN",
+     "description": "SellerToken (API key) issued by your Kogan Marketplace account manager after the marketplace application is approved (UAT and production keys differ); sent as the SellerToken header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KOGAN_SELLER_ID",
+     "description": "SellerID (your Kogan marketplace account name) issued with the token; sent as the SellerID header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KOGAN_API_HOST",
+     "description": "nimda.kogan.com for production, or nimda-marketplace.aws.kgn.io for the UAT test environment; calls go to https://<api_host>/api/marketplace/v2/...",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "nefkens",
+ "category": "automotive",
+ "label": "Nefkens",
+ "vertical": "dealer",
+ "lane": "browser",
+ "url": "https://www.nefkens.nl",
+ "domain": "nefkens.nl",
+ "country": "Netherlands",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Netherlands); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://nefkens.nl/"
+  ],
+  "unofficial": [
+   "https://github.com/anefkens"
+  ]
+ },
+ "official_mcp": []
+}

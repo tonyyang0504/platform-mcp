@@ -1,0 +1,119 @@
+{
+ "id": "gebiz",
+ "category": "deals",
+ "label": "GeBIZ",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "sg"
+ ],
+ "docs_url": "https://www.gebiz.gov.sg/faq.html",
+ "url": "https://www.gebiz.gov.sg/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Singapore government; RSS public; supplier registration + Corppass for bids.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS feed for opportunities and awards). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [],
+  "auth": [
+   "1. None for RSS; Corppass + Trading Partner registration to bid."
+  ],
+  "endpoints": [
+   {
+    "call": "RSS Feed for Opportunities and Award",
+    "purpose": "search",
+    "notes": "title, link, date"
+   }
+  ],
+  "limits": " - Government portal; bids in GeBIZ only. - Singapore government; RSS public; supplier registration + Corppass for bids.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.gebiz.gov.sg/faq.html"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "GeBIZ offers no API. Its FAQ (https://www.gebiz.gov.sg/faq.html, opened 2026-09-25) describes an 'RSS Feed for Opportunities and Award' (open tenders/quotations of the last 2 days, grouped by procurement category, refreshed hourly) but publishes no feed URL; the public opportunity pages (/ptn/opportunity/BOListing.xhtml) link none, and /ptn/rss/index.xhtml redirects to /ptn/accessDenied.xhtml. The runtime could now parse the RSS, but there is no documented, publicly reachable feed address. Missing: a public GeBIZ feed URL. Bids require Corppass + GeBIZ Trading Partner registration."
+}

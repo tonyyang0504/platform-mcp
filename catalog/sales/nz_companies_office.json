@@ -1,0 +1,36 @@
+{
+ "id": "nz_companies_office",
+ "category": "sales",
+ "label": "New Zealand Companies Register",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "nz"
+ ],
+ "docs_url": "https://api.business.govt.nz/",
+ "url": "https://companies-register.companiesoffice.govt.nz/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Companies Office API on a free api.business.govt.nz key → platform-key; the web register is also public (robots 13 Disallow, none on search).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

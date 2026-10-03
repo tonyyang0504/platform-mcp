@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "linkedin-social-mcp",
+ "display_name": "LinkedIn MCP",
+ "version": "0.1.0",
+ "description": "LinkedIn (social): me, read_comments, reply_comment, read_mentions, delete, analytics_post. Every to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/linkedin"
+   ],
+   "env": {
+    "PLATFORM_MCP_LINKEDIN_CLIENT_ID": "${user_config.platform_mcp_linkedin_client_id}",
+    "PLATFORM_MCP_LINKEDIN_CLIENT_SECRET": "${user_config.platform_mcp_linkedin_client_secret}",
+    "PLATFORM_MCP_LINKEDIN_REFRESH_TOKEN": "${user_config.platform_mcp_linkedin_refresh_token}",
+    "PLATFORM_MCP_LINKEDIN_AUTHOR_URN": "${user_config.platform_mcp_linkedin_author_urn}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_linkedin_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LINKEDIN_CLIENT_ID",
+   "description": "Client id of a LinkedIn app with the Community Management API product (scopes w_organization_social, r_organization_social, plus openid profile for me).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_linkedin_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LINKEDIN_CLIENT_SECRET",
+   "description": "The app's client secret (form body of the refresh_token grant at https://www.linkedin.com/oauth/v2/accessToken).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_linkedin_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LINKEDIN_REFRESH_TOKEN",
+   "description": "Programmatic refresh token from the 3-legged flow (approved Marketing/Community Management partners; valid about one year). The runtime mints 60-day access tokens from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_linkedin_author_urn": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LINKEDIN_AUTHOR_URN",
+   "description": "Organization URN the member administers and acts as, e.g. urn:li:organization:5515715 (comment actor and the organizationalEntity of read_mentions).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "OpenID Connect userinfo (sub, name, email) of the member behind the token; needs the openid and profile scopes."
+  },
+  {
+   "name": "read_comments",
+   "description": "`post_id` is the share/ugcPost URN (urn:li:share:… or urn:li:ugcPost:…). id is the commentUrn to pass to reply_comment; created_at is epoch milliseconds."
+  },
+  {
+   "name": "reply_comment",
+   "description": "Nested comment: `comment_id` is the parent commentUrn urn:li:comment:(urn:li:activity:…,…); the reply is authored by config author_urn. The docs' nested sample also sends `object` (the post URN), which this call cannot derive from the comment id."
+  },
+  {
+   "name": "read_mentions",
+   "description": "Mentions of the organization (config author_urn) in posts; raw.generatedActivity is the mentioning share URN and raw.sourcePost the activity. No text or author is returned; `since` is not sent."
+  },
+  {
+   "name": "delete",
+   "description": "`post_id` must be the URL-ENCODED share/ugcPost URN (urn%3Ali%3Ashare%3A123), as in 'DELETE https://api.linkedin.com/rest/posts/{encoded ugcPostUrn|shareUrn}'. 'Post deletions are idempotent' (204)."
+  },
+  {
+   "name": "analytics_post",
+   "description": "Social metadata of a share/ugcPost/comment URN: metrics carries reactionSummaries (per reaction type counts), commentSummary {count, topLevelCount} and commentsState."
+  }
+ ]
+}

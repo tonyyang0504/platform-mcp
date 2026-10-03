@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/orosy-mcp",
+ "description": "orosy (wholesale marketplace) + orosy Buyer API (ecommerce suppliers): me, list_products, get_produc",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://wholesale-portal.orosy.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "orosy"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_OROSY_API_KEY",
+     "description": "orosy Buyer API key (orosy_live_…) issued in the portal after the business review (事業者確認), sent as `Authorization: Bearer` ('OAuth 不要'). Before approval the account works in test mode on demo data.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

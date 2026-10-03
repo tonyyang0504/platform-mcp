@@ -1,0 +1,305 @@
+{
+ "id": "spotify",
+ "category": "ads",
+ "label": "Spotify Ads (Spotify Ads Manager)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.spotify.com/documentation/ads-api",
+ "url": "https://ads.spotify.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Spotify for Developers app with Ads API access (application / approval) + Ads Manager account authorization (OAuth2); versioned URIs (integer prefix; v2 sunset 2025-08-05, v3 current); 'Rate limiting caps the number of API calls … 50 requests per second per client ID + user ID' with stricter reporting caps. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Spotify for Developers app + Ads Manager account; authorization code)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Spotify Ads API v3) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api-partner.spotify.com/ads/v3/…"
+  ],
+  "auth": [
+   "1. Create an app on developer.spotify.com and request Ads API access (application); complete Ads Manager account prerequisites.",
+   "2. OAuth 2.0 authorization code with the Ads Manager user → access + refresh tokens.",
+   "3. `Authorization: Bearer`; per-ad-account resources."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /ad_accounts` · `GET /ad_accounts/{id}",
+    "purpose": "accounts",
+    "notes": "id, name, currency"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/campaigns` · `GET` · `PATCH",
+    "purpose": "campaigns (objective CLICKS / VIDEO_VIEWS / PODCAST_STREAMS / WEB_TRAFFIC / APP_INSTALLS)",
+    "notes": "name, objective, status"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/ad_sets` · `PATCH",
+    "purpose": "ad sets: placements MUSIC / PODCAST, targeting, budget, schedule, bid",
+    "notes": "campaign_id, placements[], targeting{geo, age, gender, interests, audiences}, budget, start/end, bid"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/assets` (image / video / audio) · `POST /ad_accounts/{id}/ads",
+    "purpose": "creatives + ads",
+    "notes": "asset upload, ad_set_id, asset ids, cta, click_url"
+   },
+   {
+    "call": "POST /ad_accounts/{id}/audiences` (custom / lookalike)",
+    "purpose": "audiences",
+    "notes": "name, type, source"
+   },
+   {
+    "call": "Conversions API (CAPI) events · pixels",
+    "purpose": "conversions upload",
+    "notes": "event, user data hashed"
+   },
+   {
+    "call": "GET /ad_accounts/{id}/reports…` (reporting endpoints with dedicated caps)",
+    "purpose": "reports",
+    "notes": "date range, metrics, breakdowns"
+   }
+  ],
+  "limits": " - 50 requests/second per client ID + user ID; reporting endpoints have specialized caps; Ads API application approval; free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.spotify.com/documentation/ads-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api-partner.spotify.com/ads/v3",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://accounts.spotify.com/api/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your Spotify for Developers app registered for the Ads API (the Ads API Terms must be accepted for it; allowlisting can take an hour)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's client secret (HTTP Basic on https://accounts.spotify.com/api/token)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from one authorization-code login with your Ads Manager account (https://developer.spotify.com/documentation/ads-api/quick-start); it does not expire. One-hour access tokens are minted from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "business_id",
+    "required": false,
+    "help": "Spotify Ads business id whose ad accounts list_accounts returns (GET /businesses lists yours)."
+   },
+   {
+    "name": "ad_account_id",
+    "required": false,
+    "help": "Ad account id used by pause_resume (the campaign PATCH path is /ad_accounts/{ad_account_id}/campaigns/{campaign_id})."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/businesses",
+    "docs": "https://developer.spotify.com/documentation/ads-api/reference/v3.0/getBusinesses",
+    "note": "GET /ads/v3/businesses: the businesses of the logged-in user ({businesses: [{id, name, type, status}]})."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/businesses/{business_id}/ad_accounts",
+    "path_params": {
+     "business_id": "@business_id"
+    },
+    "result": {
+     "items": "ad_accounts",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency_code"
+     }
+    },
+    "docs": "https://developer.spotify.com/documentation/ads-api/reference/v3.0/getAdAccountsInBusiness",
+    "note": "GET /ads/v3/businesses/{business_id config}/ad_accounts: ad accounts under the business for the current user (currency_code, status, ad_account_role)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/ad_accounts/{account_id}/campaigns",
+    "params": {
+     "statuses": "status",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "paging.total_results",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.spotify.com/documentation/ads-api/reference/v3.0/getCampaigns",
+    "note": "GET /ads/v3/ad_accounts/{ad_account_id}/campaigns (limit up to 50, offset; `status` filters statuses: ACTIVE, PAUSED, ARCHIVED…). Budgets live on ad sets (budget.micro_amount), not campaigns."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/ad_accounts/{account_id}/aggregate_reports",
+    "params": {
+     "report_start": "fmt:{date:date_from}T00:00:00Z",
+     "report_end": "fmt:{date:date_to}T00:00:00Z"
+    },
+    "fixed_params": {
+     "entity_type": "CAMPAIGN",
+     "granularity": "LIFETIME",
+     "fields": [
+      "IMPRESSIONS",
+      "CLICKS",
+      "SPEND"
+     ]
+    },
+    "result": {
+     "items": "rows",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "entity_id",
+      "campaign": "entity_name",
+      "status": "entity_status",
+      "start": "start_time",
+      "end": "end_time",
+      "stats": "stats"
+     }
+    },
+    "docs": "https://developer.spotify.com/documentation/ads-api/reference/v3.0/getAggregateReport",
+    "note": "GET /ads/v3/ad_accounts/{ad_account_id}/aggregate_reports?entity_type=CAMPAIGN&granularity=LIFETIME&fields=IMPRESSIONS&fields=CLICKS&fields=SPEND with report_start/report_end at UTC midnight (range within 90 days): one row per campaign whose `stats` is a list of {field_type, field_value} (SPEND in the account currency). campaign_id is not applied; first page only (continuation_token)."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/ad_accounts/{ad_account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "body": {
+     "status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.spotify.com/documentation/ads-api/reference/v3.0/updateCampaign",
+    "note": "PATCH /ads/v3/ad_accounts/{ad_account_id config}/campaigns/{campaign_id} {status: PAUSED|ACTIVE}. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Spotify budgets are set per ad set in micros (\"budget.micro_amount: Total budget for the ad set multiplied by x10 to the 6th power\", https://developer.spotify.com/documentation/ads-api/reference/v3.0/updateAdSet); campaigns carry no budget and the adapter cannot scale to micros."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api-partner.spotify.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token accounts.spotify.com/api/token: 400 invalid_client",
+   "authorize https://accounts.spotify.com/authorize: 303",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

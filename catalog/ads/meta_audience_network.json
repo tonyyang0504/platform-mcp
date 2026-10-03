@@ -1,0 +1,185 @@
+{
+ "id": "meta_audience_network",
+ "category": "ads",
+ "label": "Meta Audience Network",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2",
+ "url": "https://www.facebook.com/audiencenetwork/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Meta developer app + Audience Network property; Graph API reporting endpoint; free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Meta app; publisher Reporting API on the Graph API)",
+  "access": "signup",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** for our purpose — publisher reporting via the Graph API; buying happens in Meta Ads (meta client) Confidence: **medium**.",
+  "base_urls": [
+   "https://graph.facebook.com/v26.0/{property_id}/adnetworkanalytics"
+  ],
+  "auth": [
+   "1. Meta app + Audience Network property.",
+   "2. Graph API token with read_audience_network_insights.",
+   "3. Reports only."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /{property}/adnetworkanalytics",
+    "purpose": "publisher reports",
+    "notes": "metrics, breakdowns"
+   },
+   {
+    "call": "campaigns",
+    "purpose": "use meta client (Audience Network placement)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.facebook.com/docs/audience-network"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v25.0",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Long-lived Meta User Access Token with the read_audience_network_insights permission (system user tokens are not supported by this endpoint); long-lived user tokens last about 60 days and must then be renewed."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/user/",
+    "note": "GET /me: the user the token belongs to ({id, name})."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/{account_id}/adnetworkanalytics",
+    "params": {
+     "since": "date:date_from",
+     "until": "date:date_to"
+    },
+    "fixed_params": {
+     "metrics": "[\"fb_ad_network_request\",\"fb_ad_network_imp\",\"fb_ad_network_click\",\"fb_ad_network_revenue\"]",
+     "aggregation_period": "day",
+     "limit": "2000"
+    },
+    "result": {
+     "items": "data.0.results",
+     "key": "rows",
+     "fields": {
+      "date": "time",
+      "metric": "metric",
+      "value": "value",
+      "breakdowns": "breakdowns"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2",
+    "note": "GET /{account_id}/adnetworkanalytics (account_id = the Business, property or app id) with metrics fb_ad_network_request, _imp, _click, _revenue, aggregation_period=day, since/until: one row per metric per day (value is a string; revenue in the account currency). Synchronous queries cover at most 8 days and 2,000 rows; data is kept 540 days. Audience Network is a publisher (monetisation) product; `campaign_id` does not apply."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The Audience Network Reporting API is queried per Business, property or app id (\"GET /<ID>/adnetworkanalytics\", https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2); it has no account listing, so pass that id as account_id.",
+   "list_campaigns": "Audience Network is a publisher monetisation product; its Reporting API reports requests, impressions, clicks and revenue and has no advertiser campaigns (https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2).",
+   "update_budget": "No campaigns or budgets exist on the publisher side of Audience Network (https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2).",
+   "pause_resume": "No campaigns exist on the publisher side of Audience Network (https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/2 tool paths found verbatim on their docs pages, 1 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

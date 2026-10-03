@@ -1,0 +1,35 @@
+{
+ "id": "autonal_co",
+ "category": "automotive",
+ "label": "Autonal",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://autonal.com",
+ "domain": "autonal.com",
+ "country": "Colombia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Colombia); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autonal.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

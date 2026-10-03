@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "ecwid-mcp",
+ "display_name": "Ecwid by Lightspeed MCP",
+ "version": "0.1.0",
+ "description": "Ecwid by Lightspeed (ecommerce channels): me, create_listing, update_listing, end_listing, set_inven",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ecwid"
+   ],
+   "env": {
+    "PLATFORM_MCP_ECWID_TOKEN": "${user_config.platform_mcp_ecwid_token}",
+    "PLATFORM_MCP_ECWID_STORE_ID": "${user_config.platform_mcp_ecwid_store_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ecwid_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ECWID_TOKEN",
+   "description": "Secret token of a custom app (Ecwid admin > Apps > Develop Apps > app Details; scopes read_catalog, create_catalog, update_catalog, read_orders, update_orders); non-expiring, sent as `Authorization: Bearer secret_...`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ecwid_store_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ECWID_STORE_ID",
+   "description": "Ecwid store id (shown in the admin footer / URL); every call goes to https://app.ecwid.com/api/v3/{store_id}/...",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v3/{storeId}/profile returns the store profile {generalInfo{storeId, storeUrl}, account{accountName, accountEmail}, settings{storeName}, formatsAndUnits{currency}, ...}."
+  },
+  {
+   "name": "create_listing",
+   "description": "POST /api/v3/{storeId}/products {name, sku, price (required by Ecwid), quantity, description} (scope create_catalog) returns {id}. `currency` is the store's (formatsAndUnits), and images go through a separate upload endpoint, so `currency`/`image_urls` are ignored."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /api/v3/{storeId}/products/{productId} with the given fields (name, price, description, quantity); returns {updateCount}."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /api/v3/{storeId}/products/{productId} {enabled: false} takes the product off the storefront (documented boolean; reversible with enabled=true) and returns {updateCount}. DELETE /products/{id} (permanent) is not used."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /api/v3/{storeId}/products/{productId} {quantity} sets the absolute stock (PUT .../products/{id}/inventory takes a quantityDelta instead). `listing_id` (product id) is required; `sku` alone is not accepted (lookup by sku is a second call)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /api/v3/{storeId}/orders?offset&limit(max 100)&createdFrom(UNIX timestamp or 'YYYY-MM-DD HH:MM:SS')&fulfillmentStatus(AWAITING_PROCESSING|PROCESSING|SHIPPED|DELIVERED|...). Returns {total, count, offset, limit, items[{id, orderNumber, total, paymentStatus, fulfillmentStatus, createDate, trackingNumber}]}; `status` is the fulfillmentStatus and there is no per-order currency field."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "PUT /api/v3/{storeId}/orders/{orderId} {fulfillmentStatus: SHIPPED, trackingNumber, shippingOption: {shippingCarrierName}} (scope update_orders) returns {updateCount}."
+  }
+ ]
+}

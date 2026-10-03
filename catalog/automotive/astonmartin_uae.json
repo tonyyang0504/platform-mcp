@@ -1,0 +1,35 @@
+{
+ "id": "astonmartin_uae",
+ "category": "automotive",
+ "label": "Astonmartin",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.astonmartin.com",
+ "domain": "astonmartin.com",
+ "country": "UAE",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Only an internal DCS dealer API help page is exposed (dcsdealerapi.astonmartin.com); no documented third-party API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://astonmartin.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

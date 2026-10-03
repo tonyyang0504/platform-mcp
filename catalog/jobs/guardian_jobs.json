@@ -1,0 +1,147 @@
+{
+ "id": "guardian_jobs",
+ "category": "jobs",
+ "label": "Guardian Jobs",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://jobs.theguardian.com/jobsrss/",
+ "url": "https://jobs.theguardian.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Madgex-run board; apply via form or employer link.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (RSS by search parameters)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public RSS feed only).",
+  "base_urls": [
+   "https://jobs.theguardian.com/jobsrss/?countrycode=GB"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET /jobsrss/?countrycode=GB",
+    "purpose": "latest jobs feed",
+    "notes": "RSS `item`: title (\"EMPLOYER: Job title\"), description (salary + employer + summary), location, link (`/job/<id>/<slug>/?TrackID=8&utm_source=rss`), pubDate, guid"
+   },
+   {
+    "call": "GET /jobsrss/?<search params>",
+    "purpose": "feed for a saved search",
+    "notes": "same item shape"
+   },
+   {
+    "call": "apply / status / messaging",
+    "purpose": "not offered — apply is a logged-in profile action (`/apply-profile/`, disallowed in robots.txt) or a redirect to the employer",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Terms and conditions (jobs.theguardian.com/terms-and-conditions/) carry no bot / scraping / automation clause; robots.txt disallows `/apply-profile/` and everything for unlisted agents (`Disallow: /`), so feed consumption should use the RSS URL only. - Automated applying is not addressed; the apply lane stays assist (user clicks submit).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jobs.theguardian.com/jobsrss/",
+   "https://jobs.theguardian.com/",
+   "https://jobs.theguardian.com/robots.txt",
+   "https://jobs.theguardian.com/terms-and-conditions/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobs.theguardian.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobsrss/",
+    "params": {
+     "keywords": "query",
+     "page": "page"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://jobs.theguardian.com/jobsrss/",
+    "note": "Guardian Jobs job-board RSS (Madgex, RSS 2.0, 20 postings per page). keywords is the board's own search-box parameter (the feed of any search is the search URL under /jobsrss/) and page selects further pages of 20 (checked 2026-09-25: keywords narrows the feed; page=2 returns the next 20, an exhausted page returns an empty channel). location, remote and limit are not sent (location filtering on these boards uses internal location ids). title is 'Employer: Job title' and description begins with the salary line, so company and salary are not split out. id is the posting link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

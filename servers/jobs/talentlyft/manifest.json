@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "talentlyft-mcp",
+ "display_name": "TalentLyft MCP",
+ "version": "0.1.0",
+ "description": "TalentLyft (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "talentlyft"
+   ],
+   "env": {
+    "PLATFORM_MCP_TALENTLYFT_SUBDOMAIN": "${user_config.platform_mcp_talentlyft_subdomain}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_talentlyft_subdomain": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TALENTLYFT_SUBDOMAIN",
+   "description": "The company's TalentLyft careers-site subdomain, e.g. 'demo' in https://demo.talentlyft.com.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Public Customer API ('rendering jobs without API token') for ONE company (config subdomain): GET https://api.talentlyft.com/v2/public/{subdomain}/jobs with page ('default 1'), perPage ('default 20') and details=true, returning a paging result {Results, Count, Page, PerPage, Pages}. The spec (https://api.talentlyft.com/swagger/public/swagger.json) has no keyword filter (departments and locations take ids), so query/location are not sent — filter client-side. The job objects are untyped in the spec; the mapped names (Id, Title, City, ShortlinkUrl, Description) are from a live response read 2026-09-25, with Country, Department, Requirements and JobTags in raw."
+  }
+ ]
+}

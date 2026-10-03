@@ -1,0 +1,291 @@
+{
+ "id": "pinterest",
+ "category": "social",
+ "label": "Pinterest",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.pinterest.com/docs/api/v5/pins-create/",
+ "url": "https://www.pinterest.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free; business account + OAuth 2.0 app; scopes pins:write, pins:read, boards:read, boards:write (org_write for business-access); new apps start in TRIAL access (low per-day call limits, own account only) and must apply for STANDARD access with an app review — the rate-limit and get-access pages sit behind a CAPTCHA today so the exact trial numbers were not re-read; sandbox supported for pins/create; 'intended solely for publishing new content created by the user' — curated saves must use the Save button, not the API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "analytics",
+   "delete",
+   "edit",
+   "search"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "pinterest-python-sdk / pinterest-node-sdk (official, GitHub pinterest/)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 500,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (a Pin always needs a `media_source`)",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v5/pins {board_id, media_source: image_url|image_base64|multiple_image_urls}",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v5/media {media_type: video} → upload to `upload_url` → GET /v5/media/{media_id} → POST /v5/pins (source_type video_id)",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no comment endpoints exist anywhere in the 189-path v5 spec)",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no messaging in v5)",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE /v5/pins/{pin_id} → 204",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v5/pins/{pin_id}/analytics?start_date=&end_date=&metric_types=",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v5/user_account/analytics (+ /analytics/top_pins, /top_video_pins)",
+   "docs": "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.pinterest.com/v5/",
+   "https://api-sandbox.pinterest.com/v5/"
+  ],
+  "auth": [
+   "1. Pinterest business account → developers.pinterest.com app → OAuth 2.0 authorization code",
+   "2. Scopes for us: `pins:read`, `pins:write`, `boards:read`, `boards:write`, `user_accounts:read`",
+   "3. New apps get **trial access** (own account, low daily limits); **standard access** needs an application with an"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /v5/pins",
+    "purpose": "`board_id`, `title`, `description`, `link`, `alt_text`, `media_source{source_type: image_url",
+    "notes": "image_base64"
+   },
+   {
+    "call": "POST /v5/media` → upload → `media_id` → `media_source{source_type: video_id, media_id, cover_image_url}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "PATCH /v5/pins/{pin_id}`, `DELETE /v5/pins/{pin_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v5/pins`, `GET /v5/boards/{board_id}/pins",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET/POST /v5/boards`, sections",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v5/pins/{pin_id}/analytics?start_date&end_date&metric_types=IMPRESSION,SAVE,PIN_CLICK,OUTBOUND_CLICK,SAVE_RATE`, `GET /v5/user_account/analytics",
+    "purpose": "own pins or shared group boards",
+    "notes": ""
+   },
+   {
+    "call": "GET /v5/search/pins?query=",
+    "purpose": "the user's OWN pins only (partner search closed beta)",
+    "notes": ""
+   }
+  ],
+  "limits": " - 429 \"The user has sent too many requests\" per rate-limit category (per-user per-minute buckets; trial tier far lower than standard). Sandbox enabled for pins/create. - No comments API, no scheduling parameter (platform-side scheduler). - Free; Developer Guidelines forbid saving other people's content through the API (use the Save button).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.pinterest.com/docs/api/v5/pins-create",
+   "https://developers.pinterest.com/docs/api/v5/pins-analytics",
+   "https://developers.pinterest.com/docs/getting-started/rate-limits/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.pinterest.com/v5",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.pinterest.com/v5/oauth/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Pinterest app id; HTTP Basic username on POST https://api.pinterest.com/v5/oauth/token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Pinterest app secret key; HTTP Basic password on the token request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (pinr…) from the authorization-code flow with scopes user_accounts:read, boards:read, pins:read and pins:write. Continuous refresh tokens last 60 days and every refresh returns a new one: the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/pinterest.json (mode 0600)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "board_id",
+    "required": true,
+    "help": "Board id new Pins are created on (GET /v5/boards)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user_account",
+    "docs": "https://developers.pinterest.com/docs/api/v5/user_account-get",
+    "note": "Get user account: username, account_type, business_name, profile_image."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/pins",
+    "body": {
+     "board_id": "@board_id",
+     "description": "text",
+     "media_source.source_type": "=image_url",
+     "media_source.url": "image_urls.0"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/pins-create",
+    "note": "Creates a Pin on config board_id from the first image URL (media_source {source_type: image_url, url}); `text` becomes the description."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/pins/{post_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/pins-delete",
+    "note": "Deletes a Pin owned by the user (204)."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/pins/{post_id}",
+    "fixed_params": {
+     "pin_metrics": "true"
+    },
+    "result": {
+     "fields": {
+      "post_id": "id",
+      "metrics": "pin_metrics"
+     }
+    },
+    "docs": "https://developers.pinterest.com/docs/api/v5/pins-get",
+    "note": "Get Pin with pin_metrics=true: 'Specify whether to return 90d and lifetime Pin metrics' — metrics carries 90d and lifetime_metrics (pin_click, impression, clickthrough, …)."
+   }
+  },
+  "not_offered": {
+   "publish_text": "A Pin always needs `media_source` (PinCreate requires media_source; https://developers.pinterest.com/docs/api/v5/pins-create).",
+   "read_comments": "The v5 API has no comment endpoints (https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml).",
+   "reply_comment": "The v5 API has no comment endpoints (https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml).",
+   "read_mentions": "The v5 API has no mention or notification endpoint (https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.pinterest.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token api.pinterest.com/v5/oauth/token: 500 12",
+   "authorize https://www.pinterest.com/oauth/: 302",
+   "spec https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "POST /v5/oauth/token answered 500 code 12 for a numeric dummy client id and 401 'Authentication failed' for a non-numeric one (checked by hand), so the token endpoint is live; the 500 is Pinterest's handling of an unknown app id."
+ }
+}

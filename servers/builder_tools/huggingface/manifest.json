@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "huggingface-mcp",
+ "display_name": "Hugging Face MCP",
+ "version": "0.1.0",
+ "description": "Hugging Face (builder tools): me, list_items, get_item, create_item, update_item. Every tool maps to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "huggingface"
+   ],
+   "env": {
+    "PLATFORM_MCP_HUGGINGFACE_TOKEN": "${user_config.platform_mcp_huggingface_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_huggingface_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HUGGINGFACE_TOKEN",
+   "description": "Hugging Face user access token (https://huggingface.co/settings/tokens); a write (or fine-grained repo write) token for create/update.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/whoami-v2: the token's user, organisations and token role/scopes."
+  },
+  {
+   "name": "list_items",
+   "description": "GET /api/{models|datasets|spaces}?search&limit: Hub repositories (collection picks the repo type, default models). Only the first page is returned: the Hub paginates with a Link response header, which the runtime does not follow, so narrow with query."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /api/{models|datasets|spaces}/{namespace}/{repo}: repo info (item_id is the full repo id such as google/gemma-2b; files in raw.siblings, card metadata in raw.cardData)."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /api/repos/create {type, name, organization, private, sdk, license}: creates an empty repo. title is the repo name; collection models|datasets|spaces sets the type (default model); fields may carry organization, private (boolean), sdk (gradio|docker|static, required for spaces) and license. Files are pushed with the commit API (not mapped)."
+  },
+  {
+   "name": "update_item",
+   "description": "PUT /api/{models|datasets|spaces}/{namespace}/{repo}/settings: repo settings from fields (private, visibility private|public|protected, gated false|auto|manual, discussionsDisabled, gatedNotificationsEmail). title/content are not repo settings and are not sent."
+  }
+ ]
+}

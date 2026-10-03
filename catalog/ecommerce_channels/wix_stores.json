@@ -1,0 +1,243 @@
+{
+ "id": "wix_stores",
+ "category": "ecommerce_channels",
+ "label": "Wix Stores",
+ "lane": "api",
+ "kind": "storefront_platform",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://dev.wix.com/docs/rest/business-solutions/stores/introduction",
+ "url": "https://www.wix.com/ecommerce/website",
+ "verified_at": "2026-09-24",
+ "terms_note": "Wix site with Wix Stores (Business / eCommerce premium plan); API keys are created by the account owner / co-owner with scopes + site access and are not available to third-party apps — a distributed app must be an OAuth app from the Wix Developers Center (App Market review for public listing); OAuth app tokens 4 h; 429 on throttling (numbers not published); 409 revision checks on updates.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "api_key (account-owner API key from the Wix API Key Manager with Stores scopes + `wix-site-id` header) or OAuth app (client_credentials, 4-hour tokens) for a Wix Developers Center app",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Wix JavaScript SDK (ApiKeyStrategy / AppStrategy)",
+   ".md mirrors of every doc page + https://dev.wix.com/docs/llms.txt"
+  ]
+ },
+ "official_mcp": [
+  "Wix MCP (dev.wix.com documents API keys for 'AI agents and MCP server connections')"
+ ],
+ "auth_fields": [
+  "token",
+  "config.site_id",
+  "config.account_id",
+  "config.catalog_version"
+ ],
+ "rate_limits": "200 requests/min per instance + read/write quotas (search); 429 on throttle (vendor troubleshooting page)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentati",
+  "base_urls": [
+   "https://www.wixapis.com/stores/v3/products"
+  ],
+  "auth": [
+   "1. Tenant (account owner) creates an API key in the Wix API Key Manager with Wix Stores + eCommerce scopes and site access; pastes key + site id.",
+   "2. Or the platform's Wix app (Developers Center) is installed on the site → client_credentials token (4 h, re-mint).",
+   "3. Call the Catalog Versioning API to pick V1 vs V3 endpoints for the site."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /stores/v3/products · createProductWithInventory · bulk",
+    "purpose": "create products with variants (price per variant), media, categories",
+    "notes": "V3"
+   },
+   {
+    "call": "PATCH /stores/v3/products/{id}",
+    "purpose": "update product / variant pricing",
+    "notes": "revision required (409 otherwise)"
+   },
+   {
+    "call": "PATCH /stores/v3/inventory-items/{id} · bulk",
+    "purpose": "stock per variant per location; preorder settings",
+    "notes": ""
+   },
+   {
+    "call": "POST /ecom/v1/orders/search",
+    "purpose": "orders",
+    "notes": "filters by status / date"
+   },
+   {
+    "call": "POST /ecom/v1/fulfillments/orders/{orderId}",
+    "purpose": "fulfilment with lineItems + trackingInfo {trackingNumber, shippingProvider, trackingLink}",
+    "notes": "path to confirm — old path 404"
+   },
+   {
+    "call": "webhooks / events (app)",
+    "purpose": "order created / paid / product changes",
+    "notes": "OAuth apps"
+   },
+   {
+    "call": "Catalog Versioning API",
+    "purpose": "V1 vs V3 detection",
+    "notes": ""
+   }
+  ],
+  "limits": " Not numeric in the pages read; 429 means throttled — wait ~1 minute and retry. - API keys for own-account automation only; third-party distribution requires a Wix app (OAuth). - Catalog V3 rollout: apps must support V1 and V3.",
+  "mcp_sdk": [
+   "MCP: Wix MCP (dev.wix.com documents API keys for 'AI agents and MCP server connections')",
+   "SDK: Wix JavaScript SDK (ApiKeyStrategy / AppStrategy)",
+   "SDK: .md mirrors of every doc page + https://dev.wix.com/docs/llms.txt"
+  ],
+  "sources": [
+   "https://dev.wix.com/docs/rest/business-solutions/stores/introduction",
+   "https://dev.wix.com/docs/rest/business-solutions/stores/catalog-v3/introduction.md",
+   "https://dev.wix.com/docs/rest/articles/get-started/api-keys.md",
+   "https://dev.wix.com/docs/rest/articles/getting-started/rate-limits.md",
+   "https://dev.wix.com/docs/rest/business-solutions/stores/orders/order-fulfillments/introduction.md"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.wixapis.com",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "Authorization": "api_key",
+    "wix-site-id": "site_id"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Account API key from the Wix API Key Manager (account owner; Wix Stores + eCommerce scopes, site access) sent raw in the Authorization header (no Bearer prefix)."
+    },
+    {
+     "name": "site_id",
+     "required": true,
+     "help": "Site id of the store (API keys are account-level, so every site-level call must carry the wix-site-id header)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/site-properties/v4/properties",
+    "docs": "https://dev.wix.com/docs/rest/business-management/site-properties/properties/get-site-properties",
+    "note": "GET /site-properties/v4/properties returns {properties{siteDisplayName, businessName, paymentCurrency, locale, email, ...}, version} for the site named by wix-site-id; verifies the key and the site access."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/ecom/v1/orders/search",
+    "body": {
+     "search.cursorPaging.limit": "limit",
+     "search.filter.status": "status",
+     "search.filter.createdDate.$gte": "fmt:{datefmt:%Y-%m-%dT%H:%M:%S:since}.000Z"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "priceSummary.total.amount",
+      "currency": "currency",
+      "created_at": "createdDate"
+     }
+    },
+    "docs": "https://dev.wix.com/docs/rest/business-solutions/e-commerce/orders/orders/search-orders",
+    "note": "POST /ecom/v1/orders/search {search: {filter: {status, createdDate: {$gte: since}}, cursorPaging: {limit (max 100)}}}; documented filterable fields include status, paymentStatus, fulfillmentStatus and createdDate ($gte...). Returns {orders[{id, number, status, paymentStatus, fulfillmentStatus, priceSummary{total{amount}}, currency, createdDate}], metadata{cursors, hasNext}}; `total` is a decimal string. Paging is cursor-based, so `page` is not sent (first page only). `since` (a date or datetime) is sent as an ISO dateTime (YYYY-MM-DDTHH:MM:SS.000Z, UTC): Wix rejects a bare date with 400 INVALID_QUERY_FILTER '… is not a valid dateTime filter value' (auth audit 2026-09-26)."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /stores/v3/products needs product.variantsInfo.variants[{price{actualPrice{amount}}, sku}] (the price sits in an array of objects) plus physicalProperties for PHYSICAL products — not expressible in the flat/dotted body.",
+   "update_listing": "PATCH /stores/v3/products/{id} requires the current `revision` (read-then-write; 409 otherwise) and variant prices live in the variantsInfo.variants array.",
+   "end_listing": "Hiding a product is PATCH /stores/v3/products/{id} {product: {id, revision, visible: false}} — the current `revision` is required (read-then-write, 409 otherwise) and cannot be supplied by the body form; DELETE /stores/v3/products/{id} is irreversible.",
+   "set_inventory": "PATCH /stores/v3/inventory-items/{id} requires inventoryItem.revision (read-then-write) and is addressed by inventory-item id, not product id or SKU.",
+   "mark_shipped": "POST /ecom/v1/fulfillments/orders/{orderId}/create-fulfillment requires fulfillment.lineItems[{id, quantity}] (an array of the order's line-item GUIDs) beside trackingInfo{trackingNumber, shippingProvider} — not expressible in the flat/dotted body.",
+   "listing_metrics": "No per-product analytics endpoint in the Stores / eCommerce REST APIs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.wixapis.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Fixed: list_orders sent a bare date as createdDate.$gte, which Wix rejects (400 '… is not a valid dateTime filter value'); it now sends an ISO dateTime."
+ }
+}

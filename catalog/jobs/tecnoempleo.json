@@ -1,0 +1,92 @@
+{
+ "id": "tecnoempleo",
+ "category": "jobs",
+ "label": "Tecnoempleo",
+ "lane": "assist",
+ "kind": "tech",
+ "regions": [
+  "es"
+ ],
+ "docs_url": "https://www.tecnoempleo.com/api-integraciones.php",
+ "url": "https://www.tecnoempleo.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Spanish IT board; CV apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss",
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist for apply; the public RSS (alertas-empleo-rss.php, text/xml) is a usable public feed; the 'API e integraciones' page is Cloudflare-walled (also via r.jina.ai) so the partner API terms were not",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. robots.txt blocks AnthropicBot, Claude, ClaudeBot, Claude-SearchBot, Claude-Web, GPTBot … with Disallow: / for unlisted agents and disallows the RSS path for crawlers; api.tecnoempleo.com is an nginx placeholder. No terms text read.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.tecnoempleo.com/",
+   "https://www.tecnoempleo.com/robots.txt",
+   "https://www.tecnoempleo.com/api-integraciones.php",
+   "https://www.tecnoempleo.com/alertas-empleo-rss.php",
+   "https://api.tecnoempleo.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Unreadable docs: https://www.tecnoempleo.com/api-integraciones.php still answers Cloudflare's 'Performing security verification' interstitial (title 'Just a moment...') even to a real headless Chromium after a 20 s wait (2026-09-25), as it did to plain HTTP, WebFetch and r.jina.ai; solving the bot challenge is out of bounds. api.tecnoempleo.com is an nginx placeholder and no official GitHub org exists (github.com/tecnoempleo → 404), so no endpoint, auth or response format can be cited. The only other machine-readable source is the RSS job-alert feed (alertas-empleo-rss.php), which is undocumented and disallowed for crawlers in robots.txt."
+}

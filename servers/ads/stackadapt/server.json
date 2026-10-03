@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/stackadapt-mcp",
+ "description": "StackAdapt (ads): me, list_accounts, list_campaigns. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.stackadapt.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "stackadapt"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_STACKADAPT_REST_API_KEY",
+     "description": "StackAdapt REST API key (issued by StackAdapt on request), sent as the X-Authorization header. The GraphQL API uses a different Bearer token and is not used here.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

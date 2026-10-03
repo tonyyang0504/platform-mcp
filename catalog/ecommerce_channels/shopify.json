@@ -1,0 +1,164 @@
+{
+ "id": "shopify",
+ "category": "ecommerce_channels",
+ "label": "Shopify",
+ "lane": "api",
+ "kind": "storefront_platform",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://shopify.dev/docs/api/admin-graphql",
+ "url": "https://www.shopify.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Tenant's own Shopify store; custom app created in the Dev Dashboard / CLI (admin-created custom apps are no longer created — registry research) with scopes write_products, write_inventory, read_orders, write_fulfillments; public apps need App Store review and expiring offline tokens; rate limits by plan (GraphQL 100–2,000 points / s; REST 2 requests / s leaky bucket); Shopify subscription + payment fees.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token (custom app in the Dev Dashboard / Shopify CLI → Admin API access token; public apps via OAuth; expiring offline tokens 1 h + 90-day refresh mandatory for public apps from 2027-01-01)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official client libraries: React Router, Node.js, Ruby (shopify.dev)"
+  ]
+ },
+ "official_mcp": [
+  "Shopify Dev MCP (shopify.dev documents an MCP server for the Admin API schema)"
+ ],
+ "auth_fields": [
+  "config.shop_domain",
+  "token"
+ ],
+ "rate_limits": "GraphQL cost points/s: 100 Basic-tier, 200 Advanced, 1,000 Plus, 2,000 enterprise; REST Admin API legacy since 2024-10-01",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://{shop}.myshopify.com/admin/api/{version}/graphql.json"
+  ],
+  "auth": [
+   "1. Tenant creates a custom app for its store (Dev Dashboard / CLI), grants Admin API scopes, installs → Admin API access token (or expiring offline token pair).",
+   "2. Paste into the channel vault; client sends X-Shopify-Access-Token.",
+   "3. Public-app path: OAuth authorization code / token exchange, expiring offline tokens refreshed every hour."
+  ],
+  "endpoints": [
+   {
+    "call": "POST/PUT /products.json · mutation productSet / productCreate",
+    "purpose": "product = listing (status active / draft / archived), variants with price",
+    "notes": "REST used"
+   },
+   {
+    "call": "POST /inventory_levels/set.json · mutation inventorySetQuantities",
+    "purpose": "stock per location",
+    "notes": "REST used"
+   },
+   {
+    "call": "GET /orders.json?financial_status=paid · query orders",
+    "purpose": "orders",
+    "notes": "REST used"
+   },
+   {
+    "call": "GET /orders/{id}/fulfillment_orders.json → POST /fulfillments.json · mutation fulfillmentCreate(trackingInfo)",
+    "purpose": "fulfilment with tracking",
+    "notes": "REST used"
+   },
+   {
+    "call": "refunds / returns (mutations refundCreate, returnCreate)",
+    "purpose": "returns",
+    "notes": "unused"
+   },
+   {
+    "call": "webhooks (orders/paid, products/update, app/uninstalled)",
+    "purpose": "push events",
+    "notes": "unused"
+   }
+  ],
+  "limits": " GraphQL Admin: calculated cost points per second by plan — Standard 100, Advanced 200, Plus 1,000, Enterprise 2,000; single query ≤ 1,000 points; leaky bucket with throttle status in `extensions`. REST Admin: 2 requests / s (bucket 40) → 429 + Retry-After. - Shopify API License and Terms of Use; custom apps for the merchant's own store; public apps via App Store review. - Expiring offline tokens mandatory for public apps from 2027-01-01.",
+  "mcp_sdk": [
+   "MCP: Shopify Dev MCP (shopify.dev documents an MCP server for the Admin API schema)",
+   "SDK: official client libraries: React Router, Node.js, Ruby (shopify.dev)"
+  ],
+  "sources": [
+   "https://shopify.dev/docs/api/admin-graphql",
+   "https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens",
+   "https://shopify.dev/docs/api/usage/limits"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter_status": "official_mcp",
+ "official_mcp_url": "https://shopify.dev/docs/apps/build/devmcp",
+ "reason": "platform publishes its own MCP; pointer entry — Shopify Dev MCP (https://shopify.dev/docs/apps/build/devmcp) exposes the Admin GraphQL schema and docs to agents, so the Admin API (X-Shopify-Access-Token; products/inventory_levels/orders/fulfillments) is not wrapped here."
+}

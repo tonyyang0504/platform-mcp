@@ -1,0 +1,191 @@
+{
+ "id": "getonbrd_com",
+ "category": "deals",
+ "label": "Get on Board",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "cl",
+  "latam"
+ ],
+ "docs_url": "https://www.getonbrd.com/api/v0/categories",
+ "url": "https://www.getonbrd.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public read endpoints keyless; docs page JS-only so terms/limits not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "json:api"
+  ],
+  "auth": "none for public reads (token for authenticated endpoints)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "categories"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for search (public JSON:API v0). Lane `assist` → **api for search**. Confidence medium (docs JS-only; endpoints live).",
+  "base_urls": [
+   "https://www.getonbrd.com/api/v0/"
+  ],
+  "auth": [
+   "1. None for search."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v0/search/jobs?query=&per_page=&page=",
+    "purpose": "search",
+    "notes": "data[]: id (slug), attributes title, description_headline, description, …"
+   },
+   {
+    "call": "GET /api/v0/categories",
+    "purpose": "taxonomy",
+    "notes": "id, name, dimension"
+   },
+   {
+    "call": "GET /api/v0/jobs/{id}",
+    "purpose": "details",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Terms / rate limits not readable (JS docs).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.getonbrd.com/api/v0/categories?per_page=2",
+   "https://www.getonbrd.com/api/v0/search/jobs?query=react&per_page=1",
+   "https://www.getonbrd.com/api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.getonbrd.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/v0/search/jobs",
+    "params": {
+     "query": "query",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "fixed_params": {
+     "expand": "[\"company\"]"
+    },
+    "default_limit": 25,
+    "max_limit": 120,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "attributes.title",
+      "buyer": "attributes.company.data.attributes.name",
+      "url": "links.public_url",
+      "budget_min": "attributes.min_salary",
+      "budget_max": "attributes.max_salary",
+      "description": "attributes.description"
+     }
+    },
+    "docs": "https://www.getonbrd.com/api-doc.html",
+    "note": "Public API ('No authentication required'): GET /api/v0/search/jobs with query, remote, page ('starting at 1') and per_page (maximum 120); expand=[\"company\"] is sent so the company name is inline. country_code takes alpha-3 codes (example 'CHL') and there is no free-text place filter, so location and country are not sent. JSON:API hits: id is the job slug, attributes.description is HTML, attributes.published_at is a Unix epoch integer (raw), min/max_salary are integers with no documented currency, meta.total_pages is the only count (no total). Mirrors jobs/getonbrd (remote is not a deals input, so it is not sent); buyer is the expanded company name, min/max_salary map to budget_min/max."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; the feed returns whole records.",
+   "submit_bid": "No application or bid API is documented; candidates apply on the posting's public_url.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "id": "beyond_bbb",
+ "category": "ecommerce_channels",
+ "label": "Beyond / Bed Bath & Beyond (supplier)",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.bedbathandbeyond.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Supplier application reviewed by Beyond's merchandising team (home goods only today); onboarding through the Supplier Oasis portal; EDI compliance via a VAN / EDI provider at the supplier's cost; no developer terms or rate limits published.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "edi"
+  ],
+  "auth": "none (EDI X12 over a VAN through the Supplier Oasis portal; the legacy Partner Oasis API is not offered on the partner page)",
+  "access": "apply",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

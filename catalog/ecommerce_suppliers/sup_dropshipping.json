@@ -1,0 +1,107 @@
+{
+ "id": "sup_dropshipping",
+ "category": "ecommerce_suppliers",
+ "label": "Sup Dropshipping",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.supdropshipping.com/sup-dropshipping-open-api/",
+ "url": "https://www.supdropshipping.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API access requested through the dedicated agent (docs handed out privately)",
+  "access": "apply",
+  "capabilities": [
+   "orders",
+   "order_create",
+   "catalog"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Free platform; API by agent request; terms of use linked.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.supdropshipping.com/sup-dropshipping-open-api/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://www.supdropshipping.com/sup-dropshipping-open-api/ on 2026-09-25: 'If you need to integrate our API to your stores, please contact your dedicated agent and submit your request.' No public reference exists (/api answers 404, openapi.supdropshipping.com does not resolve); the documentation is handed out by the account agent to logged-in dropshippers."
+}

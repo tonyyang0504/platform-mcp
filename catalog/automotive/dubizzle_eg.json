@@ -1,0 +1,33 @@
+{
+ "id": "dubizzle_eg",
+ "category": "automotive",
+ "label": "Dubizzle",
+ "vertical": "real_estate",
+ "lane": "api",
+ "url": "https://www.dubizzle.com.eg",
+ "domain": "dubizzle.com.eg",
+ "country": "Egypt",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dubizzle Egypt publishes no public developer API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

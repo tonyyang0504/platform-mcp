@@ -1,0 +1,252 @@
+{
+ "id": "adform",
+ "category": "ads",
+ "label": "Adform FLOW",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "eu",
+  "dk"
+ ],
+ "docs_url": "https://api.adform.com/help/",
+ "url": "https://site.adform.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API use requires an Adform DSP user account plus an OAuth client with scopes assigned by Adform Support; \"please contact us to enable access for you\".",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (Adform API client credentials / authorization code; enabled by Adform on request)",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Adform API: campaigns, line items, orders, creatives, tags, reporting, DMP) Confidence: **high** — official (legacy) API portal read; current docs live on Adform Help.",
+  "base_urls": [
+   "https://api.adform.com/v1/…"
+  ],
+  "auth": [
+   "1. Adform client → ask Adform to enable API access and create an API client (Authorization guide).",
+   "2. OAuth 2.0 (client credentials or authorization code) → bearer token.",
+   "3. Follow Campaigns Setup / Creatives Setup / Reporting guides."
+  ],
+  "endpoints": [
+   {
+    "call": "Account service",
+    "purpose": "users, authorization token",
+    "notes": "—"
+   },
+   {
+    "call": "Campaign service",
+    "purpose": "campaigns",
+    "notes": "name, advertiser, dates, budget"
+   },
+   {
+    "call": "Line Item service · Order service",
+    "purpose": "line items / orders (budgets, bids, targeting)",
+    "notes": "budget, bid, pacing, targeting"
+   },
+   {
+    "call": "Creatives service",
+    "purpose": "ads / creative upload",
+    "notes": "asset, size, clickUrl"
+   },
+   {
+    "call": "Tag service",
+    "purpose": "site tags (conversion / audience data)",
+    "notes": "tag id"
+   },
+   {
+    "call": "Reporting service",
+    "purpose": "reports",
+    "notes": "dimensions, metrics, dates"
+   },
+   {
+    "call": "Audience base (DMP)",
+    "purpose": "audiences",
+    "notes": "segments"
+   }
+  ],
+  "limits": " - System Limits guide (values not read); contract-based access; Adform fees.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.adform.com/help/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.adform.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://id.adform.com/sts/connect/token",
+   "client_auth": "body",
+   "scope": "https://api.adform.com/scope/buyer.advertisers.readonly https://api.adform.com/scope/buyer.campaigns.api.readonly",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of an Adform API client enabled for the client-credentials flow (requested from Adform support; https://api.adform.com/help/guides/getting-started/authorization-guide)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The client's secret, sent in the form body of POST https://id.adform.com/sts/connect/token; the client must be granted the buyer.advertisers.readonly and buyer.campaigns.api.readonly scopes. Tokens last about an hour and are re-requested automatically."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/buyer/advertisers",
+    "fixed_params": {
+     "limit": "1"
+    },
+    "docs": "https://api.adform.com/v1/help/buyer/advertisers#!/Advertisers/get_v1_buyer_advertisers",
+    "note": "GET /v1/buyer/advertisers?limit=1: confirms the client credentials and scopes (Adform has no who-am-i endpoint)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v1/buyer/advertisers",
+    "params": {
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://api.adform.com/v1/help/buyer/advertisers#!/Advertisers/get_v1_buyer_advertisers",
+    "note": "GET /v1/buyer/advertisers (offset/limit): the advertisers the client can access, active and inactive ({id, name, timeZone, status}); no currency on this record."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/v1/buyer/campaigns",
+    "params": {
+     "advertisers": "account_id",
+     "status": "status",
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget",
+      "currency": "currency",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://api.adform.com/v1/help/buyer/campaigns#!/Campaigns/get_v1_buyer_campaigns",
+    "note": "GET /v1/buyer/campaigns?advertisers={account_id} (offset/limit). `status` is Active or Inactive; without it Adform returns only active campaigns. `budget` is the campaign's planning budget (total, not daily) in `currency`."
+   }
+  },
+  "not_offered": {
+   "get_report": "Adform's Buyer Stats API is asynchronous: \"POST /v1/buyer/stats/data — Order asynchronous report generation\", then poll GET /v1/buyer/stats/operations/{id} and fetch GET /v1/buyer/stats/data/{id} (https://api.adform.com/v1/help/buyer/stats); the runtime has no report polling.",
+   "update_budget": "Adform campaigns carry only a total planning `budget`, changed through the full-object \"PUT /v1/buyer/campaigns/{id} — Updates a single campaign general details\" (advertiserId, name, currency, dates, subType… required); there is no daily campaign budget.",
+   "pause_resume": "\"PUT /v1/buyer/campaigns/{id}/status — Activates or deactivates campaign\" takes a bare JSON string body (\"Active\" / \"Inactive\"), which the adapter body builder cannot send (it builds JSON objects/arrays)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.adform.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token id.adform.com/sts/connect/token: 400 invalid_client",
+   "HTML docs spot-check (render-doc): 0/3 tool paths found verbatim on their docs pages, 3 by their last segments; names not found on the page: list_accounts:limit, list_accounts:offset, list_campaigns:advertisers, list_campaigns:limit, list_campaigns:offset, list_campaigns:status, me:limit"
+  ],
+  "notes": "-"
+ }
+}

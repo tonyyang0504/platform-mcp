@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "farcaster-mcp",
+ "display_name": "Farcaster MCP",
+ "version": "0.1.0",
+ "description": "Farcaster (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "farcaster"
+   ],
+   "env": {
+    "PLATFORM_MCP_FARCASTER_API_KEY": "${user_config.platform_mcp_farcaster_api_key}",
+    "PLATFORM_MCP_FARCASTER_SIGNER_UUID": "${user_config.platform_mcp_farcaster_signer_uuid}",
+    "PLATFORM_MCP_FARCASTER_FID": "${user_config.platform_mcp_farcaster_fid}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_farcaster_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FARCASTER_API_KEY",
+   "description": "Neynar API key from https://dev.neynar.com: 'All API endpoints require an API key. Include the following header with every request: x-api-key' (https://docs.neynar.com/reference). Writes additionally need a signer (config field signer_uuid) created and approved for the same API key.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_farcaster_signer_uuid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FARCASTER_SIGNER_UUID",
+   "description": "UUID of an approved signer for the publishing account ('signer_uuid is paired with API key, can't use a uuid made with a different API key'; 'In order to post a cast signer_uuid must be approved', https://docs.neynar.com/reference/publish-cast). Required for publish_text, reply_comment and delete; env PLATFORM_MCP_FARCASTER_SIGNER_UUID.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_farcaster_fid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FARCASTER_FID",
+   "description": "Farcaster id (integer) of the connected account, used by `me` (GET /v2/farcaster/user/bulk/?fids=) and read_mentions (GET /v2/farcaster/notifications/?fid=); env PLATFORM_MCP_FARCASTER_FID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/farcaster/user/bulk/?fids=<fid> ('Comma separated list of FIDs, up to 100 at a time') returns BulkUsersResponse {users[{fid, username, display_name, custody_address, follower_count, following_count, profile{bio}, verifications, ...}]}; the connected account is account.users[0]. This verifies the API key and describes the configured fid; it does not prove the signer is approved."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /v2/farcaster/cast/ {signer_uuid (required, 'UUID of the signer'), text, parent?} returns {success, cast{hash, author{fid}, text}}; `id` is the cast hash (0x-prefixed, used by read_comments / delete / analytics_post). `reply_to` is sent as `parent` ('parent URL of channel or hash of cast being replied to'), so it may be a cast hash or a channel URL; channel_id, embeds and idem are not sent. No url / created_at in the response."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /v2/farcaster/cast/conversation/?identifier=<hash>&type=hash&reply_depth=1&limit=N ('Cast identifier (It's either a URL or a hash)'; reply_depth 0-5, default 2; limit 1-50, default 20; sort_type default chron) returns {conversation{cast{..., direct_replies[{hash, author{fid, username}, text, timestamp, direct_replies[]}]}, chronological_parent_casts}, next{cursor}}; `comments` are the direct replies. Pagination is cursor-based, so `page` is not sent."
+  },
+  {
+   "name": "reply_comment",
+   "description": "A reply is a cast whose `parent` is the comment's hash ('parent URL of channel or hash of cast being replied to'); parent_author_fid is optional and not sent. Needs the approved signer_uuid."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /v2/farcaster/notifications/?fid=<configured fid>&type=mentions&limit=N (type is an array parameter of follows | recasts | likes | mentions | replies | quotes, sent as the single value mentions; limit 1-25, default 15) returns {unseen_notifications_count, notifications[{type, most_recent_timestamp, seen, cast{hash, author{username}, text, timestamp}}], next{cursor}}. Cursor pagination, so `page` and `since` are not sent. Neynar recommends webhooks for bot mentions ('It's more real time and cheaper compute')."
+  },
+  {
+   "name": "delete",
+   "description": "DELETE /v2/farcaster/cast/ with a JSON body {signer_uuid (required), target_hash (required, the cast hash)} returns {success, message} (the runtime answers {status: 'deleted'}; the upstream body is under raw). 'In order to delete a cast signer_uuid must be approved', and the signer must belong to the cast's author."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /v2/farcaster/cast/?identifier=<hash>&type=hash returns CastResponse {cast{hash, author, text, timestamp, reactions{likes_count, recasts_count}, replies{count}, embeds, ...}}. The runtime cannot compose a nested `metrics` object, so counts are top-level fields (likes, recasts, replies)."
+  },
+  {
+   "name": "publish_image",
+   "description": "POST /v2/farcaster/cast/ {signer_uuid, text?, embeds: [{url}]}: `embeds` is an array with maxItems 2 of URL embeds ({url: string}) or cast embeds ({cast_id: {fid, hash}}), so the first TWO image_urls are sent as URL embeds and any further ones are ignored; Farcaster clients render image URLs inline. `id` is the cast hash; no url / created_at in the response. Needs the approved signer_uuid."
+  }
+ ]
+}

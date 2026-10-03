@@ -1,0 +1,150 @@
+{
+ "id": "seedance",
+ "category": "builder_tools",
+ "label": "Seedance (BytePlus ModelArk)",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://docs.byteplus.com/en/docs/ModelArk/1520757",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "video_generation_tasks(text|image|first_last_frame|reference)",
+   "task_query_cancel",
+   "image_generation(seedream)",
+   "chat_completions",
+   "batch_inference",
+   "context_cache"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/volcengine/volcengine-python-sdk (ModelArk / Ark runtime)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/volcengine/volcengine-python-sdk (ModelArk / Ark runtime)"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ark.ap-southeast.bytepluses.com/api/v3",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "BytePlus ModelArk API key (console.byteplus.com > ModelArk > API keys, ap-southeast-1), sent as Authorization: Bearer. Activate the Seedance/Seedream models first."
+    }
+   ]
+  },
+  "terms": "Output URLs are valid for 24 hours; save results promptly. Model availability requires activation in the ModelArk console.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/contents/generations/tasks",
+    "fixed_params": {
+     "page_num": "1",
+     "page_size": "1"
+    },
+    "docs": "https://docs.byteplus.com/en/docs/ModelArk/1521675",
+    "note": "GET /contents/generations/tasks?page_num=1&page_size=1: lists the latest video task; used as the credential check (no account endpoint)."
+   },
+   "generate_image": {
+    "method": "POST",
+    "path": "/images/generations",
+    "body": {
+     "model": "model",
+     "prompt": "prompt",
+     "image": "image_url",
+     "size": "size",
+     "seed": "seed",
+     "response_format": "=url"
+    },
+    "result": {
+     "fields": {
+      "output_url": "data.0.url",
+      "size": "data.0.size",
+      "status": "=completed"
+     }
+    },
+    "docs": "https://docs.byteplus.com/en/docs/ModelArk/1541523",
+    "note": "POST /images/generations {model (required: a Seedream model id or endpoint id), prompt, image (reference URL/base64), size (e.g. 2K or 2048x2048), seed, response_format: url} -> {data: [{url, size}]}: synchronous; URLs are valid for 24 h (all images in raw.data)."
+   },
+   "generate_video": {
+    "method": "POST",
+    "path": "/contents/generations/tasks",
+    "body": {
+     "model": "model",
+     "content.0.type": "=text",
+     "content.0.text": "prompt",
+     "ratio": "aspect_ratio",
+     "duration": "int:duration_seconds"
+    },
+    "result": {
+     "fields": {
+      "job_id": "id",
+      "status": "=queued"
+     }
+    },
+    "docs": "https://docs.byteplus.com/en/docs/ModelArk/1520757",
+    "note": "POST /contents/generations/tasks {model (required, e.g. seedance-1-5-pro-251215 or dreamina-seedance-2-0-260128), content: [{type: text, text}], ratio (16:9, 9:16, 1:1 …), duration (s)} -> {id}; poll with get_job. Text-to-video only: an image_url content entry cannot be added conditionally, so image_url is not sent."
+   },
+   "get_job": {
+    "method": "GET",
+    "path": "/contents/generations/tasks/{job_id}",
+    "result": {
+     "fields": {
+      "job_id": "id",
+      "status": "status",
+      "output_url": "content.video_url",
+      "error": "error.message"
+     }
+    },
+    "docs": "https://docs.byteplus.com/en/docs/ModelArk/1521309",
+    "note": "GET /contents/generations/tasks/{id}: status queued|running|cancelled|succeeded|failed|expired; content.video_url (valid 24 h) when succeeded."
+   }
+  },
+  "not_offered": {
+   "list_items": "No content-item resource; the task list (GET /contents/generations/tasks) is generation history.",
+   "get_item": "No content-item resource.",
+   "create_item": "No content-item resource.",
+   "update_item": "No content-item resource.",
+   "delete_item": "No content-item resource (DELETE /contents/generations/tasks/{id} cancels or deletes a generation task)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ark.ap-southeast.bytepluses.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

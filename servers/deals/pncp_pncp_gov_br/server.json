@@ -1,0 +1,33 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/pncp_pncp_gov_br-mcp",
+ "description": "Portal Nacional de Contratações Públicas (deals): search_postings. Every tool maps to a documented e",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://pncp.gov.br/api/consulta/swagger-ui/index.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "pncp_pncp_gov_br"
+    }
+   ],
+   "environmentVariables": []
+  }
+ ]
+}

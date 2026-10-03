@@ -1,0 +1,373 @@
+{
+ "id": "mastodon",
+ "category": "social",
+ "label": "Mastodon",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "eu"
+ ],
+ "docs_url": "https://docs.joinmastodon.org/methods/statuses/",
+ "url": "https://joinmastodon.org/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free, per instance: register an app (POST /api/v1/apps) on the user's server → OAuth 2.0 authorization code with scopes write:statuses, write:media, read:statuses, read:notifications; default limits 300 requests per 5 min per account / IP, POST /api/v1/media 30 per 30 min, DELETE statuses 30 per 30 min (headers X-RateLimit-Limit / Remaining / Reset; instances may change them); instance rules on automation / bots (mark the account as a bot) apply; 500-character default limit varies by server.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks(streaming)",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "open",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "schedule",
+   "reply",
+   "read_comments",
+   "inbox_dm(direct visibility)",
+   "search",
+   "delete",
+   "edit",
+   "analytics(limited)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Mastodon.py (community), masto.js (community)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 500,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/v1/statuses (status, visibility, spoiler_text, language, scheduled_at)",
+   "docs": "https://docs.joinmastodon.org/methods/statuses/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/v2/media → POST /api/v1/statuses with media_ids (≤ 4)",
+   "docs": "https://docs.joinmastodon.org/methods/media/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same (v2 media accepts video; 202 while processing)",
+   "docs": "https://docs.joinmastodon.org/methods/media/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/v1/statuses/:id/context (ancestors + descendants)",
+   "docs": "https://docs.joinmastodon.org/methods/statuses/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/v1/statuses with `in_reply_to_id`",
+   "docs": "https://docs.joinmastodon.org/methods/statuses/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/v1/notifications?types[]=mention",
+   "docs": "https://docs.joinmastodon.org/methods/notifications/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/v1/statuses with visibility=direct and an @mention",
+   "docs": "https://docs.joinmastodon.org/methods/statuses/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/v1/conversations",
+   "docs": "https://docs.joinmastodon.org/methods/conversations/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE /api/v1/statuses/:id",
+   "docs": "https://docs.joinmastodon.org/methods/statuses/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (counts only: `favourites_count`, `reblogs_count`, `replies_count` on the Status entity)",
+   "docs": "https://docs.joinmastodon.org/entities/Status/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (followers_count on the Account entity; no insights API)",
+   "docs": "https://docs.joinmastodon.org/entities/Account/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (open, per instance).",
+  "base_urls": [
+   "https://<instance>/api/v1/…"
+  ],
+  "auth": [
+   "1. Register an app on the user's instance: `POST /api/v1/apps` {client_name, redirect_uris, scopes, website} →",
+   "2. OAuth 2.0 authorization code → `POST /oauth/token`; scopes `read:statuses read:notifications read:search",
+   "3. Mark the account as a **bot** when it is automated (`PATCH /api/v1/accounts/update_credentials {bot: true}`)."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/v1/statuses` {status, media_ids[], poll{options, expires_in}, in_reply_to_id, sensitive, spoiler_text, visibility public",
+    "purpose": "unlisted",
+    "notes": "private"
+   },
+   {
+    "call": "scheduled_at` ≥ 5 min ahead → ScheduledStatus; `GET/DELETE /api/v1/scheduled_statuses",
+    "purpose": "server-side scheduling",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/v2/media` (file, description, focus) → poll `GET /api/v1/media/:id` until processed",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "PUT /api/v1/statuses/:id`, `DELETE /api/v1/statuses/:id` (returns source for redrafting; `delete_media`)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /api/v1/statuses/:id/context` (ancestors / descendants)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /api/v1/notifications?types[]=mention",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /api/v1/accounts/:id/statuses",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /api/v2/search?q=&type=statuses` (full-text depends on the instance)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "statuses with `visibility=direct`; `GET /api/v1/conversations",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "streaming API `/api/v1/streaming/user",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Defaults: 300 requests / 5 min per account or IP; `POST /api/v1/media` 30 / 30 min; `DELETE` statuses 30 / 30 min (headers `X-RateLimit-Limit / Remaining / Reset`); instances may override. - Each instance's rules govern automation (bot flag, no unsolicited mentions, link posts often unlisted); links nofollow.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.joinmastodon.org/methods/statuses/",
+   "https://docs.joinmastodon.org/api/rate-limits/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{instance}",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Mastodon user access token from the account's instance (Preferences > Development > New application, or an OAuth flow) with scopes read:accounts read:statuses read:notifications write:statuses; sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "instance",
+    "required": true,
+    "help": "Host of the account's Mastodon instance without scheme, e.g. mastodon.social; every call goes to https://<instance>/api/v1/..."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://{instance}/api/v1/accounts/verify_credentials",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "docs": "https://docs.joinmastodon.org/methods/accounts/#verify_credentials",
+    "note": "GET /api/v1/accounts/verify_credentials (user token, read:accounts) returns the CredentialAccount {id, username, acct, display_name, url, followers_count, ...}."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "https://{instance}/api/v1/statuses",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "body": {
+     "status": "text",
+     "in_reply_to_id": "reply_to"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "url": "url",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/statuses/#create",
+    "note": "POST /api/v1/statuses {status, in_reply_to_id} (write:statuses) returns the Status {id, uri, url, created_at, content, account}. Visibility, language, spoiler_text and scheduled_at keep the instance defaults; the Idempotency-Key header is not sent."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "https://{instance}/api/v1/statuses/{post_id}/context",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "descendants",
+     "key": "comments",
+     "fields": {
+      "id": "id",
+      "author": "account.acct",
+      "text": "content",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/statuses/#context",
+    "note": "GET /api/v1/statuses/:id/context returns {ancestors, descendants}; every descendant Status (HTML `content`) is returned in one response, so page/limit are not sent."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "https://{instance}/api/v1/statuses",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "body": {
+     "status": "text",
+     "in_reply_to_id": "comment_id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "url": "url",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/statuses/#create",
+    "note": "A reply is a status with in_reply_to_id set to the comment's status id."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "https://{instance}/api/v1/notifications",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "params": {
+     "types[]": "=mention",
+     "limit": "limit",
+     "since_id": "since"
+    },
+    "default_limit": 40,
+    "max_limit": 80,
+    "result": {
+     "items": "$",
+     "key": "mentions",
+     "fields": {
+      "id": "id",
+      "author": "account.acct",
+      "text": "status.content",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/notifications/#get",
+    "note": "GET /api/v1/notifications?types[]=mention (read:notifications); limit defaults to 40, max 80. Mastodon paginates with Link headers / max_id, so `page` is not sent: pass `since` (a notification id, sent as since_id) to read newer mentions. `text` is the mentioning status's HTML content."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "https://{instance}/api/v1/statuses/{post_id}",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "result": {
+     "fields": {
+      "post_id": "id",
+      "replies": "replies_count",
+      "reblogs": "reblogs_count",
+      "favourites": "favourites_count",
+      "url": "url"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/statuses/#get",
+    "note": "GET /api/v1/statuses/:id returns the Status with replies_count, reblogs_count and favourites_count (https://docs.joinmastodon.org/entities/Status/); the runtime cannot compose a nested `metrics` object, so counts are top-level fields."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "https://{instance}/api/v1/statuses/{post_id}",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.joinmastodon.org/methods/statuses/#delete",
+    "note": "DELETE /api/v1/statuses/:id ('Delete one of your own statuses'; user token with write:statuses) returns 200 with the deleted Status carrying the source `text` (and poll / media_attachments) 'for reposting' - it is available under raw, and the runtime answers {status: 'deleted'}. 401 'The access token is invalid' is an auth_error; 404 'Status is not owned by you or does not exist' is an invalid_input. DELETE statuses is rate limited at 30 per 30 minutes (https://docs.joinmastodon.org/api/rate-limits/)."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Images must first be uploaded as multipart files to POST /api/v2/media (then media_ids[] on the status); the runtime has no file upload."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host mastodon.social: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 7/7 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: analytics_post returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

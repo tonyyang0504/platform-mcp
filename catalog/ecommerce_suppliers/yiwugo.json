@@ -1,0 +1,105 @@
+{
+ "id": "yiwugo",
+ "category": "ecommerce_suppliers",
+ "label": "Yiwugo (Yiwu market online)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://en.yiwugo.com/partners/partners.html",
+ "url": "https://www.yiwugo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "partner authorisation required for API use",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "partner authorization (overseas cooperation agreement) — API access granted per partner",
+  "access": "partner_only",
+  "capabilities": [
+   "catalog"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Partner agreement by country / region; e-mail application.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://en.yiwugo.com/partners/partners.html"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public reference (re-checked 2026-09-25 with headless Chromium): https://en.yiwugo.com/partners/partners.html renders the overseas cooperation project, whose 'Mode 2: API for Commodity Information' ('Display products and shops information of Yiwugo through API') is offered only to partners under a cooperation agreement; the page links no documentation. api.yiwugo.com shows only an OpenResty default page, open.yiwugo.com and en.yiwugo.com/api/ return 404, and www.yiwugo.com/open/ renders a 404 app shell. No endpoint, parameter or authentication reference can be cited."
+}

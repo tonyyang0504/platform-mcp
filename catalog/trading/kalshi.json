@@ -1,0 +1,77 @@
+{
+ "id": "kalshi",
+ "category": "trading",
+ "label": "Kalshi (event contracts)",
+ "lane": "api",
+ "country": "US",
+ "docs_url": "https://docs.kalshi.com/api-reference/market/get-markets",
+ "url": "https://kalshi.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market data only (no key): GET /markets and /markets/{ticker} carry no security requirement in https://docs.kalshi.com/openapi.yaml (OpenAPI 3.0, 82 operations). Cursor pagination (limit 1-1000, `cursor`). Spec vs live 2026-10-01: the `status` query enum is unopened|open|paused|closed|settled, but market records answer status \"active\" (not in the enum); the open filter works. Multivariate (parlay) markets dominate the open list, so mve_filter=exclude is sent. Unknown ticker: 404 {\"error\":{\"code\":\"not_found\"}}. Basic tier: 20 reads per second.",
+ "adapter": {
+  "base_url": "https://api.elections.kalshi.com/trade-api/v2",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/markets",
+    "params": {
+     "limit": "limit",
+     "cursor": "cursor"
+    },
+    "fixed_params": {
+     "status": "open",
+     "mve_filter": "exclude"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "markets",
+     "key": "markets",
+     "next_cursor": "cursor",
+     "fields": {
+      "symbol": "ticker",
+      "base": "event_ticker",
+      "type": "market_type"
+     }
+    },
+    "docs": "https://docs.kalshi.com/api-reference/market/get-markets",
+    "note": "Open, non-parlay markets (ticker, its event in `base`, binary/scalar in `type`; title and prices in raw). Pages by cursor only. Kalshi has no free-text search on this endpoint, so `query` is ignored."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/markets/{symbol}",
+    "result": {
+     "root": "market",
+     "fields": {
+      "symbol": "ticker",
+      "last": "num:last_price_dollars",
+      "bid": "num:yes_bid_dollars",
+      "ask": "num:yes_ask_dollars",
+      "volume": "num:volume_24h_fp"
+     }
+    },
+    "docs": "https://docs.kalshi.com/api-reference/market/get-market",
+    "note": "Prices are the YES side in dollars (0-1); volume is contracts traded in 24h."
+   }
+  },
+  "not_offered": {
+   "me": "Portfolio endpoints need an API key id and an RSA-PSS signature (KALSHI-ACCESS-KEY/SIGNATURE/TIMESTAMP); public-data entry only.",
+   "get_candles": "GET /series/{series_ticker}/markets/{ticker}/candlesticks requires the series ticker and a start_ts/end_ts window, which trading.get_candles does not take; not mapped rather than guessing a window.",
+   "get_balances": "GET /portfolio/balance needs a signed key; public-data entry only.",
+   "list_orders": "GET /portfolio/orders needs a signed key; public-data entry only.",
+   "place_order": "POST /portfolio/orders needs a signed key and spends money; not mapped.",
+   "cancel_order": "DELETE /portfolio/orders/{order_id} needs a signed key; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

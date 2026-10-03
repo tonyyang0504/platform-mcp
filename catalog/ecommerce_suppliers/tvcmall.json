@@ -1,0 +1,244 @@
+{
+ "id": "tvcmall",
+ "category": "ecommerce_suppliers",
+ "label": "TVCMALL",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://tvcmall.apifox.cn/",
+ "url": "https://www.tvcmall.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "AuthorizationToken obtained from 'Get Authorization' with the site account, sent in the `Authorization` header",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "order_create",
+   "orders",
+   "tracking"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Apifox docs with LLMs.txt export"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Register on tvcmall.com",
+   "2. GET Get Authorization with the account → AuthorizationToken",
+   "3. Send it in the `Authorization` header"
+  ],
+  "endpoints": [
+   {
+    "call": "GET category children / parent",
+    "purpose": "taxonomy",
+    "notes": ""
+   },
+   {
+    "call": "GET search products · details (+images) · status of a list · download images · scene images · by main category",
+    "purpose": "catalogue + stock status",
+    "notes": ""
+   },
+   {
+    "call": "POST Shipping Calculation (+ Enhancement)",
+    "purpose": "shipping quote",
+    "notes": ""
+   },
+   {
+    "call": "POST Create Dropshipping Orders · Create Order",
+    "purpose": "order placement",
+    "notes": ""
+   },
+   {
+    "call": "GET Order List · Order Information",
+    "purpose": "status + tracking",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Account required - Deprecated create-order variant exists",
+  "mcp_sdk": [
+   "Apifox docs with LLMs.txt export"
+  ],
+  "sources": [
+   "https://tvcmall.apifox.cn/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://openapi.tvc-mall.com",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "TVC ",
+   "field": "authorization_token",
+   "fields": [
+    {
+     "name": "authorization_token",
+     "required": true,
+     "help": "AuthorizationToken returned by GET https://openapi.tvc-mall.com/Authorization/GetAuthorization?email=…&password=… once your account manager has enabled the OPEN API (1-3 working days). Sent as `Authorization: TVC <token>` ('The authorization string must start with the prefix \"TVC\"')."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "Message",
+   "ok_value": null,
+   "error_field": "Message"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/OpenApi/Category/GetChildren",
+    "docs": "https://tvcmall.apifox.cn/api-162165277.md",
+    "note": "No account endpoint; the probe reads the top-level category list (GET /OpenApi/Category/GetChildren without ParentCode), so `account` is {CateoryList}. A rejected token answers HTTP 200 {Message: 'unauthorized'}, reported as auth_error."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/OpenApi/Product/Detail",
+    "params": {
+     "ItemNo": "id"
+    },
+    "result": {
+     "root": "Detail",
+     "fields": {
+      "id": "ItemNo",
+      "title": "Name",
+      "sku": "ItemNo",
+      "price": "Price",
+      "status": "ProductStatus",
+      "stock_status": "StockStatus",
+      "moq": "MOQ",
+      "category": "CategoryCode",
+      "ean": "EanCode",
+      "lead_time": "LeadTime"
+     }
+    },
+    "docs": "https://tvcmall.apifox.cn/api-162165280.md",
+    "note": "GET /OpenApi/Product/Detail?ItemNo= — `id` is the ItemNo (SKU, e.g. 660166037C). ProductStatus: 1 Normal, 2 Out of Stock, 3 Locked, 4 Pre-sold, 5 Group-buy; PriceList gives the quantity price breaks (raw.PriceList). Prices are in the account currency (not returned here). Images are in GET /OpenApi/Product/DetailWithImages (not mapped)."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/order/shippingcost",
+    "body": {
+     "skuinfo": "fmt:{product_id}*{quantity}",
+     "countrycode": "country"
+    },
+    "result": {
+     "items": "Shippings",
+     "key": "options",
+     "fields": {
+      "id": "ShippingMethodCode",
+      "name": "ShippingMethod",
+      "cost": "ShippingCost",
+      "delivery_time": "DeliveryCycle"
+     }
+    },
+    "docs": "https://tvcmall.apifox.cn/api-162165289.md",
+    "note": "POST /order/shippingcost {skuinfo: 'ItemNo*quantity', countrycode (ISO-2)}: Shippings [{ShippingMethodCode, ShippingMethod, ShippingCost, DeliveryCycle}] in the response Currency (raw is not returned; USD by default). Pass `quantity` explicitly: skuinfo is left out without it. When no freight exists the platform answers Success false with a Reason and an empty list."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/order/Info",
+    "params": {
+     "orderid": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "OrderID",
+      "total": "DiscountedAmount",
+      "original_total": "OriginalAmount",
+      "currency": "Currency.CurrencyCode",
+      "created_at": "CreatedOn",
+      "updated_at": "ModifiedOn",
+      "tracking_number": "Trackingnumbers.0",
+      "shipping_method": "ShippingMethodName"
+     }
+    },
+    "docs": "https://tvcmall.apifox.cn/api-162165288.md",
+    "note": "GET /order/Info?orderid= (e.g. V23120200014): OrderID, Currency, OriginalAmount, DiscountedAmount (amount due), ShippingMethodName, OrderAddressInfo, Trackingnumbers[], CreatedOn, ModifiedOn, Items[{SKU, Name, UnitPrice, Quantity, Subtotal}]. The response has no status field (status is null)."
+   }
+  },
+  "not_offered": {
+   "list_products": "GET /OpenApi/Product/Search pages by cursor: lastProductId is 'Required for all request but the first one. The biggest ProductId you get in previous request.' There is no page number or keyword parameter, so the vocabulary's page/query cannot drive it (a page 2 request would repeat page 1).",
+   "create_order": "POST /order/AddOrder and POST /order/bulkadd take `skus` as one string 'Fomart:<SKU>*<Quantity>, separated by comma'; the runtime cannot join the vocabulary's items array into that string.",
+   "track": "No tracking-events endpoint; tracking numbers are the Trackingnumbers[] array of GET /order/Info (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host openapi.tvc-mall.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

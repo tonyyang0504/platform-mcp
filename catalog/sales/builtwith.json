@@ -1,0 +1,36 @@
+{
+ "id": "builtwith",
+ "category": "sales",
+ "label": "BuiltWith",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.builtwith.com/",
+ "url": "https://builtwith.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Lists / Domain / Company-to-URL APIs on the user's BuiltWith plan; no robots.txt on the site.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

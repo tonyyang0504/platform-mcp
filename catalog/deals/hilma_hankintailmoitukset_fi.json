@@ -1,0 +1,124 @@
+{
+ "id": "hilma_hankintailmoitukset_fi",
+ "category": "deals",
+ "label": "Hilma",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "fi",
+  "eu"
+ ],
+ "docs_url": "https://api.hankintailmoitukset.fi/",
+ "url": "https://www.hankintailmoitukset.fi/en/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Finnish public procurement open data; bids via the buyer's tendering system.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Azure APIM subscription)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (notices API behind Azure APIM). Lane `assist` → **keep**. Confidence low.",
+  "base_urls": [
+   "https://api.hankintailmoitukset.fi/"
+  ],
+  "auth": [
+   "1. Developer portal sign-up → subscription key."
+  ],
+  "endpoints": [
+   {
+    "call": "notices search (TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Open data; bids via buyer systems. - Finnish public procurement open data; bids via the buyer's tendering system.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.hankintailmoitukset.fi/",
+   "https://hns-hilma-prod-apim.developer.azure-api.net/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://github.com/Hankintailmoitukset/hilma-api/blob/master/endpoints/avpendpoints.md says to subscribe at Products > avp-read and send Ocp-Apim-Subscription-Key, but marks every operation reference (Search Notices eform-search, Index Definitions, Read EForms Notice/Notices, Read Plans) '(Sign in required)'. Rendered anonymously, the APIM portals show 'No APIs found' (https://hns-hilma-prod-apim.developer.azure-api.net/apis) and 'The specified API does not exist' (https://hns-hilma-test-apim.developer.azure-api.net/api-details#api=avp-read-api); the repo has no OpenAPI file. Search is an Azure Search query over an index whose fields are published only via the gated index-definition call, and full notices are Base64 eForms XML."
+}

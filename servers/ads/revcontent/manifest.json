@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "revcontent-mcp",
+ "display_name": "Revcontent MCP",
+ "version": "0.1.0",
+ "description": "Revcontent (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Every ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "revcontent"
+   ],
+   "env": {
+    "PLATFORM_MCP_REVCONTENT_CLIENT_ID": "${user_config.platform_mcp_revcontent_client_id}",
+    "PLATFORM_MCP_REVCONTENT_CLIENT_SECRET": "${user_config.platform_mcp_revcontent_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_revcontent_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REVCONTENT_CLIENT_ID",
+   "description": "client_id under Account Settings > 'Stats API Credentials' (API access is enabled by your Revcontent representative).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_revcontent_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REVCONTENT_CLIENT_SECRET",
+   "description": "client_secret from the same section; access tokens last 24 hours and are re-requested automatically.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /stats/api/v1.0/boosts?limit=1: confirms the Stats API credentials (Revcontent has no who-am-i call)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /stats/api/v1.0/sub_accounts/list_accounts: the sub accounts of the credential's account (user_id, email, status, permissions); the main account itself is not listed."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /stats/api/v1.0/boosts (limit/offset; `status` filters the user status `enabled`: active or inactive). Campaigns of the credential's own account (account_id is not sent). `budget` is the daily budget in USD as a string (or 'unlimited'); raw.status is the system status and raw carries month-to-date cost, clicks and impressions."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /stats/api/v1.0/boosts/performance?date_from&date_to[&boost_id]: daily rows for one campaign, or aggregated over all campaigns when campaign_id is omitted. Values are strings; cost is USD."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /stats/api/v1.0/boosts/{id}/settings {budget_type: daily, budget_amount}: daily budget in USD, minimum 50 (`currency` is ignored); spends money. Pacing defaults to on for daily budgets."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /stats/api/v1.0/boosts {id, enabled: off|on}. Resuming restarts spending."
+  }
+ ]
+}

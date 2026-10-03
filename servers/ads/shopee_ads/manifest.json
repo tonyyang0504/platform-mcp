@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "shopee_ads-mcp",
+ "display_name": "Shopee Ads MCP",
+ "version": "0.1.0",
+ "description": "Shopee Ads (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool maps to a ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "shopee_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_SHOPEE_ADS_PARTNER_KEY": "${user_config.platform_mcp_shopee_ads_partner_key}",
+    "PLATFORM_MCP_SHOPEE_ADS_REFRESH_TOKEN": "${user_config.platform_mcp_shopee_ads_refresh_token}",
+    "PLATFORM_MCP_SHOPEE_ADS_PARTNER_ID": "${user_config.platform_mcp_shopee_ads_partner_id}",
+    "PLATFORM_MCP_SHOPEE_ADS_SHOP_ID": "${user_config.platform_mcp_shopee_ads_shop_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_shopee_ads_partner_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_ADS_PARTNER_KEY",
+   "description": "partner_key (live key) of the Shopee Open Platform app with the Ads (AMS/Ads) API permission; signs the token refresh and every shop call (HMAC-SHA256). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_ads_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_ADS_REFRESH_TOKEN",
+   "description": "refresh_token from GetAccessToken (/api/v2/auth/token/get) after the shop authorised the app (https://open.shopee.com/developer-guide/20). Valid 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the newest one survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_ads_partner_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_ADS_PARTNER_ID",
+   "description": "partner_id of your Shopee Open Platform app (Console > App).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_shopee_ads_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_ADS_SHOP_ID",
+   "description": "shop_id of the authorised shop (returned in the authorisation redirect).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "v2.ads.get_total_balance: the shop's real-time ads credit (response.total_balance, paid plus free credits, and data_timestamp)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "v2.ads.get_product_level_campaign_id_list (ad_type all, offset/limit; response.has_next_page): the shop's product campaign ids with ad_type auto|manual only — `name` carries that ad_type because the list returns no names. Names, campaign_status (ongoing, scheduled, ended, paused, deleted, closed), campaign_budget and duration come from v2.ads.get_product_level_campaign_setting_info (https://open.shopee.com/documents/v2/v2.ads.get_product_level_campaign_setting_info?module=127&type=1, up to 100 ids). account_id and status are not sent (the shop_id selects the shop)."
+  },
+  {
+   "name": "get_report",
+   "description": "v2.ads.get_all_cpc_ads_daily_performance (start_date/end_date as DD-MM-YYYY): shop-level CPC ads performance per day — impression, clicks, ctr, expense, direct/broad orders, conversions, items sold and GMV, cost_per_conversion, direct_roas (all in raw). campaign_id is not applied: per-campaign days come from v2.ads.get_product_campaign_daily_performance (https://open.shopee.com/documents/v2/v2.ads.get_product_campaign_daily_performance?module=127&type=1)."
+  },
+  {
+   "name": "update_budget",
+   "description": "v2.ads.edit_manual_product_ads with edit_action change_budget sets the campaign budget (campaign_budget in the shop currency; 0 = unlimited) of a manual-selection product campaign; auto product ads use v2.ads.edit_auto_product_ads, which is 'coming offline soon'. This spends money. currency is ignored (the shop's currency applies)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "v2.ads.edit_manual_product_ads with edit_action pause | resume (other actions: start, stop, delete, change_budget, change_duration, …) for a manual-selection product campaign. Resuming restarts spend."
+  }
+ ]
+}

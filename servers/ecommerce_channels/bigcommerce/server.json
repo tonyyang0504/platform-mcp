@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bigcommerce-mcp",
+ "description": "BigCommerce (ecommerce channels): me, create_listing, update_listing, end_listing, set_inventory, li",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.bigcommerce.com/docs/start/authentication/api-accounts",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bigcommerce"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BIGCOMMERCE_ACCESS_TOKEN",
+     "description": "Store-level API account access token (Settings > Store-level API accounts; scopes Products modify, Orders modify) sent as the X-Auth-Token header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BIGCOMMERCE_STORE_HASH",
+     "description": "Permanent store hash from the API path (https://api.bigcommerce.com/stores/{store_hash}/...), shown with the API account.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

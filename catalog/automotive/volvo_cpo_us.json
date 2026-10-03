@@ -1,0 +1,35 @@
+{
+ "id": "volvo_cpo_us",
+ "category": "automotive",
+ "label": "Cpo",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://cpo.volvocars.us",
+ "domain": "cpo.volvocars.us",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Runs on Modix vehicle-locator (api.cpo.volvocars.us) used by the site front-end; Volvo's developer portal covers connected-car APIs only, no used-inventory API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cpo.volvocars.us/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

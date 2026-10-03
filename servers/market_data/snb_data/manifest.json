@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "snb_data-mcp",
+ "display_name": "Swiss National Bank data portal MCP",
+ "version": "0.1.0",
+ "description": "Swiss National Bank data portal (market data): get_series. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "snb_data"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "get_series",
+   "description": "series_id is '<cube>/<D0 item>/<D1 item>' for two-dimensional cubes, e.g. 'devkum/M0/EUR1' (monthly average CHF per 1 EUR), 'devkum/M1/USD1' (end of month, USD). start/end are sent as YYYY-MM. Rows without a value are left out."
+  }
+ ]
+}

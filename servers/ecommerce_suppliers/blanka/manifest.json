@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "blanka-mcp",
+ "display_name": "Blanka MCP",
+ "version": "0.1.0",
+ "description": "Blanka (ecommerce suppliers): me, list_products, create_order. Every tool maps to a documented endpo",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "blanka"
+   ],
+   "env": {
+    "PLATFORM_MCP_BLANKA_API_KEY": "${user_config.platform_mcp_blanka_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_blanka_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLANKA_API_KEY",
+   "description": "Blanka API key (VIP membership; request it from the merchant success team, hello@blankabrand.com). Blanka's Postman reference sends it as the Authorization header value, exactly as issued.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe reads one catalogue row (GET /api/v1/products/?page_size=1 -> {count, next, previous, results[...]})."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /api/v1/products/?page=&page_size= (page_size has a server-side default and maximum): {count, next, previous, results[{id, name, sku, cost, suggested_cost (decimal strings, USD), available_inventory, weight, product_type (e.g. BLANK), image, categories[], description, benefits, ingredients, branded_box_available, is_expiring}]}. `cost`/`suggested_retail` are returned as the platform's decimal strings, so the numeric `price` is null; no filtering parameters are documented (query/category are ignored). Order by `sku`."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /api/v1/orders/ {order_id (your reference; a fresh UUID is sent), line_items, shipping_address}. Pass `items` as [{sku, quantity}] and `shipping_address` in Blanka's shape {first_name, last_name, company, address_1, address_2, city, state, postcode, country (ISO-2), phone}; both are sent as given. Returns 201 {id, order_id, status (e.g. PAYMENT_REQUIRED), tracking_code, line_items, shipping_address}; the order appears in https://app.blankabrand.com/orders/customer-orders."
+  }
+ ]
+}

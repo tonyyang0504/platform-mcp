@@ -1,0 +1,35 @@
+{
+ "id": "manheim_nz",
+ "category": "automotive",
+ "label": "Manheim",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.manheim.co.nz",
+ "domain": "manheim.co.nz",
+ "country": "New Zealand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Manheim's developer portal (developer.manheim.com) covers Manheim US auctions; no documented API for Manheim NZ.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://manheim.co.nz/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

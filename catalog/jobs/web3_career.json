@@ -1,0 +1,166 @@
+{
+ "id": "web3_career",
+ "category": "jobs",
+ "label": "Web3 Career",
+ "lane": "api",
+ "kind": "web3",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.bondex.app/api-reference",
+ "url": "https://web3.career/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Web3 jobs; external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "xml_feed",
+   "rss"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://docs.bondex.app/api-reference (GitBook docs with OpenAPI spec download + llms.txt)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Web3.Career Jobs API (operated with Bondex): free token via the form on web3.career/web3-jobs-api (e-mail + website), then GET https://web3.career/api/v1?token=…&tag=solidity&remote=t",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "/api/v1.xml for XML;",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " response size controlled by limit (1-100, no cursor/offset); Token is a query parameter and 'is for your use only … do not share it, commit it to version control, or expose it in client-side code'; the docs carry a 'Terms of Use — Mandatory Link Attribution' section (link back to web3.career required); response size controlled by limit (1-100, no cursor/offset); 'silent filter failures' documented (unknown filter values return unfiltered results). Site legal page has no bot clause; robots.txt one rule.",
+  "mcp_sdk": [
+   "https://docs.bondex.app/api-reference (GitBook docs with OpenAPI spec download + llms.txt)"
+  ],
+  "sources": [
+   "https://web3.career/",
+   "https://web3.career/robots.txt",
+   "https://web3.career/web3-jobs-api",
+   "https://docs.bondex.app/api-reference",
+   "https://docs.bondex.app/api-reference/web3-career-jobs-api",
+   "https://docs.bondex.app/api-reference/terms-of-use-mandatory-link-attribution",
+   "https://web3.career/hire/legal"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://web3.career/api",
+  "auth": {
+   "type": "query",
+   "param": "token",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Web3.career API token from https://web3.career/web3-jobs-api ('Your token is for your use only … Do not share it')."
+    }
+   ]
+  },
+  "rate_per_second": 0.2,
+  "rate_note": "Rate limited ('429 responses when exceeded'); the best-practices page suggests caching responses for 5 minutes. One request every five seconds.",
+  "terms": "Mandatory link attribution: link to each job with its apply_url as a follow link and do not modify apply_url (https://docs.bondex.app/api-reference/web3-career-jobs-api).",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/v1",
+    "params": {
+     "tag": "query",
+     "limit": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "2",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company",
+      "location": "location",
+      "url": "apply_url",
+      "posted_at": "postedAt",
+      "description": "description"
+     }
+    },
+    "docs": "https://docs.bondex.app/api-reference/openapi-documentation/web3.career-jobs-api",
+    "note": "GET /api/v1?token=&tag=&limit= (1–100, no offset or cursor, so page is ignored). tag must be one exact slug from the documented list (solidity, rust, backend, defi, …) — 'Invalid tags silently return empty results' — so pass a tag as query. The body is a mixed array '[string, string, Job[]]' ('typically at index 2'), mapped from element 2. country wants a slug (united-states), not ISO, and remote only accepts 'true', so neither is sent. url is apply_url (required attribution link); salary is free text (raw)."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint; the token is a query parameter only.",
+   "get_posting": "Single endpoint (/v1); no per-id lookup is documented.",
+   "apply": "No application endpoint; apply_url sends the applicant to the posting.",
+   "list_messages": "No messaging API is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host web3.career: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 0/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "An invalid token gets a 302 to https://web3.career/web3-jobs-api, so the path cannot be confirmed without a token. inconclusive: search: redirect 302"
+ }
+}

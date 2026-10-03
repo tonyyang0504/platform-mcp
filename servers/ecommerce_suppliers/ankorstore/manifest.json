@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "ankorstore-mcp",
+ "display_name": "Ankorstore MCP",
+ "version": "0.1.0",
+ "description": "Ankorstore (ecommerce suppliers): me, list_products, get_product, get_order, track. Every tool maps ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ankorstore"
+   ],
+   "env": {
+    "PLATFORM_MCP_ANKORSTORE_CLIENT_ID": "${user_config.platform_mcp_ankorstore_client_id}",
+    "PLATFORM_MCP_ANKORSTORE_CLIENT_SECRET": "${user_config.platform_mcp_ankorstore_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ankorstore_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ANKORSTORE_CLIENT_ID",
+   "description": "client_id of an application created under Account > Integrations (https://ankorstore.com/account/integrations) of an Ankorstore BRAND account; exchanged at POST https://www.ankorstore.com/oauth/token (grant_type=client_credentials, scope=*) for a 1-hour bearer token that is renewed automatically.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ankorstore_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ANKORSTORE_CLIENT_SECRET",
+   "description": "client_secret of that application (sent in the form body of the token request).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v1/me/config is the documented connection check ({data{type: user-configs, id, attributes{currency, country}}})."
+  },
+  {
+   "name": "list_products",
+   "description": "The brand's OWN products (JSON:API data[{id, attributes{name, description, wholesalePrice, retailPrice (minor units, e.g. 426 = 4.26 in the brand currency), active, outOfStock, archived}}]). `query` and `category` are not accepted by the endpoint. Pagination is cursor-based (page[after] = last id of the previous page), which the vocabulary's page number cannot express: only the first page (up to 50) is returned and `page` is ignored."
+  },
+  {
+   "name": "get_product",
+   "description": "One of the brand's products by uuid; prices are minor units in the brand currency. The product variants (sku, stock) are requested with include=productVariant and sit in the response's top-level `included`, which is not part of `raw`."
+  },
+  {
+   "name": "get_order",
+   "description": "A retailer's wholesale order placed WITH the brand (uuid). Amounts are minor units (brandTotalAmountWithVat 23405 = 234.05 in brandCurrency), hence `total_cents` instead of `total`; status is one of the Ankorstore order states (ankorstore_confirmed, brand_confirmed, shipped, received, invoiced, ...)."
+  },
+  {
+   "name": "track",
+   "description": "The parcels of the order's shippingOverview (one event per parcel with its latest carrier status); empty until the order is shipped with Ankorstore shipping."
+  }
+ ]
+}

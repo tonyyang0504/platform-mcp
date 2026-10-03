@@ -1,0 +1,327 @@
+{
+ "id": "zalo",
+ "category": "messaging",
+ "label": "Zalo",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "sea"
+ ],
+ "docs_url": "https://developers.zalo.me/",
+ "url": "https://oa.zalo.me/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Official Account (business) API, OAuth v4 (app granted on the OA; 1 h access tokens refreshed at oauth.zaloapp.com/v4/oa/access_token with secret_key). From the Social client's 2026-09-02 read (not re-verifiable today because developers.zalo.me renders client-side behind Turnstile): consultation messages (Tin Tư vấn) to a user who interacted within the API window ('first 8 messages free within 48 h' then per-message fee), transaction messages by template, promotion messages to followers only (≤4 per follower per month), broadcast via article create → verify → oa/message; registry note: broadcast hours 06:00-19:59. Responses {error, message, data} with non-zero error on HTTP 200; HTTP 429 on quota.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "broadcast",
+   "templates",
+   "media",
+   "webhooks",
+   "followers"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "No official SDK found; plain HTTPS against openapi.zalo.me (developers.zalo.me)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (webhook-only)",
+   "docs": "https://developers.zalo.me/docs/official-account"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v3.0/oa/message/cs (consultation) — recorded, unverified",
+   "docs": "https://developers.zalo.me/docs/official-account"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.zalo.me/docs/official-account"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**, confidence **medium**: developers.zalo.me is a client-rendered shell behind Cloudflare",
+  "base_urls": [
+   "https://openapi.zalo.me",
+   "https://oauth.zaloapp.com/v4/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v3.0/oa/message/cs` `{recipient{user_id}, message{text",
+    "purpose": "attachment}}`",
+    "notes": "consultation (Tin Tư vấn) reply"
+   },
+   {
+    "call": "POST /v3.0/oa/message/transaction",
+    "purpose": "transaction template message",
+    "notes": "paid per message"
+   },
+   {
+    "call": "POST /v3.0/oa/message/promotion",
+    "purpose": "promotion to followers",
+    "notes": "≤ 4 per follower per month, within the OA package; registry: broadcast 06:00-19:59"
+   },
+   {
+    "call": "POST /v2.0/article/create` → `GET /v2.0/article/verify?token=` → `POST /v2.0/oa/message` (template media / article)",
+    "purpose": "broadcast article",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2.0/oa/getoa` · `GET /v2.0/oa/getfollowers?data=` · `POST /v2.0/oa/upload/image",
+    "purpose": "identity / followers / media",
+    "notes": ""
+   },
+   {
+    "call": "OA webhook events (`user_send_text`, `follow`, …)",
+    "purpose": "inbound",
+    "notes": ""
+   }
+  ],
+  "limits": " - Responses `{error, message, data}`; non-zero `error` with HTTP 200 IS an error; quota codes (-32 / -209 style) and HTTP 429. - OA (business) accounts only; personal Zalo accounts have no API. Terms and rate-limit pages unreadable by automation.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.zalo.me/docs/official-account/tin-nhan/gui-tin-tu-van/gui-tin-tu-van-dang-van-ban"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi.zalo.me",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth.zaloapp.com/v4/oa/access_token",
+   "client_auth": "body",
+   "client_id_field": "app_id",
+   "client_secret_field": "secret_key",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": null
+   },
+   "token_headers": {
+    "secret_key": "{@secret_key}"
+   },
+   "token_path": "access_token",
+   "refresh_token_path": "refresh_token",
+   "token_ttl_seconds": 86400,
+   "header": "access_token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "ID of your Zalo app (developers.zalo.me > app > Thông tin ứng dụng)."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The app's secret key (Khóa bí mật của ứng dụng); sent only as the secret_key header of the token request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "OA refresh_token from the OA authorisation (POST https://oauth.zaloapp.com/v4/oa/access_token with grant_type=authorization_code). Valid 3 months and single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set). Access tokens last 25 h."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/v2.0/oa/getoa",
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/quan-ly/quan-ly-thong-tin-oa/lay-thong-tin-zalo-official-account",
+    "note": "GET /v2.0/oa/getoa: the OA's id, name, description, is_verified, num_follower, package."
+   },
+   "list_inbound": {
+    "path": "/v2.0/oa/listrecentchat",
+    "params": {
+     "data": "jsonstr:{\"offset\": {offset}, \"count\": {limit}}"
+    },
+    "max_limit": 10,
+    "default_limit": 10,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "message_id",
+      "from": "from_id",
+      "to": "to_id",
+      "text": "message",
+      "sent_at": "time",
+      "from_name": "from_display_name",
+      "type": "type",
+      "src": "src"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/tin-nhan/quan-ly-tin-nhan/lay-thong-tin-tin-nhan-gan-nhat",
+    "note": "GET /v2.0/oa/listrecentchat: the latest message of each recent conversation (max 10 per page; offset 0 = most recent). src 1 = from the user, 0 = from the OA; `from`/`to` are user or OA ids and a user's id is the thread_id for get_thread/reply; sent_at is epoch ms. Needs the 'Quyền quản lý tin nhắn người dùng' permission."
+   },
+   "get_thread": {
+    "path": "/v2.0/oa/conversation",
+    "params": {
+     "data": "jsonstr:{\"user_id\": {thread_id}, \"offset\": {offset}, \"count\": {limit}}"
+    },
+    "max_limit": 10,
+    "default_limit": 10,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "message_id",
+      "from": "from_id",
+      "to": "to_id",
+      "text": "message",
+      "sent_at": "time",
+      "from_name": "from_display_name",
+      "type": "type",
+      "src": "src"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/tin-nhan/quan-ly-tin-nhan/lay-thong-tin-tin-nhan-trong-mot-hoi-thoai",
+    "note": "GET /v2.0/oa/conversation: messages between the OA and one user (thread_id = the user's user_id), newest first, max 10 per page."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/v3.0/oa/message/cs",
+    "body": {
+     "recipient.user_id": "to",
+     "message.text": "text"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent",
+      "sent_at": "sent_time",
+      "quota_type": "quota.quota_type"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/tin-nhan/tin-tu-van/gui-tin-tu-van-dang-van-ban",
+    "note": "POST /v3.0/oa/message/cs: a consultation (Tin Tư vấn) text message, ≤2000 characters, to a user_id who follows or has interacted with the OA; free within 48 h of the user's last interaction, otherwise it consumes the OA's quota. `subject` is ignored."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/v3.0/oa/message/cs",
+    "body": {
+     "recipient.user_id": "thread_id",
+     "message.text": "text"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent",
+      "sent_at": "sent_time"
+     }
+    },
+    "docs": "https://stc-developers.zdn.vn/docs/v2/official-account/tin-nhan/tin-tu-van/gui-tin-tu-van-dang-van-ban",
+    "note": "Replies in a conversation by sending a consultation text message to the thread's user (thread_id = user_id)."
+   }
+  },
+  "not_offered": {
+   "mark_read": "The OA message-management APIs (https://stc-developers.zdn.vn/docs/v2/official-account/tin-nhan/quan-ly-tin-nhan/lay-thong-tin-tin-nhan-gan-nhat and siblings: recent chats, conversation, quota, uploads) have no mark-as-read call."
+  },
+  "terms": "Zalo Official Account API (https://developers.zalo.me/docs/official-account/): every call carries the OA access_token header; failures are {error: <non-zero>, message} in 200 bodies. Access tokens (25 h) are minted from the rotating single-use refresh token at https://oauth.zaloapp.com/v4/oa/access_token (form refresh_token, app_id, grant_type; secret_key header; https://stc-developers.zdn.vn/docs/v2/official-account/bat-dau/xac-thuc-va-uy-quyen-cho-ung-dung-new)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host openapi.zalo.me: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (not_found), so the answers are path-specific",
+   "token oauth.zaloapp.com/v4/oa/access_token: 200 Invalid app id",
+   "authorize https://oauth.zaloapp.com/v4/oa/permission: 200",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

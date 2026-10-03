@@ -1,0 +1,35 @@
+{
+ "id": "brandini",
+ "category": "automotive",
+ "label": "Brandini",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://brandini.it",
+ "domain": "brandini.it",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). brandini.it/docs serves an auto-generated API Platform OpenAPI spec for its own site backend (vehicles, bookings); not offered or documented for third parties.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://brandini.it/docs"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

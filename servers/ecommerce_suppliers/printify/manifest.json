@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "printify-mcp",
+ "display_name": "Printify MCP",
+ "version": "0.1.0",
+ "description": "Printify (ecommerce suppliers): me, list_products, get_product, create_order, get_order. Every tool ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "printify"
+   ],
+   "env": {
+    "PLATFORM_MCP_PRINTIFY_TOKEN": "${user_config.platform_mcp_printify_token}",
+    "PLATFORM_MCP_PRINTIFY_SHOP_ID": "${user_config.platform_mcp_printify_shop_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_printify_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRINTIFY_TOKEN",
+   "description": "Printify personal access token (My profile > Connections) sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_printify_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRINTIFY_SHOP_ID",
+   "description": "Printify shop id (from GET /v1/shops.json); required by get_order and create_order, which are per shop.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/shops.json lists the merchant's shops [{id, title, sales_channel}]; take the shop id from here for the shop_id setting."
+  },
+  {
+   "name": "list_products",
+   "description": "Blank-product catalogue (blueprints [{id, title, brand, model, images[]}]); unpaginated, the full list is returned and `query`/`category` are not accepted by the endpoint. Catalog calls are limited to 100/minute."
+  },
+  {
+   "name": "get_product",
+   "description": "One blueprint; variants and prices are per print provider (GET /v1/catalog/blueprints/{id}/print_providers/{ppid}/variants.json, not mapped)."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /v1/shops/{shop_id}/orders.json creates the order in the shop; it is NOT submitted for production (a separate documented call), so nothing is charged by this tool. `items` are Printify line_items [{product_id, variant_id, quantity}], `shipping_address` is address_to {first_name, last_name, email, phone, country, region, address1, address2, city, zip}, `shipping_option` is the numeric shipping_method id from the shipping estimate. Needs the shop_id setting."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v1/shops/{shop_id}/orders/{order_id}.json: {id, status, total_price, total_shipping, created_at, shipments[{carrier, number, url, delivered_at}]}; amounts are integers in cents. Needs the shop_id setting."
+  }
+ ]
+}

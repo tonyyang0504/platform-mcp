@@ -1,0 +1,42 @@
+{
+ "id": "localiza_br",
+ "category": "automotive",
+ "label": "Seminovos",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://seminovos.localiza.com",
+ "domain": "seminovos.localiza.com",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": "https://developers2.localiza.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "client_id + access_token (app registered in developer portal, homologation required)",
+  "access": "apply",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Localiza runs a partner developer portal (Sensedia) with homologation-gated APIs for its mobility/financial ecosystem; no public docs confirm a Seminovos listings API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers2.localiza.com/",
+   "https://portal-localiza.sensedia.com/api-portal/content/api-guide"
+  ],
+  "unofficial": [
+   "github.com/ops-nucleo/nc_localiza_seminovos (404)"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Localiza runs a partner developer portal (Sensedia) with homologation-gated APIs for its mobility/financial ecosystem; no public docs confirm a Seminovos listings API."
+}

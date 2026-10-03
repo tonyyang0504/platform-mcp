@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "amazon_fire_tv_ads-mcp",
+ "display_name": "Amazon Fire TV / Prime Video Streaming TV Ads MCP",
+ "version": "0.1.0",
+ "description": "Amazon Fire TV / Prime Video Streaming TV Ads (ads): me, list_accounts, list_campaigns, update_budge",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "amazon_fire_tv_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_CLIENT_ID": "${user_config.platform_mcp_amazon_fire_tv_ads_client_id}",
+    "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_CLIENT_SECRET": "${user_config.platform_mcp_amazon_fire_tv_ads_client_secret}",
+    "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_REFRESH_TOKEN": "${user_config.platform_mcp_amazon_fire_tv_ads_refresh_token}",
+    "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_API_HOST": "${user_config.platform_mcp_amazon_fire_tv_ads_api_host}",
+    "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_PROFILE_ID": "${user_config.platform_mcp_amazon_fire_tv_ads_profile_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_amazon_fire_tv_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_CLIENT_ID",
+   "description": "Login with Amazon client id of the app approved for the Amazon Ads API; also sent as the Amazon-Advertising-API-ClientId header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_fire_tv_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_CLIENT_SECRET",
+   "description": "The LWA client secret (form body of the refresh_token grant).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_fire_tv_ads_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_REFRESH_TOKEN",
+   "description": "LWA refresh token from the advertiser's consent (scope advertising::campaign_management); the runtime mints hourly access tokens from it at https://api.amazon.com/auth/o2/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_fire_tv_ads_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_API_HOST",
+   "description": "Regional Amazon Ads API host: advertising-api.amazon.com (North America), advertising-api-eu.amazon.com (Europe) or advertising-api-fe.amazon.com (Far East).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_amazon_fire_tv_ads_profile_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_FIRE_TV_ADS_PROFILE_ID",
+   "description": "Advertising profile id of the advertiser running Sponsored TV (from GET /v2/profiles), sent as the Amazon-Advertising-API-Scope header.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/profiles/{profileId}: the configured profile {profileId, countryCode, currencyCode, timezone, accountInfo {id, type, name, marketplaceStringId}}."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v2/profiles (apiProgram=campaign, accessLevel=edit by default): one profile per advertiser and marketplace in the configured region. `id` is the profileId used as the Amazon-Advertising-API-Scope; country is raw.countryCode."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "Sponsored TV (Fire TV / Prime Video streaming TV ads) POST /st/campaigns/list with media type application/vnd.stCampaign.v1+json and {maxResults, stateFilter: {include: [status]}} (ENABLED, PAUSED, ARCHIVED). The advertiser is the configured profile_id (Amazon-Advertising-API-Scope); account_id is not sent. `budget` is the DAILY budget. Only the first page is returned (nextToken paging)."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /st/campaigns {campaigns: [{campaignId, budgetSettings: {budget: {budgetValue: {amount, budgetCurrencyCode}, recurrenceType: DAILY}}}]}: changes a daily budget that is spent on streaming TV ads. The API answers 207 with campaigns.success[] / campaigns.error[]; a rejected update is reported as invalid_input."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /st/campaigns {campaigns: [{campaignId, state: PAUSED|ENABLED}]}. Resuming restarts spending. A rejected update (campaigns.error only) is reported as invalid_input."
+  }
+ ]
+}

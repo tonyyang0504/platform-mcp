@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kaufland_marketplace-mcp",
+ "description": "Kaufland Global Marketplace (sales channel) + Marketplace Seller API (ecommerce suppliers): me, list",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://sellerapi.kaufland.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kaufland_marketplace"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KAUFLAND_MARKETPLACE_CLIENT_KEY",
+     "description": "Kaufland Marketplace Client Key (32 characters, seller portal API settings), sent as the Shop-Client-Key header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAUFLAND_MARKETPLACE_SECRET_KEY",
+     "description": "The Secret Key (64 characters): signs every request (hex HMAC-SHA256 over METHOD, full URI, body and Unix timestamp joined by newlines, sent as Shop-Signature with Shop-Timestamp). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAUFLAND_MARKETPLACE_STOREFRONT",
+     "description": "Kaufland storefront for product calls: de, cz, sk, pl, at, fr, it, es or nl (GET /v2/info/storefront lists yours).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kuaishou-mcp",
+ "description": "Kuaishou (social): me, delete, analytics_post. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.kuaishou.com/platform/openApi?menu=13",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kuaishou"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KUAISHOU_APP_ID",
+     "description": "app_id of your Kuaishou Open Platform application (https://open.kuaishou.com/platform).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KUAISHOU_APP_SECRET",
+     "description": "app_secret of the same application; sent only to /oauth2/refresh_token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KUAISHOU_REFRESH_TOKEN",
+     "description": "The user's refresh_token from the 快手登录 authorization-code exchange (/oauth2/access_token, scopes user_info, user_video_info, user_video_delete; valid 180 days). It is single-use: every refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set; 'refreshToken.discarded' means an old one was reused).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

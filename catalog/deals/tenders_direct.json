@@ -1,0 +1,121 @@
+{
+ "id": "tenders_direct",
+ "category": "deals",
+ "label": "Tenders Direct",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "uk",
+  "eu"
+ ],
+ "docs_url": "https://www.tendersdirect.co.uk/ (Integrate (API) product page)",
+ "url": "https://www.tendersdirect.co.uk/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Paid subscription; API as a product feature; UK/EU tenders aggregated.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "subscription (Integrate (API) product)",
+  "access": "paid",
+  "capabilities": [
+   "search",
+   "alerts"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (subscriber 'Integrate (API)' product). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. Subscription → API credentials from the account team."
+  ],
+  "endpoints": [
+   {
+    "call": "tender search / alerts (TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Paid; bids on buyer portals. - Paid subscription; API as a product feature; UK/EU tenders aggregated.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.tendersdirect.co.uk/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: 'Integrate (API)' (https://www.tendersdirect.co.uk/product/integrate/) is a paid-subscription feature that 'connects Tenders Direct and the tools your team already uses' (Zapier, Slack, MS Teams, Salesforce, HubSpot); the page links no endpoint, authentication or payload reference for direct API use."
+}

@@ -1,0 +1,35 @@
+{
+ "id": "autonation",
+ "category": "automotive",
+ "label": "Autonation",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autonation.com",
+ "domain": "autonation.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). AutoNation (geo-blocked outside US) publishes no public or partner listings API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autonation.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,300 @@
+{
+ "id": "tiki",
+ "category": "ecommerce_channels",
+ "label": "Tiki",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "vn"
+ ],
+ "docs_url": "https://open.tiki.vn/docs/docs/current/getting-started/",
+ "url": "https://tiki.vn/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Tiki seller account (Vietnam); app registered on the Developer Platform; OAuth 2 client credentials for the seller's own integration or authorization code for third-party apps; sandbox; rate limits not on the pages read; supports drop-shipping fulfilment model natively.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "oauth2 (app registered on the Developer Platform; client credentials at https://api.tiki.vn/sc/oauth2/token, or authorization-code seller authorisation; Bearer token)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "sandbox",
+   "promotions"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Postman examples in the docs"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "refresh",
+  "secret",
+  "config.client_id",
+  "config.sandbox"
+ ],
+ "rate_limits": "50 req/s, 500 req/min (X-RateLimit-Limit-*, 429) (sellercenter-api-docs via search)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.tiki.vn/integration/…",
+   "https://api-sandbox.tiki.vn/…"
+  ],
+  "auth": [
+   "1. Register an app on the Tiki Developer Platform → client id + secret.",
+   "2. Client-credentials token for the seller's own store, or authorization-code when the seller authorises the platform's app.",
+   "3. Bearer token on integration endpoints; test on api-sandbox.tiki.vn first."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /integration/v2/requests (product create) · GET /requests/{id}",
+    "purpose": "create products via request; track status",
+    "notes": ""
+   },
+   {
+    "call": "PUT /integration/v2/products/{id}/price · /quantity · attributes",
+    "purpose": "price + quantity updates",
+    "notes": ""
+   },
+   {
+    "call": "GET /integration/v2/orders · GET /orders/{code}",
+    "purpose": "orders (ODF, seller delivery, cross-border, drop-shipping)",
+    "notes": ""
+   },
+   {
+    "call": "POST /integration/v2/orders/{code}/confirm-available",
+    "purpose": "confirm order",
+    "notes": ""
+   },
+   {
+    "call": "shipment status / tracking updates",
+    "purpose": "delivery + shipment status",
+    "notes": ""
+   },
+   {
+    "call": "fulfillment inbound shipments (create / cancel)",
+    "purpose": "inventory inbound",
+    "notes": ""
+   },
+   {
+    "call": "deals endpoints",
+    "purpose": "promotional pricing",
+    "notes": ""
+   },
+   {
+    "call": "event queues (subscribe / pull)",
+    "purpose": "webhooks-style events",
+    "notes": ""
+   },
+   {
+    "call": "Seller Registration API",
+    "purpose": "programmatic onboarding",
+    "notes": ""
+   }
+  ],
+  "limits": " Not on the pages read. - Tiki seller agreement; developer app terms.",
+  "mcp_sdk": [
+   "SDK: Postman examples in the docs"
+  ],
+  "sources": [
+   "https://open.tiki.vn/docs/docs/current/getting-started/",
+   "https://r.jina.ai/https://open.tiki.vn/docs/docs/current/getting-started/",
+   "https://open.tiki.vn/docs/docs/current/api-references/authentication/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.tiki.vn/integration",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.tiki.vn/sc/oauth2/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App id of an IN-HOUSE application registered on the Tiki Open Platform and connected to your seller store (in-house apps receive the seller's permissions via the client-credentials flow)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "App secret of the same application; sent with the id as HTTP Basic (client_secret_basic) to https://api.tiki.vn/sc/oauth2/token. Apps configured for client_secret_post are not supported by this adapter."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "warehouse_id",
+    "required": false,
+    "help": "Seller warehouse id (GET /integration/v2/sellers/me/warehouses) whose available quantity set_inventory writes."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Tiki Open Platform (Vietnam). Prices are in VND.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/sellers/me",
+    "docs": "https://open.tiki.vn/docs/docs/current/api-references/seller-api/",
+    "note": "Get seller: {id, name, active, operation_models, can_update_product, registration_status, live_at}."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/v2/products/updateSku",
+    "body": {
+     "product_id": "int:listing_id",
+     "price": "price"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.tiki.vn/docs/docs/current/guides/products/update-product-information/",
+    "note": "PUT /integration/v2/products/updateSku {product_id, price}: changes the LIVE price (VND) of one product, approved automatically; `listing_id` is the Tiki product_id. Stock is set_inventory; titles/descriptions go through product update requests (review), not here."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/v2/products/updateSku",
+    "body": {
+     "original_sku": "sku",
+     "product_id": "int:listing_id",
+     "warehouse_quantities.0.warehouse_id": "int:@warehouse_id",
+     "warehouse_quantities.0.qty_available": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.tiki.vn/docs/docs/current/guides/products/update-product-information/",
+    "note": "updateSku with warehouse_quantities [{warehouse_id, qty_available}] for the configured warehouse; identify the product by `sku` (original_sku) or `listing_id` (product_id, used first when given). Sellers with several warehouses should note Tiki's warning that warehouses missing from the array are set to 0 on the batch endpoint."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/v2.1/products/updateSkus",
+    "body": {
+     "data.0.product_id": "int:listing_id",
+     "data.0.status": "json:2"
+    },
+    "result": {
+     "fields": {
+      "status": "=disabled"
+     }
+    },
+    "docs": "https://open.tiki.vn/docs/docs/current/guides/products/update-product-information/",
+    "note": "Batch update PUT /integration/v2.1/products/updateSkus {data: [{product_id, status: 2}]} disables the product (status enum 1 enabled, 2 disabled, 3 hidden; reversible with 1)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v2/orders",
+    "params": {
+     "page": "page",
+     "limit": "limit",
+     "status": "status",
+     "created_from_date": "since"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "orders",
+     "fields": {
+      "id": "code",
+      "status": "status",
+      "total": "invoice.grand_total",
+      "currency": "=VND",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://open.tiki.vn/docs/docs/current/api-references/order-api-v2/",
+    "note": "Order Listing V2 ?page&limit&status (a set expression such as in|queueing,successful_delivery or nin|processing,waiting_payment)&created_from_date ('yyyy-MM-dd HH:mm:ss', UTC+07:00). Tiki recommends excluding processing/waiting_payment (not yet accepted). total is invoice.grand_total in VND; items and shipping in raw."
+   }
+  },
+  "not_offered": {
+   "create_listing": "New products are product REQUESTS (POST /integration/v2.1/requests) with category, attributes, images and option data that Tiki reviews; the vocabulary has no category or attributes.",
+   "mark_shipped": "Tiki's logistics partners carry most orders ('For other operation models, you don't need to update delivery status… already handled by Tiki'); seller-delivery orders only report a delivery OUTCOME (POST /integration/v2/orders/{code}/seller-delivery/update-delivery {status: successful_delivery|failed…}) and there is no call that submits a carrier and tracking number."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.tiki.vn: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.tiki.vn/sc/oauth2/token: 403",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

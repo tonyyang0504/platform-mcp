@@ -1,0 +1,138 @@
+{
+ "uri": "https://www.contractsfinder.service.gov.uk/Published/Notice/releases/e2d9dc88-6503-4899-a4b0-76f0a5c96ffe.json",
+ "publishedDate": "2026-09-26T01:03:28+01:00",
+ "publisher": {
+  "name": "Cabinet Office",
+  "scheme": "GB-GOR",
+  "uid": "D2",
+  "uri": "https://www.gov.uk/government/organisations/cabinet-office"
+ },
+ "version": "1.1",
+ "extensions": [
+  "https://standard.open-contracting.org/profiles/eu/master/en/extension.json",
+  "https://raw.githubusercontent.com/portaledcahn/ocds_tenderDatePublished_extension/master/extension.json",
+  "https://raw.githubusercontent.com/open-contracting-extensions/ocds_budget_breakdown_extension/master/extension.json",
+  "https://raw.githubusercontent.com/Crown-Commercial-Service/ocds_awards_datePublished_extension/main/extension.json",
+  "https://raw.githubusercontent.com/Crown-Commercial-Service/ocds_partyDetails_vcse_extension/main/extension.json",
+  "https://raw.githubusercontent.com/Crown-Commercial-Service/ocds_tender_suitability_extension/main/extension.json",
+  "https://raw.githubusercontent.com/open-contracting-extensions/ocds_pagination_extension/master/extension.json"
+ ],
+ "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+ "publicationPolicy": "https://www.gov.uk/government/publications/open-contracting",
+ "releases": [
+  {
+   "ocid": "ocds-b5fd17-cb5940c3-ff2a-402e-9271-11b280b4daf4",
+   "id": "e2d9dc88-6503-4899-a4b0-76f0a5c96ffe-915593",
+   "language": "en",
+   "date": "2026-09-26T01:03:28+01:00",
+   "tag": [
+    "tender"
+   ],
+   "initiationType": "tender",
+   "tender": {
+    "id": "20260926010323-103298",
+    "title": "H&C1025 Sexual Health Services",
+    "description": "Sexual health needs in the East Riding are shaped by a combination of demographic, geographic, and health inequality factors. Sexual ill health is closely linked with deprivation, rurality, and limited access to services, contributing to avoidable harm and poorer outcomes for specific population groups. In the East Riding sexually transmitted infections, unplanned pregnancies, and associated complications continue to present a significant impact on individuals and the wider health systemThe Service will support delivery against the three nationally mandated Public Health Outcomes Framework (PHOF) indicators relevant to sexual health: · Under 18 conceptions (PHOF 2.04) · Chlamydia detection among 15-24 year olds (PHOF 3.02) · People presenting with HIV at a late stage of infection (PHOF 3.04) In addition to these national indicators, the Service will deliver a range of outcomes that improve sexual and reproductive health for the East Riding population, with a specific focus on reducing inequalities and addressing local patterns of need",
+    "datePublished": "2026-09-26T01:03:28+01:00",
+    "status": "active",
+    "classification": {
+     "scheme": "CPV",
+     "id": "85000000",
+     "description": "Health and social work services"
+    },
+    "additionalClassifications": [
+     {
+      "scheme": "CPV",
+      "id": "85140000",
+      "description": "Miscellaneous health services"
+     },
+     {
+      "scheme": "CPV",
+      "id": "85141000",
+      "description": "Services provided by medical personnel"
+     }
+    ],
+    "items": [
+     {
+      "id": "1",
+      "deliveryAddresses": [
+       {
+        "region": "Yorkshire and the Humber",
+        "countryName": "United Kingdom"
+       }
+      ]
+     }
+    ],
+    "minValue": {
+     "amount": 8000000,
+     "currency": "GBP"
+    },
+    "value": {
+     "amount": 8400000,
+     "currency": "GBP"
+    },
+    "procurementMethod": "open",
+    "procurementMethodDetails": "Open procedure",
+    "tenderPeriod": {
+     "endDate": "2026-10-26T12:00:00Z"
+    },
+    "contractPeriod": {
+     "startDate": "2027-04-01T00:00:00+01:00",
+     "endDate": "2034-03-31T23:59:59+01:00"
+    },
+    "suitability": {
+     "sme": false,
+     "vcse": false
+    },
+    "mainProcurementCategory": "services",
+    "documents": [
+     {
+      "id": "1",
+      "documentType": "tenderNotice",
+      "description": "Opportunity notice on Contracts Finder",
+      "url": "https://www.contractsfinder.service.gov.uk/Notice/e2d9dc88-6503-4899-a4b0-76f0a5c96ffe",
+      "datePublished": "2026-09-26T01:03:28+01:00",
+      "format": "text/html",
+      "language": "en"
+     },
+     {
+      "id": "2",
+      "description": "Additional data",
+      "url": "https://uk.eu-supply.com/app/rfq/rwlentrance_s.asp?PID=109271&B=UK"
+     },
+     {
+      "id": "3",
+      "description": "East Riding Of Yorkshire Council",
+      "url": "https://uk.eu-supply.com/ctm/Company/CompanyInformation/Index/103298"
+     }
+    ]
+   },
+   "parties": [
+    {
+     "id": "GB-CFS-188336",
+     "name": "East Riding of Yorkshire Council",
+     "identifier": {
+      "legalName": "East Riding of Yorkshire Council"
+     },
+     "address": {
+      "streetAddress": "County Hall, Cross Street,",
+      "locality": "Beverley",
+      "postalCode": "HU17 9BA",
+      "countryName": "ENG"
+     },
+     "contactPoint": {},
+     "details": {
+      "url": "https://www.eastriding.gov.uk"
+     },
+     "roles": [
+      "buyer"
+     ]
+    }
+   ],
+   "buyer": {
+    "id": "GB-CFS-188336",
+    "name": "East Riding of Yorkshire Council"
+   }
+  }
+ ]
+}

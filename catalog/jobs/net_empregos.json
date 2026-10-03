@@ -1,0 +1,91 @@
+{
+ "id": "net_empregos",
+ "category": "jobs",
+ "label": "Net-Empregos",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "pt"
+ ],
+ "docs_url": "https://www.net-empregos.com/rssfeed.asp",
+ "url": "https://www.net-empregos.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Portugal board; many ads apply by e-mail.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (latest offers feed)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist for apply; the public RSS is a Radar-fetcher source",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Public RSS 2.0 feed (rssfeed.asp, ttl 5, iso-8859-1) of the latest offers with title, dc:creator (company), link, description. No developer / API programme (/api, /developers return the SPA home); robots.txt Disallow: / for unlisted agents and blocks AhrefsBot, MJ12bot, PetalBot, Yandex … No terms page with automation wording located.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.net-empregos.com/",
+   "https://www.net-empregos.com/robots.txt",
+   "https://www.net-empregos.com/rssfeed.asp",
+   "https://www.net-empregos.com/api"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "The only machine-readable interface is the RSS 2.0 feed https://www.net-empregos.com/rssfeed.asp (re-checked 2026-09-25: 'Content-Type: application/xml; Charset=iso-8859-1', ~250 items, no search parameters; the server also resets connections from non-browser User-Agents). Remaining gap: charset-aware decoding of non-UTF-8 XML responses — the TypeScript runtime decodes every body as UTF-8 (accents become U+FFFD) and the Python runtime re-encodes the decoded text as UTF-8 before parsing it under the document's iso-8859-1 declaration (accents become mojibake); the 2026-09-25 additions (CSV, JSON parts, token placement, assertions) do not touch response decoding."
+}

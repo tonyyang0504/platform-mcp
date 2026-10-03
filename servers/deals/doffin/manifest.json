@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "doffin-mcp",
+ "display_name": "Doffin MCP",
+ "version": "0.1.0",
+ "description": "Doffin (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "doffin"
+   ],
+   "env": {
+    "PLATFORM_MCP_DOFFIN_SUBSCRIPTION_KEY": "${user_config.platform_mcp_doffin_subscription_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_doffin_subscription_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOFFIN_SUBSCRIPTION_KEY",
+   "description": "Subscription key for the 'Public API' product from the Doffin API developer portal (https://dof-notices-prod-api.developer.azure-api.net/, sign up → Products → subscribe), sent as the Ocp-Apim-Subscription-Key header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET https://api.doffin.no/public/v2/search (Public API 'search': numHitsPerPage ≤ 100, page, searchString, cpvCode, status, type, location, issueDateFrom/To, estimatedValueFrom/To, sortBy). `query` → searchString; `category` → one cpvCode; `min_budget` → estimatedValueFrom (an integer amount, NOK); status is fixed to ACTIVE (open notices). Response PagedPublicNoticeDto {numHitsTotal, hits[]}: title = heading, buyer = buyer[0].name, budget_max = estimatedValue.amount (the estimate, a single value) in estimatedValue.currencyCode, skills = cpvCodes, deadline as published (null on some notice types). The notice page is https://www.doffin.no/notices/<id>; notice type, lots and locations stay in raw."
+  }
+ ]
+}

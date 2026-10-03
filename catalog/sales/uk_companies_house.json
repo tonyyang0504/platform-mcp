@@ -1,0 +1,119 @@
+{
+ "id": "uk_companies_house",
+ "category": "sales",
+ "label": "Companies House",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": "https://developer.company-information.service.gov.uk/",
+ "url": "https://find-and-update.company-information.service.gov.uk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free REST API (search, company profile, officers, PSCs) with a free API key (600 req / 5 min) → platform-key SALES_COMPANIES_HOUSE_API_KEY; Open Government Licence.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.company-information.service.gov.uk",
+  "auth": {
+   "type": "basic",
+   "field": "api_key",
+   "password": "",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Companies House Public Data API key (free, from https://developer.company-information.service.gov.uk/). Sent as the HTTP Basic user name with an empty password: 'the Companies House API takes the username as the API key and ignores the password' (https://developer-specs.company-information.service.gov.uk/guides/authorisation)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "600 requests per 5 minutes per key (developer guide 'Rate limiting'; client docstring verified 2026-09-05) = 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/search/companies",
+    "fixed_params": {
+     "q": "test",
+     "items_per_page": 1
+    },
+    "docs": "https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-companies",
+    "note": "Verified with a one-item company search (Companies House has no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/search/companies",
+    "params": {
+     "q": "query",
+     "items_per_page": "limit",
+     "start_index": "offset"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "items",
+     "key": "companies",
+     "total": "total_results",
+     "fields": {
+      "id": "company_number",
+      "name": "title",
+      "country": "address.country",
+      "address": "address_snippet",
+      "founded": "date_of_creation"
+     }
+    },
+    "docs": "https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-companies",
+    "note": "UK register only: the `country` and `industry` arguments are not search parameters here and are ignored. Search items carry no SIC codes or website; `links.self` is a relative API path, so `url` is left unset (see raw.links.self). `restrictions=active-companies` is a documented option not applied by default."
+   },
+   "get_company": {
+    "method": "GET",
+    "path": "/company/{id}",
+    "result": {
+     "fields": {
+      "id": "company_number",
+      "name": "company_name",
+      "country": "registered_office_address.country",
+      "address": "registered_office_address.address_line_1",
+      "industry": "sic_codes.0",
+      "founded": "date_of_creation"
+     }
+    },
+    "docs": "https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/company-profile/company-profile",
+    "note": "`id` is the company number from search. `address` is the first line only; the full registered_office_address object and every SIC code are under raw. No website field is documented."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.company-information.service.gov.uk: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "spec https://developer-specs.company-information.service.gov.uk/api.ch.gov.uk-specifications/swagger-2.0/spec/swagger.json: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

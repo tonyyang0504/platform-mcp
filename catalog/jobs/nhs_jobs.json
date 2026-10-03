@@ -1,0 +1,163 @@
+{
+ "id": "nhs_jobs",
+ "category": "jobs",
+ "label": "NHS Jobs",
+ "lane": "assist",
+ "kind": "health",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://www.nhsbsa.nhs.uk/about-nhs-jobs/nhs-jobs-integration-and-benefits",
+ "url": "https://www.jobs.nhs.uk/",
+ "verified_at": "2026-09-25",
+ "terms_note": "NHS England vacancies; account application form.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "xml_feed"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search (XML search endpoint)",
+   "job_details (summary fields + advert URL)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET https://www.jobs.nhs.uk/api/v1/search_xml?keyword=… (public, keyless XML: vacancyDetails{id, reference, title, description, employer, type, salary, closeDate, postDate, url, locations[]}) can feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. No current developer documentation (the /api page is retired); the search_xml endpoint still answers without a key. Candidate terms and conditions opened — no bot clause surfaced in the extracted text; robots.txt empty. Applications require the NHS Jobs account (Applicant Hub).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.jobs.nhs.uk/candidate",
+   "https://www.jobs.nhs.uk/robots.txt",
+   "https://www.jobs.nhs.uk/api/v1/search_xml?keyword=nurse",
+   "https://www.jobs.nhs.uk/api",
+   "https://api.jobs.nhs.uk/",
+   "https://www.jobs.nhs.uk/candidate/terms-and-conditions"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.jobs.nhs.uk/api/v1",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "NHSBSA 'Self-Serve API (XML/RSS Feeds)': 'This feed allows employers to display NHS Jobs listings on their own websites or intranets' (NHS Jobs integration and benefits, https://www.nhsbsa.nhs.uk/about-nhs-jobs/nhs-jobs-integration-and-benefits); specification 'NHS Jobs Self-Serve Job Adverts API' v1.07 (01/05/2026, Word document linked from that page). 'Internal Only' adverts 'should only be available through your own intranet'. No rate limit is published; kept to one request per second.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/search_xml",
+    "params": {
+     "keyword": "query",
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "nhsJobs.vacancyDetails",
+     "key": "postings",
+     "fields": {
+      "id": "reference",
+      "title": "title",
+      "company": "employer",
+      "url": "url",
+      "posted_at": "postDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.nhsbsa.nhs.uk/sites/default/files/2026-05/NHS%20Jobs%20Self-Serve%20Job%20Adverts%20API%20V1.07_0.docx",
+    "note": "Keyless XML endpoint 'https://www.jobs.nhs.uk/api/v1/search_xml?' (spec v1.07). keyword matches 'the job title and job advert text'; page is 1-based ('Each page contains a maximum of 10 vacancies, unless specified otherwise by the \"limit\" parameter'; limit 'Maximum value 100'). location is not sent because the spec requires it together with distance and countryCode - filter locations client-side. id is the job reference (use it with get_posting); the numeric id, closeDate, salary (a text range such as '£20,000 to £30,000'), type and locations are in raw. totalPages / totalResults are in the response wrapper. The endpoint answers 406 Not Acceptable to the runtime's default Accept: application/json (live check 2026-09-26), so adapter.headers sends Accept: application/xml."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/search_xml",
+    "params": {
+     "jobReference": "id"
+    },
+    "result": {
+     "root": "nhsJobs.vacancyDetails",
+     "fields": {
+      "id": "reference",
+      "title": "title",
+      "company": "employer",
+      "url": "url",
+      "posted_at": "postDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.nhsbsa.nhs.uk/sites/default/files/2026-05/NHS%20Jobs%20Self-Serve%20Job%20Adverts%20API%20V1.07_0.docx",
+    "note": "jobReference: 'limit responses to only those job adverts with a matching Job reference number. If provided, then no other filter parameters will be used. This is used for exact matching to a job advert.' Pass the id returned by search (the job reference, e.g. A3233-26-0001)."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify: the Self-Serve API is keyless and has no account endpoint.",
+   "apply": "No application endpoint: the spec only retrieves adverts ('receive back live job adverts'); candidates apply on the advert's url.",
+   "list_messages": "No messaging endpoint; the spec covers the search XML and RSS feeds and search links only."
+  },
+  "headers": {
+   "Accept": "application/xml"
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: the API now answers 406 Not Acceptable to Accept: application/json; the adapter sends Accept: application/xml. The py/ts first-id difference is a posting published between the two runs (repeated requests return a stable order); all read tools answered, schema-valid, pagination advances"
+ }
+}

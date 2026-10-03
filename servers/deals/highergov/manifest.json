@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "highergov-mcp",
+ "display_name": "HigherGov MCP",
+ "version": "0.1.0",
+ "description": "HigherGov (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "highergov"
+   ],
+   "env": {
+    "PLATFORM_MCP_HIGHERGOV_API_KEY": "${user_config.platform_mcp_highergov_api_key}",
+    "PLATFORM_MCP_HIGHERGOV_SEARCH_ID": "${user_config.platform_mcp_highergov_search_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_highergov_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HIGHERGOV_API_KEY",
+   "description": "HigherGov API key (account admins: gear icon → API, per https://www.highergov.com/api-external/docs/).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_highergov_search_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HIGHERGOV_SEARCH_ID",
+   "description": "Optional HigherGov SearchID of a saved opportunity search; the API has no keyword parameter, so filtering is done by a saved search.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /api-external/opportunity/ (federal contract, DIBBS, grant and state/local opportunities; updated every 30 minutes): page_number, page_size ≤ 100, optional search_id from config. No keyword, category or budget parameter exists, so query/category/min_budget are not sent. val_est_low/high are strings (raw); source_path links to the source notice."
+  },
+  {
+   "name": "get_posting",
+   "description": "Same list endpoint filtered by opp_key (the HigherGov opportunity key returned as id); an unknown key yields an empty list (invalid_input)."
+  }
+ ]
+}

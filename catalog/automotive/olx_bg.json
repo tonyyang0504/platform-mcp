@@ -1,0 +1,45 @@
+{
+ "id": "olx_bg",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.olx.bg",
+ "domain": "olx.bg",
+ "country": "Bulgaria",
+ "official_api": true,
+ "docs_url": "https://developer.olx.bg/api/doc",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "list_categories",
+   "messaging"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). OLX Partner API v2 (developer.olx.bg): register an application with OLX account; manage own adverts and messages; not a public search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.olx.bg/",
+   "https://developer.olx.bg/api/doc"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developer.olx.bg/api/doc): OLX Partner API v2 (developer.olx.bg): register an application with OLX account; manage own adverts and messages; not a public search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

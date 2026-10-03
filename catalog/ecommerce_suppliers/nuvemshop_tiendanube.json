@@ -1,0 +1,113 @@
+{
+ "id": "nuvemshop_tiendanube",
+ "category": "ecommerce_suppliers",
+ "label": "Nuvemshop / Tiendanube (store platform + API)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "latam"
+ ],
+ "docs_url": "https://tiendanube.github.io/api-documentation/intro",
+ "url": "https://www.tiendanube.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "partner terms via app registration (not opened)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks"
+  ],
+  "auth": "oauth2 (partner app; store access token as `Authorization: Bearer`; User-Agent required)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "product_import",
+   "orders",
+   "tracking",
+   "webhooks",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Partner registration; per-store OAuth; versioned API.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://tiendanube.github.io/api-documentation/intro",
+   "https://api.tiendanube.com/2025-03/{store_id}"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Tiendanube/Nuvemshop API (https://tiendanube.github.io/api-documentation/intro, opened 2026-09-25): a partner app's per-store OAuth token reads and writes ONE merchant's own store (https://api.tiendanube.com/2025-03/{store_id}/products, orders...; User-Agent required). It is a store-platform (sales channel) API with no supplier catalogue, sourcing shipping quote or way to buy from a supplier, so this category's verbs have no counterpart; an adapter belongs with the sales channels."
+}

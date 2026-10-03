@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "problogger_jobs-deals-mcp",
+ "display_name": "ProBlogger Jobs MCP",
+ "version": "0.1.0",
+ "description": "ProBlogger Jobs (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/problogger_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "ProBlogger Job Board RSS of active postings (WPJobBoard, RSS 2.0): GET /jobs/wpjobboard/xml/rss/?filter=active, with `query` carried into the board's search (?query=writer narrows it). The WordPress /jobs/feed/ used before carried no <item> elements on 2026-09-25 and 2026-09-26 while this feed listed the board's live postings (live check 2026-09-26). The feed is one list, so page and limit are not sent (next_page is always null); category, min_budget are not sent. Items use the standard RSS fields (title, link, pubDate, description); id is the posting link."
+  }
+ ]
+}

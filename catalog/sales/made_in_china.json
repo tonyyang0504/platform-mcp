@@ -1,0 +1,37 @@
+{
+ "id": "made_in_china",
+ "category": "sales",
+ "label": "Made-in-China.com",
+ "lane": "public",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.made-in-china.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt has 7 Disallow lines, none covering the /products-search/ or company listing paths → public listing pages allowed; contact forms need a login (not used).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

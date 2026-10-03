@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yandex_direct-mcp",
+ "description": "Yandex Direct (Яндекс Директ) (ads): me, list_accounts, list_campaigns, pause_resume. Every tool map",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://yandex.com/dev/direct/doc/en/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yandex_direct"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YANDEX_DIRECT_TOKEN",
+     "description": "Yandex OAuth token of the Direct user (app registered at oauth.yandex.com with Direct API access approved; https://yandex.com/dev/direct/doc/en/concepts/auth-token), sent as Authorization: Bearer.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YANDEX_DIRECT_CLIENT_LOGIN",
+     "description": "Advertiser login to act for, sent as the Client-Login header (required for agency and representative tokens; omit for a direct advertiser).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

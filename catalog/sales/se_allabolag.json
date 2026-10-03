@@ -1,0 +1,36 @@
+{
+ "id": "se_allabolag",
+ "category": "sales",
+ "label": "Allabolag",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "se"
+ ],
+ "docs_url": null,
+ "url": "https://www.allabolag.se/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free company sheets from register + annual-report data; robots.txt (21 Disallow) does not hit company pages. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

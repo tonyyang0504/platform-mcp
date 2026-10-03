@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kite_ly-mcp",
+ "description": "Kite (Prodigi Group) (ecommerce suppliers): me, create_order, get_order, track. Every tool maps to a",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.kite.ly/docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kite_ly"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KITE_LY_API_KEY_PAIR",
+     "description": "Your Kite API key and secret key joined by a colon, exactly as the Authorization header expects them: <public_key>:<secret_key> (dashboard > credentials). The secret key is required for order requests, which are then charged to the card on your Kite account; test-mode keys never create real products.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

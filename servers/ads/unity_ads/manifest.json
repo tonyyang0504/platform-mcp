@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "unity_ads-mcp",
+ "display_name": "Unity Ads MCP",
+ "version": "0.1.0",
+ "description": "Unity Ads (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "unity_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_UNITY_ADS_KEY_ID": "${user_config.platform_mcp_unity_ads_key_id}",
+    "PLATFORM_MCP_UNITY_ADS_SECRET_KEY": "${user_config.platform_mcp_unity_ads_secret_key}",
+    "PLATFORM_MCP_UNITY_ADS_ORGANIZATION_ID": "${user_config.platform_mcp_unity_ads_organization_id}",
+    "PLATFORM_MCP_UNITY_ADS_CAMPAIGN_SET_ID": "${user_config.platform_mcp_unity_ads_campaign_set_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_unity_ads_key_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UNITY_ADS_KEY_ID",
+   "description": "Key ID of a Unity service account (Unity Cloud dashboard > Administration > Service accounts) with an Advertise API role (Viewer for reads, Campaigns Editor or Admin for budget changes); the HTTP Basic username.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_unity_ads_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UNITY_ADS_SECRET_KEY",
+   "description": "The service account's secret key, the HTTP Basic password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_unity_ads_organization_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UNITY_ADS_ORGANIZATION_ID",
+   "description": "Unity organization id (core id) that owns the Unity Ads advertiser apps; part of every path.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_unity_ads_campaign_set_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UNITY_ADS_CAMPAIGN_SET_ID",
+   "description": "App (campaign set) id used by update_budget, since budget calls are addressed as /apps/{campaignSetId}/campaigns/{campaignId}/budget. Take it from list_accounts.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe is GET /advertise/v1/organizations/{organization_id}/apps?limit=1, which verifies the service account and its Advertise role on the organization."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /apps: the organization's advertised apps (campaign sets). Unity Ads groups campaigns per app, so each app `id` (campaignSetId) is what list_campaigns takes as account_id. Budgets are in USD."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /apps/{campaignSetId}/campaigns[?filter[enabled]=true|false]: the app's campaigns. status accepts active/enabled (enabled=true) or paused/disabled (enabled=false); the `enabled` boolean is returned in its own field (no string status exists). Budgets are a separate resource (GET …/campaigns/{campaignId}/budget), so `budget` is not mapped. `page`/`limit` are not sent."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /apps/{campaign_set_id}/campaigns/{campaign_id}/budget {daily: \"<USD, up to 2 decimals>\"} (a partial update: the total budget is unchanged; 0 disables the daily cap). This spends money. Unity recommends at least $500 per country daily for CPI campaigns. Campaigns using per-country daily budgets (dailyPerCountry) are not changed by this call. Needs the campaign_set_id config field (the app the campaign belongs to). `currency` is ignored (USD)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /apps/{campaign_set_id}/campaigns/{campaign_id} {\"enabled\": false|true} (a partial campaign update). Needs the campaign_set_id config field (the app the campaign belongs to). Unity limits updates to one per second and 100 per 30 minutes per campaign."
+  }
+ ]
+}

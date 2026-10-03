@@ -1,0 +1,38 @@
+{
+ "id": "thomasnet",
+ "category": "sales",
+ "label": "ThomasNet",
+ "lane": "assist",
+ "kind": "directory",
+ "regions": [
+  "us",
+  "ca",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.thomasnet.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "www.thomasnet.com answers 403 to every automated fetch (no robots.txt served); the supplier-side host business.thomasnet.com opened. Tenant session in a human-assisted browser session; raise to public only if the listing host stops walling.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

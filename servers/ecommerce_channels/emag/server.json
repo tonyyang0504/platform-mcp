@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/emag-mcp",
+ "description": "eMAG Marketplace (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://marketplace.emag.ro/infocenter/emag-academy/how-to-add-a-product/product-import-through-api-or-feeds/api-documentation/?lang=en",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "emag"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_EMAG_USERNAME",
+     "description": "Username of the API user created in your eMAG Marketplace seller account (the user must be granted API rights, and eMAG only accepts calls from the IPs you whitelisted with them); sent as HTTP Basic.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_EMAG_PASSWORD",
+     "description": "Password of that API user; sent as HTTP Basic.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_EMAG_API_HOST",
+     "description": "API host of your platform: marketplace-api.emag.ro (eMAG RO), marketplace-api.emag.bg (BG), marketplace-api.emag.hu (HU), marketplace-ro-api.fashiondays.com or marketplace-bg-api.fashiondays.com (Fashion Days); calls go to https://<api_host>/api-3/...",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

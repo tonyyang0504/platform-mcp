@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "the_muse-mcp",
+ "display_name": "The Muse MCP",
+ "version": "0.1.0",
+ "description": "The Muse (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "the_muse"
+   ],
+   "env": {
+    "PLATFORM_MCP_THE_MUSE_API_KEY": "${user_config.platform_mcp_the_muse_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_the_muse_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_THE_MUSE_API_KEY",
+   "description": "Optional: register the app at https://www.themuse.com/developers/api/v2 to get an api_key (sent as the api_key query parameter), raising the limit from 500 to 3,600 requests/hour.",
+   "sensitive": true,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-page jobs request (The Muse has no account endpoint; works without a key at the lower rate limit)."
+  },
+  {
+   "name": "search",
+   "description": "No keyword parameter is documented (filters are category, level, location, company), so query is not sent — filter client-side. page is required and pages hold 20 results (do not pass limit). Rate limit 500 requests/hour without a key, 3,600 with one (X-RateLimit-* headers); the platform answers 403 when exceeded, which surfaces here as auth_error. Content shown must link back to themuse.com."
+  },
+  {
+   "name": "get_posting",
+   "description": "Same object as a search hit."
+  }
+ ]
+}

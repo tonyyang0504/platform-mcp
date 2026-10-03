@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "meta_shops-mcp",
+ "display_name": "Facebook & Instagram Shops MCP",
+ "version": "0.1.0",
+ "description": "Facebook & Instagram Shops (ecommerce channels): me, update_listing, set_inventory, end_listing, lis",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "meta_shops"
+   ],
+   "env": {
+    "PLATFORM_MCP_META_SHOPS_ACCESS_TOKEN": "${user_config.platform_mcp_meta_shops_access_token}",
+    "PLATFORM_MCP_META_SHOPS_CATALOG_ID": "${user_config.platform_mcp_meta_shops_catalog_id}",
+    "PLATFORM_MCP_META_SHOPS_CMS_ID": "${user_config.platform_mcp_meta_shops_cms_id}",
+    "PLATFORM_MCP_META_SHOPS_CURRENCY": "${user_config.platform_mcp_meta_shops_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_meta_shops_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_SHOPS_ACCESS_TOKEN",
+   "description": "System-user (or long-lived user) access token of a Meta app with catalog_management and, for orders, commerce_account_manage_orders / commerce_account_read_orders permissions on the commerce account; sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_meta_shops_catalog_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_SHOPS_CATALOG_ID",
+   "description": "Product catalog id (Commerce Manager > Catalog > Settings).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_meta_shops_cms_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_SHOPS_CMS_ID",
+   "description": "Commerce account (CMS) id; required for list_orders.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_meta_shops_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_META_SHOPS_CURRENCY",
+   "description": "ISO currency of the catalog prices, e.g. USD; required when update_listing sends a price ('9.99 USD').",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Reads the configured product catalog {id, name, product_count} to verify the token and catalog access."
+  },
+  {
+   "name": "update_listing",
+   "description": "items_batch UPDATE for one PRODUCT_ITEM: `listing_id` is the item's retailer id (data.id); price is sent as '<amount> <currency>' using the currency config field; quantity maps to quantity_to_sell_on_facebook. Changes go LIVE on Facebook/Instagram shops once processed; raw.handles[0] is the batch handle and raw.validation_status lists per-item errors."
+  },
+  {
+   "name": "set_inventory",
+   "description": "items_batch UPDATE {id: sku, quantity_to_sell_on_facebook}: `sku` is the retailer id of the catalog item (required)."
+  },
+  {
+   "name": "end_listing",
+   "description": "items_batch DELETE removes the item (retailer id = listing_id) from the catalog and therefore from Shops and catalog ads; not reversible (re-create it to restore)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /{cms_id}/commerce_orders?state (FB_PROCESSING|CREATED|IN_PROGRESS|COMPLETED, comma-separated; default CREATED). `since` is not applied because updated_after is a Unix timestamp. Pagination is by Graph cursors (raw paging), so only the first page is returned; amounts are in raw.estimated_payment_details. New orders must be acknowledged (POST /{order_id}/acknowledge_order) before fulfilment; not done here."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "Attach Shipment POST /{order-id}/shipments {idempotency_key, tracking_info: {carrier, tracking_number}}; items are omitted, so 'all unfulfilled quantities of items on the order' are shipped. When sending tracking_info both carrier and tracking_number are required."
+  }
+ ]
+}

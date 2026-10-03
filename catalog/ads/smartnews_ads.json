@@ -1,0 +1,309 @@
+{
+ "id": "smartnews_ads",
+ "category": "ads",
+ "label": "SmartNews Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://ads.smartnews.com/developers/",
+ "url": "https://ads.smartnews.com/home/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer application registered with SmartNews Ads (API Access Terms of Service); OAuth token generated per developer app; v2 fully disabled (410) — use v3. 'Requests are limited per developer app ID. Making too many requests in a short time will result in a 429 error.' Currency JPY (USD for the US edition). Free. Separate approval for the Conversion API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (developer application → POST oauth token; bearer)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "catalog_products",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (SmartNews Marketing API v3.0.1) Confidence: **high** — official Redoc + official GitHub spec read.",
+  "base_urls": [
+   "https://ads.smartnews.com/api/ma/v3/…",
+   "https://ads.smartnews.com/api/v1.0"
+  ],
+  "auth": [
+   "1. Register a developer application with SmartNews Ads (agree to the SmartNews Ads API Access Terms of Service).",
+   "2. `POST …/oauth/token` — 'Generate an access token' for the developer application; revoke with the companion endpoint.",
+   "3. `Authorization: Bearer <token>`; list the ad accounts linked to the developer app (`GET …/developer-app/ad-accounts`)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /developer-app/ad-accounts",
+    "purpose": "ad accounts associated with the developer app",
+    "notes": "ad_account_id, name, currency"
+   },
+   {
+    "call": "GET /campaign` (paginated) · `POST /campaign` · `GET/PATCH/DELETE /campaign/{id}",
+    "purpose": "campaigns",
+    "notes": "ad_account_id, name, objective, budget, start/end, status"
+   },
+   {
+    "call": "GET /ad-group` (by campaign / ad account) · `POST` · `GET/PATCH/DELETE /ad-group/{id}",
+    "purpose": "ad groups: bid, budget, targeting",
+    "notes": "campaign_id, name, bid_amount, daily_budget, targeting{locations, interests, article_categories, custom_audiences}, schedule"
+   },
+   {
+    "call": "GET /ad` · `POST /ad` · `GET/PATCH/DELETE /ad/{id}` · `GET/POST /media-file",
+    "purpose": "ads + creative upload",
+    "notes": "ad_group_id, title, description, landing_url, media_file_id"
+   },
+   {
+    "call": "GET /insights` · `GET /insights/aggregated",
+    "purpose": "reports",
+    "notes": "ad_account_id, level, date range, metrics"
+   },
+   {
+    "call": "GET/POST /custom-audience` · `PATCH/DELETE …/{id}` · `POST …/audience-id-list-file",
+    "purpose": "audiences",
+    "notes": "name, type, id list file (hashed)"
+   },
+   {
+    "call": "GET /pixel` · `GET /pixel/{pixel_tag_id}",
+    "purpose": "pixels (conversion tracking); Conversion API is separately approved",
+    "notes": "pixel_tag_id"
+   },
+   {
+    "call": "GET /locations` · `/interests` · `/article-category` · `POST /smartview/article-keyword` · catalogs (`/catalog`, product sets)",
+    "purpose": "targeting search + catalogs",
+    "notes": "query"
+   }
+  ],
+  "limits": " - Rate limit per developer app ID (429 on burst); currency JPY (US edition USD); 'Simultaneous Update Operation Limitation'; API Access Terms of Service (ads.smartnews.com/developers/tos-us.html).",
+  "mcp_sdk": [
+   "Official OpenAPI download on the Redoc page; official GitHub spec repo (smartnews/smartnews-ads-advertising-api-spec)."
+  ],
+  "sources": [
+   "https://ads.smartnews.com/developers",
+   "https://raw.githubusercontent.com/smartnews/smartnews-ads-advertising-api-spec/v1.0/smartnews-ads-management-api.md",
+   "https://ads.smartnews.com/home/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ads.smartnews.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://ads.smartnews.com/api/oauth/v1/access_tokens",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Developer app id (numeric client id) of an approved SmartNews Ads developer application."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The developer app's client secret; access tokens (scope ads-manager) last 24 hours and are re-requested automatically."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "ad_account_id",
+    "required": false,
+    "help": "SmartNews ad account id used by pause_resume (the campaign PATCH path is /api/ma/v3/ad_accounts/{ad_account_id}/campaigns/{campaign_id})."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/bm/v1/developer_apps/me/ad_accounts",
+    "docs": "https://ads.smartnews.com/developers/#tag/developer-app",
+    "note": "GET /api/bm/v1/developer_apps/me/ad_accounts: confirms the developer app token and lists the ad accounts linked to it."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/api/bm/v1/developer_apps/me/ad_accounts",
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "ad_account_id",
+      "name": "ad_account_name"
+     }
+    },
+    "docs": "https://ads.smartnews.com/developers/#tag/developer-app",
+    "note": "Ad accounts associated with the developer app ({ad_account_id, ad_account_name, owner_business_id, roles}); no currency on this record."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/ma/v3/ad_accounts/{account_id}/campaigns",
+    "params": {
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "total": "pagination.total_objects",
+     "fields": {
+      "id": "campaign_id",
+      "name": "name",
+      "status": "configured_status",
+      "budget_micros": "daily_budget_amount_micro",
+      "start": "start_date_time",
+      "end": "end_date_time"
+     }
+    },
+    "docs": "https://ads.smartnews.com/developers/#tag/campaign/operation/getCampaignsPaginated",
+    "note": "GET /api/ma/v3/ad_accounts/{ad_account_id}/campaigns (page/page_size). Budgets are micros of the account currency: budget_micros is daily_budget_amount_micro (1,000,000 = 1 USD or 1 JPY). `status` is configured_status and is not a filter; raw.delivery_status shows serving."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/api/ma/v3/ad_accounts/{account_id}/insights/campaigns",
+    "params": {
+     "since": "fmt:{date:date_from}T00:00:00Z",
+     "until": "fmt:{date:date_to}T23:59:59Z",
+     "target_ids": "campaign_id"
+    },
+    "fixed_params": {
+     "fields": [
+      "metadata_name",
+      "metrics_viewable_impression",
+      "metrics_click",
+      "metrics_ctr",
+      "metrics_cpc",
+      "metrics_budget_spent"
+     ],
+     "page_size": "100"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "id",
+      "campaign": "metadata.name",
+      "impressions": "metrics.viewable_impression",
+      "clicks": "metrics.click",
+      "ctr": "metrics.ctr",
+      "cpc": "metrics.cpc",
+      "spend": "metrics.budget_spent"
+     }
+    },
+    "docs": "https://ads.smartnews.com/developers/#tag/insights/operation/getInsightsV3",
+    "note": "GET /api/ma/v3/ad_accounts/{ad_account_id}/insights/campaigns?since=date_fromT00:00:00Z&until=date_toT23:59:59Z&fields=... (optionally target_ids=campaign_id): one row per campaign with totals over the range (viewable impressions, clicks, spend in the account currency). Only Ads Manager v2 objects are reported; first 100 campaigns."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/api/ma/v3/ad_accounts/{ad_account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "headers": {
+     "Content-Type": "application/merge-patch+json"
+    },
+    "body": {
+     "configured_status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "campaign_id",
+      "status": "configured_status"
+     }
+    },
+    "docs": "https://ads.smartnews.com/developers/#tag/campaign/operation/patchCampaignById",
+    "note": "PATCH /api/ma/v3/ad_accounts/{ad_account_id config}/campaigns/{campaign_id} (application/merge-patch+json) {configured_status: PAUSED|ACTIVE}. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "update_budget": "SmartNews budgets are micros (\"daily_budget_amount_micro: The average budget per day in micros of the ad account currency base unit\", PATCH /api/ma/v3/ad_accounts/{ad_account_id}/campaigns/{campaign_id}, https://ads.smartnews.com/developers/#tag/campaign/operation/patchCampaignById); the adapter cannot scale a daily_budget into micros."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads.smartnews.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token ads.smartnews.com/api/oauth/v1/access_tokens: 401 {",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

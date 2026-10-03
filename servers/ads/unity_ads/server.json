@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/unity_ads-mcp",
+ "description": "Unity Ads (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.unity.com/en-us/grow/acquire/management/acquire-rest-apis",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "unity_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_UNITY_ADS_KEY_ID",
+     "description": "Key ID of a Unity service account (Unity Cloud dashboard > Administration > Service accounts) with an Advertise API role (Viewer for reads, Campaigns Editor or Admin for budget changes); the HTTP Basic username.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UNITY_ADS_SECRET_KEY",
+     "description": "The service account's secret key, the HTTP Basic password.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UNITY_ADS_ORGANIZATION_ID",
+     "description": "Unity organization id (core id) that owns the Unity Ads advertiser apps; part of every path.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_UNITY_ADS_CAMPAIGN_SET_ID",
+     "description": "App (campaign set) id used by update_budget, since budget calls are addressed as /apps/{campaignSetId}/campaigns/{campaignId}/budget. Take it from list_accounts.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

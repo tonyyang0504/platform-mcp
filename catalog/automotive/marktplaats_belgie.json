@@ -1,0 +1,48 @@
+{
+ "id": "marktplaats_belgie",
+ "category": "automotive",
+ "label": "Marktplaats",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.marktplaats.nl",
+ "domain": "marktplaats.nl",
+ "country": "Belgium",
+ "official_api": true,
+ "docs_url": "https://api.marktplaats.nl/docs/v1/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (client registered with Marktplaats)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Marktplaats documents a RESTful OAuth2 API (also 2dehands/2ememain) for placing/managing ads plus a Search endpoint; client credentials come from Marktplaats (business/advertiser use).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.marktplaats.nl/docs/v1/",
+   "https://api.marktplaats.nl/docs/v1/overview.html",
+   "https://api.marktplaats.nl/docs/v1/authentication.html",
+   "https://marktplaats.nl/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "io.github.jasp-nerd/marktplaats-mcp (MCP registry, community, unofficial)"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Same Marktplaats API as automotive/marktplaats (served); the Belgian platform is 2dehands/2ememain, served as automotive/twodehands (api.2dehands.be)."
+}

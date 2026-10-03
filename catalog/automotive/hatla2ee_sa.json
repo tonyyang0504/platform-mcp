@@ -1,0 +1,37 @@
+{
+ "id": "hatla2ee_sa",
+ "category": "automotive",
+ "label": "Ksa",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://ksa.hatla2ee.com",
+ "domain": "ksa.hatla2ee.com",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Hatla2ee (all country subdomains) has no public/partner API documentation; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ksa.hatla2ee.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/dadhalfdev/hatla2ee-scraper"
+  ]
+ },
+ "official_mcp": []
+}

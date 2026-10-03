@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "zalo-messaging-mcp",
+ "display_name": "Zalo MCP",
+ "version": "0.1.0",
+ "description": "Zalo (messaging): me, list_inbound, get_thread, send, reply. Every tool maps to a documented endpoin",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/zalo"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZALO_APP_ID": "${user_config.platform_mcp_zalo_app_id}",
+    "PLATFORM_MCP_ZALO_SECRET_KEY": "${user_config.platform_mcp_zalo_secret_key}",
+    "PLATFORM_MCP_ZALO_REFRESH_TOKEN": "${user_config.platform_mcp_zalo_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zalo_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_APP_ID",
+   "description": "ID of your Zalo app (developers.zalo.me > app > Thông tin ứng dụng).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalo_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_SECRET_KEY",
+   "description": "The app's secret key (Khóa bí mật của ứng dụng); sent only as the secret_key header of the token request.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalo_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALO_REFRESH_TOKEN",
+   "description": "OA refresh_token from the OA authorisation (POST https://oauth.zaloapp.com/v4/oa/access_token with grant_type=authorization_code). Valid 3 months and single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set). Access tokens last 25 h.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2.0/oa/getoa: the OA's id, name, description, is_verified, num_follower, package."
+  },
+  {
+   "name": "list_inbound",
+   "description": "GET /v2.0/oa/listrecentchat: the latest message of each recent conversation (max 10 per page; offset 0 = most recent). src 1 = from the user, 0 = from the OA; `from`/`to` are user or OA ids and a user's id is the thread_id for get_thread/reply; sent_at is epoch ms. Needs the 'Quyền quản lý tin nhắn người dùng' permission."
+  },
+  {
+   "name": "get_thread",
+   "description": "GET /v2.0/oa/conversation: messages between the OA and one user (thread_id = the user's user_id), newest first, max 10 per page."
+  },
+  {
+   "name": "send",
+   "description": "POST /v3.0/oa/message/cs: a consultation (Tin Tư vấn) text message, ≤2000 characters, to a user_id who follows or has interacted with the OA; free within 48 h of the user's last interaction, otherwise it consumes the OA's quota. `subject` is ignored."
+  },
+  {
+   "name": "reply",
+   "description": "Replies in a conversation by sending a consultation text message to the thread's user (thread_id = user_id)."
+  }
+ ]
+}

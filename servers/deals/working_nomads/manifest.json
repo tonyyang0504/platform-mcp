@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "working_nomads-deals-mcp",
+ "display_name": "Working Nomads MCP",
+ "version": "0.1.0",
+ "description": "Working Nomads (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/working_nomads"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Single keyless JSON array (fields: url, title, description (HTML), company_name, category_name, tags, location, pub_date) with no query/page/limit parameters: `query`, `category`, `min_budget`, `page` and `limit` are not sent and the whole feed is returned; filter client-side. The feed has no id field, so `id` is the posting `url`. `tags` is a comma-separated string (not an array) and stays in `raw` with category_name and location."
+  }
+ ]
+}

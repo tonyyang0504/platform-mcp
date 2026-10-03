@@ -1,0 +1,35 @@
+{
+ "id": "tuauto_pe",
+ "category": "automotive",
+ "label": "Tuauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.tuauto.com.pe",
+ "domain": "tuauto.com.pe",
+ "country": "Peru",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on the site (homepage 200, /developers /api /docs /partners probes empty) and no official API in search results.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://tuauto.com.pe/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,127 @@
+{
+ "id": "python_org_jobs",
+ "category": "jobs",
+ "label": "Python.org Job Board",
+ "lane": "human",
+ "kind": "tech",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.python.org/jobs/feed/rss/",
+ "url": "https://www.python.org/jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Community board; each post gives a contact e-mail/URL — a person applies.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — human for apply (each posting names the employer's contact / e-mail); the RSS (application/rss+xml) is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Curated Python jobs. PSF community job board with a public RSS feed; no API. robots.txt blocks HTTrack, Nutch, Krugle, MSIECrawler with Disallow: / for unlisted agents; no terms page for the board.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.python.org/jobs/",
+   "https://www.python.org/robots.txt",
+   "https://www.python.org/jobs/feed/rss/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.python.org",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobs/feed/rss/",
+    "default_limit": 20,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.python.org/jobs/feed/rss/",
+    "note": "Python.org Job Board RSS 2.0 feed (latest 20 approved jobs). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). Items carry no pubDate (posted_at is null); description begins with the location line followed by the HTML job description. title is '<Role>, <Company>'. id is the job page link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

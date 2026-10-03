@@ -1,0 +1,269 @@
+{
+ "id": "the_trade_desk",
+ "category": "ads",
+ "label": "The Trade Desk",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/post-campaign-query-advertiser",
+ "url": "https://www.thetradedesk.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "The Platform API is available to The Trade Desk partner seats; the API credentials come from your Account Manager and API tokens (one week to one year) are generated in the OpenTTD Access Management app (https://open.thetradedesk.com/advertiser/docsApp/Foundations/resources/doc/PlatformAuthentication, read 2026-09-25).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "token (TTD-Auth header: long-lived API token generated in the Partner Portal, or session token from /v3/authentication)",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "targeting_search",
+   "conversions_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (The Trade Desk Platform API v3).",
+  "base_urls": [
+   "https://api.thetradedesk.com/v3/…"
+  ],
+  "auth": [
+   "1. Log in to the Partner Portal with seat credentials; **Manage API tokens** → Generate Token (name + lifespan; the value is shown once; revoke any time).",
+   "2. Send `TTD-Auth: <token>` on every request (alternatively `POST /v3/authentication` with login + password returns a session token)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v3/advertiser/query/partner` · `GET /v3/advertiser/{id}",
+    "purpose": "advertisers under the partner",
+    "notes": "AdvertiserId, AdvertiserName, CurrencyCode"
+   },
+   {
+    "call": "POST /v3/campaign` · `PUT /v3/campaign` · `POST /v3/campaign/query/advertiser",
+    "purpose": "campaigns",
+    "notes": "CampaignName, Budget{Amount, CurrencyCode}, DailyBudget, StartDate, EndDate, PacingMode, Availability"
+   },
+   {
+    "call": "POST /v3/adgroup` · `PUT /v3/adgroup` · `POST /v3/adgroup/query/campaign",
+    "purpose": "ad groups: bid, budget, targeting",
+    "notes": "AdGroupName, RTBAttributes{BaseBidCPM, MaxBidCPM, BudgetSettings, AudienceTargeting, GeoSegmentAdjustments, CreativeIds[]}, IsEnabled"
+   },
+   {
+    "call": "POST /v3/creative` · `PUT /v3/creative",
+    "purpose": "creatives (display / video / audio)",
+    "notes": "CreativeName, Format, ImageUrl / VideoUrl / ThirdPartyTag, ClickthroughUrl, Width, Height"
+   },
+   {
+    "call": "POST /v3/myreports/reportexecution/query/advertisers` · report schedules",
+    "purpose": "reports (My Reports)",
+    "notes": "ReportScheduleId, ReportDateRange, ExecutionSpansDays"
+   },
+   {
+    "call": "POST /v3/crmdata/segment` · `POST /v3/crmdata/segment/{advertiserId}/{segmentId}` (upload) · `POST /v3/datagroup",
+    "purpose": "audiences",
+    "notes": "SegmentName, DataType (Email / EmailHashedUnifiedId2 …), body of identifiers"
+   },
+   {
+    "call": "POST /v3/offlinetracking` (offline conversion import)",
+    "purpose": "conversions upload",
+    "notes": "TrackingTagId, ConversionTime, UserIds, Value"
+   }
+  ],
+  "limits": " - Rate limits not readable this pass (TODO(verify)). Access is contractual (TTD seat / partner); platform fee through the contract; sandbox available to partners.",
+  "mcp_sdk": [
+   "None official found. Third-party: Redpoint, Stitchflow docs describe the TTD-Auth flow."
+  ],
+  "sources": [
+   "https://partner.thetradedesk.com/v3/portal/api/doc/ApiOverview"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.thetradedesk.com/v3",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "header",
+   "header": "TTD-Auth",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Platform API token generated in OpenTTD > Access Management > Generate Token / Key (Application: Platform API; lifetime one week to one year), sent as the TTD-Auth header. Short-lived tokens from POST /v3/authentication also work until they expire."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "partner_id",
+    "required": false,
+    "help": "Your Partner ID (e.g. from POST /v3/partner/query); list_accounts lists the advertisers of this partner (POST /v3/advertiser/query/partner needs PartnerId)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/partner/query",
+    "body": {
+     "PageStartIndex": "json:0",
+     "PageSize": "json:1"
+    },
+    "docs": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/post-partner-query",
+    "note": "POST /v3/partner/query {PageStartIndex: 0, PageSize: 1}: 'Get all Partners that are accessible' to the token; account.Result[0].PartnerId is the partner id to configure."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "/advertiser/query/partner",
+    "body": {
+     "PartnerId": "@partner_id",
+     "PageStartIndex": "json:0",
+     "PageSize": "json:100"
+    },
+    "result": {
+     "items": "Result",
+     "key": "accounts",
+     "total": "TotalFilteredCount",
+     "fields": {
+      "id": "AdvertiserId",
+      "name": "AdvertiserName",
+      "currency": "CurrencyCode"
+     }
+    },
+    "docs": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/post-advertiser-query-partner",
+    "note": "POST /v3/advertiser/query/partner {PartnerId (config partner_id), PageStartIndex: 0, PageSize: 100}: 'Get Advertisers that belong to the specified Partner' (first 100). The advertiser id is the account_id for list_campaigns."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/campaign/query/advertiser",
+    "body": {
+     "AdvertiserId": "account_id",
+     "PageStartIndex": "offset",
+     "PageSize": "limit",
+     "Availabilities.0": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "Result",
+     "key": "campaigns",
+     "total": "TotalFilteredCount",
+     "fields": {
+      "id": "CampaignId",
+      "name": "CampaignName",
+      "status": "Availability",
+      "budget": "Budget.Amount",
+      "currency": "Budget.CurrencyCode",
+      "start": "StartDate",
+      "end": "EndDate"
+     }
+    },
+    "docs": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/post-campaign-query-advertiser",
+    "note": "POST /v3/campaign/query/advertiser {AdvertiserId, PageStartIndex (zero-based offset), PageSize, Availabilities}: 'Get a page of Campaigns that belong to the specified Advertiser'. `status` is an Availability (Available or Archived). `budget` is the campaign's total Budget (Money {Amount, CurrencyCode}); DailyBudget, PacingMode and CampaignFlights are in raw."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/campaign",
+    "body": {
+     "CampaignId": "campaign_id",
+     "DailyBudget.Amount": "daily_budget",
+     "DailyBudget.CurrencyCode": "currency"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/put-campaign",
+    "note": "PUT /v3/campaign {CampaignId, DailyBudget: {Amount, CurrencyCode}} ('Update an existing campaign'). DailyBudget is Money: Amount is a decimal in the advertiser's currency and CurrencyCode (e.g. USD) is REQUIRED, so pass `currency`. TTD: 'For campaigns with multiple flights, this property becomes read-only and its value is determined by individual flight budget values' - such campaigns are rejected; change the flight budget in the platform instead."
+   }
+  },
+  "not_offered": {
+   "get_report": "Date-ranged performance metrics are served by the GraphQL API ('generalReporting(where: { date: { gte: \"2025-02-01\", lt: \"2025-03-01\" } })', https://open.thetradedesk.com/advertiser/docsApp/GuidesAdvertiser/api/doc/AdvertiserGQLQueryExamples) whose selection-set braces the adapter's string templates cannot build, or by asynchronous My Reports schedules; the only REST metrics call, GET /v3/campaign/{campaignId}/metrics, returns 'Metrics and goals over the 4 week span' and cannot honour date_from/date_to.",
+   "pause_resume": "Campaigns have no paused state in the Platform API: Availability is only 'Available' or 'Archived' and 'Once a campaign is updated to `Archived`, it cannot be set back to `Available`' (PUT /v3/campaign, https://open.thetradedesk.com/advertiser/docsApp/AdvertiserReferences/api/ref/put-campaign); delivery is switched on and off per ad group (isEnabled), which the campaign-level verb cannot address."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.thetradedesk.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

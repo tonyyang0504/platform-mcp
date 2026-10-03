@@ -1,0 +1,115 @@
+{
+ "label": "Mercado Bitcoin (public market data)",
+ "lane": "api",
+ "kind": "spot",
+ "regions": [
+  "br"
+ ],
+ "docs_url": "https://api.mercadobitcoin.net/api/v4/docs",
+ "url": "https://www.mercadobitcoin.com.br/",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "spec_url": "https://api.mercadobitcoin.net/api/v4/docs/swagger.yaml",
+ "terms_note": "API terms: https://www.mercadobitcoin.com.br/termo-de-uso-apis. Rate limit 500 requests/min in total; /symbols, /tickers and /candles are 1 request/sec each (spec).",
+ "adapter": {
+  "base_url": "https://api.mercadobitcoin.net/api/v4",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/symbols",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "columnar": true,
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "fields": {
+      "symbol": "symbol",
+      "base": "base-currency",
+      "quote": "currency",
+      "type": "type"
+     },
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "base",
+        "quote"
+       ]
+      }
+     ]
+    },
+    "docs": "https://api.mercadobitcoin.net/api/v4/docs",
+    "note": "GET /symbols returns every instrument as parallel arrays; the server filters them by `query` (substring of symbol, base or quote, case-insensitive; the API itself filters only by exact symbols), sorts them by symbol and pages them locally (page/limit)."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/tickers",
+    "params": {
+     "symbols": "symbol"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "symbol": "pair",
+      "last": "num:last",
+      "bid": "num:buy",
+      "ask": "num:sell",
+      "volume": "num:vol"
+     }
+    },
+    "docs": "https://api.mercadobitcoin.net/api/v4/docs",
+    "note": "symbol is BASE-QUOTE, e.g. BTC-BRL. Prices are in the quote currency; volume is 24h base volume. An unknown symbol answers an empty list (invalid_input)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/candles",
+    "params": {
+     "symbol": "symbol",
+     "resolution": "interval",
+     "to": "now_epoch",
+     "countback": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "columnar": true,
+     "key": "candles",
+     "fields": {
+      "time": "str:t",
+      "open": "num:o",
+      "high": "num:h",
+      "low": "num:l",
+      "close": "num:c",
+      "volume": "num:v"
+     }
+    },
+    "docs": "https://api.mercadobitcoin.net/api/v4/docs",
+    "note": "interval is one of 1m, 15m, 1h, 3h, 1d, 1w, 1M; the latest `limit` bars up to now (countback). time is the bar's Unix timestamp (seconds, UTC)."
+   }
+  },
+  "not_offered": {
+   "me": "Account endpoints (GET /accounts) need a bearer token from POST /oauth2/token with an API key; this entry serves the keyless public data only.",
+   "get_balances": "GET /accounts/{accountId}/balances needs the Bearer token (securityDefinitions.Bearer); public-data entry only.",
+   "list_orders": "GET /accounts/{accountId}/orders needs the Bearer token; public-data entry only.",
+   "place_order": "POST /accounts/{accountId}/{symbol}/orders needs the Bearer token and spends money; not mapped in this public-data entry.",
+   "cancel_order": "DELETE /accounts/{accountId}/{symbol}/orders/{orderId} needs the Bearer token; not mapped in this public-data entry."
+  }
+ },
+ "id": "mercado_bitcoin",
+ "category": "trading",
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

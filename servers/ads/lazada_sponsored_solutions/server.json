@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/lazada_sponsored_solutions-mcp",
+ "description": "Lazada Sponsored Solutions (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FsearchCampaignList",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "lazada_sponsored_solutions"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_KEY",
+     "description": "App Key of your Lazada Open Platform app with the Sponsored Solutions API permission (App Console).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_SECRET",
+     "description": "App Secret of the same app; signs every call and the token refresh (uppercase hex HMAC-SHA256 over the API name + sorted name/value pairs). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_REFRESH_TOKEN",
+     "description": "Seller refresh_token from /auth/token/create after the seller authorised the app; the runtime mints access tokens with the signed /auth/token/refresh (https://auth.lazada.com/rest) and keeps the refresh_token it returns ('The refresh token cannot be refreshed': when refresh_expires_in runs out the seller must re-authorise). Set PLATFORM_MCP_STATE_DIR so the newest one survives restarts.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_API_DOMAIN",
+     "description": "Regional API host of the seller's venture: api.lazada.sg, api.lazada.com.my, api.lazada.com.ph, api.lazada.co.th, api.lazada.co.id or api.lazada.vn (Service Endpoints of each Sponsored Solutions API).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

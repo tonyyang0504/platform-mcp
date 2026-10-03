@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/baijiahao-mcp",
+ "description": "Baijiahao (social): me, read_comments, delete, analytics_post. Every tool maps to a documented endpo",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/serviceIntroduction",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "baijiahao"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BAIJIAHAO_APP_ID",
+     "description": "作者帐号ID (app_id) shown when you enable 开发者 service in the 百家号 creator console (开通开发者服务，获取app_token及app_id).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BAIJIAHAO_APP_TOKEN",
+     "description": "授权密钥 (app_token) from the same 开发者 settings; sent in the request body of every call. Reset it at once if it leaks.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

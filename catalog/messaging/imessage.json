@@ -1,0 +1,116 @@
+{
+ "id": "imessage",
+ "category": "messaging",
+ "label": "iMessage",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://register.apple.com/resources/messages/messaging-documentation/",
+ "url": "https://support.apple.com/messages",
+ "verified_at": "2026-09-02",
+ "terms_note": "Apple Messages for Business: a business must first 'select an Apple-approved Messaging Service Provider (MSP)' — the MSP provides the messaging platform, channel access, automation and backend integrations; direct integration without an MSP is not offered; six steps MSP → plan → register → build → test → Experience Review → launch. Features: Quick Reply, List Picker, Time Picker, Apple Pay, Authentication. No public API for personal iMessage is documented.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "partner_only",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

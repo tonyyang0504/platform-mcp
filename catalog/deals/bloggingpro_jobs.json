@@ -1,0 +1,192 @@
+{
+ "id": "bloggingpro_jobs",
+ "category": "deals",
+ "label": "BloggingPro Job Board",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.bloggingpro.com/jobs/",
+ "url": "https://www.bloggingpro.com/jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public WordPress RSS (bot-walled today); apply per posting.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.bloggingpro.com/jobs/feed/",
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS, 403 to curl today). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://www.bloggingpro.com/jobs/feed/"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /jobs/feed/",
+    "purpose": "search",
+    "notes": "403 today"
+   }
+  ],
+  "limits": " - Bot wall on the feed; no terms read. - Public WordPress RSS (bot-walled today); apply per posting.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.bloggingpro.com/jobs/",
+   "https://www.bloggingpro.com/jobs/feed/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.bloggingpro.com/wp-json/wp/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No rate limit is published; the HTML/feed paths sit behind a browser check, the REST route answered plain requests on 2026-09-25. One request per second.",
+  "terms": "Listings are BloggingPro's; many are syndicated from ProBlogger (meta._application points to the ProBlogger posting). Apply through the listing's own link.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/job-listings",
+    "params": {
+     "search": "query",
+     "job-categories": "category",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "buyer": "meta._company_name",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "deadline": "meta._job_expires",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#list-posts",
+    "note": "GET /wp-json/wp/v2/job-listings: the WP Job Manager 'job_listing' post type exposed through the WordPress REST API posts controller (arguments page, per_page ≤ 100, search, and the job-categories / job-types taxonomy filters, as listed by the route's own schema at https://www.bloggingpro.com/wp-json/wp/v2/job-listings (OPTIONS)). `query` is WordPress full-text `search`; `category` is a job-categories TERM ID (GET /wp-json/wp/v2/job-categories lists them) — not a slug. min_budget is not sent (salary is free text in meta._job_salary). title/description are rendered HTML; buyer is meta._company_name, deadline meta._job_expires (often absent); the apply link (meta._application) and location stay in raw.meta. Only published, public listings are returned."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/job-listings/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "buyer": "meta._company_name",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "deadline": "meta._job_expires",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#retrieve-a-post",
+    "note": "GET /wp-json/wp/v2/job-listings/<id> (the numeric post id from search_postings). An unknown id answers 404 rest_post_invalid_id."
+   }
+  },
+  "not_offered": {
+   "me": "Anonymous read-only REST access; there is no account to verify without a WordPress login, which the board does not offer to API clients.",
+   "submit_bid": "No application endpoint: each listing carries an external apply URL or e-mail (meta._application); candidates apply there.",
+   "withdraw_bid": "No application endpoint (see submit_bid).",
+   "bid_status": "No application endpoint (see submit_bid).",
+   "list_messages": "No messaging in the REST routes (posts, taxonomies and media only).",
+   "send_message": "No messaging in the REST routes (posts, taxonomies and media only).",
+   "credits": "Free to read; no account, credit or balance endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

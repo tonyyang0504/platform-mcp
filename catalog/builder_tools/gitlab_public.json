@@ -1,0 +1,80 @@
+{
+ "id": "gitlab_public",
+ "category": "builder_tools",
+ "label": "GitLab.com (public projects, no token)",
+ "lane": "api",
+ "docs_url": "https://docs.gitlab.com/api/projects/",
+ "url": "https://gitlab.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public, unauthenticated reads of GitLab.com. GitLab publishes a partial OpenAPI 2.0 description (doc/api/openapi/openapi_v2.yaml, 2.4 MB YAML); it lists id_after and order_by for GET /api/v4/projects but not the `pagination=keyset` parameter the HTML docs describe, so keyset paging comes from the docs. Keyset pages are linked only through the Link response header (rel=\"next\" carrying id_after); unauthenticated requests are limited (RateLimit-Limit: 500 per minute observed 2026-10-01).",
+ "adapter": {
+  "base_url": "https://gitlab.com/api/v4",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "list_items": {
+    "method": "GET",
+    "path": "/projects",
+    "params": {
+     "search": "query",
+     "per_page": "limit",
+     "id_after": "cursor"
+    },
+    "fixed_params": {
+     "pagination": "keyset",
+     "order_by": "id",
+     "sort": "asc",
+     "simple": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "items",
+     "next_cursor": "link:id_after",
+     "fields": {
+      "id": "str:id",
+      "title": "path_with_namespace",
+      "url": "web_url",
+      "updated_at": "last_activity_at"
+     }
+    },
+    "docs": "https://docs.gitlab.com/api/rest/#keyset-based-pagination",
+    "note": "Public projects (oldest id first) whose name or path matches query; collection is ignored (projects only). Pages by cursor: pass next_cursor back."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/projects/{item_id}",
+    "result": {
+     "fields": {
+      "id": "str:id",
+      "title": "path_with_namespace",
+      "url": "web_url",
+      "updated_at": "last_activity_at",
+      "content": "description"
+     }
+    },
+    "docs": "https://docs.gitlab.com/api/projects/#get-a-single-project",
+    "note": "item_id is the numeric project id (list_items), or the URL-encoded path 'group%2Fproject' (GitLab rejects a raw slash)."
+   }
+  },
+  "not_offered": {
+   "me": "No token in this public entry.",
+   "generate_image": "Not an image service.",
+   "generate_video": "Not a video service.",
+   "get_job": "Not mapped.",
+   "create_item": "Needs a token; public read entry only.",
+   "update_item": "Needs a token; public read entry only.",
+   "delete_item": "Needs a token; public read entry only."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

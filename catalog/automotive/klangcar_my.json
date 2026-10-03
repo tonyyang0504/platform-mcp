@@ -1,0 +1,35 @@
+{
+ "id": "klangcar_my",
+ "category": "automotive",
+ "label": "Klangcar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.klangcar.my",
+ "domain": "klangcar.my",
+ "country": "Malaysia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). No developer/API/partner-feed pages found on the site (homepage 403, /developers /api /docs /partners probes empty) and no official API in search results. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://klangcar.my/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

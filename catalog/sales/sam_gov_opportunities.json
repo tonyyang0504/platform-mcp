@@ -1,0 +1,36 @@
+{
+ "id": "sam_gov_opportunities",
+ "category": "sales",
+ "label": "SAM.gov Get Opportunities API",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://open.gsa.gov/api/get-opportunities-public-api/",
+ "url": "https://sam.gov/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Public opportunities API on a free api.data.gov key → platform-key; buyer (agency) contact points are published on each notice.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

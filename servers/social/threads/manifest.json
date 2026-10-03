@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "threads-mcp",
+ "display_name": "Threads MCP",
+ "version": "0.1.0",
+ "description": "Threads (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics_p",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "threads"
+   ],
+   "env": {
+    "PLATFORM_MCP_THREADS_ACCESS_TOKEN": "${user_config.platform_mcp_threads_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_threads_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_THREADS_ACCESS_TOKEN",
+   "description": "Threads user access token (long-lived, 60 days; refresh with GET /refresh_access_token) of the Threads profile, from an app with the Threads use case; scopes threads_basic, threads_content_publish, threads_read_replies, threads_manage_replies, threads_manage_mentions, threads_manage_insights, threads_delete. Sent as the access_token query parameter, as every Threads example does (https://developers.facebook.com/docs/threads/posts).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me?fields=id,username,name,threads_biography,is_verified ('You may only fetch the profile of the app-scoped user')."
+  },
+  {
+   "name": "publish_text",
+   "description": "One call: POST /me/threads with media_type=TEXT and auto_publish_text=true - 'When this optional flag is passed, a Threads post is published automatically when a Threads media container is created without needing to go through the extra publish step. Note: This only works for text posts.' `reply_to` is sent as reply_to_id. Text posts are limited to 500 characters; 250 published posts per 24 h."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /{threads_media_id}/replies 'only returns the top-level replies' (reverse chronological by default); nested replies need /conversation. `username` 'only works for public users and your own user'. Cursor paging: page/limit are not sent."
+  },
+  {
+   "name": "reply_comment",
+   "description": "A reply is a text post with reply_to_id ('Required if replying to a post') published in one call with auto_publish_text=true."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /me/mentions: 'public Threads media objects in which a Threads profile has been tagged by another Threads profile' (threads_manage_mentions). `since` is not sent (the API takes a Unix timestamp >= 1688540400, not ISO-8601); cursor paging, so page/limit are not sent."
+  },
+  {
+   "name": "delete",
+   "description": "DELETE /{threads_media_id} (threads_delete) answers {success: true, deleted_id}. 'The Delete endpoint has a rate limit of 100 deletes per day per account.'"
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /{threads_media_id}/insights?metric=likes,replies,reposts,quotes,views,shares returns data[] entries {name, period: lifetime, values[{value}], id: '<media_id>/insights/<metric>/lifetime'}; the documented example answers in the requested order, which the positional mapping relies on - check raw.data[].name. `post_id` is the first entry's id ('<media_id>/insights/likes/lifetime'). 'An empty array will be returned for REPOST_FACADE posts'. views and shares are 'in development'."
+  }
+ ]
+}

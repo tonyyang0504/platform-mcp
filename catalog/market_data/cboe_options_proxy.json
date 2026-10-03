@@ -1,0 +1,15 @@
+{
+ "id": "cboe_options_proxy",
+ "category": "market_data",
+ "label": "Cboe US options chain proxy",
+ "provider": "Cboe",
+ "lane": "api",
+ "base_urls": [
+  "https://cdn.cboe.com/api/global/delayed_quotes/options/"
+ ],
+ "data_kinds": [
+  "options chain (US equity/index, 15-min delayed)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

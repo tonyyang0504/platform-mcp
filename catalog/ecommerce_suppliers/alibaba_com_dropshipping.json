@@ -1,0 +1,316 @@
+{
+ "id": "alibaba_com_dropshipping",
+ "category": "ecommerce_suppliers",
+ "label": "Alibaba.com Dropshipping center (pointer — global survey owns Alibaba.com)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://openapi.alibaba.com/doc/doc.htm",
+ "url": "https://dropshipping.alibaba.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (App Key + App Secret; authorization code → GET/POST /auth/token/create → access_token + refresh_token)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "order_create"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened d",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - App registration reviewed by GGS admins; OAuth per Alibaba.com account; Open Platform agreement not readable; Alibaba.com is a B2B marketplace (MOQ per supplier).",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://openapi.alibaba.com/doc/doc.htm",
+   "https://r.jina.ai/https://openapi.alibaba.com/doc/api.htm",
+   "https://r.jina.ai/https://dropshipping.alibaba.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi-api.alibaba.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "ship_to_country",
+    "required": true,
+    "help": "Two-letter destination country used for product search and cost prices (shipToCountry / ship_to_country), e.g. US."
+   },
+   {
+    "name": "currency",
+    "required": true,
+    "help": "ISO 4217 currency for search results and product prices, e.g. USD."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key",
+    "access_token": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "App Key of your Alibaba.com Open Platform app (https://openapi.alibaba.com/ App Console; admin-reviewed)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API path without '/rest' (e.g. /alibaba/order/get) + the parameters sorted by name as name+value (docId=61). Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "access_token from the authorisation-code exchange /auth/token/create (https://openapi.alibaba.com/doc/api.htm#/api?cid=4&path=/auth/token/create). It expires after expires_in seconds; renew it with /auth/token/refresh (a signed call) and update this value — the runtime does not refresh it."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "case": "upper",
+    "path_strip": "/rest",
+    "payload": "{path}{sorted_params}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "params": {
+     "sign_method": "sha256"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/rest/alibaba/order/list",
+    "fixed_params": {
+     "role": "buyer",
+     "page_size": "1"
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/alibaba/order/list&methodType=GET/POST",
+    "note": "alibaba order list (role=buyer, one row): verifies the app signature and the buyer's access_token."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/rest/eco/buyer/product/search",
+    "params": {
+     "param0": "jsonstr:{\"keyword\": {query}, \"index\": {page}, \"size\": {limit}, \"shipToCountry\": {@ship_to_country}, \"currency\": {@currency}}"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "result.data.products",
+     "key": "products",
+     "fields": {
+      "id": "product_id",
+      "title": "title",
+      "price": "price",
+      "url": "permalink",
+      "image_url": "image.main_image"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=7&path=/eco/buyer/product/search&methodType=GET",
+    "note": "Product Search (buyer): keyword search of Alibaba.com products for the configured ship-to country and currency; `query` is required ('keyword', Required). Prices are strings in the configured currency; `id` is the product_id for get_product / quote_shipping."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/rest/eco/buyer/product/description",
+    "params": {
+     "query_req": "jsonstr:{\"product_id\": {int:id}, \"ship_to_country\": {@ship_to_country}, \"currency\": {@currency}}"
+    },
+    "result": {
+     "root": "result.result_data",
+     "fields": {
+      "id": "product_id",
+      "title": "title",
+      "price": "skus.0.cost_discount_price",
+      "currency": "currency",
+      "sku": "skus.0.sku_id",
+      "url": "detail_url",
+      "image_url": "main_image",
+      "status": "status",
+      "min_order_quantity": "min_order_quantity",
+      "supplier": "supplier"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=7&path=/eco/buyer/product/description&methodType=GET",
+    "note": "Get Product Description (buyer): title, images, skus[{sku_id, ladder_price, cost prices incl. shipping to ship_to_country}], MOQ and supplier. The mapped price/sku are the FIRST SKU's discounted procurement cost; stock comes from /eco/buyer/product/inventory (not mapped)."
+   },
+   "quote_shipping": {
+    "method": "GET",
+    "path": "/rest/shipping/freight/calculate",
+    "params": {
+     "product_id": "int:product_id",
+     "destination_country": "country",
+     "quantity": "quantity"
+    },
+    "result": {
+     "items": "value",
+     "key": "options",
+     "fields": {
+      "code": "vendor_code",
+      "name": "vendor_name",
+      "fee": "fee.amount",
+      "currency": "fee.currency",
+      "days": "delivery_time",
+      "type": "shipping_type",
+      "trade_term": "trade_term"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/shipping/freight/calculate&methodType=GET/POST",
+    "note": "Basic Freight Cost Estimation: shipping options for `quantity` units (required) of the product to `country`; each option's `code` (vendor_code) is create_order's shipping_option (carrier_code)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/rest/buynow/order/create",
+    "params": {
+     "channel_refer_id": "uuid",
+     "product_list": "jsonstr:{items}",
+     "logistics_detail": "jsonstr:{\"carrier_code\": {shipping_option}, \"shipment_address\": {shipping_address}}"
+    },
+    "result": {
+     "root": "value",
+     "fields": {
+      "id": "trade_id",
+      "status": "=created",
+      "pay_url": "pay_url"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/buynow/order/create&methodType=GET/POST",
+    "note": "Create BuyNow Order: places an unpaid order; pay it at `pay_url` or with /alibaba/dropshipping/order/pay. `items` are sent as product_list [{product_id, quantity, sku_id}], `shipping_option` (required) is a vendor_code from quote_shipping and `shipping_address` is Alibaba's shipment_address {address, alternate_address, city, province, country, country_code, zip, contact_person, telephone: {country, area, number}}. channel_refer_id is a fresh UUID."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/rest/alibaba/order/get",
+    "params": {
+     "e_trade_id": "id"
+    },
+    "result": {
+     "root": "value",
+     "fields": {
+      "id": "trade_id",
+      "status": "trade_status",
+      "total": "total_amount.amount",
+      "currency": "total_amount.currency",
+      "created_at": "create_date.timestamp",
+      "carrier": "shipment_method"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/alibaba/order/get&methodType=GET/POST",
+    "note": "alibaba order get: trade_status (unpay, undeliver, delivering, …), amounts, order_products and shipping_address in `raw`; `created_at` is epoch ms."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/rest/order/logistics/tracking/get",
+    "params": {
+     "trade_id": "int:order_id"
+    },
+    "result": {
+     "items": "tracking_list",
+     "key": "events",
+     "fields": {
+      "tracking_number": "tracking_number",
+      "carrier": "carrier",
+      "status": "current_event_code",
+      "tracking_url": "tracking_url",
+      "latest": "event_list.0.event_name",
+      "latest_at": "event_list.0.event_time"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/order/logistics/tracking/get&methodType=GET/POST",
+    "note": "Logistics Tracking: one row per parcel with carrier, tracking number, current event code and event_list[{event_code, event_name, event_location, event_time}]."
+   }
+  },
+  "terms": "Alibaba.com Open Platform: https://openapi-api.alibaba.com/rest{api_path}?app_key&timestamp(ms)&sign_method=sha256&access_token&…&sign, where sign = uppercase hex HMAC-SHA256(app_secret, api_path + sorted name+value) and api_path excludes '/rest' ('HTTP request', https://openapi.alibaba.com/doc/doc.htm#/?docId=61). Object and array parameters are sent as JSON strings. Buyer (dropshipping) APIs need an approved app with the buyer permission package and the buyer's authorisation."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, ship_to_country, currency; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

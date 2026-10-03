@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "stackadapt-mcp",
+ "display_name": "StackAdapt MCP",
+ "version": "0.1.0",
+ "description": "StackAdapt (ads): me, list_accounts, list_campaigns. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "stackadapt"
+   ],
+   "env": {
+    "PLATFORM_MCP_STACKADAPT_REST_API_KEY": "${user_config.platform_mcp_stackadapt_rest_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_stackadapt_rest_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STACKADAPT_REST_API_KEY",
+   "description": "StackAdapt REST API key (issued by StackAdapt on request), sent as the X-Authorization header. The GraphQL API uses a different Bearer token and is not used here.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no user endpoint in the REST API; the probe is GET /advertisers (advertisers the key can access). REST spec: https://www.stackadapt.com/service/v2/apidocs."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /advertisers: first page (30 per page) of the advertisers the key can access; total_advertisers gives the full count."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /campaigns?page=N (30 per page): every campaign the key can access, across advertisers; `account_id` is NOT applied as a filter (advertiser_id is on each row). state is active or paused (status.code/description in raw); `budget` is the campaign budget and daily_cap the daily limit (raw). `status` and `limit` are not sent."
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bol_retail_media-mcp",
+ "description": "bol Retail Media (Sponsored Products) (ads): me, list_campaigns, get_report. Every tool maps to a do",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.bol.com/retailer/public/Retailer-API/v11/functional/advertising-api/aapi-overview.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bol_retail_media"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_ID",
+     "description": "Client id of bol API credentials with Advertising API access (seller dashboard > Settings > API settings, or intermediary authorization for agencies); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a ~5-minute JWT.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_SECRET",
+     "description": "The matching client secret. The JWT is cached and re-requested before expiry (bol bans IPs that request a token per call).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

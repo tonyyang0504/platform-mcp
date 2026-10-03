@@ -1,0 +1,177 @@
+{
+ "id": "arbeitsagentur",
+ "category": "jobs",
+ "label": "Bundesagentur für Arbeit Jobsuche",
+ "lane": "api",
+ "kind": "government",
+ "regions": [
+  "de"
+ ],
+ "docs_url": "https://jobsuche.api.bund.dev/",
+ "url": "https://www.arbeitsagentur.de/jobsuche/",
+ "verified_at": "2026-09-24",
+ "terms_note": "German PES job search (public API used by community clients); applications to the employer.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "company_info"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/bundesAPI/jobsuche-api (OpenAPI 3 + Python examples, community-maintained bundesAPI)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — the Bundesagentur für Arbeit Jobsuche REST service (https://rest.arbeitsagentur.de/jobboerse/jobsuche-service, header X-API-Key: jobboerse-jobsuche) that powers the BA's own app: GET ",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " the endpoint is the BA app's backend documented by the bundesAPI community (OpenAPI on jobsuche.api.bund.dev / GitHub) — the BA publishes no developer terms or rate limits of its own; Public-sector data (Germany's largest vacancy database); the endpoint is the BA app's backend documented by the bundesAPI community (OpenAPI on jobsuche.api.bund.dev / GitHub) — the BA publishes no developer terms or rate limits of its own; the fixed client id 'jobboerse-jobsuche' is sent as X-API-Key. BA 'Rechtliche Hinweise' cover content liability only (separate terms may apply to registered services). Confid",
+  "mcp_sdk": [
+   "https://github.com/bundesAPI/jobsuche-api (OpenAPI 3 + Python examples, community-maintained bundesAPI)"
+  ],
+  "sources": [
+   "https://www.arbeitsagentur.de/jobsuche/",
+   "https://www.arbeitsagentur.de/robots.txt",
+   "https://jobsuche.api.bund.dev/",
+   "https://jobsuche.api.bund.dev/openapi.yaml",
+   "https://raw.githubusercontent.com/bundesAPI/jobsuche-api/main/README.md",
+   "https://raw.githubusercontent.com/bundesAPI/jobsuche-api/main/openapi.yaml",
+   "https://www.arbeitsagentur.de/rechtliche-hinweise"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service",
+  "auth": {
+   "type": "header",
+   "header": "X-API-Key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "The fixed public client id from https://jobsuche.api.bund.dev/ ('X-API-Key ist die clientId jobboerse-jobsuche'): set PLATFORM_MCP_ARBEITSAGENTUR_API_KEY=jobboerse-jobsuche. No registration exists; the BA publishes no developer terms of its own."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/pc/v6/jobs",
+    "params": {
+     "was": "query",
+     "wo": "location",
+     "page": "page",
+     "size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "ergebnisliste",
+     "key": "postings",
+     "total": "maxErgebnisse",
+     "fields": {
+      "id": "referenznummer",
+      "title": "stellenangebotsTitel",
+      "company": "firma",
+      "location": "stellenlokationen.0.adresse.ort",
+      "posted_at": "datumErsteVeroeffentlichung",
+      "salary_min": "gehaltsspanneVon",
+      "salary_max": "gehaltsspanneBis"
+     }
+    },
+    "docs": "https://jobsuche.api.bund.dev/",
+    "note": "Bundesagentur für Arbeit job search (was = job-title free text, wo = place free text, page from 1, size = results per page). The OpenAPI's JobSearchResponse schema (stellenangebote[]/titel/arbeitgeber/refnr/arbeitsort) describes the /pc/v4/app/jobs variant, which answered 403 on 2026-09-24; the /pc/v6/jobs response read that day carries ergebnisliste[] with stellenangebotsTitel, firma, referenznummer (the docs: 'in /pc/v6/jobs die referenznummer'), stellenlokationen[].adresse, datumErsteVeroeffentlichung and gehaltsspanneVon/Bis (annual EUR when verguetungsangabe is JAHRESGEHALT). No posting URL or description is in the search hit; call get_posting. No published rate limit."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/pc/v4/jobdetails/{id}",
+    "result": {
+     "fields": {
+      "id": "referenznummer",
+      "title": "stellenangebotsTitel",
+      "company": "firma",
+      "location": "stellenlokationen.0.adresse.ort",
+      "posted_at": "datumErsteVeroeffentlichung",
+      "salary_min": "gehaltsspanneVon",
+      "salary_max": "gehaltsspanneBis",
+      "description": "stellenangebotsBeschreibung"
+     }
+    },
+    "docs": "https://jobsuche.api.bund.dev/",
+    "note": "Job details by encryptedJobCode: the docs define it as base64(refnr) ('Base64-kodierter Wert der refnr aus der Jobsuche'), so pass the search hit's referenznummer base64-encoded as id (e.g. 10001-1002716922-S -> MTAwMDEtMTAwMjcxNjkyMi1T). The mapped id is the plain referenznummer; description is the posting text (Markdown-like), arbeitgeberKundennummerHash (logo lookup) stays in raw."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint: the X-API-Key is the fixed public client id 'jobboerse-jobsuche', not a personal credential, and the OpenAPI lists only job search, job details and employer logo.",
+   "apply": "Page: 'applications to the employer' — the OpenAPI documents no application endpoint; candidates apply on arbeitsagentur.de or the employer site.",
+   "list_messages": "No messaging API; the OpenAPI documents job search, job details and the employer logo only."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host rest.arbeitsagentur.de: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; names not found on the page: search:page, search:size, search:was, search:wo"
+  ],
+  "notes": "-"
+ }
+}

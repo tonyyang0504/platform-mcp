@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/zalando-mcp",
+ "description": "Zalando Partner Program (ecommerce channels): me, update_listing, set_inventory, end_listing, list_o",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://partner.zalando.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "zalando"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ZALANDO_CLIENT_ID",
+     "description": "Client ID of an app registered in the zDirect (Zalando Partner) portal > Applications, with the stocks, prices, orders and offer-blocker scopes granted.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZALANDO_CLIENT_SECRET",
+     "description": "Client secret of the same app; sent with the client ID as HTTP Basic on POST https://api.merchants.zalando.com/auth/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZALANDO_MERCHANT_ID",
+     "description": "Your zDirect merchant id (uuid; GET /auth/me lists the merchant ids the token can access).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_ZALANDO_SALES_CHANNEL_ID",
+     "description": "Sales channel id (uuid) the offers belong to (Sales Channels API); each Zalando country shop is a channel.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_ZALANDO_CURRENCY",
+     "description": "ISO currency of the sales channel, e.g. EUR; required for update_listing.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

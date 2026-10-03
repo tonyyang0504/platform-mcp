@@ -1,0 +1,256 @@
+{
+ "id": "bol_retail_media",
+ "category": "ads",
+ "label": "bol Retail Media (Sponsored Products)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu",
+  "nl",
+  "be"
+ ],
+ "docs_url": "https://api.bol.com/retailer/public/Retailer-API/v11/functional/advertising-api/aapi-overview.html",
+ "url": "https://api.bol.com/retailer/public/Retailer-API/v11/functional/advertising-api/aapi-overview.html",
+ "verified_at": "2026-09-25",
+ "terms_note": "Advertising API access uses the Retailer API client credentials and intermediary authorisation flow (read on the API overview).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "jwt (same client credentials / intermediary authorization flow as the Retailer API)",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "reports",
+   "account_management"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (bol Advertising API v11) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.bol.com/advertiser/…",
+   "https://api.bol.com/…demo"
+  ],
+  "auth": [
+   "1. Seller dashboard → API settings → client credentials (or intermediary authorization for agencies).",
+   "2. `POST https://login.bol.com/token?grant_type=client_credentials` (Basic auth) → JWT (the 'same method of authentication as the standard intermediary authorization flow').",
+   "3. `Authorization: Bearer <jwt>`, `Accept: application/vnd.advertiser.v11+json` (TODO(verify) media type)."
+  ],
+  "endpoints": [
+   {
+    "call": "Campaigns (create / update / list)",
+    "purpose": "campaigns + state + dates",
+    "notes": "name, state, startDate, endDate, campaignType"
+   },
+   {
+    "call": "Ad Groups",
+    "purpose": "ad groups + default bid",
+    "notes": "campaignId, name, defaultBid, state"
+   },
+   {
+    "call": "Keywords · Negative Keywords · Target Categories · Negative Target Categories · Target Products · Expressions",
+    "purpose": "targeting + bids",
+    "notes": "keywordText, matchType, bid; categoryId; ean"
+   },
+   {
+    "call": "Ads",
+    "purpose": "ads (EAN-level)",
+    "notes": "adGroupId, ean, state"
+   },
+   {
+    "call": "Budget Management: Campaign Budgets · Account Budgets · Budget Settings · Free Credits",
+    "purpose": "budgets",
+    "notes": "dailyBudget, totalBudget, budgetSettings"
+   },
+   {
+    "call": "Reporting API · Bulk Reporting API (async, Process Status) · Share of Voice · Insights API",
+    "purpose": "reports",
+    "notes": "campaignId, dateRange, metrics; process-status polling"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits per resource (Active rate limits page); versioning per resource; release lifecycle + beta program; free; bol Partner API terms.",
+  "mcp_sdk": [
+   "Redoc / Swagger / Postman collections per API (Retailer API pages); no MCP found."
+  ],
+  "sources": [
+   "https://api.bol.com/retailer/public/Retailer-API/v11/functional/advertising-api/aapi-overview.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bol.com/advertiser/sponsored-products",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://login.bol.com/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of bol API credentials with Advertising API access (seller dashboard > Settings > API settings, or intermediary authorization for agencies); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a ~5-minute JWT."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The matching client secret. The JWT is cached and re-requested before expiry (bol bans IPs that request a token per call)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/budget-management/budget-settings",
+    "docs": "https://api.bol.com/advertiser/docs/redoc/sponsored-products/v11/budget-management.html",
+    "note": "There is no account endpoint; the probe is GET /advertiser/sponsored-products/budget-management/budget-settings ({mode: BASIC|ADVANCED}), which verifies the JWT has Advertising API access."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/campaign-management/campaigns/list",
+    "body": {
+     "filter.states.0": "status",
+     "page": "page",
+     "pageSize": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "name",
+      "status": "state",
+      "budget": "dailyBudget.amount",
+      "currency": "dailyBudget.currency",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://api.bol.com/advertiser/docs/redoc/sponsored-products/v11/campaign-management.html",
+    "note": "POST /advertiser/sponsored-products/campaign-management/campaigns/list {filter: {states: [status]}, page, pageSize (≤100)}. status is ENABLED, PAUSED or ARCHIVED. `budget` is the daily budget in EUR (totalBudget, campaignType AUTO|MANUAL, targetCountries NL/BE and constraints such as OUT_OF_DAILY_BUDGET in raw). `account_id` is not sent (the JWT selects the retailer account)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/reporting/performance",
+    "params": {
+     "entity-ids": "campaign_id",
+     "period-start-date": "date:date_from",
+     "period-end-date": "date:date_to"
+    },
+    "fixed_params": {
+     "entity-type": "CAMPAIGN"
+    },
+    "result": {
+     "items": "subTotals",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "campaignId",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "cost",
+      "conversions": "conversions14d",
+      "sales": "sales14d",
+      "acos": "acos14d",
+      "roas": "roas14d"
+     }
+    },
+    "docs": "https://api.bol.com/advertiser/docs/redoc/sponsored-products/v11/reporting.html",
+    "note": "GET /advertiser/sponsored-products/reporting/performance?entity-type=CAMPAIGN&entity-ids=<campaign_id>&period-start-date&period-end-date: one aggregated row for the campaign over the period (dates within the last 30 days, inclusive). campaign_id is REQUIRED (entity-ids is mandatory; the account-level /performance/advertiser returns a single total, not rows). cost in EUR; conversions and sales are 14-day attributed."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The JWT belongs to one retailer account; the Advertising API has no account list (https://api.bol.com/retailer/public/Retailer-API/v11/functional/advertising-api/aapi-overview.html: authorization 'uses the same method of authentication as the standard intermediary authorization flow').",
+   "update_budget": "PUT /campaign-management/campaigns replaces campaigns: each item requires campaignId plus name, startDate, targetCountries, targetChannels, campaignType and state (UpdateCampaignsRequest, https://api.bol.com/advertiser/docs/redoc/sponsored-products/v11/campaign-management.html). Changing only dailyBudget would need a read-modify-write the runtime cannot do.",
+   "pause_resume": "Same PUT /campaign-management/campaigns full-object update (state ENABLED|PAUSED alongside the required name, startDate, targetCountries, targetChannels, campaignType); no partial state endpoint (https://api.bol.com/advertiser/docs/redoc/sponsored-products/v11/campaign-management.html)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bol.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token login.bol.com/token: 401 invalid_client",
+   "HTML docs spot-check (render-doc): 0/3 tool paths found verbatim on their docs pages, 1 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

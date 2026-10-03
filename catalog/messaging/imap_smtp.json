@@ -1,0 +1,139 @@
+{
+ "id": "imap_smtp",
+ "category": "messaging",
+ "label": "Mailbox (IMAP/SMTP)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.rfc-editor.org/rfc/rfc9051",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": "Open standard, no vendor gate: any host that allows an app password or SASL / XOAUTH2 login. IMAP4rev2 (RFC 9051): implicit TLS on 993 or STARTTLS on 143; AUTHENTICATE with SASL (PLAIN mandatory, SCRAM-SHA-256 recommended); SELECT / FETCH / SEARCH / STORE / APPEND / MOVE / UID; UIDVALIDITY (32-bit, must increase when UIDs are regenerated → resync the cursor); IDLE gives in-connection notifications only — no webhooks, the suite polls / re-issues IDLE. Provider-side sending limits (e.g. Workspace 2,000/day) still apply; the terms of each mailbox provider govern automation.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "protocol"
+  ],
+  "auth": "password_or_xoauth2",
+  "access": "open",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "folders",
+   "flags",
+   "media",
+   "idle_push"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Python stdlib imaplib / smtplib / email"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "IMAP `UID SEARCH UID <n>:*` + `UID FETCH (BODY.PEEK[])`",
+   "docs": "https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.8"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "SMTP submission (RFC 6409, port 587 STARTTLS / 465 implicit TLS)",
+   "docs": "https://datatracker.ietf.org/doc/html/rfc6409"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "IMAP `UID STORE <uid> +FLAGS (\\Seen)`",
+   "docs": "https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.6"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (open protocols, no vendor gate).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": " - `UIDVALIDITY` is a 32-bit value that MUST increase when UIDs are regenerated → the client resets its cursor when it changes (implemented). - RFC 9051 defines **no push / webhook**; IDLE notifies only the open connection → the scheduler polls. - Provider terms and sending caps apply (e.g. Workspace / Outlook daily limits); automated bulk sending through a personal mailbox is where deliverability breaks — the suite's complaint / bounce pause gates still apply. - Thread by `References` / `In-Reply-To` / `Message-ID` only (never sender + subject) — messaging.md rule.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.rfc-editor.org/rfc/rfc9051"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "IMAP4rev2 and SMTP are stateful TCP protocols, not HTTP: IMAP is a tagged command/response session over implicit TLS on 993 or STARTTLS on 143 (LOGIN / AUTHENTICATE, SELECT, UID FETCH / SEARCH / STORE; https://www.rfc-editor.org/rfc/rfc9051, re-read 2026-09-25) and SMTP submission is a MAIL FROM / RCPT TO / DATA dialogue on 465/587 (RFC 6409). Remaining gap: an IMAP/SMTP protocol client transport (TLS socket sessions); every runtime capability, including all 2026-09-25 additions, issues HTTPS requests only."
+}

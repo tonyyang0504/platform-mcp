@@ -1,0 +1,33 @@
+{
+ "id": "mg_eg_cpo",
+ "category": "automotive",
+ "label": "Mgmotor",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.mgmotor.com.eg",
+ "domain": "mgmotor.com.eg",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). cars_marketplace site unreachable during check; no developer/API presence known. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

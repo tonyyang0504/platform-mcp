@@ -1,0 +1,68 @@
+{
+ "id": "world_bank_indicators",
+ "category": "market_data",
+ "label": "World Bank Indicators API",
+ "lane": "api",
+ "docs_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898581-api-basic-call-structures",
+ "url": "https://data.worldbank.org",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Open data (CC BY 4.0), no key. HTML docs (helpdesk articles). The API answers XML unless format=json is sent; it ignores the Accept header (live 2026-10-01). JSON answers are a two-element array [paging metadata, rows]. Errors are HTTP 200 [{\"message\":[{\"id\":\"120\",\"key\":\"Invalid value\",\"value\":\"The provided parameter value is not valid\"}]}] - for an unknown indicator or country and for a half-open date range such as 2020: (both ends are needed).",
+ "adapter": {
+  "base_url": "https://api.worldbank.org/v2",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "envelope": {
+   "fail_if_present": [
+    "0.message.0"
+   ],
+   "error_field": "0.message.0.value"
+  },
+  "error_kinds": [
+   {
+    "status": 200,
+    "match": "not valid",
+    "kind": "invalid_input"
+   }
+  ],
+  "tools": {
+   "get_series": {
+    "method": "GET",
+    "path": "/country/{country}/indicator/{indicator}",
+    "path_params": {
+     "country": "part:0:series_id",
+     "indicator": "part:1:series_id"
+    },
+    "params": {
+     "format": "=json",
+     "per_page": "=20000",
+     "date": "fmt:{year:start}:{year:end}"
+    },
+    "result": {
+     "items": "1",
+     "key": "points",
+     "fields": {
+      "time": "date",
+      "value": "value"
+     }
+    },
+    "docs": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
+    "note": "series_id is '<country>/<indicator>': an ISO3 or ISO2 country (or region/aggregate code such as WLD, EUU) and an indicator code, e.g. 'USA/NY.GDP.MKTP.CD' (GDP, current US$), 'BRA/FP.CPI.TOTL.ZG' (inflation). Annual points, newest first, value null where missing. A date window is sent only when both start and end are given (the years are used)."
+   }
+  },
+  "not_offered": {
+   "me": "Open data: no accounts.",
+   "get_candles": "No OHLC data.",
+   "search_symbols": "The API lists indicators (/v2/indicator, ~29,000, paged) but has no search parameter; mapping `query` would fake a search.",
+   "get_news": "No news endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

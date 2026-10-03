@@ -1,0 +1,139 @@
+{
+ "id": "allegro_ads",
+ "category": "ads",
+ "label": "Allegro Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "eu",
+  "pl",
+  "cz",
+  "sk",
+  "hu"
+ ],
+ "docs_url": "https://developer.allegro.pl/documentation/",
+ "url": "https://help.allegro.com/en/sell/a/sponsored-offers-how-to-create-a-campaign-m0PoLl0Xyiw",
+ "verified_at": "2026-09-04",
+ "terms_note": "Allegro REST API (OAuth2, developer app) for sellers; the /ads/campaigns resource returns 403 'access forbidden' without agency authorization — Allegro Ads agency status required. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "oauth2 (Allegro REST API user token; Ads endpoints need agency authorization)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Ads campaigns resource exists but is agency-only; public REST API covers offer promo options and ads assets) Confidence: **high** — developer portal + official GitHub issue read.",
+  "base_urls": [
+   "https://api.allegro.pl",
+   "https://api.allegro.pl.allegrosandbox.pl"
+  ],
+  "auth": [
+   "1. Register an app at apps.developer.allegro.pl; OAuth2 authorization code / device flow → user token.",
+   "2. For `/ads/campaigns` the account must be an authorized Allegro Ads agency (otherwise 403 'access forbidden').",
+   "3. Public promo options: offer promotion packages via the classified-ads promo endpoints."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /ads/campaigns",
+    "purpose": "Allegro Ads campaigns (agency-only)",
+    "notes": "403 for regular tokens"
+   },
+   {
+    "call": "classified ads: list of promo options · additional promo options · statistics of seller's classified ads",
+    "purpose": "promo packages + stats (classifieds)",
+    "notes": "offer id, promo option id"
+   },
+   {
+    "call": "ads-brands-assets-service` · `ads-multimedia-library-service",
+    "purpose": "brand / multimedia assets for ads",
+    "notes": "asset upload"
+   },
+   {
+    "call": "sponsored-offer campaign create / bids / budgets for sellers",
+    "purpose": "not in the public API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Allegro REST API rate limits per client (developer terms); Ads endpoints gated to agencies; free.",
+  "mcp_sdk": [
+   "Official allegro/allegro-api GitHub (issues + OpenAPI)."
+  ],
+  "sources": [
+   "https://developer.allegro.pl/documentation/",
+   "https://api.github.com/repos/allegro/allegro-api/issues/3152"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the Allegro REST API reference (https://developer.allegro.pl/documentation/, Redoc generated from the public OpenAPI file) lists Offer, Orders, Sale settings, One Fulfillment, Affiliate (Conversions) and Others sections; 'Badge campaigns' and 'Rebates and promotions' are marketplace promotions, and there is no Allegro Ads section (no sponsored-offer campaigns, budgets, bids or ad statistics). Allegro Ads API access is agency/partner-only with no public reference, so none of the ads verbs can be cited."
+}

@@ -1,0 +1,70 @@
+{
+ "id": "indeed_jp",
+ "category": "jobs",
+ "label": "Indeed Japan",
+ "lane": "assist",
+ "kind": "aggregator",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://docs.indeed.com/",
+ "url": "https://jp.indeed.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Indeed's Japanese edition; same terms as indeed.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program",
+   "graphql"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

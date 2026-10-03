@@ -1,0 +1,128 @@
+{
+ "id": "microsoft_marketplace_consulting_services",
+ "category": "deals",
+ "label": "Microsoft Marketplace consulting services",
+ "lane": "human",
+ "kind": "expert_directory",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/partner-center/marketplace/",
+ "url": "https://marketplace.microsoft.com/en-us/marketplace/consulting-services",
+ "verified_at": "2026-09-25",
+ "terms_note": "Requires a Microsoft AI Cloud Partner Program account + Partner Center; offers published in the UI; leads via Referrals API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "azure_ad (Partner Center app registration)",
+  "access": "partner_only",
+  "capabilities": [
+   "leads_read",
+   "profile_sync"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Partner Center Referrals API for leads; offers are UI-published). Lane `human` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+  ],
+  "auth": [
+   "1. Partner Center account → Azure AD app → delegated token."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1.0/engagements/referrals",
+    "purpose": "leads_read",
+    "notes": "Referral: ID, EngagementID, Name, ExternalReferenceID, Status, Solution Areas"
+   },
+   {
+    "call": "PATCH /v1.0/engagements/referrals/{id}",
+    "purpose": "accept / update a lead",
+    "notes": "status"
+   }
+  ],
+  "limits": " - Partner Program membership; listing-only consulting offers; seller ID US/UK/CA. - Requires a Microsoft AI Cloud Partner Program account + Partner Center; offers published in the UI; leads via Referrals API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://learn.microsoft.com/en-us/partner-center/marketplace-offers/plan-consulting-service-offer",
+   "https://learn.microsoft.com/en-us/partner-center/developer/referral-resources"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Consulting-service offers are published in the Partner Center UI and their customer leads are pushed to the partner's lead destination (CRM/HTTPS endpoint); the Partner Center Referrals API (GET https://api.partner.microsoft.com/v1.0/engagements/referrals, https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-referrals, opened 2026-09-25) states 'Leads received from Microsoft Marketplace aren't supported' and covers co-sell referrals only, for Partner Center users holding Referrals Admin/User roles with an App+User (Entra ID) token. No API reaches the marketplace consulting leads, and the co-sell API is restricted to enrolled partners."
+}

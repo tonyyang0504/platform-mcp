@@ -1,0 +1,261 @@
+{
+ "id": "sendgrid",
+ "category": "messaging",
+ "label": "SendGrid",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.twilio.com/docs/sendgrid",
+ "url": "https://www.twilio.com/en-us/sendgrid",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed: `Authorization: Bearer <API key>` against https://api.sendgrid.com/v3/ (EU-pinned accounts use https://api.eu.sendgrid.com); API keys carry scoped permissions. Rate limits are per endpoint and exposed through X-RateLimit-Limit / -Remaining / -Reset (unix ts); 429 for the rest of the window (no per-endpoint numbers on the rate-limit page). Mail Send: POST /v3/mail/send → 202 Accepted; personalizations array ≤1,000; send_at scheduling up to 72 h ahead; categories ≤10 per message (≤255 chars); custom_args ≤10,000 bytes per personalization; dynamic templates `d-…` with Handlebars `dynamic_template_data`; asm.group_id ties the mail to an unsubscribe group (subscription tracking / preferences page); gzip request bodies for high volume. Inbound Parse: MX `mx.sendgrid.net` priority 10 on a dedicated subdomain → multipart/form-data POST (headers, text, html, subject, from, to, envelope, dkim, SPF, spam_score, attachments + attachment-info; or raw MIME `email` field), total message ≤30 MB. Sender identities / domain authentication required before sending.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks",
+   "smtp"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "batch_send",
+   "schedule",
+   "templates",
+   "broadcasts",
+   "read_inbox",
+   "media",
+   "webhooks",
+   "analytics",
+   "suppressions",
+   "unsubscribe",
+   "contacts"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official SendGrid libraries: C#, Go, Java, Node.js, PHP, Python, Ruby (twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence:",
+  "base_urls": [
+   "https://api.sendgrid.com/v3/",
+   "https://api.eu.sendgrid.com/v3/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v3/mail/send` `{personalizations[{to,cc,bcc,subject,headers,custom_args,send_at,dynamic_template_data}], from, reply_to, subject, content[], attachments[], template_id, categories[], custom_args",
+    "purpose": "send / reply / sequences",
+    "notes": "personalizations ≤ 1,000; `send_at` ≤ 72 h ahead; categories ≤ 10 (≤ 255 chars); custom_args ≤ 10,000 bytes / personalization; gzip bodies allowed"
+   },
+   {
+    "call": "Inbound Parse (MX `mx.sendgrid.net` prio 10 on a dedicated subdomain → `multipart/form-data` POST: headers, text, html, subject, from, to, envelope, dkim, SPF, spam_score, spam_report, attachments + a",
+    "purpose": "read inbox",
+    "notes": "total message ≤ 30 MB; hostname must not change after creation"
+   },
+   {
+    "call": "Event Webhook (processed, delivered, deferred, bounce, dropped, spamreport, unsubscribe, group_unsubscribe, open, click; signed)",
+    "purpose": "events",
+    "notes": ""
+   },
+   {
+    "call": "/v3/asm/groups` · `/v3/asm/suppressions` · `/v3/suppression/{bounces,blocks,spam_reports}",
+    "purpose": "unsubscribe groups + suppression mirror",
+    "notes": ""
+   },
+   {
+    "call": "/v3/templates` (dynamic, `d-…`, Handlebars)",
+    "purpose": "templates",
+    "notes": ""
+   },
+   {
+    "call": "/v3/marketing/contacts` · `/lists` · `/segments` · `/singlesends",
+    "purpose": "broadcasts",
+    "notes": ""
+   },
+   {
+    "call": "/v3/stats` · `/v3/categories/stats` · `/v3/messages` (Email Activity, paid)",
+    "purpose": "analytics",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per-endpoint limits exposed as `X-RateLimit-Limit` / `-Remaining` / `-Reset` (unix ts); 429 for the rest of the window; no per-endpoint numbers published on the rate-limit page. - Plan-based monthly send volume; sender verification / domain authentication before sending; Twilio acceptable-use policy (no purchased lists) — the suite's consent gate already enforces this.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication",
+   "https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send",
+   "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+   "https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/rate-limits"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.sendgrid.com/v3",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://www.twilio.com/docs/sendgrid/for-developers/sending-email/sandbox-mode",
+    "verified_at": "2026-09-27",
+    "notes": "SendGrid has no sandbox host or test key: sandbox mode is the request flag mail_settings.sandbox_mode.enable on POST /v3/mail/send ('validates a Mail Send request without delivering the email'; no Event Webhook or Email Activity events). This adapter does not set that flag, so a send in this environment is a real send; use a restricted API key and your own recipients."
+   }
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "SendGrid API key with Mail Send (and, for `me`, User Account read) permission, sent as 'Authorization: Bearer <API key>' ('add an HTTP Authorization header to your API request that contains an API Key', https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication). EU-pinned accounts live on https://api.eu.sendgrid.com, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sender",
+    "required": true,
+    "help": "Verified sender address used as `from.email` on every send ('from (object with required email field)' — a verified Sender Identity or authenticated domain is required, https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send). Env: PLATFORM_MCP_SENDGRID_SENDER."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "'Each endpoint permits a fixed number of requests per refresh period. If you exceed that limit, the API returns an HTTP 429', announced in X-RateLimit-Limit / -Remaining / -Reset (https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/rate-limits); no per-endpoint number is published for mail/send, so the client bucket stays at the runtime default 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user/account",
+    "docs": "https://www.twilio.com/docs/sendgrid/api-reference/users-api/get-a-users-account-information",
+    "note": "GET /v3/user/account answers {type: 'free' | 'paid' ('The type of account for this user'), reputation ('The sender reputation for this user')}; there is no richer identity endpoint on the API key itself."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/mail/send",
+    "body": {
+     "personalizations.0.to.0.email": "to",
+     "from.email": "@sender",
+     "subject": "subject",
+     "content.0.type": "=text/plain",
+     "content.0.value": "text"
+    },
+    "result": {
+     "fields": {
+      "status": "=accepted"
+     }
+    },
+    "docs": "https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send",
+    "note": "Sends one plain-text email: `to` is one recipient address (personalizations[0].to[0].email — 'personalizations: An array of messages and their metadata', 'to: array of recipient objects with required email field'), `from.email` comes from the per-install `sender` config field, `subject` is required by SendGrid (a missing subject is a 400 -> isError), `text` is content[0] with type text/plain; `channel` is ignored. SendGrid answers '202 Accepted' with an empty body, so status is the literal 'accepted' and message_id is empty (the id is only in the X-Message-Id response header, which the runtime does not expose)."
+   }
+  },
+  "not_offered": {
+   "list_inbound": "Inbound mail is delivered by the Inbound Parse Webhook (an MX record on a subdomain and a multipart POST to the customer's server), not by a pollable endpoint; the Email Activity API (GET /v3/messages) is a paid add-on with a required query-language parameter (https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook).",
+   "get_thread": "SendGrid has no conversation or thread resource; sent mail is only queryable through the paid Email Activity API (https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).",
+   "reply": "A reply would be a new mail/send with In-Reply-To / References headers, but the vocabulary's reply input carries no recipient address and SendGrid has no thread id to resolve one from (https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).",
+   "mark_read": "No read-state endpoint exists in the SendGrid v3 API (https://www.twilio.com/docs/sendgrid/api-reference)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.sendgrid.com: DNS ok, TLSv1.3 (GoDaddy.com)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "spec https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/json/tsg_mail_v3.json, https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/json/tsg_user_v3.json: 2/2 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

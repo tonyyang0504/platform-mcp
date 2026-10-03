@@ -1,0 +1,42 @@
+{
+ "id": "cargr",
+ "category": "automotive",
+ "label": "Car",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.car.gr",
+ "domain": "car.gr",
+ "country": "Greece",
+ "official_api": false,
+ "docs_url": "https://www.car.gr/xmldoc/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). Car.gr documents Car.grXML and a generic-commerce XML import for dealer inventory; no read/search API (doc page Cloudflare-blocked, verified via index snippet).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.car.gr/xmldoc/",
+   "https://www.car.gr/xmldoc/vehicles"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Car.gr documents Car.grXML and a generic-commerce XML import for dealer inventory; no read/search API (doc page Cloudflare-blocked, verified via index snippet). No request/response API to serve."
+}

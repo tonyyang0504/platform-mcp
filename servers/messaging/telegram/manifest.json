@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "telegram-messaging-mcp",
+ "display_name": "Telegram MCP",
+ "version": "0.1.0",
+ "description": "Telegram (messaging): me, send, list_inbound. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/telegram"
+   ],
+   "env": {
+    "PLATFORM_MCP_TELEGRAM_TOKEN": "${user_config.platform_mcp_telegram_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_telegram_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TELEGRAM_TOKEN",
+   "description": "Bot token from @BotFather. It is part of the URL path: 'All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: https://api.telegram.org/bot<token>/METHOD_NAME' (https://core.telegram.org/bots/api#making-requests).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getMe returns the bot's User object (id, is_bot, first_name, username)."
+  },
+  {
+   "name": "send",
+   "description": "`to` is the chat_id ('Unique identifier for the target chat or username of the target channel'). `subject` and `channel` are ignored. Bots cannot message a user who has not started them. message_id is an integer within the chat (the sent Message is under raw)."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Long-polling queue, not a paged inbox: getUpdates returns the pending updates (kept up to 24 hours) and 'will not work if an outgoing webhook is set up'. This tool never sends `offset`, so it does not confirm/consume updates and repeated calls return the same pending updates; `page` and `since` are ignored and next_page is not meaningful. Updates that are not messages have no text; chat and sender ids are integers under raw.message.chat.id / raw.message.from.id."
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "eu_funding-mcp",
+ "display_name": "EU Funding & Tenders Portal MCP",
+ "version": "0.1.0",
+ "description": "EU Funding & Tenders Portal (deals): me, search_postings, get_posting. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "eu_funding"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public SEDIA search with the open/forthcoming filter, one result: checks the API is reachable (no credentials; the public apiKey is SEDIA)."
+  },
+  {
+   "name": "search_postings",
+   "description": "POST /search?apiKey=SEDIA&text=… with the documented 'query' form part (typed application/json) restricting to tenders (type 0), call topics (1, 2) and cascade-funding calls (8) whose status is forthcoming (31094501) or open (31094502), English records only (languages part). `query` is required by the API — pass *** for everything. Ids are topic/tender identifiers (e.g. HORIZON-CL4-2024-DIGITAL-EMERGING-01-22). `category`/`min_budget` are not applied; the status in the index can lag the topic page."
+  },
+  {
+   "name": "get_posting",
+   "description": "Topic Details service: search with text=\"<identifier>\" (quoted, as documented) limited to tenders and calls in English; returns the best match's metadata (description HTML, deadline, call, budget overview JSON string, conditions under raw.metadata)."
+  }
+ ]
+}

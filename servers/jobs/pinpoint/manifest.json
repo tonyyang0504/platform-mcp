@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "pinpoint-mcp",
+ "display_name": "Pinpoint MCP",
+ "version": "0.1.0",
+ "description": "Pinpoint (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "pinpoint"
+   ],
+   "env": {
+    "PLATFORM_MCP_PINPOINT_COMPANY_SUBDOMAIN": "${user_config.platform_mcp_pinpoint_company_subdomain}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_pinpoint_company_subdomain": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PINPOINT_COMPANY_SUBDOMAIN",
+   "description": "The company's Pinpoint careers-site subdomain, e.g. 'workwithus' in https://workwithus.pinpointhq.com.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Public Job Postings JSON Endpoint for ONE company's careers site (config company_subdomain): GET https://{company-subdomain}.pinpointhq.com/postings.json, which 'returns all job posting[s] for each job as they appear on your career site' (no auth). location is sent as location_city_state_name ('filter by city/state name of the location', comma-separated values OR'ed, e.g. 'San Francisco, CA' or 'London'). There is no keyword or paging parameter, so query/page/limit are not sent: every posting comes back in one response — filter client-side and do not request further pages. Compensation fields are null unless compensation_visible; compensation_frequency, employment_type, workplace_type, deadline_at, department/division, job{} and the benefits/responsibilities/skills HTML sections are in raw. Pinpoint also hosts an MCP server for its authenticated ATS API (https://developers.pinpointhq.com/docs/mcp)."
+  }
+ ]
+}

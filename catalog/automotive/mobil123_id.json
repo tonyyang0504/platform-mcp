@@ -1,0 +1,39 @@
+{
+ "id": "mobil123_id",
+ "category": "automotive",
+ "label": "Mobil123",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.mobil123.com",
+ "domain": "mobil123.com",
+ "country": "Indonesia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Indonesia); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mobil123.com/"
+  ],
+  "unofficial": [
+   "https://docs.carapis.com/platforms/southeast-asia/mobil123",
+   "https://apify.com/dadhalfdev/mobil123-scraper/api",
+   "https://apify.com/dadhalfdev/mobil123-scraper/api/python"
+  ]
+ },
+ "official_mcp": []
+}

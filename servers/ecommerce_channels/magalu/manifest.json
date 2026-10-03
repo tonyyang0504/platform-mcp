@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "magalu-mcp",
+ "display_name": "Magalu Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Magalu Marketplace (ecommerce channels): me, set_inventory, end_listing, list_orders. Every tool map",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "magalu"
+   ],
+   "env": {
+    "PLATFORM_MCP_MAGALU_CLIENT_ID": "${user_config.platform_mcp_magalu_client_id}",
+    "PLATFORM_MCP_MAGALU_CLIENT_SECRET": "${user_config.platform_mcp_magalu_client_secret}",
+    "PLATFORM_MCP_MAGALU_REFRESH_TOKEN": "${user_config.platform_mcp_magalu_refresh_token}",
+    "PLATFORM_MCP_MAGALU_CHANNEL_ID": "${user_config.platform_mcp_magalu_channel_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_magalu_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MAGALU_CLIENT_ID",
+   "description": "Client ID of your application created with the ID Magalu CLI (see developers.magalu.com > Primeiros passos > Criar aplicação).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_magalu_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MAGALU_CLIENT_SECRET",
+   "description": "Client secret of the same application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_magalu_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MAGALU_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent of the seller at https://id.magalu.com (scopes such as open:portfolio:read/write, open:order-order:read). If ID Magalu returns a new refresh token on refresh, the runtime keeps it (and saves it with PLATFORM_MCP_STATE_DIR).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_magalu_channel_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MAGALU_CHANNEL_ID",
+   "description": "Sales channel id the stock applies to (GET /seller/v1/portfolios/me returns channel.id).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "portfolios_v1_get_me: {tenant: {id}, channel: {id, name}, seller: {id, name}} of the authenticated seller."
+  },
+  {
+   "name": "set_inventory",
+   "description": "portfolios_v1_patch_stocks PATCH /seller/v1/portfolios/stocks/{sku} {channel: {id}, type: AVAILABLE, quantity} sets the available stock of your SKU (`sku` required) on the configured channel. Asynchronous (202 + trace_id)."
+  },
+  {
+   "name": "end_listing",
+   "description": "portfolios_v1_patch_skus PATCH /seller/v1/portfolios/skus/{sku} {active: false} deactivates the SKU (partial update; reversible with active: true). `listing_id` is your SKU. Asynchronous (202 + trace_id)."
+  },
+  {
+   "name": "list_orders",
+   "description": "seller_v1_get_order_list ?status(new|approved|...)&purchased_at__gte(ISO-8601 with offset)&_offset&_limit, newest first. `id` is the platform order code. amounts.total is an integer to be divided by amounts.normalizer, so it is left in raw rather than mapped to `total`; deliveries (needed to ship) are in raw."
+  }
+ ]
+}

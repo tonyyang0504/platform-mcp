@@ -1,0 +1,181 @@
+{
+ "id": "grand_challenge",
+ "category": "competitions",
+ "label": "Grand Challenge",
+ "lane": "api",
+ "kind": "data_science",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://grand-challenge.org/api/",
+ "url": "https://grand-challenge.org",
+ "verified_at": "2026-09-24",
+ "terms_note": "Grand Challenge REST API (OpenAPI at https://grand-challenge.org/api/schema/; documentation page https://grand-challenge.org/documentation/grand-challenge-api/). API tokens from https://grand-challenge.org/settings/api-tokens/.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "bearer (knox API token)",
+  "access": "self-serve",
+  "capabilities": [
+   "search",
+   "details",
+   "evaluations"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "gcapi"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://grand-challenge.org",
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Personal API token from https://grand-challenge.org/settings/api-tokens/ (sent as Authorization: Bearer)."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "rate_note": "No rate limit published. One request per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v1/profiles/users/self/",
+    "docs": "https://grand-challenge.org/api/",
+    "note": "GET /api/v1/profiles/users/self/: user.username, institution, department, location, website."
+   },
+   "discover": {
+    "method": "GET",
+    "path": "/api/v1/challenges/",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "competitions",
+     "total": "count",
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "url": "url",
+      "status": "status",
+      "starts_at": "start_date",
+      "deadline": "end_date"
+     }
+    },
+    "docs": "https://grand-challenge.org/api/",
+    "note": "GET /api/v1/challenges/ (limit/offset): all public challenges, newest first by server order; no text or status filter, so `query`, `kind` and `status` are not sent. `id` is the slug; `title` can be empty (the slug is the short name). description, incentives, submission_types and publications stay in `raw`."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/api/v1/challenges/{competition_id}/",
+    "result": {
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "url": "url",
+      "status": "status",
+      "starts_at": "start_date",
+      "deadline": "end_date",
+      "description": "description"
+     }
+    },
+    "docs": "https://grand-challenge.org/api/",
+    "note": "GET /api/v1/challenges/{slug}/."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/api/v1/evaluations/",
+    "params": {
+     "submission__phase": "competition_id",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "standings",
+     "total": "count",
+     "fields": {
+      "rank": "rank",
+      "team": "submission.creator.username",
+      "score": "rank_score",
+      "updated_at": "created"
+     }
+    },
+    "docs": "https://grand-challenge.org/api/",
+    "note": "GET /api/v1/evaluations/?submission__phase=<phase UUID>: pass the phase UUID (not the challenge slug) as `competition_id`. Returns the evaluations your token may see (published leaderboard entries and your own); `rank` is 0 for unranked rows. Per-metric ranks and outputs stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "my_entries": "The evaluations list has no creator filter (only submission__phase), so 'mine' cannot be selected; the submissions endpoints are not in the public schema.",
+   "enter": "No join endpoint in the API schema; participation requests are made on the challenge site.",
+   "submit": "Submissions are prediction files or algorithm container images uploaded on the challenge site; no submission endpoint in the API schema, and binary uploads are out of scope."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host grand-challenge.org: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; names not found on the page: discover:limit, discover:offset, standings:limit, standings:offset, standings:submission__phase",
+   "live read without credentials: discover returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

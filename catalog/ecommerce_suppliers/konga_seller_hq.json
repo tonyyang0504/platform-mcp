@@ -1,0 +1,106 @@
+{
+ "id": "konga_seller_hq",
+ "category": "ecommerce_suppliers",
+ "label": "Konga Seller HQ",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "mea"
+ ],
+ "docs_url": "https://shq.konga.com/site/apidoc",
+ "url": "https://shq.konga.com/register",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (service agreement PDF not opened)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Seller HQ login required to view the API doc",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Seller account; service agreement not read.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://shq.konga.com/site/apidoc"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "https://shq.konga.com/site/apidoc redirects to https://shq.konga.com/account/login?rd=L3NpdGUvYXBpZG9j (rendered 2026-09-25: 'LOGIN TO YOUR SELLERHQ ACCOUNT'); the public links are only the Seller Handbook, FBK and Sanction Policy PDFs. The API reference requires a Seller HQ login, and it is a seller-side marketplace API in any case."
+}

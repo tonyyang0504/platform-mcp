@@ -1,0 +1,44 @@
+{
+ "id": "porsche_bh",
+ "category": "automotive",
+ "label": "Finder",
+ "vertical": "dealer",
+ "lane": "browser",
+ "url": "https://finder.porsche.com",
+ "domain": "finder.porsche.com",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": "https://developer.porsche.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "partner onboarding / contract",
+  "access": "partner_only",
+  "capabilities": [
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Porsche developer portal states no public APIs; Finder listing API access is restricted to contracted partner companies.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.porsche.com/faq"
+  ],
+  "unofficial": [
+   "Apify Porsche Finder scrapers"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Porsche developer portal states no public APIs; Finder listing API access is restricted to contracted partner companies."
+}

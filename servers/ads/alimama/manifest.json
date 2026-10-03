@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "alimama-mcp",
+ "display_name": "阿里妈妈 Alimama MCP",
+ "version": "0.1.0",
+ "description": "阿里妈妈 Alimama (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "alimama"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALIMAMA_APP_KEY": "${user_config.platform_mcp_alimama_app_key}",
+    "PLATFORM_MCP_ALIMAMA_APP_SECRET": "${user_config.platform_mcp_alimama_app_secret}",
+    "PLATFORM_MCP_ALIMAMA_SESSION": "${user_config.platform_mcp_alimama_session}",
+    "PLATFORM_MCP_ALIMAMA_BIZ_CODE": "${user_config.platform_mcp_alimama_biz_code}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_alimama_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIMAMA_APP_KEY",
+   "description": "AppKey of a 淘宝开放平台 application granted the 阿里妈妈 万相台无界 API permission (https://open.taobao.com).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alimama_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIMAMA_APP_SECRET",
+   "description": "AppSecret of that application; never sent, used for the MD5 request signature.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alimama_session": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIMAMA_SESSION",
+   "description": "Seller session key (授权信息 'session') issued when the merchant authorised the app through the TOP OAuth flow (https://open.taobao.com/doc.htm?docId=101617&docType=1: session is required for APIs marked 需要授权); renew it by re-authorising when it expires.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alimama_biz_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIMAMA_BIZ_CODE",
+   "description": "万相台无界 scene code (api业务线编码) sent in top_service_context, e.g. onebpDisplay (人群推广), onebpSearch (关键词推广) or onebpSite (全站推广); taobao.universalbp.new.account.get.can.use.bizcode lists the codes the account may use.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "taobao.universalbp.new.account.get.can.use.bizcode (获取账户可用的bizCode): the marketing scenes the authorised account can use, each {biz_code, app_id, market_name}."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "taobao.universalbp.new.campaign.findpage (查询计划分页列表) for the configured biz_code scene, paged with campaign_query_v_o {offset, page_size}. Each campaign has campaign_id, campaign_name, display_status (start 正在推广, pause 暂停推广, terminate, wait, pending, wait_pay), online_status, dmc_type and day_budget (a string in 元, left in raw), launch_time, promotion_scene, optimize_target. account_id and status are not sent (the session selects the shop; status_list would need its own JSON array)."
+  },
+  {
+   "name": "get_report",
+   "description": "taobao.universalbp.new.report.query.campaign (计划报表查询): per day and campaign (query_domains date, campaign; split_type day; last-click attribution zhai over 15 days) with ad_pv, click, charge (花费, 元), ctr, ecpc; first 100 rows. campaign_id is not applied (filter rows by campaign_id); account_id is not sent (the session selects the shop)."
+  },
+  {
+   "name": "update_budget",
+   "description": "taobao.universalbp.new.campaign.budget.batchupdate (批量更新计划预算) with budget_list [{campaign_id, dmc_type: normal (日预算), day_budget (元)}]. This spends money. A rejected campaign is reported inside a successful response (raw.campaign_budget_update_result_v_o_top_part_data.error_details, info.ok) rather than as an error. currency is ignored (CNY)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "pause → taobao.universalbp.new.campaign.oneclick (一键暂停), resume → taobao.universalbp.new.campaign.onerecover (一键恢复, https://open.taobao.com/api.htm?docId=70472&docType=2), each with one_click_v_o {campaign_id_list: [campaign_id]}; the answer is top_result.info {ok, message, error_code} (see raw). Resuming restarts spend."
+  }
+ ]
+}

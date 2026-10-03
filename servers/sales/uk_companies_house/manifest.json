@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "uk_companies_house-mcp",
+ "display_name": "Companies House MCP",
+ "version": "0.1.0",
+ "description": "Companies House (sales): me, search, get_company. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "uk_companies_house"
+   ],
+   "env": {
+    "PLATFORM_MCP_UK_COMPANIES_HOUSE_API_KEY": "${user_config.platform_mcp_uk_companies_house_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_uk_companies_house_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UK_COMPANIES_HOUSE_API_KEY",
+   "description": "Companies House Public Data API key (free, from https://developer.company-information.service.gov.uk/). Sent as the HTTP Basic user name with an empty password: 'the Companies House API takes the username as the API key and ignores the password' (https://developer-specs.company-information.service.gov.uk/guides/authorisation).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-item company search (Companies House has no account endpoint)."
+  },
+  {
+   "name": "search",
+   "description": "UK register only: the `country` and `industry` arguments are not search parameters here and are ignored. Search items carry no SIC codes or website; `links.self` is a relative API path, so `url` is left unset (see raw.links.self). `restrictions=active-companies` is a documented option not applied by default."
+  },
+  {
+   "name": "get_company",
+   "description": "`id` is the company number from search. `address` is the first line only; the full registered_office_address object and every SIC code are under raw. No website field is documented."
+  }
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "id": "welcome_to_the_jungle",
+ "category": "jobs",
+ "label": "Welcome to the Jungle",
+ "lane": "assist",
+ "kind": "startup",
+ "regions": [
+  "fr",
+  "eu",
+  "us",
+  "uk"
+ ],
+ "docs_url": "https://developers.welcometothejungle.com/",
+ "url": "https://www.welcometothejungle.com/en/jobs",
+ "verified_at": "2026-09-04",
+ "terms_note": "Company-page job board (FR, ES, CZ, SK, UK, US); apply forms on WTTJ or the company ATS. Public API for partners.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

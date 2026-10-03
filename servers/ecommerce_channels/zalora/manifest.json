@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "zalora-mcp",
+ "display_name": "Zalora MCP",
+ "version": "0.1.0",
+ "description": "Zalora (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "zalora"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZALORA_CLIENT_ID": "${user_config.platform_mcp_zalora_client_id}",
+    "PLATFORM_MCP_ZALORA_CLIENT_SECRET": "${user_config.platform_mcp_zalora_client_secret}",
+    "PLATFORM_MCP_ZALORA_COUNTRY": "${user_config.platform_mcp_zalora_country}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zalora_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALORA_CLIENT_ID",
+   "description": "Application ID of an OAuth application created in ZALORA Seller Center (Settings > Integration Management > OAuth Applications > Add Application).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalora_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALORA_CLIENT_SECRET",
+   "description": "Application Secret of the same application; sent with the id as HTTP Basic to /oauth/client-credentials (grant_type=client_credentials) for a 1-hour bearer token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zalora_country": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZALORA_COUNTRY",
+   "description": "Country code of the price row that update_listing / end_listing change (Seller Center country code of the venture, as used in PUT /v2/product/{productId}/prices/{country}).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/seller-settings: the authenticated seller's settings, used as the credential check."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /v2/product/{productId}/prices/{country} {price} merge-patches the LIVE list (regular) price of one variation for the configured country; an existing sale price is kept (salePrice omitted). `listing_id` is the numeric variation productId (GET /v2/product-set/{productSetId}/products). Returns the stored row with status active|inactive and any warnings."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /v2/stock/product [{productId, quantity}] synchronously sets the stock of one variation (`listing_id` = numeric productId, required). Products fulfilled by the venture cannot be updated; ignored products are listed in the response."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /v2/product/{productId}/prices/{country}/status {status: inactive} stops selling the variation in the configured country (reversible with active). Only meaningful for multi-country sellers: single-country (LSC) setups reject inactive with 422."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /v2/orders?limit&offset (both required, sent from limit/page)&section&dateStart, newest first. `status` selects the section filter (status_pending, status_shipped, status_delivered, status_failed, status_canceled, status_pending_all, …); per-item statuses are in raw.statusList / raw.items[].status. raw.number is the customer-facing order number and raw.orderItemIds are needed for status changes."
+  }
+ ]
+}

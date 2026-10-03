@@ -1,0 +1,315 @@
+{
+ "id": "ebay",
+ "category": "ecommerce_channels",
+ "label": "eBay",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "gb",
+  "us",
+  "de",
+  "au",
+  "ca",
+  "fr",
+  "it",
+  "es"
+ ],
+ "docs_url": "https://developer.ebay.com/develop/apis/restful-apis/sell-apis",
+ "url": "https://www.ebay.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "API License Agreement (not opened). developer.ebay.com answers 403 to automated clients: the mapped endpoints were read on 2026-09-24 from web.archive.org snapshots of the official pages / OpenAPI contracts (refresh-token request page 2026-04-21, sell_fulfillment_v1_oas3.json v1.20.7 2026-03-16, sell_inventory_v1_oas3.json v1.18.4 2026-02-11, sell_account_v1_oas3.json v1.9.3 2026-02-11).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk",
+   "sandbox"
+  ],
+  "auth": "oauth2 (user tokens via authorization code from the user's developer keyset; application tokens for public data; sandbox + production keysets)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox",
+   "advertising"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "eBay OpenAPI specs + SDKs on developer.ebay.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "refresh",
+  "config.region",
+  "config.fulfillment_policy_id",
+  "config.payment_policy_id",
+  "config.return_policy_id",
+  "config.merchant_location_key"
+ ],
+ "rate_limits": "default 5,000 calls/day per app until Growth Check passed (from search index of developer.ebay.com — page itself 403)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — developer.ebay.com was bot-walled (403) on all pages; facts come from the registry research and the live client.",
+  "base_urls": [
+   "https://api.ebay.com",
+   "https://api.sandbox.ebay.com"
+  ],
+  "auth": [
+   "1. Tenant creates a developer account + keyset (client id / secret) and grants the user token via the authorization-code flow (scopes sell.inventory, sell.fulfillment, sell.account, sell.analytics).",
+   "2. Client refreshes the user token with Basic client_id:client_secret (`self.refreshed` persisted by the executor)."
+  ],
+  "endpoints": [
+   {
+    "call": "PUT /sell/inventory/v1/inventory_item/{sku}",
+    "purpose": "inventory item (product data + quantity)",
+    "notes": "used"
+   },
+   {
+    "call": "POST /sell/inventory/v1/offer · POST /offer/{id}/publish",
+    "purpose": "offer (price, policies, location) + publish",
+    "notes": "used"
+   },
+   {
+    "call": "GET /sell/fulfillment/v1/order",
+    "purpose": "orders",
+    "notes": "used"
+   },
+   {
+    "call": "POST /sell/fulfillment/v1/order/{id}/shipping_fulfillment",
+    "purpose": "tracking + carrier",
+    "notes": "used"
+   },
+   {
+    "call": "GET /sell/analytics/v1/traffic_report",
+    "purpose": "impressions / views / transactions",
+    "notes": "used"
+   },
+   {
+    "call": "Post-Order API returns · Feed API · Notification API · Marketing API",
+    "purpose": "returns, bulk, push, promotions",
+    "notes": "unused"
+   }
+  ],
+  "limits": " Default 5,000 calls / day per app for most APIs until the Application Growth Check (registry research; the limits page was 403 today); 429 handled as RateLimited. - eBay API License Agreement; marketplace-account-deletion notification endpoint required for production keysets.",
+  "mcp_sdk": [
+   "SDK: eBay OpenAPI specs + SDKs on developer.ebay.com"
+  ],
+  "sources": [
+   "https://developer.ebay.com/api-docs/master/sell/account/openapi/3/sell_account_v1_oas3.json",
+   "https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json",
+   "https://developer.ebay.com/api-docs/master/sell/inventory/openapi/3/sell_inventory_v1_oas3.json",
+   "https://developer.ebay.com/api-docs/sell/inventory/overview.html",
+   "https://developer.ebay.com/api-docs/static/oauth-refresh-token-request.html",
+   "https://developer.ebay.com/develop/apis/restful-apis/sell-apis",
+   "https://developer.ebay.com/develop/get-started/api-call-limits"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.ebay.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://api.sandbox.ebay.com",
+    "token_url": "https://api.sandbox.ebay.com/identity/v1/oauth2/token",
+    "auth_url": "https://auth.sandbox.ebay.com/oauth2/authorize",
+    "docs": "https://github.com/eBay/ebay-oauth-python-client/blob/master/oauthclient/model/model.py",
+    "verified_at": "2026-09-27",
+    "notes": "eBay Sandbox: a Sandbox keyset (App ID / Cert ID from developer.ebay.com > Application Keys, Sandbox column) and a refresh token from a consent given by a Sandbox test user at auth.sandbox.ebay.com. Hosts from eBay's own OAuth clients (environment.SANDBOX in eBay/ebay-oauth-python-client oauthclient/model/model.py and eBay/ebay-oauth-java-client Environment.java: api.sandbox.ebay.com, https://auth.sandbox.ebay.com/oauth2/authorize, https://api.sandbox.ebay.com/identity/v1/oauth2/token); developer.ebay.com answers 403 to non-browser clients. Scope URIs are unchanged: eBay's client test GetUserAccessToken.py requests https://api.ebay.com/oauth/api_scope/sell.* against SANDBOX. The token endpoint answered invalid_client to a dummy client on 2026-09-27."
+   }
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.ebay.com/identity/v1/oauth2/token",
+   "client_auth": "basic",
+   "scope": "https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.account",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Production keyset App ID (Client ID) from developer.ebay.com > Application Keys; sent with the Cert ID as HTTP Basic on the token call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Production keyset Cert ID (Client Secret)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "User refresh token (v^1.1#...) from a one-time authorization-code consent that granted at least sell.inventory, sell.fulfillment and sell.account (the refresh request re-asks exactly these scopes, which must be a subset of the consent); long-lived (about 18 months), revoked when the seller changes password. 2-hour user access tokens are minted from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency of your listings' marketplace (e.g. USD, GBP, EUR); needed only by update_listing, since eBay prices are {value, currency} objects."
+   }
+  ],
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sell/account/v1/privilege",
+    "docs": "https://developer.ebay.com/api-docs/sell/account/resources/privilege/methods/getPrivileges",
+    "note": "GET /sell/account/v1/privilege (scope sell.account) returns {sellerRegistrationCompleted, sellingLimit{amount, quantity}} for the seller the refresh token belongs to."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/sell/inventory/v1/bulk_update_price_quantity",
+    "body": {
+     "requests.0.offers.0.offerId": "listing_id",
+     "requests.0.offers.0.availableQuantity": "quantity",
+     "requests.0.offers.0.price.value": "str:price",
+     "requests.0.offers.0.price.currency": "@currency"
+    },
+    "result": {
+     "root": "responses.0",
+     "fields": {
+      "status": "=submitted"
+     }
+    },
+    "docs": "https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/methods/bulkUpdatePriceQuantity",
+    "note": "POST /sell/inventory/v1/bulk_update_price_quantity {requests: [{offers: [{offerId, availableQuantity, price{value, currency}}]}]} revises price and/or quantity of one published offer (listing_id = the Inventory API offerId). price.value is sent as the documented decimal string and price.currency comes from the `currency` config field — pass `price` whenever currency is configured. `title`/`description` are not changed (they live on the inventory item, whose PUT replaces the whole record). eBay answers 200 with a per-offer statusCode and errors[] under responses[]: check raw.statusCode (200 = applied)."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/sell/inventory/v1/offer/{listing_id}/withdraw",
+    "result": {
+     "fields": {
+      "status": "=withdrawn"
+     }
+    },
+    "docs": "https://developer.ebay.com/api-docs/sell/inventory/resources/offer/methods/withdrawOffer",
+    "note": "POST /sell/inventory/v1/offer/{offerId}/withdraw ends the single-variation listing of the offer; the offer object stays (unpublished) and can be republished. Returns {listingId, warnings}. deleteOffer is not used."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/sell/inventory/v1/bulk_update_price_quantity",
+    "body": {
+     "requests.0.sku": "sku",
+     "requests.0.shipToLocationAvailability.quantity": "quantity"
+    },
+    "result": {
+     "root": "responses.0",
+     "fields": {
+      "status": "=submitted"
+     }
+    },
+    "docs": "https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/methods/bulkUpdatePriceQuantity",
+    "note": "POST /sell/inventory/v1/bulk_update_price_quantity {requests: [{sku, shipToLocationAvailability{quantity}}]} sets the inventory item's total ship-to-home quantity (flows to its published offers). `sku` is required (the Inventory API keys items by SKU; listing_id is not used). Per-item statusCode / errors come back 200 under responses[] (see raw)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/sell/fulfillment/v1/order",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 50,
+    "max_limit": 200,
+    "result": {
+     "items": "orders",
+     "total": "total",
+     "key": "orders",
+     "fields": {
+      "id": "orderId",
+      "status": "orderFulfillmentStatus",
+      "total": "pricingSummary.total.value",
+      "currency": "pricingSummary.total.currency",
+      "created_at": "creationDate"
+     }
+    },
+    "docs": "https://developer.ebay.com/api-docs/sell/fulfillment/resources/order/methods/getOrders",
+    "note": "GET /sell/fulfillment/v1/order?limit(max 200, default 50)&offset (scope sell.fulfillment) returns {total, orders[{orderId, orderFulfillmentStatus NOT_STARTED|IN_PROGRESS|FULFILLED, pricingSummary.total{value, currency}, creationDate}]} for up to the last 2 years. `since` and `status` are ignored: eBay filters through one composed `filter` string (creationdate:[<ISO>..],orderfulfillmentstatus:{NOT_STARTED|IN_PROGRESS}) that the adapter cannot assemble. `total` is the decimal string eBay returns."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Needs a three-call chain: PUT /sell/inventory/v1/inventory_item/{sku} {product{title, description, imageUrls[]}, condition, availability{shipToLocationAvailability{quantity}}} (Content-Language header), then POST /sell/inventory/v1/offer {sku, marketplaceId, format: FIXED_PRICE, pricingSummary{price{value, currency}}, listingPolicies{fulfillmentPolicyId, paymentPolicyId, returnPolicyId}, merchantLocationKey, categoryId} returning offerId, then POST /sell/inventory/v1/offer/{offerId}/publish — the runtime maps one verb to one call.",
+   "mark_shipped": "POST /sell/fulfillment/v1/order/{orderId}/shipping_fulfillment requires lineItems[{lineItemId, quantity}] (the order's own line-item ids, read with GET /sell/fulfillment/v1/order/{orderId} first) besides shippingCarrierCode and trackingNumber — two calls.",
+   "listing_metrics": "Sell Analytics getTrafficReport (GET /sell/analytics/v1/traffic_report, scope sell.analytics.readonly; page not re-read this pass) takes dimension=LISTING and a composed filter string (marketplace_ids:{EBAY_US},date_range:[yyyymmdd..yyyymmdd],listing_ids:{id}) that the adapter expressions cannot assemble."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.ebay.com: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.ebay.com/identity/v1/oauth2/token: 401 invalid_client",
+   "authorize https://auth.ebay.com/oauth2/authorize: 302",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

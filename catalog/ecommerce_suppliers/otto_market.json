@@ -1,0 +1,116 @@
+{
+ "id": "otto_market",
+ "category": "ecommerce_suppliers",
+ "label": "OTTO Market (sales channel) + OTTO Market API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "europe"
+ ],
+ "docs_url": "https://api.otto.market/docs/getting-started/",
+ "url": "https://www.otto.market/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access after contract; Service-Partner programme for integrators",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "oauth",
+   "sandbox"
+  ],
+  "auth": "oauth2 (seller or service-partner credentials after contract; see the sales-channel audit `otto`)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI specifications per interface (API Index)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Seller contract; service-partner programme for integrators.",
+  "mcp_sdk": [
+   "OpenAPI specifications per interface (API Index)"
+  ],
+  "sources": [
+   "https://api.otto.market/docs/getting-started/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "OTTO Market API getting started (https://api.otto.market/docs/getting-started/, opened 2026-09-25): the APIs serve Sellers and Service Partners acting for sellers (orders, products, shipments, returns of a seller's own OTTO shop under seller OAuth credentials after a contract). It is the sales-channel side of OTTO; there is no API for buying from OTTO, so this category's supplier catalogue, shipping quote and create_order have no counterpart; the seller side belongs in ecommerce_channels/otto."
+}

@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/odnoklassniki-mcp",
+ "description": "Odnoklassniki (social): me, publish_text, read_comments, delete, analytics_post. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://apiok.ru/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "odnoklassniki"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ODNOKLASSNIKI_APPLICATION_KEY",
+     "description": "Public key of your OK application (application_key, from the app registration e-mail / app settings at https://ok.ru/app/setup).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ODNOKLASSNIKI_APPLICATION_SECRET_KEY",
+     "description": "Secret key of the same application (application_secret_key). Only used to compute sig; never sent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ODNOKLASSNIKI_ACCESS_TOKEN",
+     "description": "User access_token with VALUABLE_ACCESS and GROUP_CONTENT, from the OAuth flow (https://apiok.ru/ext/oauth/) or the app's permanent 'Вечный access_token' in the app settings. Sent in the POST body, excluded from sig as the convention requires.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ODNOKLASSNIKI_GROUP_ID",
+     "description": "Numeric id (gid) of the OK group you administer; posts, comments and statistics are for this group's topics (needs the GROUP_CONTENT permission).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

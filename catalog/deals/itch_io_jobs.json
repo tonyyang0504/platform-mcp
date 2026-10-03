@@ -1,0 +1,169 @@
+{
+ "id": "itch_io_jobs",
+ "category": "deals",
+ "label": "itch.io Help Wanted or Offered",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://itch.io/board/10020/help-wanted-or-offered",
+ "url": "https://itch.io/board/10020/help-wanted-or-offered",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public board RSS; itch.io API covers the account's own games / purchases only; posting a reply needs a logged-in itch.io account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (server-side API, not needed for the board RSS)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://itch.io/docs/api/overview"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://itch.io/board/10020/help-wanted-or-offered.rss",
+   "docs": "https://itch.io/docs/api/overview"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://itch.io/docs/api/overview"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (community board RSS; the documented itch.io API has no jobs surface) Confidence high.",
+  "base_urls": [
+   "https://itch.io/board/10020/help-wanted-or-offered.rss",
+   "https://itch.io/api/1/KEY/…"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /board/10020/help-wanted-or-offered.rss",
+    "purpose": "search",
+    "notes": "topic title, link, pubDate"
+   }
+  ],
+  "limits": " - Public RSS; replying needs an itch.io account (forum post) — assist. - itch.io API docs describe key-based access to the caller's own account, OAuth apps, JS buy button and game RSS feeds (browse URL + .xml).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://itch.io/docs/api/overview",
+   "https://itch.io/docs/api/serverside",
+   "https://itch.io/board/10020/help-wanted-or-offered.rss"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://itch.io",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "itch.io community board 'Help Wanted or Offered'. Replies are posted on itch.io with an account.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/board/10020/help-wanted-or-offered.rss",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://itch.io/board/10020/help-wanted-or-offered",
+    "note": "The feed answers its whole current list in one response (the board's RSS 2.0 feed, latest ~50 topics); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). Topics are both offers and requests for help (often '[PAID]', '[REVSHARE]' or '[Hobby]' in the title); description is HTML; createDate/updateDate are in raw."
+   }
+  },
+  "not_offered": {
+   "me": "The itch.io server-side API key endpoints (credentials/info, me) belong to the separate game API, not this board feed; the feed is anonymous.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Replies are posted on the topic page with an itch.io account; the server-side API (https://itch.io/docs/api/serverside) has no community board endpoints.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

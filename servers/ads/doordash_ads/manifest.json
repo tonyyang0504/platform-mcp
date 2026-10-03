@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "doordash_ads-mcp",
+ "display_name": "DoorDash Ads MCP",
+ "version": "0.1.0",
+ "description": "DoorDash Ads (ads): me, list_campaigns, update_budget, pause_resume. Every tool maps to a documented",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "doordash_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_DOORDASH_ADS_API_KEY": "${user_config.platform_mcp_doordash_ads_api_key}",
+    "PLATFORM_MCP_DOORDASH_ADS_CAMPAIGN_TYPE": "${user_config.platform_mcp_doordash_ads_campaign_type}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_doordash_ads_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOORDASH_ADS_API_KEY",
+   "description": "DoorDash Ads API key; the Ads API reference's security scheme 'Ads API Key Authentication' reads: 'We will be using stateful token based API keys to authenticate clients, passed in the Authorization header as Bearer {API_KEY}' (https://developer.doordash.com/en-US/redocusaurus/plugin-redoc-11.yaml). Issued to onboarded DoorDash Ads (CPG) advertisers and partners.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_doordash_ads_campaign_type": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DOORDASH_ADS_CAMPAIGN_TYPE",
+   "description": "Campaign type path segment of every campaign call: 'sp' (Sponsored Products) or 'sb' (Sponsored Brand).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint is documented; the probe lists one campaign (GET /ads/api/v1/{campaignType}/campaigns?count=1), which verifies the API key."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /ads/api/v1/{campaignType}/campaigns?startIndex&count (0-indexed offset). Each CampaignResponse has campaignId, name, status, statusDescription, budget {daily, lifetime: {unitAmount (cents), currency, displayString, decimalPlaces}, pacingStrategy}, startDate/endDate ('yyyy-MM-dd HH:mm:ss'). The budget stays in raw.budget because it is in cents. account_id and status are not sent (the API key selects the advertiser; no status filter is documented)."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /ads/api/v1/{campaignType}/campaigns {campaignId, budget: {daily: {unitAmount}}} with daily_budget converted to cents; a partial update (the existing pacingStrategy is preserved). This spends money. currency is ignored (the advertiser's currency applies)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /ads/api/v1/{campaignType}/campaigns {campaignId, status: ACTIVE|PAUSED} (StatusWrite enum ACTIVE, PAUSED, ENDED). Resuming restarts spend."
+  }
+ ]
+}

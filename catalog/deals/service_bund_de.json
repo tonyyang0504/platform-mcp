@@ -1,0 +1,175 @@
+{
+ "id": "service_bund_de",
+ "category": "deals",
+ "label": "service.bund.de — Ausschreibungen",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "de"
+ ],
+ "docs_url": "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html",
+ "url": "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html",
+ "verified_at": "2026-09-25",
+ "terms_note": "German federal portal; public RSS; bids on the buyer's e-Vergabe platform.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (search-result RSS). Lane `assist` → **keep**; RSS for discovery. Confidence high.",
+  "base_urls": [
+   "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html?view=rss"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET …/Formular.html?view=rss&…",
+    "purpose": "search",
+    "notes": "title, link, description, pubDate"
+   }
+  ],
+  "limits": " - Public; bids on buyer platforms. - German federal portal; public RSS; bids on the buyer's e-Vergabe platform.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.service.bund.de",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "service.bund.de (Bundesverwaltungsamt) public tender search. Bids are submitted on the contracting authority's e-Vergabe platform.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/Content/DE/Ausschreibungen/Suche/Formular.html",
+    "params": {
+     "templateQueryString": "query"
+    },
+    "fixed_params": {
+     "nn": "4641482",
+     "resultsPerPage": "100",
+     "sortOrder": "dateOfIssue_dt desc",
+     "jobsrss": "true"
+    },
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html",
+    "note": "The RSS view (jobsrss=true) of the tender search form, newest first, 100 results; `query` is the form's search field (templateQueryString, full text). category, min_budget, page and limit are not sent — ignore next_page. description is HTML with Erfüllungsort, Vergabestelle (buyer), Angebotsfrist (deadline) and Veröffentlichungsende; url carries a '#track=feed-callforbids' fragment."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "Notice pages (/IMPORTE/Ausschreibungen/…html) are HTML only; there is no per-notice machine-readable endpoint.",
+   "submit_bid": "Bids are submitted on the contracting authority's e-Vergabe platform linked from the notice; service.bund.de has no submission API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "boamp-mcp",
+ "display_name": "BOAMP MCP",
+ "version": "0.1.0",
+ "description": "BOAMP (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "boamp"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /api/explore/v2.1/catalog/datasets/boamp/records (Opendatasoft Explore API v2.1, linked from https://www.boamp.fr/pages/api-boamp/). `query` is sent as a quoted ODSQL string literal in `where` ('a simple full-text search'), e.g. toiture vichy → where=\"toiture vichy\"; a double quote inside the query breaks the clause (ODSQLSyntaxError). `category` refines on the descripteur_libelle facet (exact French label, e.g. Maîtrise d'oeuvre, Bâtiment, Prestations de services). Newest first (order_by dateparution desc). The dataset holds every BOAMP notice type — contract notices, award results, corrections — check raw.nature_categorise_libelle ('Avis de marché' = open call) and deadline (datelimitereponse). min_budget is not sent (no amount field). offset+limit must stay below 10000. id is the BOAMP idweb (e.g. 26-91551)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /records?where=idweb=\"<id>\"&limit=1 — the dataset's GET /records/{record_id} takes the internal record id, not the BOAMP number, so the notice is fetched by filtering on idweb. An unknown idweb returns no record (invalid_input). The full notice (eForms / legacy XML converted to JSON) is in raw.donnees and raw.gestion as JSON strings."
+  }
+ ]
+}

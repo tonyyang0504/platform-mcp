@@ -1,0 +1,131 @@
+{
+ "id": "coroflot",
+ "category": "jobs",
+ "label": "Coroflot",
+ "lane": "assist",
+ "kind": "design",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://feeds.feedburner.com/Coroflot/AllJobs",
+ "url": "https://www.coroflot.com/jobs",
+ "verified_at": "2026-09-25",
+ "terms_note": "Design jobs + portfolios; apply with the Coroflot profile.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (all-jobs RSS)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist for apply; the FeedBurner AllJobs RSS (text/xml) is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. No developer API; the site links a FeedBurner RSS of all jobs (/rss itself is an HTML page). Terms: security rules forbid unauthorised access / probing; no explicit scraping clause surfaced. robots.txt blocks CCBot, ChatGPT-User, Bytespider, Amazonbot, Applebot-Extended … with Disallow: / for unlisted agents.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.coroflot.com/",
+   "https://www.coroflot.com/robots.txt",
+   "http://feeds.feedburner.com/Coroflot/AllJobs",
+   "https://www.coroflot.com/rss",
+   "https://www.coroflot.com/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://feeds.feedburner.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/Coroflot/AllJobs",
+    "default_limit": 30,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "location": "description"
+     }
+    },
+    "docs": "https://feeds.feedburner.com/Coroflot/AllJobs",
+    "note": "Coroflot's all-jobs RSS 2.0 feed (FeedBurner, latest 30 design jobs). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<Company> is seeking a <Role>'; the item description is only the job location, so it is mapped to location. id is the posting link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (TypeScript runtime): CDATA titles kept a trailing space in TypeScript only; also: next_page now null (no page parameter); all read tools answered, schema-valid"
+ }
+}

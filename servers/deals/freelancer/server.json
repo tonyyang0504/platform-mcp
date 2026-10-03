@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/freelancer-deals-mcp",
+ "description": "Freelancer (deals): me, search_postings, get_posting, submit_bid, withdraw_bid, bid_status, list_mes",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.freelancer.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "deals/freelancer"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FREELANCER_ACCESS_TOKEN",
+     "description": "Freelancer OAuth access token sent as the freelancer-oauth-v1 header: a Personal Access Token from https://accounts.freelancer.com/settings/develop ('valid for thirty days') or a token from your registered OAuth app (scopes basic, fln:project_manage, fln:messaging, fln:user_information as needed).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FREELANCER_BIDDER_ID",
+     "description": "Your Freelancer user id (GET /users/0.1/self/ → result.id); required by POST /projects/0.1/bids/ as bidder_id.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_FREELANCER_MILESTONE_PERCENTAGE",
+     "description": "Initial milestone percentage (20–100) required by POST /projects/0.1/bids/ ('Please fill in the milestone percentage (20 - 100)').",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

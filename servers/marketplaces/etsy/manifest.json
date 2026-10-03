@@ -1,0 +1,129 @@
+{
+ "manifest_version": "0.2",
+ "name": "etsy-marketplaces-mcp",
+ "display_name": "Etsy MCP",
+ "version": "0.1.0",
+ "description": "Etsy (marketplaces): me, list_products, get_product, create_product, list_sales. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "marketplaces/etsy"
+   ],
+   "env": {
+    "PLATFORM_MCP_ETSY_CLIENT_ID": "${user_config.platform_mcp_etsy_client_id}",
+    "PLATFORM_MCP_ETSY_API_KEY": "${user_config.platform_mcp_etsy_api_key}",
+    "PLATFORM_MCP_ETSY_REFRESH_TOKEN": "${user_config.platform_mcp_etsy_refresh_token}",
+    "PLATFORM_MCP_ETSY_SHOP_ID": "${user_config.platform_mcp_etsy_shop_id}",
+    "PLATFORM_MCP_ETSY_TAXONOMY_ID": "${user_config.platform_mcp_etsy_taxonomy_id}",
+    "PLATFORM_MCP_ETSY_WHO_MADE": "${user_config.platform_mcp_etsy_who_made}",
+    "PLATFORM_MCP_ETSY_WHEN_MADE": "${user_config.platform_mcp_etsy_when_made}",
+    "PLATFORM_MCP_ETSY_SHIPPING_PROFILE_ID": "${user_config.platform_mcp_etsy_shipping_profile_id}",
+    "PLATFORM_MCP_ETSY_READINESS_STATE_ID": "${user_config.platform_mcp_etsy_readiness_state_id}",
+    "PLATFORM_MCP_ETSY_RETURN_POLICY_ID": "${user_config.platform_mcp_etsy_return_policy_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_etsy_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_CLIENT_ID",
+   "description": "Etsy App API Key keystring (etsy.com/developers/your-apps); sent as client_id in the refresh grant form body (Etsy's refresh grant takes no client secret).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_etsy_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_API_KEY",
+   "description": "Value of the x-api-key header required on every v3 request: the keystring and the shared secret joined by a colon, e.g. 1aa2bb33c44d55eeeeee6fff:a1b2c3d4e5 (both on the Your Apps page).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_etsy_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_REFRESH_TOKEN",
+   "description": "Refresh token (numeric user id prefix, e.g. 12345678.JNGI...) from a one-time OAuth 2.0 authorization-code + PKCE consent at etsy.com/oauth/connect with scopes shops_r listings_r listings_w transactions_r; valid 90 days, after which the seller consents again. Access tokens (1 h) are minted from it. A refresh grant also returns a new refresh token, which replaces the old one. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. The state file is keyed by platform id, so it is shared with ecommerce_channels/etsy: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent) so they never race on one rotating refresh token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_etsy_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_SHOP_ID",
+   "description": "Numeric Etsy shop id (GET /v3/application/users/me returns it as shop_id).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_etsy_taxonomy_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_TAXONOMY_ID",
+   "description": "Seller taxonomy id every created listing is filed under (GET /v3/application/seller-taxonomy/nodes); required by create_product.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_etsy_who_made": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_WHO_MADE",
+   "description": "createDraftListing who_made for new listings: i_did | someone_else | collective; required by create_product.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_etsy_when_made": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_WHEN_MADE",
+   "description": "createDraftListing when_made for new listings, e.g. made_to_order, 2020_2026, 2010_2019, before_2007; required by create_product.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_etsy_shipping_profile_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_SHIPPING_PROFILE_ID",
+   "description": "Shipping profile id for new physical listings (GET /v3/application/shops/{shop_id}/shipping-profiles); required for physical listings.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_etsy_readiness_state_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_READINESS_STATE_ID",
+   "description": "Processing profile id for new physical listings (GET /v3/application/shops/{shop_id}/readiness-state-definitions); required for physical listings.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_etsy_return_policy_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ETSY_RETURN_POLICY_ID",
+   "description": "Optional return policy id for new listings (GET /v3/application/shops/{shop_id}/policies/return).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v3/application/users/me (scope shops_r) returns {user_id, shop_id} for the seller who granted the token."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v3/application/shops/{shop_id}/listings?state (active|inactive|sold_out|draft|expired; Etsy defaults to active)&limit(1-100)&offset (scope listings_r). `price` is price.amount in MINOR units - divide by price.divisor (usually 100): 1999 = 19.99 in price.currency_code. created_at / updated_at are epoch seconds."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v3/application/listings/{listing_id}; `price` is in minor units (see list_products)."
+  },
+  {
+   "name": "create_product",
+   "description": "Creates a DRAFT listing (not published) with createDraftListing (form-encoded, scope listings_w): title = name, description (REQUIRED by Etsy - always pass it), price in the shop's currency as a decimal (e.g. 19.99; `currency` is ignored because the shop currency applies), quantity fixed at 1, type physical, and who_made / when_made / taxonomy_id / shipping_profile_id / readiness_state_id / return_policy_id from config. `url` is ignored. Publishing needs an image upload (multipart, not mapped) and then state=active."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /v3/application/shops/{shop_id}/transactions?limit&offset (scope transactions_r): one row per sold listing line (transaction_id, receipt_id, listing_id, title, quantity, price {amount, divisor, currency_code} per unit in MINOR units, buyer_user_id, created_timestamp epoch seconds). The endpoint has no date or listing filter, so `since` and `product_id` are not sent; buyer emails are not exposed."
+  }
+ ]
+}

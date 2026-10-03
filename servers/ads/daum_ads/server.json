@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/daum_ads-mcp",
+ "description": "Daum search ads (now Kakao 키워드광고) (ads): me, list_accounts, list_campaigns, get_report, update_budge",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.kakao.com/docs/latest/ko/keyword-ad/common",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "daum_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DAUM_ADS_BUSINESS_TOKEN",
+     "description": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to the keyword_management scope in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). It has no refresh flow; it expires after long non-use.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DAUM_ADS_AD_ACCOUNT_ID",
+     "description": "Kakao keyword ad account id (numeric, without the K prefix), sent as the `adAccountId` header that every campaign and report call requires.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

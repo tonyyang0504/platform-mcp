@@ -1,0 +1,75 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mercado_libre-marketplaces-mcp",
+ "description": "Mercado Libre (marketplaces): me, get_product, update_price, list_sales. Every tool maps to a docume",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.mercadolibre.com",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "marketplaces/mercado_libre"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_ID",
+     "description": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_SECRET",
+     "description": "Secret Key of the same application; sent as client_secret in the token request body.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_REFRESH_TOKEN",
+     "description": "Refresh token (TG-...) from a one-time authorization-code consent by the seller's ADMIN account (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token. The state file is keyed by platform id, so it is shared with ecommerce_channels/mercado_libre: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent) so they never race on one single-use refresh token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_SELLER_ID",
+     "description": "Numeric Mercado Libre user id of the seller (the `id` returned by GET /users/me); used as the seller filter of the order search.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_ENV",
+     "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_MERCADO_LIBRE_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

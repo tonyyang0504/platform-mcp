@@ -1,0 +1,123 @@
+{
+ "id": "costco_retail_media",
+ "category": "ads",
+ "label": "Costco Retail Media (Costco Velocity)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.costco.com/",
+ "verified_at": null,
+ "terms_note": "Unknown — onsite via Criteo (self-serve for approved suppliers); other formats sales-led.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Criteo Retail Media API — if Costco onsite sponsored products run on Criteo)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "reports"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (onsite sponsored products via Criteo per trade press; everything else sales-led) Confidence: **low**.",
+  "base_urls": [
+   "https://api.criteo.com/{ver}/retail-media/…"
+  ],
+  "auth": [
+   "1. Costco supplier + Costco Velocity onboarding.",
+   "2. Criteo Retail Media account → developer app (partners.criteo.com) → OAuth.",
+   "3. Reserved formats: Costco sales team."
+  ],
+  "endpoints": [
+   {
+    "call": "Criteo Retail Media campaigns / line items for the Costco retailer id",
+    "purpose": "campaigns + budgets + bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "Criteo Retail Media reports",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Unknown; Criteo API rate limits apply.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.costco.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public API reference. Re-checked 2026-09-25 in headless Chromium: https://www.costco.com/ links no retail-media, advertising or developer page (its own ad placements are served through media-cdn.costco.com redirects), and https://www.costco.com/retail-media.html answers 'Page Not Found!'. Costco Retail Media onsite ads are reportedly bought through Criteo's Retail Media platform by approved partners; no Costco-specific endpoint, auth or response shape can be cited."
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "instagram-mcp",
+ "display_name": "Instagram MCP",
+ "version": "0.1.0",
+ "description": "Instagram (social): me, read_comments, reply_comment, read_mentions, analytics_post. Every tool maps",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "instagram"
+   ],
+   "env": {
+    "PLATFORM_MCP_INSTAGRAM_ACCESS_TOKEN": "${user_config.platform_mcp_instagram_access_token}",
+    "PLATFORM_MCP_INSTAGRAM_IG_USER_ID": "${user_config.platform_mcp_instagram_ig_user_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_instagram_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INSTAGRAM_ACCESS_TOKEN",
+   "description": "Instagram API with Facebook Login (host graph.facebook.com): a User or Page access token from Facebook Login for Business for a person with a role on the Facebook Page linked to the Instagram professional (Business or Creator) account, with instagram_basic, instagram_manage_comments, pages_read_engagement (and pages_show_list); sent as `Authorization: Bearer` (https://developers.facebook.com/docs/instagram-platform/comment-moderation).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_instagram_ig_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INSTAGRAM_IG_USER_ID",
+   "description": "Instagram professional account id (IG User id, e.g. 17841405822304914) - GET /{page_id}?fields=instagram_business_account returns it. me and read_mentions call /<ig_user_id>. Env: PLATFORM_MCP_INSTAGRAM_IG_USER_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /{ig_user_id}?fields=id,username,name,followers_count,media_count ('Get fields and edges on an Instagram Business or Creator Account')."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /{ig_media_id}/comments: 'Returns only top-level comments', 'Returns a maximum of 50 comments per query', 'Comments cannot be filtered by timestamp'; results are reverse chronological. page/limit are not sent (cursor paging)."
+  },
+  {
+   "name": "reply_comment",
+   "description": "'To reply to a comment, send a POST request to the /<IG_COMMENT_ID>/replies endpoint ... with the message parameter set to your message text'; answers {id} of the new comment (instagram_manage_comments)."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /{ig_user_id}/tags: 'IG Media objects in which an IG User has been tagged by another Instagram user' (private media are not returned). `since` goes to posted_after (ISO 8601, strict bound; 'This filtering capability is rolling out gradually'). Caption @mentions without a photo tag come only through the `mentions` webhook + mentioned_media / mentioned_comment lookups, which need the ids from that webhook. Cursor paging: page/limit are not sent."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /{ig_media_id}?fields=id,like_count,comments_count,permalink,timestamp,media_type (IG Media fields; like_count 'is omitted if the media owner has hidden like counts' when read indirectly). Reach / views / saves come from GET /{ig_media_id}/insights?metric=..., not used here. The runtime cannot compose a nested `metrics` object, so counts are top-level fields."
+  }
+ ]
+}

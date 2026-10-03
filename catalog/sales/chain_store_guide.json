@@ -1,0 +1,37 @@
+{
+ "id": "chain_store_guide",
+ "category": "sales",
+ "label": "Chain Store Guide",
+ "lane": "assist",
+ "kind": "data_vendor",
+ "regions": [
+  "us",
+  "ca"
+ ],
+ "docs_url": null,
+ "url": "https://www.chainstoreguide.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Subscription database of retail / restaurant chains with buyer contacts → tenant account in a human-assisted browser session; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,340 @@
+{
+ "id": "discord",
+ "category": "social",
+ "label": "Discord",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.discord.com/developers/intro",
+ "url": "https://discord.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free; a bot application + bot token (Authorization: Bot …) invited to the user's server with SEND_MESSAGES / VIEW_CHANNEL / READ_MESSAGE_HISTORY; the MESSAGE_CONTENT privileged intent is needed to read message text (empty content / embeds / attachments otherwise) and needs verification once the bot is in 100+ servers; global limit 50 requests/s plus per-route buckets (X-RateLimit-* headers, 429 with retry_after); automating USER accounts (self-bots) is prohibited by the Developer Policy — bots only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "websocket",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "search",
+   "delete",
+   "edit",
+   "upload_media",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "discord.py / discord.js / JDA (community, endorsed in the docs)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /channels/{channel.id}/messages",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /channels/{channel.id}/messages (multipart `payload_json` + `files[n]`)",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /channels/{channel.id}/messages (same multipart upload)",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /channels/{channel.id}/messages (limit ≤ 100, before/after/around)",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /channels/{channel.id}/messages with `message_reference.message_id`",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (mentions arrive on the Gateway `MESSAGE_CREATE` event; no REST mention feed)",
+   "docs": "https://docs.discord.com/developers/events/gateway"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /users/@me/channels {recipient_id} → POST /channels/{dm}/messages",
+   "docs": "https://docs.discord.com/developers/resources/user"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /channels/{dm_channel.id}/messages after POST /users/@me/channels",
+   "docs": "https://docs.discord.com/developers/resources/user"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE /channels/{channel.id}/messages/{message.id}",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (reaction counts only: GET /channels/{c}/messages/{m}/reactions/{emoji})",
+   "docs": "https://docs.discord.com/developers/resources/message"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no organic analytics API; guild member counts only)",
+   "docs": "https://docs.discord.com/developers/resources/guild"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://discord.com/api/v10/"
+  ],
+  "auth": [
+   "1. Developer Portal → application → Bot → token (`Authorization: Bot <token>`); OAuth2 invite URL with `bot` scope and",
+   "2. Privileged intents: `MESSAGE_CONTENT` (1 << 15) to read message text; verification required once the bot is in",
+   "3. Channel webhooks (`POST /channels/{id}/webhooks`) allow posting without a gateway session."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /channels/{channel.id}/messages",
+    "purpose": "`content` (≤ 2000), `embeds`, `files[]` multipart, `components`; needs SEND_MESSAGES",
+    "notes": ""
+   },
+   {
+    "call": "same with `message_reference{message_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "PATCH` / `DELETE /channels/{channel.id}/messages/{message.id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /channels/{channel.id}/messages?limit≤100&before",
+    "purpose": "after",
+    "notes": "around`"
+   },
+   {
+    "call": "GET /guilds/{guild.id}/messages/search",
+    "purpose": "content / author / has filters",
+    "notes": ""
+   },
+   {
+    "call": "POST /webhooks/{id}/{token}",
+    "purpose": "Execute Webhook",
+    "notes": ""
+   },
+   {
+    "call": "POST /users/@me/channels {recipient_id}` → messages",
+    "purpose": "users must share a server",
+    "notes": ""
+   },
+   {
+    "call": "POST /channels/{id}/threads",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Global 50 requests/s per bot; per-route buckets via `X-RateLimit-Limit / -Remaining / -Reset-After`, 429 body `retry_after`; invalid-request cap 10,000 / 10 min. - Free. Developer Policy: no self-bots / automated user accounts, no unsolicited DMs or spam, data use limited to the app's function; message content only with the intent.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.discord.com/developers/resources/message",
+   "https://docs.discord.com/developers/policy",
+   "https://support-dev.discord.com/hc/articles/8563934450327-Discord-Developer-Policy"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://discord.com/api/v10",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "Bot ",
+   "field": "bot_token",
+   "fields": [
+    {
+     "name": "bot_token",
+     "required": true,
+     "help": "Bot token from the app's Bot page in the Developer Portal, pasted WITHOUT the 'Bot ' prefix: the runtime adds it and sends 'Authorization: Bot <token>' ('authentication is performed with the Authorization HTTP header in the format Authorization: TOKEN_TYPE TOKEN', https://docs.discord.com/developers/reference#authentication). Channel permissions needed: VIEW_CHANNEL + READ_MESSAGE_HISTORY (read_comments), SEND_MESSAGES (publish_text, reply_comment), MANAGE_MESSAGES to delete other users' messages; the MESSAGE_CONTENT privileged intent to read other users' message content. Same field as the messaging entry (env PLATFORM_MCP_DISCORD_BOT_TOKEN)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "channel_id",
+    "required": true,
+    "help": "Snowflake id of the guild text / announcement channel (or forum-post thread) the bot publishes to (Discord client: User Settings > Advanced > Developer Mode, then right-click the channel > Copy Channel ID). The social vocabulary carries no channel argument, so publish_text, reply_comment and delete all address /channels/<channel_id>/messages; env PLATFORM_MCP_DISCORD_CHANNEL_ID."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "'All bots can make up to 50 requests per second to our API' globally, plus per-route buckets announced in X-RateLimit-Limit / -Remaining / -Reset / -Reset-After / -Bucket and enforced with 429 + Retry-After (https://docs.discord.com/developers/topics/rate-limits). Per-route numbers are not published, so the client bucket stays at the runtime default 2/s.",
+  "user_agent_note": "Discord asks HTTP clients for a User-Agent 'in the following format: DiscordBot ($url, $versionNumber)' (https://docs.discord.com/developers/reference#user-agent); the runtime sends its own 'platform-mcp/discord (+url)' User-Agent, which is a valid but non-canonical value (UNCONFIRMED whether Discord ever rejects it).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/@me",
+    "docs": "https://docs.discord.com/developers/resources/user#get-current-user",
+    "note": "GET /users/@me 'Returns the user object of the requester's account' - for a bot token the bot's own user (id, username, discriminator, global_name, bot: true)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/channels/{channel_id}/messages",
+    "path_params": {
+     "channel_id": "@channel_id"
+    },
+    "body": {
+     "content": "text",
+     "message_reference.message_id": "reply_to"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "created_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#create-message",
+    "note": "POST /channels/{channel.id}/messages ('Post a message to a guild text or DM channel') into the configured channel_id; `text` is `content` ('Message contents (up to 2000 characters)'). `reply_to` (a message id in the same channel) is sent as message_reference.message_id ('Replies are created by including a message_reference when sending a message. The referenced message must exist or the request will fail with HTTP error 400' - an upstream_error). Returns the message object: `id` is the message id, which identifies the post only together with the channel it lives in (delete uses the configured channel_id); `created_at` is the ISO-8601 `timestamp`; Discord messages carry no url. Needs SEND_MESSAGES (plus READ_MESSAGE_HISTORY for replies)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/channels/{post_id}/messages",
+    "params": {
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "comments",
+     "fields": {
+      "id": "id",
+      "author": "author.username",
+      "text": "content",
+      "created_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#get-channel-messages",
+    "note": "`post_id` is a CHANNEL or THREAD id, not a message id: Discord has no per-message reply list, but a thread is addressed like a channel and a thread started from a message shares that message's id ('The id of the created thread will be the same as the id of the source message, and as such a message can only have a single thread created from it', https://docs.discord.com/developers/resources/channel#start-thread-from-message), so passing a forum post's id (or any thread id) lists the replies in that thread; passing a text channel id lists the channel. GET /channels/{channel.id}/messages: 'Retrieves the messages in a channel. Returns an array of message objects from newest to oldest on success.' `limit` is 'Max number of messages to return (1-100)', default 50; Discord pages by message id (before / after / around), so `page` is ignored and only the newest `limit` messages are returned. Needs VIEW_CHANNEL + READ_MESSAGE_HISTORY ('If the current user is missing the READ_MESSAGE_HISTORY permission in the channel, then no messages will be returned'), and other users' `content` is empty without the MESSAGE_CONTENT intent. `author` is author.username (id under raw.author.id)."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/channels/{channel_id}/messages",
+    "path_params": {
+     "channel_id": "@channel_id"
+    },
+    "body": {
+     "content": "text",
+     "message_reference.message_id": "comment_id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "created_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#create-message",
+    "note": "A reply is a Create Message carrying message_reference.message_id = comment_id ('Replies are created by including a message_reference when sending a message'), posted into the configured channel_id - so the comment must live in that channel (message_reference.channel_id is not sent, and 'The referenced message must exist or the request will fail with HTTP error 400'). Needs SEND_MESSAGES + READ_MESSAGE_HISTORY."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/channels/{channel_id}/messages/{post_id}",
+    "path_params": {
+     "channel_id": "@channel_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#delete-message",
+    "note": "DELETE /channels/{channel.id}/messages/{message.id} deletes the message `post_id` in the configured channel_id: 'Delete a message. The current user must be the author of the message or, if the message was in a guild channel, have the MANAGE_MESSAGES permission. Returns a 204 No Content response on success.' The runtime answers {status: 'deleted'}; a message that is not in the configured channel is a 404 (invalid_input)."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/channels/{channel_id}/messages",
+    "path_params": {
+     "channel_id": "@channel_id"
+    },
+    "body": {
+     "content": "text",
+     "embeds.0.image.url": "image_urls.0",
+     "embeds.1.image.url": "image_urls.1",
+     "embeds.2.image.url": "image_urls.2",
+     "embeds.3.image.url": "image_urls.3"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "created_at": "timestamp"
+     }
+    },
+    "docs": "https://docs.discord.com/developers/resources/message#create-message",
+    "note": "Create Message with `embeds` ('Up to 10 rich embeds'; 'at least one of content, embeds, files, sticker_ids, poll, or components' is required) into the configured channel_id: each image URL becomes one embed whose `image.url` is 'source url of image (only supports http(s) and attachments)' (Embed Image Structure {url, proxy_url?, height?, width?}); `text` is the message `content`. Up to FOUR image_urls are sent (embeds 0-3; more are ignored) - Discord itself must be able to fetch the URLs. Same response mapping as publish_text (id, created_at = timestamp; no url)."
+   }
+  },
+  "not_offered": {
+   "read_mentions": "No REST mention feed exists for bots: mentions arrive only as Gateway MESSAGE_CREATE events over the WebSocket connection (https://docs.discord.com/developers/events/gateway-events#message-create), which the HTTP runtime does not hold.",
+   "analytics_post": "Discord publishes no view / impression metrics for a message; Get Channel Message returns only a per-emoji `reactions` array ({count, emoji, ...}) and no aggregate counters (https://docs.discord.com/developers/resources/message#get-channel-message)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host discord.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

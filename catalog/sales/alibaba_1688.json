@@ -1,0 +1,36 @@
+{
+ "id": "alibaba_1688",
+ "category": "sales",
+ "label": "1688.com",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.1688.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (69 Disallow) blocks every query-string URL (/*?*); company detail pages need a Taobao/1688 login → tenant session only. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

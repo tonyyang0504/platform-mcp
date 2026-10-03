@@ -1,0 +1,35 @@
+{
+ "id": "zoekertjes",
+ "category": "automotive",
+ "label": "Zoekertjes",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.zoekertjes.be",
+ "domain": "zoekertjes.be",
+ "country": "Belgium",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Independent classifieds site (not 2dehands); no API/import docs found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://zoekertjes.be/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

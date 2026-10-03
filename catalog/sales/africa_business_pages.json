@@ -1,0 +1,40 @@
+{
+ "id": "africa_business_pages",
+ "category": "sales",
+ "label": "Africa Business Pages",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "africa",
+  "ng",
+  "ke",
+  "za",
+  "eg"
+ ],
+ "docs_url": null,
+ "url": "https://www.africa-business.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "No robots.txt served; listing pages public. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

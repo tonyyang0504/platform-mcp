@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/microsoft_graph-mcp",
+ "description": "Outlook / Microsoft 365 (messaging): me, list_inbound, get_thread, send, reply, mark_read. Every too",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "microsoft_graph"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_ID",
+     "description": "Application (client) ID of the Microsoft Entra app registration.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_SECRET",
+     "description": "Client secret of the app registration ('Only required for web apps'); leave empty for a public client. Sent in the form body of POST https://login.microsoftonline.com/common/oauth2/v2.0/token.",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MICROSOFT_GRAPH_REFRESH_TOKEN",
+     "description": "Refresh token from a one-time authorization-code consent including offline_access and the delegated scopes User.Read Mail.ReadWrite Mail.Send. Microsoft may return a new refresh token on every refresh; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/<platform>.json (mode 0600).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

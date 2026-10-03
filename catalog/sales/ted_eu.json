@@ -1,0 +1,36 @@
+{
+ "id": "ted_eu",
+ "category": "sales",
+ "label": "TED",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "eu"
+ ],
+ "docs_url": "https://docs.ted.europa.eu/api/latest/index.html",
+ "url": "https://ted.europa.eu/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Search API (v3) without a key for public notices (eForms; buyer contact points are published fields); robots.txt (22 Disallow) irrelevant for the API.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

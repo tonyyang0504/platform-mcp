@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "jobicy-jobs-mcp",
+ "display_name": "Jobicy MCP",
+ "version": "0.1.0",
+ "description": "Jobicy (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/jobicy"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Keyless ('No API key … No account or authentication header is required'). location must be a Jobicy location slug (?get=locations lists them); there is no page parameter — count is the whole result set, so page > 1 repeats it. Jobicy asks that stored listings be re-checked only 'once or twice per hour'. An official MCP server also exists at https://jobicy.com/mcp."
+  }
+ ]
+}

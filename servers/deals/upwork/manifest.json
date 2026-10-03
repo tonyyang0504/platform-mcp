@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "upwork-mcp",
+ "display_name": "Upwork MCP",
+ "version": "0.1.0",
+ "description": "Upwork (deals): me, search_postings, get_posting, bid_status, list_messages, send_message. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "upwork"
+   ],
+   "env": {
+    "PLATFORM_MCP_UPWORK_CLIENT_ID": "${user_config.platform_mcp_upwork_client_id}",
+    "PLATFORM_MCP_UPWORK_CLIENT_SECRET": "${user_config.platform_mcp_upwork_client_secret}",
+    "PLATFORM_MCP_UPWORK_REFRESH_TOKEN": "${user_config.platform_mcp_upwork_refresh_token}",
+    "PLATFORM_MCP_UPWORK_TENANT_ID": "${user_config.platform_mcp_upwork_tenant_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_upwork_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UPWORK_CLIENT_ID",
+   "description": "Client ID of an approved Upwork API key (apply at https://www.upwork.com/developer/keys/apply; Upwork reviews every key).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_upwork_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UPWORK_CLIENT_SECRET",
+   "description": "Client secret of the same API key (form body of the refresh_token grant).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_upwork_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UPWORK_REFRESH_TOKEN",
+   "description": "Refresh token from the Authorization Code Grant for the freelancer/agency account; the runtime mints access tokens (TTL 86400 s) at https://www.upwork.com/api/v3/oauth2/token and keeps the rotated refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_upwork_tenant_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_UPWORK_TENANT_ID",
+   "description": "Optional organization id sent as X-Upwork-API-TenantId (the execution context; without it the user's default organization is used).",
+   "sensitive": true,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "POST /graphql query { user { id nid rid } } — the authenticated user (account.data.user)."
+  },
+  {
+   "name": "search_postings",
+   "description": "POST https://api.upwork.com/graphql marketplaceJobPostingsSearch (permission 'Read marketplace Job Postings'), searchType USER_JOBS_SEARCH, newest first (sortAttributes RECENCY), following the documented real-life example. `query` → searchExpression_eq (partial Lucene syntax); `category` → categoryIds_any[0] (an Upwork category id); `min_budget` → budgetRange_eq.rangeStart (whole number; hourly jobs are returned regardless of budget); page/limit → pagination_eq {after: offset as a string, as in the example's \"0\", first: limit}. Money values are strings (amount.rawValue / displayValue, hourlyBudgetMin/Max) and skills are {name} objects, so they stay in raw; the job page is https://www.upwork.com/jobs/~<raw.node.ciphertext>. GraphQL failures arrive as HTTP 200 with errors[]: a null data is reported as an error, but a permission error on the field alone yields an empty list."
+  },
+  {
+   "name": "get_posting",
+   "description": "POST /graphql marketplaceJobPosting(id) with the documented fields (content.title/description, contractTerms.contractType, clientCompanyPublic.id in raw). id is the job posting id (the search result id)."
+  },
+  {
+   "name": "bid_status",
+   "description": "POST /graphql vendorProposal(id) → status.status (VendorProposalStatusName: Accepted, Declined, Withdrawn, Offered, Activated, Archived, Hired, Pending); viewedByClient in raw. For freelancers/agencies (permission 'Client Proposals - Read And Write Access'); the agency context follows X-Upwork-API-TenantId."
+  },
+  {
+   "name": "list_messages",
+   "description": "POST /graphql roomStories(filter: {roomId_eq, storyFilter.pagination {after: \"\", first}}) as in the documented example. thread_id is the room id (e.g. room_d4ad…) and is required by the API. Only the first `limit` stories are returned (cursor paging is not followed; page is ignored)."
+  },
+  {
+   "name": "send_message",
+   "description": "POST /graphql createRoomStoryV2(input: {roomId, message}) — posts a message into the Upwork room as the authenticated user (visible to the other party immediately)."
+  }
+ ]
+}

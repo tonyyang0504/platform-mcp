@@ -1,0 +1,44 @@
+{
+ "id": "capitalone",
+ "category": "automotive",
+ "label": "Api",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://api.capitalone.com",
+ "domain": "api.capitalone.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": "https://developer.capitalone.com/products/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client credentials (approved partners)",
+  "access": "apply",
+  "capabilities": [
+   "auto_finance_credit_application"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Capital One DevExchange offers a partner Digital Auto Financing Credit Application API; the Auto Navigator car-search endpoints the site itself calls are not a public API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.capitalone.com/",
+   "https://developer.capitalone.com/products/"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/capital-one"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Capital One DevExchange offers a partner Digital Auto Financing Credit Application API; the Auto Navigator car-search endpoints the site itself calls are not a public API."
+}

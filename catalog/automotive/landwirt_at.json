@@ -1,0 +1,46 @@
+{
+ "id": "landwirt_at",
+ "category": "automotive",
+ "label": "Landwirt",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.landwirt.com",
+ "domain": "landwirt.com",
+ "country": "Austria",
+ "official_api": false,
+ "docs_url": "https://hilfe.landwirt.com/hilfe/haendlerhilfe-fuer-maschinenmarkt/maschinenmarkt-schnittstellenbeschreibung",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "dealer account; FTP/HTTP credentials",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). Landwirt.com documents an XML import/export interface (v2.0.10, FTP/HTTP) for machinery-market dealers; no query API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://hilfe.landwirt.com/hilfe/haendlerhilfe-fuer-maschinenmarkt/maschinenmarkt-schnittstellenbeschreibung",
+   "https://company.landwirt.com/schnittstellen-von-landwirt-com/"
+  ],
+  "unofficial": [
+   "https://apify.com/crawloop/landwirt-scraper/api/javascript",
+   "https://apify.com/crawloop/landwirt-scraper/api",
+   "https://apify.com/crawloop/landwirt-scraper/api/openapi"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Landwirt.com documents an XML import/export interface (v2.0.10, FTP/HTTP) for machinery-market dealers; no query API. No request/response API to serve."
+}

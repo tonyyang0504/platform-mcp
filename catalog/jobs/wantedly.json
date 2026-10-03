@@ -1,0 +1,69 @@
+{
+ "id": "wantedly",
+ "category": "jobs",
+ "label": "Wantedly",
+ "lane": "assist",
+ "kind": "startup",
+ "regions": [
+  "jp",
+  "sg",
+  "global"
+ ],
+ "docs_url": "https://www.wantedly.com/developers",
+ "url": "https://www.wantedly.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "'Visit' requests instead of formal applications; profile-based, assisted.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "widget"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

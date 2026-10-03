@@ -1,0 +1,23 @@
+{
+ "id": "binance_futures_collector",
+ "category": "market_data",
+ "label": "Binance Futures API metrics",
+ "provider": "Binance",
+ "lane": "api",
+ "base_urls": [
+  "https://fapi.binance.com",
+  "https://dapi.binance.com",
+  "https://api.binance.com",
+  "https://eapi.binance.com"
+ ],
+ "data_kinds": [
+  "open interest history",
+  "top trader long/short account ratio",
+  "top trader long/short position ratio",
+  "global long/short account ratio",
+  "taker buy/sell volume ratio",
+  "candles (5m-1d)"
+ ],
+ "auth": "none (public endpoints)",
+ "docs_url": null
+}

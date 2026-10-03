@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/hh_ru-mcp",
+ "description": "hh.ru (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.hh.ru/openapi/redoc",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "hh_ru"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_HH_RU_CLIENT_ID",
+     "description": "client_id of an application registered at https://dev.hh.ru/admin; used to obtain an application token (grant_type=client_credentials at https://api.hh.ru/token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HH_RU_CLIENT_SECRET",
+     "description": "client_secret of the same hh.ru application.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HH_RU_USER_AGENT",
+     "description": "Your application name and developer contact e-mail, e.g. 'MyApp/1.0 (me@example.com)'. hh.ru requires a User-Agent (or HH-User-Agent) naming the application and the developer's contact address ('Указание в заголовке названия приложения и контактной почты разработчика'); it is appended to the server's User-Agent.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

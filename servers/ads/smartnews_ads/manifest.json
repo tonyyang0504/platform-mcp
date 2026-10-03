@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "smartnews_ads-mcp",
+ "display_name": "SmartNews Ads MCP",
+ "version": "0.1.0",
+ "description": "SmartNews Ads (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "smartnews_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_SMARTNEWS_ADS_CLIENT_ID": "${user_config.platform_mcp_smartnews_ads_client_id}",
+    "PLATFORM_MCP_SMARTNEWS_ADS_CLIENT_SECRET": "${user_config.platform_mcp_smartnews_ads_client_secret}",
+    "PLATFORM_MCP_SMARTNEWS_ADS_AD_ACCOUNT_ID": "${user_config.platform_mcp_smartnews_ads_ad_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_smartnews_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SMARTNEWS_ADS_CLIENT_ID",
+   "description": "Developer app id (numeric client id) of an approved SmartNews Ads developer application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_smartnews_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SMARTNEWS_ADS_CLIENT_SECRET",
+   "description": "The developer app's client secret; access tokens (scope ads-manager) last 24 hours and are re-requested automatically.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_smartnews_ads_ad_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SMARTNEWS_ADS_AD_ACCOUNT_ID",
+   "description": "SmartNews ad account id used by pause_resume (the campaign PATCH path is /api/ma/v3/ad_accounts/{ad_account_id}/campaigns/{campaign_id}).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/bm/v1/developer_apps/me/ad_accounts: confirms the developer app token and lists the ad accounts linked to it."
+  },
+  {
+   "name": "list_accounts",
+   "description": "Ad accounts associated with the developer app ({ad_account_id, ad_account_name, owner_business_id, roles}); no currency on this record."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /api/ma/v3/ad_accounts/{ad_account_id}/campaigns (page/page_size). Budgets are micros of the account currency: budget_micros is daily_budget_amount_micro (1,000,000 = 1 USD or 1 JPY). `status` is configured_status and is not a filter; raw.delivery_status shows serving."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /api/ma/v3/ad_accounts/{ad_account_id}/insights/campaigns?since=date_fromT00:00:00Z&until=date_toT23:59:59Z&fields=... (optionally target_ids=campaign_id): one row per campaign with totals over the range (viewable impressions, clicks, spend in the account currency). Only Ads Manager v2 objects are reported; first 100 campaigns."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /api/ma/v3/ad_accounts/{ad_account_id config}/campaigns/{campaign_id} (application/merge-patch+json) {configured_status: PAUSED|ACTIVE}. Resuming restarts spending."
+  }
+ ]
+}

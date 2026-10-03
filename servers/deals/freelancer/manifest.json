@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "freelancer-deals-mcp",
+ "display_name": "Freelancer MCP",
+ "version": "0.1.0",
+ "description": "Freelancer (deals): me, search_postings, get_posting, submit_bid, withdraw_bid, bid_status, list_mes",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/freelancer"
+   ],
+   "env": {
+    "PLATFORM_MCP_FREELANCER_ACCESS_TOKEN": "${user_config.platform_mcp_freelancer_access_token}",
+    "PLATFORM_MCP_FREELANCER_BIDDER_ID": "${user_config.platform_mcp_freelancer_bidder_id}",
+    "PLATFORM_MCP_FREELANCER_MILESTONE_PERCENTAGE": "${user_config.platform_mcp_freelancer_milestone_percentage}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_freelancer_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCER_ACCESS_TOKEN",
+   "description": "Freelancer OAuth access token sent as the freelancer-oauth-v1 header: a Personal Access Token from https://accounts.freelancer.com/settings/develop ('valid for thirty days') or a token from your registered OAuth app (scopes basic, fln:project_manage, fln:messaging, fln:user_information as needed).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_freelancer_bidder_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCER_BIDDER_ID",
+   "description": "Your Freelancer user id (GET /users/0.1/self/ → result.id); required by POST /projects/0.1/bids/ as bidder_id.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_freelancer_milestone_percentage": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCER_MILESTONE_PERCENTAGE",
+   "description": "Initial milestone percentage (20–100) required by POST /projects/0.1/bids/ ('Please fill in the milestone percentage (20 - 100)').",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /users/0.1/self/ (scopes basic, fln:user_information); result.id is the bidder_id submit_bid needs."
+  },
+  {
+   "name": "search_postings",
+   "description": "GET /projects/0.1/projects/active/ (scope basic): query = space-separated terms over names and descriptions; min_price filters fixed-price budgets ≥ the value in USD; limit/offset page. Categories are numeric job ids (jobs[]), so category is not sent. owner_id, time_submitted (Unix), seo_url, bid_stats and jobs stay in raw."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /projects/0.1/projects/{project_id}/ with full_description=true."
+  },
+  {
+   "name": "submit_bid",
+   "description": "POST /projects/0.1/bids/ (scopes basic, fln:project_manage) with {project_id, bidder_id, amount, period, milestone_percentage, description}; 'Required fields: project_id, bidder_id, amount, period, milestone_percentage'. bidder_id and milestone_percentage come from config fields; amount is in the project's currency (currency is not sent). 409 DUPLICATE_BID if you already bid. Automatic bidding is a prohibited integration — one explicit bid per call."
+  },
+  {
+   "name": "withdraw_bid",
+   "description": "PUT /projects/0.1/bids/{bid_id}/ with form action=retract ('retracts the bid from the project before it has been awarded')."
+  },
+  {
+   "name": "bid_status",
+   "description": "GET /projects/0.1/bids/{bid_id}/; status is award_status (awarded, rejected, revoked, pending, canceled — the schema allows null); retracted, paid_status and complete_status stay in raw."
+  },
+  {
+   "name": "list_messages",
+   "description": "GET /messages/0.1/messages/ (scope fln:messaging) filtered by threads[]=thread_id. from_user is a numeric user id and time_created Unix time; both stay in raw."
+  },
+  {
+   "name": "send_message",
+   "description": "POST /messages/0.1/threads/{thread_id}/messages/ (scope fln:messaging) with message=<text> (form-encoded)."
+  }
+ ]
+}

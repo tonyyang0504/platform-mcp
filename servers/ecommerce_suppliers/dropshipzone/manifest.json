@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "dropshipzone-mcp",
+ "display_name": "Dropshipzone MCP",
+ "version": "0.1.0",
+ "description": "Dropshipzone (ecommerce suppliers): me, list_products, get_product, create_order, get_order, track. ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dropshipzone"
+   ],
+   "env": {
+    "PLATFORM_MCP_DROPSHIPZONE_EMAIL": "${user_config.platform_mcp_dropshipzone_email}",
+    "PLATFORM_MCP_DROPSHIPZONE_PASSWORD": "${user_config.platform_mcp_dropshipzone_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dropshipzone_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DROPSHIPZONE_EMAIL",
+   "description": "Dropshipzone API user e-mail; POST /auth {email, password} returns a token valid 15 minutes, sent as `Authorization: jwt <token>` and renewed automatically.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dropshipzone_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DROPSHIPZONE_PASSWORD",
+   "description": "Dropshipzone API user password.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Dropshipzone has no account endpoint; the probe logs in and lists the categories ([{category_id, title, parent_id, path}]), so `account` is empty on success."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v2/products {result[{entity_id, sku, title, price, cost, RrpPrice, currency (AUD), stock_qty, status, gallery[], website_url, Category, brand, desc}], total, total_pages, current_page}. `query` is `keywords` (comma-separated, up to 20), `category` is category_id; the page size must be between 40 and 200 (default 40). `id` is the SKU (get_product and orders use SKUs)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v2/products?skus={id}: the first result for that SKU ({sku, title, price, stock_qty, gallery, desc, weight, length, width, height, ...}); an unknown SKU is an empty result (invalid_input)."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /placingOrder creates a 'Not Submitted' order that is only charged once paid on the Dropshipzone website. `shipping_address` uses Dropshipzone's consignee keys {first_name, last_name, address1, address2, suburb, state, postcode, telephone, comment} (Australian addresses); `items` are order_items [{sku, qty}]; your_order_no is a fresh UUID. The API answers HTTP 200 with [{status, serial_number, errmsg}]: result_status 1 is success, -1 a rejection explained in `errmsg`. `shipping_option` is not sent (no such field)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /orders?order_ids={id} (Dropshipzone order id): data[{increment_id, serial_number, status (unpaid, pending, processing, complete, canceled), created_at, grand_total (decimal string, AUD), items, shipment[{track_number, title, created_at}], shipping_address}]."
+  },
+  {
+   "name": "track",
+   "description": "The shipment[{track_number, title (carrier), created_at}] list of GET /orders?order_ids={order_id}; empty until the order is dispatched."
+  }
+ ]
+}

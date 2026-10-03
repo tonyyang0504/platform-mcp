@@ -1,0 +1,94 @@
+{
+ "manifest_version": "0.2",
+ "name": "paddle-mcp",
+ "display_name": "Paddle MCP",
+ "version": "0.1.0",
+ "description": "Paddle (marketplaces): me, list_products, get_product, create_product, update_price, list_sales, lis",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "paddle"
+   ],
+   "env": {
+    "PLATFORM_MCP_PADDLE_API_KEY": "${user_config.platform_mcp_paddle_api_key}",
+    "PLATFORM_MCP_PADDLE_TAX_CATEGORY": "${user_config.platform_mcp_paddle_tax_category}",
+    "PLATFORM_MCP_PADDLE_ENV": "${user_config.platform_mcp_paddle_env}",
+    "PLATFORM_MCP_PADDLE_BASE_URL": "${user_config.platform_mcp_paddle_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_paddle_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PADDLE_API_KEY",
+   "description": "Paddle API key (Paddle > Developer tools > Authentication; live keys look like pdl_live_apikey_...) sent as Authorization: Bearer. Give it product.read, product.write, price.write, transaction.read, adjustment.read and adjustment.write permissions for the full tool set. Sandbox keys (pdl_sdbx_apikey_...) need base https://sandbox-api.paddle.com, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_paddle_tax_category": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PADDLE_TAX_CATEGORY",
+   "description": "Tax category for create_product (POST /products requires it): standard, digital-goods, ebooks, implementation-services, professional-services, saas, software-programming-services, training-services or website-hosting. Only create_product needs it.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_paddle_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PADDLE_ENV",
+   "description": "Vendor environment (default production): sandbox = https://sandbox-api.paddle.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_paddle_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PADDLE_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /event-types (no specific permission listed) answers {data[{name, description, group, available_versions}], meta{request_id}}; it verifies the API key and the environment. Paddle has no account/me endpoint."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /products?include=prices&per_page (1-200, default 50)&status (active|archived; Paddle defaults to active). `price`/`currency` come from the product's first included price (unit_price.amount is a STRING in the currency's lowest denomination, e.g. \"1000\" = 10.00 USD; other prices stay in raw.prices). Paging is by cursor (`after` from meta.pagination.next), which page/limit cannot carry: `page` is ignored and only the first page is returned; `total` is not mapped (estimated_total may be -1)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /products/{product_id}?include=prices returns data{id, name, description, tax_category, type, image_url, custom_data, status, created_at, updated_at, prices[]}; `price`/`currency` are the first price's unit_price (amount as a string in the lowest denomination)."
+  },
+  {
+   "name": "create_product",
+   "description": "POST /products {name (required, 1-200 chars), description, tax_category (required by Paddle, taken from the tax_category setting; a 400 upstream_error means it is unset)}. Paddle products carry no price: `price`/`currency` are NOT sent — call update_price afterwards to create the price entity. The product is created active; `url` is not accepted (image_url is not a product page)."
+  },
+  {
+   "name": "update_price",
+   "description": "Paddle prices are separate entities, so this CREATES a new active price for the product with POST /prices {description (required internal note, fixed), product_id, unit_price{amount, currency_code}}; existing prices stay active until archived (PATCH /prices/{price_id} status=archived, not mapped). `price` is sent as the documented STRING in the currency's lowest denomination — pass an integer such as 1000 for 10.00 USD (a decimal is rejected). `currency` is required by Paddle. The result's `id` is the product id; the new price id is raw.id (pri_...)."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /transactions?include=customer&per_page (max 30)&created_at[GTE]=since (RFC 3339), newest first (default order id[DESC]). `amount` is details.totals.total, a STRING in the lowest denomination after discount and tax; `product_id`/`product_name` come from the first line item's price. There is no product filter, so `product_id` is not sent. Cursor paging (`after`) cannot be carried by page/limit: `page` is ignored and only the first page is returned. `refunded` is not a transaction field (see list_refunds)."
+  },
+  {
+   "name": "list_refunds",
+   "description": "GET /adjustments?action=refund&per_page (default 10, max 50), newest first. `amount` is totals.total (string, lowest denomination); `status` is pending_approval, approved, rejected or reversed. The endpoint has no date filter, so `since` is not sent; chargebacks are action=chargeback (not listed here). Cursor paging: `page` is ignored, first page only."
+  },
+  {
+   "name": "refund",
+   "description": "DESTRUCTIVE: POST /adjustments {action: refund, transaction_id: sale_id (txn_...), reason, type: full} requests a FULL refund of the transaction. `amount` is NOT sent and does not limit the refund: a partial adjustment needs items[{item_id, type, amount}] per transaction item, which this input cannot express — call the API directly for partial refunds. `reason` is required by Paddle (a missing reason is a 400 upstream_error). On live accounts the adjustment is created as pending_approval and reviewed by Paddle; sandbox approves automatically."
+  }
+ ]
+}

@@ -1,0 +1,111 @@
+{
+ "id": "ctftime",
+ "category": "competitions",
+ "label": "CTFtime (capture-the-flag events)",
+ "lane": "api",
+ "docs_url": "https://ctftime.org/api/",
+ "url": "https://ctftime.org",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public JSON API, no key, HTML docs. The site answers 403 to curl's default User-Agent (the runtime's own User-Agent is accepted, live 2026-10-01). /events/?start=<now> returns every upcoming event (37 on 2026-10-01; `limit` caps it at 100); /results/ returns the current year's final scores keyed by event id, with team ids only. An unknown event answers a 404 HTML page.",
+ "adapter": {
+  "base_url": "https://ctftime.org/api/v1",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "discover": {
+    "method": "GET",
+    "path": "/events/",
+    "params": {
+     "limit": "=100",
+     "start": "now_epoch"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "key": "competitions",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "title",
+        "raw.description"
+       ]
+      },
+      {
+       "arg": "kind",
+       "fields": [
+        "kind"
+       ],
+       "match": "equals"
+      }
+     ],
+     "fields": {
+      "id": "str:id",
+      "title": "title",
+      "url": "ctftime_url",
+      "kind": "format",
+      "status": "=upcoming",
+      "starts_at": "start",
+      "deadline": "finish"
+     }
+    },
+    "docs": "https://ctftime.org/api/",
+    "note": "Upcoming CTF events, soonest first (status is always 'upcoming'; past events are under standings). kind is the format: Jeopardy, Attack-Defense, Hack quest. query matches title or description."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/events/{competition_id}/",
+    "result": {
+     "fields": {
+      "id": "str:id",
+      "title": "title",
+      "url": "ctftime_url",
+      "kind": "format",
+      "starts_at": "start",
+      "deadline": "finish",
+      "description": "description",
+      "rules_url": "url"
+     }
+    },
+    "docs": "https://ctftime.org/api/",
+    "note": "One event by CTFtime id; rules_url is the organisers' site."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/results/",
+    "default_limit": 50,
+    "max_limit": 500,
+    "cache_ttl": 300,
+    "result": {
+     "items": "{competition_id}.scores",
+     "slice": true,
+     "key": "standings",
+     "fields": {
+      "rank": "place",
+      "team": "str:team_id",
+      "score": "num:points"
+     }
+    },
+    "docs": "https://ctftime.org/api/",
+    "note": "Final scoreboard of an event that finished THIS calendar year (CTFtime publishes results per year); team is the CTFtime team id. An event without published results gives an empty list."
+   }
+  },
+  "not_offered": {
+   "me": "No accounts in the public API.",
+   "my_entries": "Team participation needs a login; not in the public API.",
+   "enter": "Registration happens on each event's own site; not an API call.",
+   "submit": "Flags are submitted on each event's own platform."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

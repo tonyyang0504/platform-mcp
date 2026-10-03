@@ -1,0 +1,80 @@
+{
+ "id": "cjdropshipping",
+ "category": "ecommerce_suppliers",
+ "label": "CJdropshipping",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.cjdropshipping.com/en/api/introduction.html",
+ "url": "https://cjdropshipping.com/",
+ "verified_at": null,
+ "terms_note": "none found (API + MCP are the sanctioned channels; the site itself throws a human-verification wall on some pages — do not scrape cjdropshipping.com)",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [
+  {
+   "verified": true,
+   "url_template": "https://developers.cjdropshipping.com/mcp/{token}",
+   "transport": "http",
+   "token_field": "token",
+   "docs_url": "https://developers.cjdropshipping.com/en/api/api2/mcp.html",
+   "note": "Verified 2026-09-20 by rendering the CJ MCP Integration Guide. Remote MCP is StreamableHTTP; the MCP Token is embedded in the URL PATH (My CJ -> API Authorization -> Create MCP Token) with NO auth header. The account's read_credentials step captures the 'API Key & MCP Token' column into token, which IS this MCP token. CJ also offers a local stdio server (banned in our boundary; HTTP only)."
+  }
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

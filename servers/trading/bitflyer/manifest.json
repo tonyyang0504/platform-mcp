@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "bitflyer-mcp",
+ "display_name": "bitFlyer Lightning MCP",
+ "version": "0.1.0",
+ "description": "bitFlyer Lightning (trading): list_markets, get_ticker. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bitflyer"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Every product (BTC_JPY, ETH_BTC, FX_BTC_JPY ...) with its market type (Spot, FX, Futures)."
+  },
+  {
+   "name": "get_ticker",
+   "description": "volume is the 24h volume of this product (volume_by_product); `volume` in raw is the total across products."
+  }
+ ]
+}

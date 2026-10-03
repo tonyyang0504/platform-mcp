@@ -1,0 +1,88 @@
+{
+ "id": "autods",
+ "category": "ecommerce_suppliers",
+ "label": "AutoDS",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.autods.com/api/",
+ "url": "https://www.autods.com/",
+ "verified_at": null,
+ "terms_note": "the page advertises a \"Scrapping api\" (supplier scraping) — retail-arbitrage sources conflict with eBay/Amazon dropship policies",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "app"
+  ],
+  "auth": "platform login (Google / e-mail); no developer credentials described",
+  "access": "paid",
+  "capabilities": [
+   "product_import",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

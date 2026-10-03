@@ -1,0 +1,93 @@
+name: release
+# Tag vX.Y.Z -> build once -> PyPI (trusted publishing, attestations) and npm (trusted publishing, provenance) -> GitHub
+# release. No registry token is stored anywhere: the publish jobs mint short-lived OIDC tokens, and only they may
+# (id-token: write), from the protected `pypi` and `npm` environments. docs/RELEASE_CHECKLIST.md has the one-time setup.
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v7
+        with: { node-version: "24" }
+      - name: The tag matches every version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          python - <<'EOF'
+          import json, os, re, tomllib
+          tag = os.environ["TAG"].removeprefix("v")
+          versions = {
+              "pyproject.toml": tomllib.load(open("pyproject.toml", "rb"))["project"]["version"],
+              "__init__.py": re.search(r'__version__ = "([^"]+)"', open("runtime/python/platform_mcp_hub/__init__.py").read())[1],
+              "package.json": json.load(open("runtime/typescript/package.json"))["version"],
+              "version.ts": re.search(r'VERSION = "([^"]+)"', open("runtime/typescript/src/version.ts").read())[1],
+          }
+          bad = {k: v for k, v in versions.items() if v != tag}
+          assert not bad, f"tag v{tag} but {bad}"
+          print("releasing", tag)
+          EOF
+      - name: Build the Python distributions
+        run: python -m pip install -q build && python -m build -o dist/py .
+      - name: Build and pack the npm package (prepack copies the catalog in)
+        run: |
+          cd runtime/typescript
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          npm pack --pack-destination ../../dist/npm
+      - uses: actions/upload-artifact@v7
+        with: { name: dist, path: dist/, retention-days: 30 }
+
+  publish-pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/platform-mcp-hub/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with: { name: dist, path: dist }
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/py
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/platform-mcp-hub
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/setup-node@v7
+        with: { node-version: "24", registry-url: "https://registry.npmjs.org" }
+      - uses: actions/download-artifact@v8
+        with: { name: dist, path: dist }
+      - name: npm with trusted publishing (11.5.1 or later)
+        run: npm install -g --ignore-scripts npm@11
+      - name: Publish the packed tarball (no lifecycle scripts run here)
+        run: npm publish dist/npm/platform-mcp-hub-*.tgz --provenance --access public --ignore-scripts
+
+  github-release:
+    needs: [publish-pypi, publish-npm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with: { name: dist, path: dist }
+      - name: Attach the artefacts to a GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: gh release create "$TAG" dist/py/* dist/npm/* --repo "$REPO" --title "platform-mcp-hub $TAG" --generate-notes --verify-tag

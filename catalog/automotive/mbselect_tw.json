@@ -1,0 +1,41 @@
+{
+ "id": "mbselect_tw",
+ "category": "automotive",
+ "label": "Mercedes Benz Select",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.mercedes-benz-select.com.tw",
+ "domain": "mercedes-benz-select.com.tw",
+ "country": "Taiwan",
+ "official_api": true,
+ "docs_url": "https://developer.mercedes-benz.com/products/vehicle_specification",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key (Mercedes-Benz /developers)",
+  "access": "paid",
+  "capabilities": [
+   "decode_vin"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence low). No API for the Taiwan used-car site itself; Mercedes-Benz /developers offers a paid Vehicle Specification (VIN decode) API at OEM level.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.mercedes-benz.com/apis"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "No API for this used-car site: the site itself has no API; Mercedes-Benz's official Vehicle Specification (Fleet) API (https://developer.mercedes-benz.com/products/vehicle_specification, x-api-key, paid plan) decodes VINs and is served once, as automotive/mercedes_benz_gebrauchtwagen (decode_vin), since the same OEM API covers every Mercedes-Benz used-car site."
+}

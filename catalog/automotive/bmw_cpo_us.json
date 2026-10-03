@@ -1,0 +1,35 @@
+{
+ "id": "bmw_cpo_us",
+ "category": "automotive",
+ "label": "Bmwnyc",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.bmwnyc.com",
+ "domain": "bmwnyc.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); USA dealer with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bmwnyc.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

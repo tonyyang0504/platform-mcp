@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "kayzen-mcp",
+ "display_name": "Kayzen MCP",
+ "version": "0.1.0",
+ "description": "Kayzen (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool maps to a docu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kayzen"
+   ],
+   "env": {
+    "PLATFORM_MCP_KAYZEN_API_BASIC": "${user_config.platform_mcp_kayzen_api_basic}",
+    "PLATFORM_MCP_KAYZEN_USERNAME": "${user_config.platform_mcp_kayzen_username}",
+    "PLATFORM_MCP_KAYZEN_PASSWORD": "${user_config.platform_mcp_kayzen_password}",
+    "PLATFORM_MCP_KAYZEN_ADVERTISER_ID": "${user_config.platform_mcp_kayzen_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kayzen_api_basic": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAYZEN_API_BASIC",
+   "description": "base64(<API_Key>:<API_Secret_Key>) — the Kayzen API key and secret (Kayzen UI > Account > API Key; 'Obtaining your Kayzen API key') joined by a colon and Base64-encoded, e.g. `printf '%s' 'KEY:SECRET' | base64`. Sent as `Authorization: Basic …` on POST /v1/authentication/token only.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kayzen_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAYZEN_USERNAME",
+   "description": "Kayzen login email of the user the API key belongs to (token request body `username`).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kayzen_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAYZEN_PASSWORD",
+   "description": "Kayzen account password for that login (token request body `password`); the runtime exchanges it for a 30-minute bearer token and re-logs in on expiry or 401.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kayzen_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KAYZEN_ADVERTISER_ID",
+   "description": "Kayzen advertiser id used by `me` (GET /v1/balance?advertiser_id=…). Leave empty to use the API key's default advertiser.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/balance → {advertiser: {balance, warning}}; there is no user endpoint, so the balance call verifies the token (and the optional configured advertiser)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v1/campaigns?advertiser_id=…&page=…&per_page=… (data[] + meta.total_entries). `account_id` is the Kayzen advertiser id (an enterprise admin switches advertisers with it). status is running / paused / …; `budget` is day_budget in USD (total_budget in raw). No status filter is documented, so `status` is not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /v1/report_data {advertiser_id, start_date, end_date, metrics [impressions, clicks, advertiser_spend, ctr], group_by [day, campaign_id, campaign_name], filters {campaign_id: [id]} when campaign_id is given, per_page 1000, time_zone UTC} — synchronous 'Report Data' (no reusable report id). spend is advertiser_spend in USD."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /v1/campaigns/{id} {data: {campaign: {day_budget}}} — day_budget is an integer number of US dollars (whole dollars only; a fractional amount is rejected before sending). This changes spend. A 422 `budget_overspend_risks` answer is returned as an error; the overspend warning is not bypassed. `currency` is ignored. Kayzen answers 200 with an empty object, so the result carries only status."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /v1/campaigns/{id}/status {status: paused|running} (pause → paused, resume → running). Resuming restarts spend; a 422 `budget_overspend_risks` answer is returned as an error rather than bypassed."
+  }
+ ]
+}

@@ -1,0 +1,329 @@
+{
+ "id": "ecwid",
+ "category": "ecommerce_channels",
+ "label": "Ecwid by Lightspeed",
+ "lane": "api",
+ "kind": "storefront_platform",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.ecwid.com/",
+ "url": "https://www.ecwid.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Any Ecwid store owner creates a custom app (my.ecwid.com/#develop-apps) with the scopes it needs — read_catalog / update_catalog / create_catalog / read_orders / update_orders / create_orders / read_store_profile … — and receives a non-expiring secret token (no review); public App Market apps use OAuth 2 and Ecwid review; 600 requests / minute per token (429 + Retry-After; repeated abuse blocks the IP).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token (custom-app secret token from Ecwid admin › Develop Apps, non-expiring, `Authorization: Bearer secret_…`; OAuth 2 for public apps)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/Ecwid/ecwid-api-docs (official docs source)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.store_id",
+  "token"
+ ],
+ "rate_limits": "not readable this pass",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://app.ecwid.com/api/v3/{storeId}/..."
+  ],
+  "auth": [
+   "1. Tenant opens Ecwid admin › Apps › Develop Apps (my.ecwid.com/#develop-apps) and creates a custom app.",
+   "2. Sets the minimum scopes (docs recommend minimal permissions) — catalog + orders + webhooks.",
+   "3. Copies the secret token from the app's Details page; public token only for storefront reads."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /api/v3/{storeId}/products",
+    "purpose": "create product",
+    "notes": "name, sku, price (required), quantity, enabled → { id }; scope create_catalog"
+   },
+   {
+    "call": "PUT /api/v3/{storeId}/products/{id} · GET …/products",
+    "purpose": "update / search products",
+    "notes": "scope update_catalog / read_catalog"
+   },
+   {
+    "call": "PUT /api/v3/{storeId}/products/{id}/inventory",
+    "purpose": "adjust stock",
+    "notes": "quantityDelta"
+   },
+   {
+    "call": "…/products/{id}/image · variations · attributes",
+    "purpose": "media + variants",
+    "notes": ""
+   },
+   {
+    "call": "GET/PUT /api/v3/{storeId}/orders",
+    "purpose": "orders, fulfillmentStatus, tracking",
+    "notes": "reference pages did not render — fields per docs index"
+   },
+   {
+    "call": "webhooks (app settings)",
+    "purpose": "order / product events",
+    "notes": "scope webhooks"
+   }
+  ],
+  "limits": " 600 requests / minute per token; 429 with Retry-After; repeated hits from a dead token block the IP. - Custom app = merchant's own store, no review; App Market apps need Ecwid review + OAuth. - Keep permissions minimal (docs).",
+  "mcp_sdk": [
+   "SDK: https://github.com/Ecwid/ecwid-api-docs (official docs source)"
+  ],
+  "sources": [
+   "https://docs.ecwid.com/",
+   "https://r.jina.ai/https://docs.ecwid.com/api-reference/overview",
+   "https://r.jina.ai/https://api-docs.ecwid.com/reference/products",
+   "https://r.jina.ai/https://api-docs.ecwid.com/reference/create-product",
+   "https://docs.ecwid.com/get-started/make-your-first-api-request",
+   "https://docs.ecwid.com/develop-apps/app-settings"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://app.ecwid.com/api/v3/{store_id}",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Secret token of a custom app (Ecwid admin > Apps > Develop Apps > app Details; scopes read_catalog, create_catalog, update_catalog, read_orders, update_orders); non-expiring, sent as `Authorization: Bearer secret_...`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "store_id",
+    "required": true,
+    "help": "Ecwid store id (shown in the admin footer / URL); every call goes to https://app.ecwid.com/api/v3/{store_id}/..."
+   }
+  ],
+  "rate_per_second": 8,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/profile",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/store-profile/get-store-profile",
+    "note": "GET /api/v3/{storeId}/profile returns the store profile {generalInfo{storeId, storeUrl}, account{accountName, accountEmail}, settings{storeName}, formatsAndUnits{currency}, ...}."
+   },
+   "create_listing": {
+    "method": "POST",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/products",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "body": {
+     "name": "title",
+     "sku": "sku",
+     "price": "price",
+     "quantity": "quantity",
+     "description": "description"
+    },
+    "result": {
+     "fields": {
+      "listing_id": "id",
+      "status": "=created"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/products/create-product",
+    "note": "POST /api/v3/{storeId}/products {name, sku, price (required by Ecwid), quantity, description} (scope create_catalog) returns {id}. `currency` is the store's (formatsAndUnits), and images go through a separate upload endpoint, so `currency`/`image_urls` are ignored."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/products/{listing_id}",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "body": {
+     "name": "title",
+     "price": "price",
+     "description": "description",
+     "quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/products/update-product",
+    "note": "PUT /api/v3/{storeId}/products/{productId} with the given fields (name, price, description, quantity); returns {updateCount}."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/products/{listing_id}",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "body": {
+     "enabled": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "=disabled"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/products/update-product",
+    "note": "PUT /api/v3/{storeId}/products/{productId} {enabled: false} takes the product off the storefront (documented boolean; reversible with enabled=true) and returns {updateCount}. DELETE /products/{id} (permanent) is not used."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/products/{listing_id}",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "body": {
+     "quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/products/update-product",
+    "note": "PUT /api/v3/{storeId}/products/{productId} {quantity} sets the absolute stock (PUT .../products/{id}/inventory takes a quantityDelta instead). `listing_id` (product id) is required; `sku` alone is not accepted (lookup by sku is a second call)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/orders",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "createdFrom": "since",
+     "fulfillmentStatus": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "total": "total",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "fulfillmentStatus",
+      "total": "total",
+      "created_at": "createDate",
+      "tracking_number": "trackingNumber"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/orders/search-orders",
+    "note": "GET /api/v3/{storeId}/orders?offset&limit(max 100)&createdFrom(UNIX timestamp or 'YYYY-MM-DD HH:MM:SS')&fulfillmentStatus(AWAITING_PROCESSING|PROCESSING|SHIPPED|DELIVERED|...). Returns {total, count, offset, limit, items[{id, orderNumber, total, paymentStatus, fulfillmentStatus, createDate, trackingNumber}]}; `status` is the fulfillmentStatus and there is no per-order currency field."
+   },
+   "mark_shipped": {
+    "method": "PUT",
+    "path": "https://app.ecwid.com/api/v3/{store_id}/orders/{order_id}",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "body": {
+     "fulfillmentStatus": "=SHIPPED",
+     "trackingNumber": "tracking_number",
+     "shippingOption.shippingCarrierName": "carrier"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://docs.ecwid.com/api-reference/rest-api/orders/update-order",
+    "note": "PUT /api/v3/{storeId}/orders/{orderId} {fulfillmentStatus: SHIPPED, trackingNumber, shippingOption: {shippingCarrierName}} (scope update_orders) returns {updateCount}."
+   }
+  },
+  "not_offered": {
+   "listing_metrics": "No analytics endpoint in the Ecwid REST API (no product views / conversions); only order data is exposed."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host app.ecwid.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

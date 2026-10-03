@@ -1,0 +1,43 @@
+{
+ "id": "kbchachacha",
+ "category": "automotive",
+ "label": "Kbchachacha",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.kbchachacha.com",
+ "domain": "kbchachacha.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": "https://apiportal.kbfg.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "KB API portal partner credentials",
+  "access": "partner_only",
+  "capabilities": [
+   "get_valuation"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). KB Capital lists a 'used car price lookup (KB차차차 시세)' API on the KB Group Open API Portal for contracted partners; no listings API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://apiportal.kbfg.com/",
+   "https://www.kbchachacha.com/public/suggest/partnership.kbc",
+   "https://kbchachacha.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): KB Capital lists a 'used car price lookup (KB차차차 시세)' API on the KB Group Open API Portal for contracted partners; no listings API."
+}

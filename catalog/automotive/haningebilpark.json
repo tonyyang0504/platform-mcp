@@ -1,0 +1,42 @@
+{
+ "id": "haningebilpark",
+ "category": "automotive",
+ "label": "Haningebilpark",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://haningebilpark.accesspaket.bytbilcms.com",
+ "domain": "haningebilpark.accesspaket.bytbilcms.com",
+ "country": "Sweden",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth 2.0 (Blocket API 5.0)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Dealer site on Bytbil CMS; stock flows via Blocket/Bytbil dealer API (API 5.0, included in Blocket dealer packages) - no public docs, dealer/integrator only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "https://partner.wayke.se/produktnyheter/nya-apier-for-anvandare-med-blocket-och-bytbil-export",
+   "https://swapi.se/blogg/nyhet-api-access-ingar-nu-i-blockets-annonspaket/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Dealer site on Bytbil CMS; stock flows via Blocket/Bytbil dealer API (API 5.0, included in Blocket dealer packages) - no public docs, dealer/integrator only."
+}

@@ -1,0 +1,301 @@
+{
+ "id": "taboola",
+ "category": "ads",
+ "label": "Taboola Realize (Taboola Ads)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.taboola.com/backstage-api/reference/welcome",
+ "url": "https://www.taboola.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Backstage API credentials are issued per account by the Account Manager or support@taboola.com after submitting a use case.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "oauth2 client credentials (client_id/secret from the Taboola account manager; 12-hour bearer)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "bulk"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Java Client SDK (developers.taboola.com Backstage API → Java Client SDK)"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.realize.com/mcp (official Realize MCP, streamable HTTP + OAuth 2.1; Claude Code plugin variant)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Taboola Backstage API 1.0).",
+  "base_urls": [
+   "https://backstage.taboola.com/backstage/api/1.0/{account_id}/…"
+  ],
+  "auth": [
+   "1. \"Ask your Taboola Account Manager to provide you with a client_id and client_secret.\"",
+   "2. `POST /backstage/oauth/token` (client credentials flow) → access token valid **12 hours**.",
+   "3. `Authorization: Bearer {access_token}` on each request; missing / expired token → 401."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /users/current/account` · `GET /users/current/allowed-accounts` · `GET /{account_id}/advertisers",
+    "purpose": "account, allowed accounts, network advertisers",
+    "notes": "account_id, name, type, currency"
+   },
+   {
+    "call": "GET /{account_id}/campaigns/` · `GET …/{campaign_id}` · `POST /{account_id}/campaigns/` · `POST …/{campaign_id}` (update) · `POST …/bulk` · `PATCH` collections · `DELETE",
+    "purpose": "campaigns",
+    "notes": "name, branding_text, cpc, daily_cap, daily_ad_delivery_model, spending_limit, spending_limit_model, pricing_model, bid_strategy (MAX_CONVERSIONS / TARGET_CPA / SMART / FIXED), publisher_bid_strategy_modifiers, is_active, start_date, end_date, tracking_code, campaign_group_id"
+   },
+   {
+    "call": "POST /{account_id}/campaigns/reach-estimator` · `POST …/{campaign_id}/duplicate",
+    "purpose": "reach estimate, duplicate",
+    "notes": "targeting, cpc"
+   },
+   {
+    "call": "GET /{account_id}/campaigns/{cid}/items/` · `POST …/items/` · `POST …/items/mass` · bulk `PUT/POST/DELETE /{account_id}/items` · `POST …/{item_id}` (update)",
+    "purpose": "ads (items)",
+    "notes": "url, title, thumbnail_url, description, cta, is_active"
+   },
+   {
+    "call": "GET /{account_id}/image-library` · `POST /{account_id}/image-library/upload",
+    "purpose": "creatives_upload",
+    "notes": "image file / url"
+   },
+   {
+    "call": "GET /{account_id}/reports/campaign-summary/dimensions/{dimension}?start_date&end_date` · `top-campaign-content` · `realtime-campaign-summary` · `realtime-ads` · campaign history",
+    "purpose": "reports",
+    "notes": "dimensions day / campaign_day_breakdown / site / country / platform; filters campaign, platform, country, site, partner_name (mutually exclusive)"
+   },
+   {
+    "call": "Pixel API: `GET/POST /{account_id}/universal_pixel/conversion_rule` · Custom audiences `…/universal_pixel/custom_audience_rule",
+    "purpose": "conversion rules + pixel audiences",
+    "notes": "name, event_name, category, include_in_total_conversions"
+   },
+   {
+    "call": "Targeting: `…/targeting/postal_code`, publishers block, `…/targeting/marketplace_audience`, `custom_audience`, `lookalike`, `contextual`, combined audiences; First-party audiences `POST /{account_id}/",
+    "purpose": "audiences + targeting",
+    "notes": "type INCLUDE/EXCLUDE, value ids; user identifiers (hashed email / device id)"
+   }
+  ],
+  "limits": " - Rate limits: not stated on the pages read (TODO(verify)). Free API; Taboola advertising policies apply; credentials are per account (network accounts can act for child advertisers).",
+  "mcp_sdk": [
+   "**Official Realize MCP**: hosted at `https://mcp.realize.com/mcp` (streamable HTTP, OAuth 2.1 via Taboola SSO) or as a Claude Code plugin — \"Analyze campaigns, pull performance reports, and work with the Realize API in natural language\".",
+   "Official Java client SDK (Backstage API navigation)."
+  ],
+  "sources": [
+   "https://developers.taboola.com/backstage-api/reference/welcome",
+   "https://developers.taboola.com/backstage-api/llms.txt",
+   "https://developers.taboola.com/backstage-api/reference/authentication-basics.md",
+   "https://developers.taboola.com/backstage-api/docs/campaigns-overview.md",
+   "https://developers.taboola.com/backstage-api/reference/realize-mcp.md"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://backstage.taboola.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://backstage.taboola.com/backstage/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Backstage API client_id provided by your Taboola account manager."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The matching client_secret; client-credentials tokens last 12 hours (no refresh token) and are re-requested automatically."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": false,
+    "help": "Taboola account_id (the string id, e.g. demo-advertiser, from list_accounts) used by update_budget and pause_resume, whose paths are /backstage/api/1.0/{account_id}/campaigns/{campaign_id}."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/backstage/api/1.0/users/current/account",
+    "docs": "https://developers.taboola.com/backstage-api/reference/get-account-details",
+    "note": "GET /backstage/api/1.0/users/current/account: the credentials' own account (id, name, account_id, currency, time_zone_name)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/backstage/api/1.0/users/current/allowed-accounts",
+    "result": {
+     "items": "results",
+     "key": "accounts",
+     "fields": {
+      "id": "account_id",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://developers.taboola.com/backstage-api/reference/get-allowed-accounts",
+    "note": "GET /backstage/api/1.0/users/current/allowed-accounts: every account the credentials may use. `id` is the string account_id used in paths (raw.id is the numeric id)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/backstage/api/1.0/{account_id}/campaigns/",
+    "fixed_params": {
+     "fetch_level": "RAP"
+    },
+    "result": {
+     "items": "results",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "daily_cap",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://developers.taboola.com/backstage-api/reference/get-all-campaigns",
+    "note": "GET /backstage/api/1.0/{account_id}/campaigns/?fetch_level=RAP (recent campaigns, paused included; deleted ones are never returned). `budget` is daily_cap in the account currency (0 = unlimited; applies with daily_ad_delivery_model STRICT); raw.is_active is the on/off switch and raw.spending_limit the total cap. `status` is not a filter."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/backstage/api/1.0/{account_id}/reports/campaign-summary/dimensions/campaign_day_breakdown",
+    "params": {
+     "start_date": "date:date_from",
+     "end_date": "date:date_to"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "campaign_id": "campaign",
+      "campaign": "campaign_name",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "spent",
+      "ctr": "ctr",
+      "cpc": "cpc",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://developers.taboola.com/backstage-api/reference/campaign-summary-report",
+    "note": "GET /backstage/api/1.0/{account_id}/reports/campaign-summary/dimensions/campaign_day_breakdown?start_date&end_date: one row per campaign per day in the account time zone. campaign_id is not applied (this dimension has no campaign filter). Clicks can still change for 48 hours and conversions for 30 days."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/backstage/api/1.0/{account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "account_id": "@account_id"
+    },
+    "body": {
+     "daily_cap": "daily_budget"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated",
+      "daily_cap": "daily_cap"
+     }
+    },
+    "docs": "https://developers.taboola.com/backstage-api/reference/update-a-campaign",
+    "note": "POST /backstage/api/1.0/{account_id config}/campaigns/{campaign_id} {daily_cap}: the daily budget in the account currency (`currency` is ignored); spends money. It applies when daily_ad_delivery_model is STRICT and must stay below spending_limit; 0 means unlimited."
+   }
+  },
+  "not_offered": {
+   "pause_resume": "Taboola pauses a campaign by updating it with the boolean `is_active` (\"To pause (or unpause) a campaign, update the campaign, and set is_active to false (or true)\", https://developers.taboola.com/backstage-api/docs/pausing-campaigns); the adapter's map: expression yields strings, not JSON booleans, so it cannot send is_active safely."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host backstage.taboola.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 301 (redirect), so the answers are path-specific",
+   "token backstage.taboola.com/backstage/oauth/token: 401 unauthorized",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; names not found on the page: update_budget:daily_cap"
+  ],
+  "notes": "-"
+ }
+}

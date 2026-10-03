@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { test } from "node:test";
+import { Client, InMemoryTransport } from "../runtime/typescript/node_modules/@modelcontextprotocol/client/dist/index.mjs";
+import { buildServer, Transport } from "../runtime/typescript/dist/index.js";
+
+const fakeFetch = (handler) => async (url, init) => { const r = handler(new URL(url), init); return { status: r.status ?? 200, headers: { get: (k) => (r.headers ?? {})[k] ?? null }, text: async () => JSON.stringify(r.body ?? {}) }; };
+
+const SPEC = JSON.parse(readFileSync(new URL("../catalog/ecommerce_suppliers/kite_ly.json", import.meta.url), "utf8"));
+
+test("get_order with ApiKey header (wire)", async () => {
+  let seen;
+  const server = buildServer(SPEC, new Transport(SPEC.adapter.base_url, SPEC.adapter.auth, { api_key_pair: "pk:sk" }, 50, "test", fakeFetch((url, init) => { seen = { url, init }; return { body: { order_id: "PS1", status: "Processed", dispatch_status: "Dispatched", jobs: [] } }; }), SPEC.adapter.envelope ?? {}));
+  const [ct, st] = InMemoryTransport.createLinkedPair();
+  await server.connect(st);
+  const client = new Client({ name: "test", version: "0" });
+  await client.connect(ct);
+  const res = await client.callTool({ name: "get_order", arguments: { id: "PS1" } });
+  assert.equal(res.isError, false);
+  assert.equal(res.structuredContent.dispatch_status, "Dispatched");
+  assert.equal(seen.url.pathname, "/v4.0/order/PS1");
+  assert.equal(seen.init.headers.Authorization, "ApiKey pk:sk");
+});

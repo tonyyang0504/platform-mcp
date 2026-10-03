@@ -1,0 +1,1778 @@
+{
+ "generated_at": "2026-09-26T15:46:39Z",
+ "egress": "residential",
+ "auth": "none",
+ "lang": "py",
+ "servers": [
+  {
+   "server": "automotive/autostrefa_mx",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "automotive/autostrefa_mx",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_listings",
+      "args": {
+       "query": "toyota",
+       "limit": 10,
+       "make": "Toyota"
+      },
+      "latency_ms": 1189,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 4,
+      "first_ids": [
+       "55845317",
+       "85726391",
+       "73328653",
+       "97465968"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_listing",
+      "args": {
+       "listing_id": "55845317"
+      },
+      "latency_ms": 394,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_listing",
+      "args": {
+       "listing_id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 458,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search_listings:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 322,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_listings",
+     "get_listing"
+    ],
+    "ids": {
+     "get_listing": "55845317"
+    },
+    "wall_ms": 3112
+   }
+  },
+  {
+   "server": "competitions/topcoder",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "competitions/topcoder",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "discover",
+      "args": {
+       "limit": 10,
+       "status": "completed"
+      },
+      "latency_ms": 1328,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "6a5da7b6-3841-43cb-ae9d-98416bea0d9d",
+       "7fbce8d9-92e2-4770-a4a0-48f29c2b29e5",
+       "ac8fa0bf-eb1f-48d0-82a8-73d06b311c37",
+       "068af5a3-8957-443b-85e9-f99a504a7c7e",
+       "15f1c681-42b2-4f62-99c7-6f61fe5c57d9"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "discover",
+      "args": {
+       "limit": 10,
+       "status": "completed",
+       "page": 2
+      },
+      "latency_ms": 1001,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "6ac06d08-e776-4e42-bf67-abdef87f8298",
+       "ccbe8751-dda5-413e-ab08-a1906195d3a3",
+       "3188f834-cc35-4a49-b9ce-1d7f49be5e6d",
+       "55cea4d4-0d36-437e-82a6-fbfab6ff30dc",
+       "dc645a72-78cf-4b73-bd7d-c5326b4b18f0"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_competition",
+      "args": {
+       "competition_id": "6a5da7b6-3841-43cb-ae9d-98416bea0d9d"
+      },
+      "latency_ms": 353,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_competition",
+      "args": {
+       "competition_id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 455,
+      "is_error": true,
+      "error": "upstream_error",
+      "message": "platform error 400: {\"message\":\"\\\"id\\\" must be a valid GUID\"}",
+      "http_status": 400,
+      "bad_id_probe": true,
+      "clean_error": true
+     },
+     {
+      "tool": "standings",
+      "args": {
+       "competition_id": "6a5da7b6-3841-43cb-ae9d-98416bea0d9d"
+      },
+      "latency_ms": 389,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 2
+     },
+     {
+      "tool": "standings",
+      "args": {
+       "competition_id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 409,
+      "is_error": true,
+      "error": "upstream_error",
+      "message": "platform error 400: {\"message\":\"\\\"id\\\" must be a valid GUID\"}",
+      "http_status": 400,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 259,
+    "protocol": "2025-11-25",
+    "tools": [
+     "discover",
+     "get_competition",
+     "standings"
+    ],
+    "ids": {
+     "get_competition": "6a5da7b6-3841-43cb-ae9d-98416bea0d9d",
+     "standings": "6a5da7b6-3841-43cb-ae9d-98416bea0d9d"
+    },
+    "wall_ms": 6295
+   }
+  },
+  {
+   "server": "deals/authentic_jobs",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "deals/authentic_jobs",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "software",
+       "limit": 10
+      },
+      "latency_ms": 1575,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "36653",
+       "36649",
+       "36646",
+       "36639",
+       "36284"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "software",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 1129,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "35671",
+       "35517",
+       "35513",
+       "35509",
+       "35292"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "36653"
+      },
+      "latency_ms": 596,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 540,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 257,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_postings",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "36653"
+    },
+    "wall_ms": 10215
+   }
+  },
+  {
+   "server": "deals/boamp",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "deals/boamp",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "informatique",
+       "limit": 10
+      },
+      "latency_ms": 1188,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "26-92391",
+       "26-92440",
+       "26-92434",
+       "26-92463",
+       "26-92541"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "informatique",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 551,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "26-92548",
+       "26-92540",
+       "26-92529",
+       "26-92537",
+       "26-92507"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "26-92391"
+      },
+      "latency_ms": 379,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 423,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "platform returned no record",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 333,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_postings",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "26-92391"
+    },
+    "wall_ms": 6104
+   }
+  },
+  {
+   "server": "deals/contracts_finder",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "deals/contracts_finder",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "software",
+       "limit": 10
+      },
+      "latency_ms": 9922,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "e2d9dc88-6503-4899-a4b0-76f0a5c96ffe-915593",
+       "0c760499-206b-4fd5-8e53-217eecfc55af-915580",
+       "44569a52-01d1-45ea-911b-0bb10826366b-915578",
+       "d245118f-2e95-4cc4-a216-257955b8d7b4-915570",
+       "9566b75e-d76e-4674-b2fb-59a111017418-915557"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "e2d9dc88-6503-4899-a4b0-76f0a5c96ffe-915593"
+      },
+      "latency_ms": 304,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 214,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search_postings:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 310,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_postings",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "e2d9dc88-6503-4899-a4b0-76f0a5c96ffe-915593"
+    },
+    "wall_ms": 11716
+   }
+  },
+  {
+   "server": "deals/ted_eu",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "deals/ted_eu",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "FT~\"software\"",
+       "limit": 10
+      },
+      "latency_ms": 1228,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "412169-2016",
+       "448194-2016",
+       "30945-2017",
+       "30947-2017",
+       "34079-2017"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "FT~\"software\"",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 503,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "75388-2017",
+       "75428-2017",
+       "75491-2017",
+       "83724-2017",
+       "83726-2017"
+      ],
+      "advances": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 318,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_postings"
+    ],
+    "wall_ms": 2519
+   }
+  },
+  {
+   "server": "deals/uk_find_a_tender",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "deals/uk_find_a_tender",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search_postings",
+      "args": {
+       "query": "software",
+       "limit": 10
+      },
+      "latency_ms": 2875,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "ocds-h6vhtk-077b05",
+       "ocds-h6vhtk-077af5",
+       "ocds-h6vhtk-077af2",
+       "ocds-h6vhtk-06bdcd",
+       "ocds-h6vhtk-077abf"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "ocds-h6vhtk-077b05"
+      },
+      "latency_ms": 254,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 258,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search_postings:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 269,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search_postings",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "ocds-h6vhtk-077b05"
+    },
+    "wall_ms": 4633
+   }
+  },
+  {
+   "server": "jobs/arbeitnow",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "jobs/arbeitnow",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 2286,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 250,
+      "first_ids": [
+       "remote-senior-solutions-architect-managed-service-providers-143722",
+       "senior-mechanical-engineer-robotic-systems-munich-bavaria-408006",
+       "senior-business-partner-finance-munich-bavaria-427899",
+       "forward-deployed-ai-engineer-munich-bavaria-383839",
+       "working-student-external-communications-munich-265752"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 1170,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 250,
+      "first_ids": [
+       "senior-key-account-manager-automotive-enterprise-saas-munich-52524",
+       "werkstudentin-it-workplace-management-deployment-leipzig-297223",
+       "werkstudentin-it-enterprise-architecture-system-landscape-leipzig-60435",
+       "working-student-brand-ambassador-hamburg-115662",
+       "full-stack-engineer-berlin-258248"
+      ],
+      "advances": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 256,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search"
+    ],
+    "wall_ms": 4173
+   }
+  },
+  {
+   "server": "jobs/greenhouse",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "jobs/greenhouse",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "engineer",
+       "limit": 10
+      },
+      "latency_ms": 985,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 199,
+      "first_ids": [
+       "8556658002",
+       "8638232002",
+       "8716179002",
+       "8785825002",
+       "8698314002"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "8556658002"
+      },
+      "latency_ms": 259,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 258,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 284,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "8556658002"
+    },
+    "wall_ms": 2635
+   }
+  },
+  {
+   "server": "jobs/himalayas",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "jobs/himalayas",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 549,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "https://himalayas.app/companies/micro1/jobs/danish-transcription-expert",
+       "https://himalayas.app/companies/micro1/jobs/gmail-google-calendar-ai-assistant-evaluator",
+       "https://himalayas.app/companies/abridge/jobs/it-operations-specialist",
+       "https://himalayas.app/companies/teya/jobs/credit-specialist",
+       "https://himalayas.app/companies/interrahealth/jobs/senior-software-developer"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 179,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "https://himalayas.app/companies/the-daily-grace-co/jobs/contract-writer-a-book-exploring-the-beauty-and-meaning-of-sacred-art",
+       "https://himalayas.app/companies/skinny-dipped/jobs/influencer-coordinator",
+       "https://himalayas.app/companies/interrahealth/jobs/technical-support-specialist-l2",
+       "https://himalayas.app/companies/micro1/jobs/turkish-bilingual-expert",
+       "https://himalayas.app/companies/ux-woman/jobs/sales-to-ux-design-career-changer-9565597073"
+      ],
+      "advances": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 259,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search"
+    ],
+    "wall_ms": 1911
+   }
+  },
+  {
+   "server": "jobs/landing_jobs",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "jobs/landing_jobs",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 708,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "19066",
+       "19410",
+       "19412",
+       "19513",
+       "19563"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 313,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "19604",
+       "19618",
+       "19619",
+       "19620",
+       "19632"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "19066"
+      },
+      "latency_ms": 218,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 191,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "platform returned no record",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 263,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "19066"
+    },
+    "wall_ms": 4026
+   }
+  },
+  {
+   "server": "jobs/nhs_jobs",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "jobs/nhs_jobs",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 1292,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "C9242-26-0186",
+       "C9028-26-0180",
+       "M9043-26-0231",
+       "C9325-26-0679",
+       "B0263-26-0411"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 560,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "M0038-26-0915",
+       "B0175-26-0019",
+       "C9348-26-2058",
+       "C9439-2627-RP-N99",
+       "A2981-26-0020"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "C9242-26-0186"
+      },
+      "latency_ms": 219,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 682,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "platform returned no record",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 260,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "C9242-26-0186"
+    },
+    "wall_ms": 4799
+   }
+  },
+  {
+   "server": "jobs/platsbanken",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "jobs/platsbanken",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 1594,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "31523536",
+       "31379940",
+       "31457163",
+       "31455334",
+       "31367094"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 400,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "31523482",
+       "31519715",
+       "31518292",
+       "31518212",
+       "31513326"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "31523536"
+      },
+      "latency_ms": 207,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_posting",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 190,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 257,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search",
+     "get_posting"
+    ],
+    "ids": {
+     "get_posting": "31523536"
+    },
+    "wall_ms": 4137
+   }
+  },
+  {
+   "server": "jobs/we_work_remotely",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "jobs/we_work_remotely",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 1029,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 80,
+      "first_ids": [
+       "https://weworkremotely.com/remote-jobs/faire-senior-staff-machine-learning-platform-engineer",
+       "https://weworkremotely.com/remote-jobs/remote-benefits-operations-specialist-amer",
+       "https://weworkremotely.com/remote-jobs/doximity-client-success-manager-pharma",
+       "https://weworkremotely.com/remote-jobs/doximity-business-development-representative-enterprise",
+       "https://weworkremotely.com/remote-jobs/remote-benefits-operations-specialist-amer"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     }
+    ],
+    "skipped": {
+     "search:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 280,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search"
+    ],
+    "wall_ms": 1795
+   }
+  },
+  {
+   "server": "jobs/working_nomads",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "jobs/working_nomads",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "search",
+      "args": {
+       "query": "developer",
+       "limit": 10
+      },
+      "latency_ms": 2277,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 57,
+      "first_ids": [
+       "https://www.workingnomads.com/job/go/1891955/",
+       "https://www.workingnomads.com/job/go/1889808/",
+       "https://www.workingnomads.com/job/go/1885527/",
+       "https://www.workingnomads.com/job/go/1884997/",
+       "https://www.workingnomads.com/job/go/1879612/"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     }
+    ],
+    "skipped": {
+     "search:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 259,
+    "protocol": "2025-11-25",
+    "tools": [
+     "search"
+    ],
+    "wall_ms": 6262
+   }
+  },
+  {
+   "server": "market_data/binance_collector",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "market_data/binance_collector",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 291,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "search_symbols",
+      "args": {
+       "query": "BTCUSDT",
+       "limit": 10
+      },
+      "latency_ms": 211,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 1,
+      "first_ids": [
+       "BTCUSDT"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_candles",
+      "args": {
+       "symbol": "BTCUSDT",
+       "interval": "1h",
+       "limit": 5
+      },
+      "latency_ms": 183,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 5
+     },
+     {
+      "tool": "get_candles",
+      "args": {
+       "symbol": "ZZZNOTASYMBOL",
+       "interval": "1h",
+       "limit": 5
+      },
+      "latency_ms": 193,
+      "is_error": true,
+      "error": "upstream_error",
+      "message": "platform error 400: {\"code\":-1121,\"msg\":\"Invalid symbol.\"}",
+      "http_status": 400,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search_symbols:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 270,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "get_candles",
+     "search_symbols"
+    ],
+    "ids": {
+     "get_candles": "BTCUSDT"
+    },
+    "wall_ms": 3568
+   }
+  },
+  {
+   "server": "market_data/bybit_collector",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "market_data/bybit_collector",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 218,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "search_symbols",
+      "args": {
+       "query": "BTCUSDT",
+       "limit": 10
+      },
+      "latency_ms": 112,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 1,
+      "first_ids": [
+       "BTCUSDT"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "get_candles",
+      "args": {
+       "symbol": "BTCUSDT",
+       "interval": "60",
+       "limit": 5
+      },
+      "latency_ms": 220,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 5
+     },
+     {
+      "tool": "get_candles",
+      "args": {
+       "symbol": "ZZZNOTASYMBOL",
+       "interval": "60",
+       "limit": 5
+      },
+      "latency_ms": 108,
+      "is_error": true,
+      "error": "upstream_error",
+      "message": "params error: Symbol Is Invalid",
+      "http_status": 200,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "search_symbols:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 256,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "get_candles",
+     "search_symbols"
+    ],
+    "ids": {
+     "get_candles": "BTCUSDT"
+    },
+    "wall_ms": 3918
+   }
+  },
+  {
+   "server": "market_data/deribit_collector",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "market_data/deribit_collector",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 281,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "search_symbols",
+      "args": {
+       "query": "BTC",
+       "limit": 10
+      },
+      "latency_ms": 251,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 1111,
+      "first_ids": [
+       "BTC-PERPETUAL",
+       "BTC_USDC",
+       "BTC_USDE",
+       "BTC_USDT",
+       "ETH_BTC"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     }
+    ],
+    "skipped": {
+     "search_symbols:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 256,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "search_symbols"
+    ],
+    "wall_ms": 2100
+   }
+  },
+  {
+   "server": "market_data/news_collector",
+   "status": "broken",
+   "notes": "get_news failed: rate_limited 429 rate limited by the platform",
+   "run": {
+    "server": "market_data/news_collector",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "get_news",
+      "args": {
+       "query": "bitcoin",
+       "limit": 10
+      },
+      "latency_ms": 12440,
+      "is_error": true,
+      "error": "rate_limited",
+      "message": "rate limited by the platform",
+      "http_status": 429,
+      "schema_errors": []
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 257,
+    "protocol": "2025-11-25",
+    "tools": [
+     "get_news"
+    ],
+    "wall_ms": 13223
+   }
+  },
+  {
+   "server": "sales/gleif_lei",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "sales/gleif_lei",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 1087,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "Deutsche Bank",
+       "limit": 10
+      },
+      "latency_ms": 505,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "529900IH9V4I3VHQVO92",
+       "391200PCHLV827FDCB76",
+       "529900J2KCFIPEYJIE34",
+       "529900SS7ZWCX82U3W60",
+       "7LTWFZYICNSX8D621K86"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "Deutsche Bank",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 595,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "529900EXG2PM316ISO63",
+       "529900JZC6M4CW33OD89",
+       "529900LKVNEX4SG4UD38",
+       "529900AZS6GG6GBDMN90",
+       "8156006ACD5E92B0C985"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_company",
+      "args": {
+       "id": "529900IH9V4I3VHQVO92"
+      },
+      "latency_ms": 290,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_company",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 196,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 255,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "search",
+     "get_company"
+    ],
+    "ids": {
+     "get_company": "529900IH9V4I3VHQVO92"
+    },
+    "wall_ms": 4633
+   }
+  },
+  {
+   "server": "sales/no_brreg",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "sales/no_brreg",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 824,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "equinor",
+       "limit": 10
+      },
+      "latency_ms": 527,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "923609016",
+       "959733600",
+       "983908179",
+       "985418624",
+       "932699141"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "search",
+      "args": {
+       "query": "equinor",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 201,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "960533577",
+       "975798658",
+       "922031843",
+       "981906063",
+       "993561355"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "get_company",
+      "args": {
+       "id": "923609016"
+      },
+      "latency_ms": 184,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_company",
+      "args": {
+       "id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 181,
+      "is_error": true,
+      "error": "upstream_error",
+      "message": "platform error 400: {\"tidsstempel\":1790437706654,\"status\":400,\"feilmelding\":\"Feilaktig forespørsel\",\"valideringsfeil\":[{\"feilaktigVerdi\":\"zz-live-verify-nonexistent-000000\",\"feilmelding\":\"Organisasjonsnummer må være et nummer med nøyaktig 9 siffer\",\"parametere\":[\"{}\",\"zz-live-verify-nonexistent-0000",
+      "http_status": 400,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 263,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "search",
+     "get_company"
+    ],
+    "ids": {
+     "get_company": "923609016"
+    },
+    "wall_ms": 4990
+   }
+  },
+  {
+   "server": "social/hackernews",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "social/hackernews",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 3028,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "analytics_post",
+      "args": {
+       "post_id": "8863"
+      },
+      "latency_ms": 535,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "analytics_post",
+      "args": {
+       "post_id": "zz-live-verify-nonexistent-000000"
+      },
+      "latency_ms": 549,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "platform returned no record",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 264,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "analytics_post"
+    ],
+    "ids": {
+     "analytics_post": "8863"
+    },
+    "wall_ms": 5410
+   }
+  },
+  {
+   "server": "trading/hyperliquid",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid",
+   "run": {
+    "server": "trading/hyperliquid",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "list_markets",
+      "args": {
+       "query": "BTC",
+       "limit": 10
+      },
+      "latency_ms": 273,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 234,
+      "first_ids": [
+       "BTC",
+       "ETH",
+       "ATOM",
+       "MATIC",
+       "DYDX"
+      ],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "list_orders",
+      "args": {},
+      "latency_ms": 212,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 0,
+      "first_ids": [],
+      "next_page": null,
+      "next_cursor": false
+     },
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 363,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "get_ticker",
+      "args": {
+       "symbol": "BTC"
+      },
+      "latency_ms": 188,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_ticker",
+      "args": {
+       "symbol": "ZZZNOTASYMBOL"
+      },
+      "latency_ms": 404,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "platform returned no record",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {
+     "list_markets:page2": "result says there is no next page"
+    },
+    "checks": {},
+    "may_be_empty": [
+     "list_orders"
+    ],
+    "startup_ms": 256,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "list_markets",
+     "get_ticker",
+     "list_orders"
+    ],
+    "ids": {
+     "get_ticker": "BTC"
+    },
+    "wall_ms": 4835
+   }
+  },
+  {
+   "server": "trading/polymarket",
+   "status": "working",
+   "notes": "all read tools answered, schema-valid, pagination advances",
+   "run": {
+    "server": "trading/polymarket",
+    "lang": "py",
+    "calls": [
+     {
+      "tool": "list_markets",
+      "args": {
+       "query": "BTC",
+       "limit": 10
+      },
+      "latency_ms": 400,
+      "is_error": false,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "xi-jinping-out-before-2027",
+       "will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568",
+       "will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653",
+       "will-pete-buttigieg-win-the-2028-democratic-presidential-nomination-687",
+       "will-josh-shapiro-win-the-2028-democratic-presidential-nomination-977"
+      ],
+      "next_page": 2,
+      "next_cursor": false
+     },
+     {
+      "tool": "list_markets",
+      "args": {
+       "query": "BTC",
+       "limit": 10,
+       "page": 2
+      },
+      "latency_ms": 310,
+      "is_error": false,
+      "page2": true,
+      "schema_errors": [],
+      "count": 10,
+      "first_ids": [
+       "will-jon-ossoff-win-the-2028-democratic-presidential-nomination-885",
+       "will-mark-cuban-win-the-2028-democratic-presidential-nomination-329",
+       "will-jb-pritzker-win-the-2028-democratic-presidential-nomination-288",
+       "will-raphael-warnock-win-the-2028-democratic-presidential-nomination-914",
+       "will-corey-booker-win-the-2028-democratic-presidential-nomination-125"
+      ],
+      "advances": true
+     },
+     {
+      "tool": "me",
+      "args": {},
+      "latency_ms": 175,
+      "is_error": false,
+      "schema_errors": []
+     },
+     {
+      "tool": "get_ticker",
+      "args": {
+       "symbol": "xi-jinping-out-before-2027"
+      },
+      "latency_ms": 171,
+      "is_error": false,
+      "schema_errors": [],
+      "same_item": true
+     },
+     {
+      "tool": "get_ticker",
+      "args": {
+       "symbol": "ZZZNOTASYMBOL"
+      },
+      "latency_ms": 167,
+      "is_error": true,
+      "error": "invalid_input",
+      "message": "not found",
+      "http_status": 404,
+      "bad_id_probe": true,
+      "clean_error": true
+     }
+    ],
+    "skipped": {},
+    "checks": {},
+    "may_be_empty": [],
+    "startup_ms": 268,
+    "protocol": "2025-11-25",
+    "tools": [
+     "me",
+     "list_markets",
+     "get_ticker"
+    ],
+    "ids": {
+     "get_ticker": "xi-jinping-out-before-2027"
+    },
+    "wall_ms": 4777
+   }
+  }
+ ],
+ "summary": {
+  "working": 23,
+  "broken": 1
+ }
+}

@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/tiki-mcp",
+ "description": "Tiki (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Every tool m",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.tiki.vn/docs/docs/current/getting-started/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "tiki"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TIKI_CLIENT_ID",
+     "description": "App id of an IN-HOUSE application registered on the Tiki Open Platform and connected to your seller store (in-house apps receive the seller's permissions via the client-credentials flow).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TIKI_CLIENT_SECRET",
+     "description": "App secret of the same application; sent with the id as HTTP Basic (client_secret_basic) to https://api.tiki.vn/sc/oauth2/token. Apps configured for client_secret_post are not supported by this adapter.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TIKI_WAREHOUSE_ID",
+     "description": "Seller warehouse id (GET /integration/v2/sellers/me/warehouses) whose available quantity set_inventory writes.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

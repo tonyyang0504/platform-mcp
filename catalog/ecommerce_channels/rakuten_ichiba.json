@@ -1,0 +1,155 @@
+{
+ "id": "rakuten_ichiba",
+ "category": "ecommerce_channels",
+ "label": "Rakuten Ichiba",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://webservice.rms.rakuten.co.jp/",
+ "url": "https://www.rakuten.co.jp/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Rakuten Ichiba shop contract (Japanese entity, monthly plan + fees); WEB SERVICE applied for inside RMS; serviceSecret is permanent, licenseKey expires every 3 months (Rakuten e-mails before expiry) — manual renewal in RMS; each API method must be enabled in 利用設定; rate limits documented per API inside RMS (not readable without login); no public sandbox.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "api_key (serviceSecret + licenseKey from RMS › WEB SERVICE › 利用設定; `Authorization: ESA base64(serviceSecret:licenseKey)`; licence key valid 3 months, renewed manually)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "reports",
+   "coupons"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "community .NET client covering 15+ RMS API families — https://github.com/JakeJP/Rakuten.RMS.Api"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "secret",
+  "token",
+  "config.shop_url"
+ ],
+ "rate_limits": "not readable (login)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.rms.rakuten.co.jp/es/2.0/items/…"
+  ],
+  "auth": [
+   "1. Shop applies for WEB SERVICE in RMS and enables the API methods it needs (ItemAPI, RakutenPay OrderAPI, InventoryAPI …).",
+   "2. Copy serviceSecret + licenseKey from 基本設定 › 利用設定 › 利用情報 into the platform.",
+   "3. Renew the licenseKey in RMS every 3 months (expiry mail from Rakuten) — the client must surface expiry as an action card."
+  ],
+  "endpoints": [
+   {
+    "call": "ItemAPI 2.0 items.upsert / items.get / items.delete",
+    "purpose": "create / update items (manageNumber, title, price, images, variants)",
+    "notes": ""
+   },
+   {
+    "call": "InventoryAPI 2.1 bulk upsert / get",
+    "purpose": "stock per SKU",
+    "notes": ""
+   },
+   {
+    "call": "RakutenPayOrderAPI searchOrder / getOrder / confirmOrder / updateOrderShipping",
+    "purpose": "orders, confirm, tracking (配送会社 + 伝票番号)",
+    "notes": ""
+   },
+   {
+    "call": "CabinetAPI",
+    "purpose": "image uploads",
+    "notes": ""
+   },
+   {
+    "call": "NavigationAPI 2.0 · CategoryAPI 2.0",
+    "purpose": "genre / shop category data",
+    "notes": ""
+   },
+   {
+    "call": "CouponAPI · ShopAPI · LicenseManagementAPI",
+    "purpose": "coupons, shop settings, licence expiry check",
+    "notes": ""
+   }
+  ],
+  "limits": " Documented per API inside RMS (login-walled); not read. - Rakuten shop contract; API use enabled per method by the shop. - Licence key rotation every 3 months is mandatory.",
+  "mcp_sdk": [
+   "SDK: community .NET client covering 15+ RMS API families — https://github.com/JakeJP/Rakuten.RMS.Api"
+  ],
+  "sources": [
+   "https://webservice.rms.rakuten.co.jp/merchant-portal/view/ja/common/1-1_service_index/",
+   "https://github.com/JakeJP/Rakuten.RMS.Api"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://webservice.rms.rakuten.co.jp/merchant-portal/view/ja/common/1-1_service_index/ redirects to https://mainmenu.rms.rakuten.co.jp/?act=app_login_error ('認証エラーが発生しました … R-Loginのログイン画面に戻り'), so the RMS WEB SERVICE specs (ItemAPI 2.0, InventoryAPI 2.1, RakutenPayOrderAPI) are readable only inside a logged-in RMS session. No call can be mapped from official docs (community wrappers are not a source)."
+}

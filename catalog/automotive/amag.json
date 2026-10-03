@@ -1,0 +1,35 @@
+{
+ "id": "amag",
+ "category": "automotive",
+ "label": "Production Api Auto",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://production-api-auto.amag.ch",
+ "domain": "production-api-auto.amag.ch",
+ "country": "Switzerland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Internal AMAG backend host; no public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://production-api-auto.amag.ch/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

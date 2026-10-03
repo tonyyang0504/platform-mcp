@@ -1,0 +1,277 @@
+{
+ "id": "daum_ads",
+ "category": "ads",
+ "label": "Daum search ads (now Kakao 키워드광고)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://developers.kakao.com/docs/latest/ko/keyword-ad/common",
+ "url": "https://keywordad.kakao.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Kakao Developers app converted to a 비즈 앱 with business verification and the Keyword Ad permission; business token; 프리미엄링크 campaigns only (톡채널광고 report API only). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 business token (Kakao Developers biz app with 비즈니스 인증 + Keyword Ad permission)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "creatives_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (카카오 키워드광고 API) Confidence: **high**.",
+  "base_urls": [
+   "https://apis.moment.kakao.com/keywordad/openapi/v1/…"
+  ],
+  "auth": [
+   "1. Kakao Developers app → 비즈 앱 → 비즈니스 인증 → request the Keyword Ad permission.",
+   "2. Business token (OAuth) with the required consents.",
+   "3. Premium Link campaigns only; TalkChannel ads report-only."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /adAccounts` · `/campaigns` · `/adGroups` · `/keywords` · `/creatives",
+    "purpose": "read structure + metrics",
+    "notes": "adAccountId, campaignId, adGroupId, keywordId, creativeId"
+   },
+   {
+    "call": "PUT …/onOff` · daily budget · bid updates",
+    "purpose": "budgets_bids + status",
+    "notes": "dailyBudgetAmount, bidAmount, config"
+   },
+   {
+    "call": "image / business document registration",
+    "purpose": "creatives / compliance",
+    "notes": "file"
+   },
+   {
+    "call": "report endpoints",
+    "purpose": "reports",
+    "notes": "level, dates"
+   }
+  ],
+  "limits": " - Kakao app quotas; free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.kakao.com/docs/latest/ko/keyword-ad/common"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.keywordad.kakao.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "bearer",
+   "field": "business_token",
+   "extra_headers": {
+    "adAccountId": "ad_account_id"
+   },
+   "fields": [
+    {
+     "name": "business_token",
+     "required": true,
+     "help": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to the keyword_management scope in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). It has no refresh flow; it expires after long non-use."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "ad_account_id",
+    "required": true,
+    "help": "Kakao keyword ad account id (numeric, without the K prefix), sent as the `adAccountId` header that every campaign and report call requires."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://kapi.kakao.com/v1/business/tokeninfo",
+    "docs": "https://developers.kakao.com/docs/latest/ko/business-auth/rest-api",
+    "note": "GET https://kapi.kakao.com/v1/business/tokeninfo: validates the business token ({id, token_user_id, biz_agreements [{group, scope, ad_account_ids}], status})."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/openapi/v1/adAccounts/pages",
+    "params": {
+     "page": "page0",
+     "size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "content",
+     "key": "accounts",
+     "total": "totalElements",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/keyword-ad/ad-account",
+    "note": "GET /openapi/v1/adAccounts/pages (page is 0-based upstream): keyword ad accounts (ON and OFF) with raw.memberType and raw.config. Amounts are KRW."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/openapi/v1/campaigns",
+    "params": {
+     "config": "status"
+    },
+    "result": {
+     "items": "$",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "config",
+      "budget": "dailyBudgetAmount",
+      "currency": "=KRW"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/keyword-ad/campaign",
+    "note": "GET /openapi/v1/campaigns for the account in the ad_account_id config (adAccountId header; account_id is not sent). `status` filters config: ON, OFF or DEL. `budget` is the daily budget in KRW (null when unset); raw.status lists the serving states. No paging."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/openapi/v1/campaigns/report",
+    "params": {
+     "start": "date_from",
+     "end": "date_to"
+    },
+    "fixed_params": {
+     "metricsGroups": "BASIC"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "dimensions.campaignId",
+      "start": "start",
+      "end": "end",
+      "impressions": "metrics.imp",
+      "clicks": "metrics.click",
+      "spend": "metrics.spending",
+      "ctr": "metrics.ctr"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/keyword-ad/report",
+    "note": "GET /openapi/v1/campaigns/report?metricsGroups=BASIC&start=&end= for every campaign of the configured account (campaign_id is not a filter here). Kakao expects dates as yyyyMMdd: pass date_from/date_to like 20260901 (up to two years back). spend is KRW."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/openapi/v1/campaigns/{campaign_id}/dailyBudget",
+    "body": {
+     "dailyBudgetAmount": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/keyword-ad/campaign",
+    "note": "PATCH /openapi/v1/campaigns/{id}/dailyBudget {dailyBudgetAmount}: a whole number of KRW (`currency` is ignored); spends money. The campaign must belong to the configured ad account."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/openapi/v1/campaigns/{campaign_id}/onOff",
+    "body": {
+     "id": "int:campaign_id",
+     "config": "map:action:pause=OFF,resume=ON"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/keyword-ad/campaign",
+    "note": "PATCH /openapi/v1/campaigns/{id}/onOff {id, config: OFF|ON} (only campaigns currently ON or OFF). Resuming restarts spending. Kakao answers an empty 200."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.keywordad.kakao.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

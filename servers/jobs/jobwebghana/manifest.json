@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "jobwebghana-mcp",
+ "display_name": "Jobweb Ghana MCP",
+ "version": "0.1.0",
+ "description": "Jobweb Ghana (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobwebghana"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "WordPress post-type feed of job_listing posts (RSS 2.0, 10 per page). WordPress feeds take the site search as s and page with paged (https://wordpress.org/documentation/article/wordpress-feeds/); ?feed=job_feed answers 404 on this site. location and limit are not sent. title is 'Role at Employer'; description is the full post (content:encoded, HTML) and the WordPress post id is raw['post-id']. id is the posting permalink."
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "world_bank_indicators-mcp",
+ "display_name": "World Bank Indicators API MCP",
+ "version": "0.1.0",
+ "description": "World Bank Indicators API (market data): get_series. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "world_bank_indicators"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "get_series",
+   "description": "series_id is '<country>/<indicator>': an ISO3 or ISO2 country (or region/aggregate code such as WLD, EUU) and an indicator code, e.g. 'USA/NY.GDP.MKTP.CD' (GDP, current US$), 'BRA/FP.CPI.TOTL.ZG' (inflation). Annual points, newest first, value null where missing. A date window is sent only when both start and end are given (the years are used)."
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "id": "binelli",
+ "category": "automotive",
+ "label": "Binelli Group",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.binelli-group.ch",
+ "domain": "binelli-group.ch",
+ "country": "Switzerland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer site; homepage/footer scan and dev-path probes found no developer, API or partner-feed pages.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://binelli-group.ch/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

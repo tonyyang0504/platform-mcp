@@ -1,0 +1,127 @@
+{
+ "id": "weibo_fensitong",
+ "category": "ads",
+ "label": "微博广告 · 粉丝通 Weibo Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.weibo.com/fensitong",
+ "url": "https://open.weibo.com/fensitong",
+ "verified_at": "2026-09-25",
+ "terms_note": "Weibo open platform developer app + 粉丝通 application; targeting and CPE bidding described; API scope beyond app-promotion not readable. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Weibo open platform app; 粉丝通 application)",
+  "access": "apply",
+  "capabilities": [
+   "ads",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (粉丝通 developer programme on the Weibo open platform; public campaign API reference not found) Confidence: **medium**.",
+  "base_urls": [
+   "https://api.weibo.com/…"
+  ],
+  "auth": [
+   "1. Create a Weibo open platform application (open.weibo.com) and apply for 粉丝通 access ('创建应用').",
+   "2. OAuth 2.0 with the advertiser's Weibo account.",
+   "3. Submit the app / promotion to the 粉丝通 backend; targeting by age, gender, region, interest, Wi-Fi, Android / iOS; bid-based pricing."
+  ],
+  "endpoints": [
+   {
+    "call": "粉丝通 app promotion submission",
+    "purpose": "ads (app install)",
+    "notes": "app, target audience, bid"
+   },
+   {
+    "call": "reports",
+    "purpose": "performance",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "campaigns / budgets / creatives API",
+    "purpose": "not documented publicly",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free; Weibo open platform developer agreement; 粉丝通 approval.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://open.weibo.com/fensitong"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://open.weibo.com/fensitong renders only the 粉丝通应用推广 product FAQ (CPC bidding from 0.5元, '您可以登录到http://tui.weibo.com 上在线提交申请…首次充值金额是5000元') with links to tui.weibo.com and app detail pages; no API reference, endpoint, parameter or authentication page is linked, so nothing can be mapped."
+}

@@ -1,0 +1,322 @@
+{
+ "id": "wechat",
+ "category": "social",
+ "label": "WeChat",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://developers.weixin.qq.com/doc/service/guide/",
+ "url": "https://mp.weixin.qq.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free; the tenant needs a WeChat Official Account — most APIs (publish, customer-service messages, templates, comments, datacube) require a VERIFIED SERVICE ACCOUNT (认证服务号; subscription accounts get a subset), a server IP whitelist and a developer secret; access_token via GET /cgi-bin/token grant_type=client_credential (7200 s, one issuer per account); per-endpoint daily quotas (接口调用次数) per account; customer-service replies allowed only after a user action, max 5 messages within 48 h; broadcast (群发) limited to 4 per month for service accounts (1 per day for subscription accounts); to operate OTHER tenants' accounts a 微信开放平台第三方平台 (component_access_token, authorizer tokens) is the sanctioned route.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "templates",
+   "analytics",
+   "delete"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 20000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST cgi-bin/message/mass/sendall (msgtype=text) — unverified this pass",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST cgi-bin/material/add_material?type=image → mass/sendall (msgtype=image)",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "material/add_material?type=video → mass/sendall (msgtype=mpvideo)",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "same 留言管理 section",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "留言管理 (comment management) exists in the docs tree — endpoints unverified; our client implements none",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no mention concept; inbound user messages arrive on the message callback URL)",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST cgi-bin/message/custom/send {touser, msgtype, …} — 48-hour customer-service window",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no polling API; inbound messages are pushed to the account's callback URL and must be answered within the window)",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST cgi-bin/freepublish/delete {article_id, index} · message/mass/delete",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST cgi-bin/datacube/getarticlesummary | getarticletotal {begin_date, end_date}",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST cgi-bin/datacube/getusersummary | getusercumulate | getupstreammsg",
+   "docs": "https://developers.weixin.qq.com/doc/offiaccount/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.weixin.qq.com/cgi-bin/…"
+  ],
+  "auth": [
+   "1. Tenant owns a **verified Service Account** (认证服务号) — subscription accounts get only a subset (no 客服 for",
+   "2. `GET /cgi-bin/token?grant_type=client_credential&appid&secret` → `access_token` (7200 s). Only ONE token issuer",
+   "3. For a SaaS operating many tenants' accounts the sanctioned path is a 微信开放平台 **第三方平台** (component):",
+   "4. Inbound events / messages arrive at the configured server URL (signature check, optional AES encryption)."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /media/uploadimg` (article body images), `POST /material/add_material?type=image",
+    "purpose": "video",
+    "notes": "thumb`"
+   },
+   {
+    "call": "POST /draft/add` {articles[{title, author, digest, content (HTML), thumb_media_id, need_open_comment, only_fans_can_comment}]} → `media_id",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /freepublish/submit` {media_id} → `publish_id`; `POST /freepublish/get` (status)",
+    "purpose": "asynchronous",
+    "notes": ""
+   },
+   {
+    "call": "POST /freepublish/batchget`, `POST /freepublish/getarticle`, `POST /freepublish/delete",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/mass/sendall` (群发, 4 / month service account)",
+    "purpose": "marketing → propose only",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/custom/send",
+    "purpose": "only after a user action, ≤ 5 messages within 48 h",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/template/send`, `POST /message/subscribe/bizsend",
+    "purpose": "approved templates",
+    "notes": ""
+   },
+   {
+    "call": "POST /comment/list`, `/comment/reply/add`, `/comment/markelect`, `/comment/delete",
+    "purpose": "on published articles",
+    "notes": ""
+   },
+   {
+    "call": "POST /datacube/getarticlesummary`, `getarticletotal`, `getusersummary`, `getuserread`, `getupstreammsg",
+    "purpose": "per day, ≤ 7–30 days per call",
+    "notes": ""
+   },
+   {
+    "call": "POST /cgi-bin/openapi/quota/get` {cgi_path}",
+    "purpose": "remaining daily calls",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per-endpoint daily quotas per account (`openapi/quota/get`); token fetch quota 2000/day. - Customer-service window 48 h, 5 messages; templates / subscribe messages need category approval; 群发 caps. - 微信公众平台运营规范 forbids induced sharing, spam and off-platform automation of personal accounts.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.weixin.qq.com/doc/service/guide/",
+   "https://developers.weixin.qq.com/doc/offiaccount/Publish/Publish.html",
+   "https://developers.weixin.qq.com/doc/service/guide/product/kf/intro.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.weixin.qq.com/cgi-bin",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "errcode",
+   "ok_value": 0,
+   "error_field": "errmsg"
+  },
+  "envelope_note": "Failures arrive in HTTP 200 as a non-zero errcode with errmsg (e.g. 40001 invalid credential, 42001 access_token expired, 45009 daily quota, 45028 no masssend quota, 48001 api unauthorized); a success body may omit errcode. An expired token is not a 401, so the token is refreshed by its TTL (expires_in 7200 s).",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "GET",
+    "path": "/token",
+    "body": {
+     "grant_type": "client_credential",
+     "appid": "@appid",
+     "secret": "@secret"
+    }
+   },
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "token_ttl_seconds": 7200,
+   "token_param": "access_token",
+   "fields": [
+    {
+     "name": "appid",
+     "required": true,
+     "help": "AppID of the Official Account (服务号 / 公众号), sent with the AppSecret to GET https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential (https://developers.weixin.qq.com/doc/service/api/base/api_getaccesstoken); the calling server's IP must be on the account's API IP whitelist (errcode 40164 otherwise)."
+    },
+    {
+     "name": "secret",
+     "required": true,
+     "help": "AppSecret of the Official Account. The returned access_token (7200 s) travels as the access_token query parameter of every call; fetching a new one invalidates tokens held by other servers of the same account."
+    }
+   ]
+  },
+  "terms": "Mass sends, comment management and mass delete are limited to verified (认证) accounts; mass sends are quota-limited per account type (errcode 45028 when used up) and may await an administrator's confirmation when API 群发保护 is on.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/get_api_domain_ip",
+    "docs": "https://developers.weixin.qq.com/doc/service/api/base/api_getapidomainip",
+    "note": "The Official Account API has no 'who am I' call: getApiDomainIp (GET /cgi-bin/get_api_domain_ip) verifies that the AppID / AppSecret mint a working access_token and returns {ip_list} of WeChat API servers."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/message/mass/sendall",
+    "body": {
+     "filter.is_to_all": "json:true",
+     "msgtype": "=text",
+     "text.content": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "msg_id"
+     }
+    },
+    "docs": "https://developers.weixin.qq.com/doc/service/api/notify/message/api_sendall",
+    "note": "PUBLISHES TO ALL FOLLOWERS: sendAll {filter: {is_to_all: true}, msgtype: 'text', text: {content}} submits a mass-send (群发) job to every follower of the Official Account; it consumes the account's limited mass-send quota (errcode 45028 'has no masssend quota') and, with API 群发保护 on, waits up to 30 minutes for an administrator's confirmation. Success means the job was accepted, not delivered. `id` is msg_id (the send task id). `reply_to` is ignored. No clientmsgid is sent, so WeChat dedupes identical content to the same audience within 24 h by its own digest."
+   },
+   "read_comments": {
+    "method": "POST",
+    "path": "/comment/list",
+    "body": {
+     "msg_data_id": "int:post_id",
+     "begin": "offset",
+     "count": "limit",
+     "type": "json:0"
+    },
+    "default_limit": 20,
+    "max_limit": 49,
+    "result": {
+     "items": "comment",
+     "key": "comments",
+     "total": "total",
+     "fields": {
+      "id": "user_comment_id",
+      "author": "openid",
+      "text": "content",
+      "created_at": "create_time"
+     }
+    },
+    "docs": "https://developers.weixin.qq.com/doc/service/api/leaving/api_listcomment",
+    "note": "listComment {msg_data_id (`post_id`: the numeric msg_data_id returned when an ARTICLE (mpnews) was mass-sent, not the msg_id of a text send), begin, count (<50), type: 0 (ordinary + selected comments)} for the first article of the send. Verified accounts only (88000 'without comment privilege'). created_at is a Unix timestamp; the account's reply sits under raw.reply; author is the commenter's openid (absent for non-WeChat identities)."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/message/mass/delete",
+    "body": {
+     "msg_id": "int:post_id",
+     "article_idx": "json:0"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.weixin.qq.com/doc/service/api/notify/message/api_deletemassmsg",
+    "note": "DESTRUCTIVE: deleteMassMsg {msg_id, article_idx: 0} invalidates the body of ALL articles of that API mass send ('该字段不填或填0会删除全部内容'); followers keep the message card. Only article (mpnews) and video sends can be deleted - '其他类型的消息一经发送，无法删除', so a text publish_text cannot be withdrawn (errcode 40008 / 40065)."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Mass-sent images must be WeChat media_ids (images.media_ids) obtained by uploading the file first (https://developers.weixin.qq.com/doc/service/api/notify/message/api_sendall, 新增临时素材); the runtime has no multipart upload, and image URLs are not accepted.",
+   "reply_comment": "replyComment needs msg_data_id and index of the article besides user_comment_id (https://developers.weixin.qq.com/doc/service/api/leaving/api_replycomment); a comment id alone cannot address it.",
+   "read_mentions": "Official Accounts have no mention concept; user messages are pushed to the account's callback URL only (https://developers.weixin.qq.com/doc/service/guide/).",
+   "analytics_post": "Article statistics (datacube getarticlesummary / getarticletotal) are queried by begin_date / end_date for the whole account, not by a post id (https://developers.weixin.qq.com/doc/service/api/)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.weixin.qq.com: DNS ok, TLSv1.2 (DigiCert, Inc.)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.weixin.qq.com/cgi-bin/token: 200",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

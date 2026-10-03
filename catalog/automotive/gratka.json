@@ -1,0 +1,37 @@
+{
+ "id": "gratka",
+ "category": "automotive",
+ "label": "Motogratka",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://motogratka.pl",
+ "domain": "motogratka.pl",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). No official Gratka API docs found; dealers post via third-party multiposting (AKOL). Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://motogratka.pl/"
+  ],
+  "unofficial": [
+   "https://akol.pl/"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "freelancer-competitions-mcp",
+ "display_name": "Freelancer MCP",
+ "version": "0.1.0",
+ "description": "Freelancer (competitions): me, discover, get_competition. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "competitions/freelancer"
+   ],
+   "env": {
+    "PLATFORM_MCP_FREELANCER_ACCESS_TOKEN": "${user_config.platform_mcp_freelancer_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_freelancer_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCER_ACCESS_TOKEN",
+   "description": "OAuth access token with the `basic` scope (a personal access token from https://accounts.freelancer.com/settings/develop works); sent in the freelancer-oauth-v1 header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /users/0.1/self/: the logged-in user (under `result`)."
+  },
+  {
+   "name": "discover",
+   "description": "GET /contests/0.1/contests/active/ (query = space-separated terms matched against names and descriptions; limit/offset): active contests only, so `status` is not sent. `kind` is the contest type (e.g. guaranteed). prize (number) with currency, time_ended (Unix seconds), seo_url and jobs stay in `raw`."
+  },
+  {
+   "name": "get_competition",
+   "description": "GET /contests/0.1/contests/{contest_id}/ (numeric id); the API answers {result: {contests: [contest]}}, and an unknown id is an empty list (invalid_input). prize, currency, time_ended and judging_period_days stay in `raw`."
+  }
+ ]
+}

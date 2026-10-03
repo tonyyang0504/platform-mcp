@@ -1,0 +1,42 @@
+{
+ "id": "jammer",
+ "category": "automotive",
+ "label": "Jammer",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://jammer.ie",
+ "domain": "jammer.ie",
+ "country": "Ireland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Jammer.ie states dealers can bulk-import from their DMS; no public API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jammer.ie/",
+   "https://jammer.ie/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Jammer.ie states dealers can bulk-import from their DMS; no public API docs."
+}

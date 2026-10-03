@@ -1,0 +1,69 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/lulu-mcp",
+ "description": "Lulu Print API (Lulu Direct) (cross-ref lulu_print_api in Books & media) (ecommerce suppliers): me, ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.lulu.com/docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "lulu"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LULU_CLIENT_ID",
+     "description": "Client key of your Lulu Print API account (developers.lulu.com > API Keys); sent with the secret as HTTP Basic on the client-credentials token request.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LULU_CLIENT_SECRET",
+     "description": "Client secret from the same page. Sandbox keys belong to https://api.sandbox.lulu.com, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LULU_CONTACT_EMAIL",
+     "description": "contact_email sent with create_order (required by POST /print-jobs/): who Lulu contacts about the Print-Job.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_LULU_ENV",
+     "description": "Vendor environment (default production): sandbox = https://api.sandbox.lulu.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_LULU_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

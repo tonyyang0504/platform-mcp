@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/openfigi-mcp",
+ "description": "OpenFIGI (instrument identifiers) (market data): search_symbols. Every tool maps to a documented end",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.openfigi.com/api/documentation",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "openfigi"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_OPENFIGI_API_KEY",
+     "description": "Optional OpenFIGI API key (sign up at https://www.openfigi.com/user/signup); raises the search limit from 5 to 20 requests per minute. Sent as X-OPENFIGI-APIKEY.",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

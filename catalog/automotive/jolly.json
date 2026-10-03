@@ -1,0 +1,35 @@
+{
+ "id": "jolly",
+ "category": "automotive",
+ "label": "Jollymotors",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://jollymotors.in",
+ "domain": "jollymotors.in",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer site; homepage/footer scan and dev-path probes (/developers,/api,/docs,/partners,...) found no developer, API or partner-feed pages and none is known.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jollymotors.in/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

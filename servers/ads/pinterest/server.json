@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/pinterest-ads-mcp",
+ "description": "Pinterest Ads (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Eve",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.pinterest.com/docs/api/v5/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ads/pinterest"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_PINTEREST_CLIENT_ID",
+     "description": "Pinterest app id; HTTP Basic username on POST https://api.pinterest.com/v5/oauth/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PINTEREST_CLIENT_SECRET",
+     "description": "Pinterest app secret key; HTTP Basic password on the token request.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PINTEREST_REFRESH_TOKEN",
+     "description": "Refresh token (starts with `pinr`) from the authorization-code flow with scopes user_accounts:read, ads:read and ads:write. Continuous refresh tokens last 60 days and every refresh returns a new one: the runtime keeps the rotated token in memory, and when PLATFORM_MCP_STATE_DIR is set it saves it to <dir>/pinterest.json (mode 0600) and prefers it over this variable on the next start.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PINTEREST_AD_ACCOUNT_ID",
+     "description": "Ad account id (digits) that update_budget and pause_resume PATCH (PATCH /v5/ad_accounts/{ad_account_id}/campaigns); those verbs take only a campaign id.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

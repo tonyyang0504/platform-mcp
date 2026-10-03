@@ -1,0 +1,186 @@
+{
+ "id": "webflow",
+ "category": "builder_tools",
+ "label": "Webflow",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://developers.webflow.com/data/reference",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "sites_list",
+   "cms_collections",
+   "cms_items_create_update_publish",
+   "assets_upload",
+   "pages",
+   "site_publish",
+   "webhooks",
+   "forms",
+   "ecommerce_products_orders"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/webflow/js-webflow-api",
+   "https://github.com/webflow/webflow-python"
+  ]
+ },
+ "official_mcp": [
+  "https://developers.webflow.com/data/docs/ai-tools",
+  "https://github.com/webflow/mcp-server"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://developers.webflow.com/data/docs/ai-tools",
+   "https://github.com/webflow/mcp-server",
+   "https://github.com/webflow/js-webflow-api",
+   "https://github.com/webflow/webflow-python"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.webflow.com/v2",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Webflow site API token (Site settings > Apps & integrations > API access) or OAuth access token with CMS:read/CMS:write (and authorized_user:read for me)."
+    }
+   ]
+  },
+  "terms": "Rate limit 60 requests/minute (120 on CMS/Business plans); respect X-RateLimit-Remaining.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/token/authorized_by",
+    "docs": "https://developers.webflow.com/data/reference/token/authorized-by",
+    "note": "GET /v2/token/authorized_by: the user who authorized the token (id, email, name)."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/collections/{collection}/items",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "name": "query"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "total": "pagination.total",
+     "fields": {
+      "id": "id",
+      "title": "fieldData.name",
+      "url": "fieldData.slug",
+      "updated_at": "lastUpdated",
+      "is_draft": "isDraft"
+     }
+    },
+    "docs": "https://developers.webflow.com/data/reference/cms/collection-items/staged-items/list-items",
+    "note": "GET /v2/collections/{collection_id}/items?offset&limit (≤100)&name: staged CMS items of the collection (collection is required: a collection id). query filters by exact item name; url is the item slug."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/collections/{collection}/items/{item_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "fieldData.name",
+      "url": "fieldData.slug",
+      "updated_at": "lastUpdated",
+      "content": "fieldData"
+     }
+    },
+    "docs": "https://developers.webflow.com/data/reference/cms/collection-items/staged-items/get-item",
+    "note": "GET /v2/collections/{collection_id}/items/{item_id}: one staged item; content is its fieldData object."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/collections/{collection}/items",
+    "body": {
+     "fieldData": "fields",
+     "fieldData.name": "title"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "=created",
+      "is_draft": "isDraft"
+     }
+    },
+    "docs": "https://developers.webflow.com/data/reference/cms/collection-items/staged-items/create-item",
+    "note": "POST /v2/collections/{collection_id}/items {fieldData: {name, slug, …}}: fields is the fieldData (slug is required by Webflow; rich-text fields take HTML), title sets name. The item is staged; publish it with the site/items publish endpoints. content is not sent (field slugs differ per collection)."
+   },
+   "update_item": {
+    "method": "PATCH",
+    "path": "/collections/{collection}/items/{item_id}",
+    "body": {
+     "fieldData": "fields",
+     "fieldData.name": "title"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "=updated",
+      "is_draft": "isDraft"
+     }
+    },
+    "docs": "https://developers.webflow.com/data/reference/cms/collection-items/staged-items/update-item",
+    "note": "PATCH /v2/collections/{collection_id}/items/{item_id} {fieldData}: updates the given fields of the staged item."
+   },
+   "delete_item": {
+    "method": "DELETE",
+    "path": "/collections/{collection}/items/{item_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.webflow.com/data/reference/cms/collection-items/staged-items/delete-item",
+    "note": "DELETE /v2/collections/{collection_id}/items/{item_id}: deletes the staged item (a published copy stays live until unpublished)."
+   }
+  },
+  "not_offered": {
+   "generate_image": "Webflow's Data API has no generation endpoints.",
+   "generate_video": "Webflow's Data API has no generation endpoints.",
+   "get_job": "No generation jobs in the Data API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.webflow.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/webflow/openapi-spec/main/openapi/v2.yml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

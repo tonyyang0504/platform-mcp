@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/circle-mcp",
+ "description": "Circle (marketplaces): me, list_sales, list_refunds, refund. Every tool maps to a documented endpoin",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.circle.so",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "circle"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CIRCLE_ADMIN_TOKEN",
+     "description": "Circle Admin API v2 token (community Settings > Developers > Tokens, type Admin V2; Business plan or above) sent as Authorization: Bearer per the Admin API quick start (the Swagger spec documents the same header as 'Token <token>').",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,133 @@
+{
+ "id": "kucoin",
+ "category": "trading",
+ "label": "KuCoin (spot)",
+ "lane": "api",
+ "docs_url": "https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-all-symbols",
+ "url": "https://www.kucoin.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only (no API key). HTML docs (no OpenAPI link on the pages). Every answer is HTTP 200 {code, data|msg}; success is code \"200000\". Live 2026-10-01: an unknown symbol on /api/v1/market/stats answers code 200000 with every field null (no error), so the entry fails the call when data.last is null; /api/v1/market/candles answers {\"code\":\"400100\",\"msg\":\"Unsupported trading pair.\"}. Candle rows are [time(s), open, CLOSE, HIGH, LOW, volume, turnover], newest first - not the usual OHLC order. Public REST weight limits per IP (see the rate-limit page).",
+ "adapter": {
+  "base_url": "https://api.kucoin.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "200000",
+   "error_field": "msg",
+   "fail_when": {
+    "data.last": null
+   }
+  },
+  "error_kinds": [
+   {
+    "status": 200,
+    "match": "Unsupported trading pair",
+    "kind": "not_found"
+   },
+   {
+    "status": 200,
+    "match": "data.last is null",
+    "kind": "not_found",
+    "note": "stats for an unknown symbol: code 200000 with every field null"
+   },
+   {
+    "status": 200,
+    "match": "Incorrect candlestick type",
+    "kind": "invalid_input"
+   }
+  ],
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/api/v2/symbols",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "base",
+        "quote"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "symbol",
+      "base": "baseCurrency",
+      "quote": "quoteCurrency",
+      "type": "market"
+     }
+    },
+    "docs": "https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-all-symbols",
+    "note": "Every spot symbol (BTC-USDT style); paged locally; query is a substring of symbol/base/quote."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/api/v1/market/stats",
+    "params": {
+     "symbol": "symbol"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "symbol": "symbol",
+      "last": "num:last",
+      "bid": "num:buy",
+      "ask": "num:sell",
+      "volume": "num:vol"
+     }
+    },
+    "docs": "https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-24hr-stats",
+    "note": "24h statistics; volume is the 24h base volume."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/api/v1/market/candles",
+    "params": {
+     "symbol": "symbol",
+     "type": "map:interval:1m=1min,3m=3min,5m=5min,15m=15min,30m=30min,1h=1hour,2h=2hour,4h=4hour,6h=6hour,8h=8hour,12h=12hour,1d=1day,1w=1week,1M=1month"
+    },
+    "default_limit": 100,
+    "max_limit": 1500,
+    "result": {
+     "items": "data",
+     "key": "candles",
+     "cap": "head",
+     "fields": {
+      "time": "iso:0",
+      "open": "num:1",
+      "close": "num:2",
+      "high": "num:3",
+      "low": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-klines",
+    "note": "interval: 1m 3m 5m 15m 30m 1h 2h 4h 6h 8h 12h 1d 1w 1M. Newest first; at most 1500 per call; the newest `limit` are returned."
+   }
+  },
+  "not_offered": {
+   "me": "Account endpoints need KC-API-KEY, an HMAC-SHA256 KC-API-SIGN and an encrypted passphrase; public-data entry only.",
+   "get_balances": "GET /api/v1/accounts needs an API key; public-data entry only.",
+   "list_orders": "GET /api/v1/orders needs an API key; public-data entry only.",
+   "place_order": "POST /api/v1/orders needs an API key and spends money; not mapped.",
+   "cancel_order": "DELETE /api/v1/orders/{orderId} needs an API key; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

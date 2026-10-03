@@ -1,0 +1,215 @@
+{
+ "id": "boamp",
+ "category": "deals",
+ "label": "BOAMP",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "fr"
+ ],
+ "docs_url": "https://www.boamp.fr/pages/api-boamp/",
+ "url": "https://www.boamp.fr/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Licence Ouverte (DILA open data); keyless; Opendatasoft default quotas apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (Opendatasoft Explore API v2.1)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (open-data Explore API). Lane `assist` → **keep**; API for discovery. Confidence high.",
+  "base_urls": [
+   "https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records"
+  ],
+  "auth": [
+   "1. None (anonymous, Licence Ouverte)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /records?where=…&order_by=dateparution desc&limit=100",
+    "purpose": "search",
+    "notes": "idweb, objet, famille, famille_libelle, code_departement, dateparution, datelimitereponse, nomacheteur, url"
+   },
+   {
+    "call": "GET /records/{id}",
+    "purpose": "details",
+    "notes": "one notice"
+   },
+   {
+    "call": "GET /exports/csv",
+    "purpose": "bulk",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Opendatasoft quota; bids are lodged on the buyer's profile platform.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.boamp.fr/pages/api-boamp/",
+   "https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records?limit=1"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 5,
+  "rate_note": "Anonymous Opendatasoft quota answered on 2026-09-25 as X-RateLimit-Limit: 2000000 per day (reset 00:00 UTC); records endpoint: limit ≤ 100 and offset+limit < 10000. Five requests per second.",
+  "terms": "BOAMP data (DILA) under the Licence Ouverte / Etalab; responses are submitted on the buyer's profile platform named in the notice, not through this API.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/records",
+    "params": {
+     "where": "fmt:\"{query}\"",
+     "refine": "fmt:descripteur_libelle:{category}",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "order_by": "dateparution desc"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "total": "total_count",
+     "fields": {
+      "id": "idweb",
+      "title": "objet",
+      "buyer": "nomacheteur",
+      "posted_at": "dateparution",
+      "deadline": "datelimitereponse",
+      "url": "url_avis",
+      "skills": "descripteur_libelle"
+     }
+    },
+    "docs": "https://boamp-datadila.opendatasoft.com/api/explore/v2.1/swagger.json",
+    "note": "GET /api/explore/v2.1/catalog/datasets/boamp/records (Opendatasoft Explore API v2.1, linked from https://www.boamp.fr/pages/api-boamp/). `query` is sent as a quoted ODSQL string literal in `where` ('a simple full-text search'), e.g. toiture vichy → where=\"toiture vichy\"; a double quote inside the query breaks the clause (ODSQLSyntaxError). `category` refines on the descripteur_libelle facet (exact French label, e.g. Maîtrise d'oeuvre, Bâtiment, Prestations de services). Newest first (order_by dateparution desc). The dataset holds every BOAMP notice type — contract notices, award results, corrections — check raw.nature_categorise_libelle ('Avis de marché' = open call) and deadline (datelimitereponse). min_budget is not sent (no amount field). offset+limit must stay below 10000. id is the BOAMP idweb (e.g. 26-91551)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/records",
+    "params": {
+     "where": "fmt:idweb=\"{id}\""
+    },
+    "fixed_params": {
+     "limit": "1"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "id": "idweb",
+      "title": "objet",
+      "buyer": "nomacheteur",
+      "posted_at": "dateparution",
+      "deadline": "datelimitereponse",
+      "url": "url_avis",
+      "skills": "descripteur_libelle"
+     }
+    },
+    "docs": "https://boamp-datadila.opendatasoft.com/api/explore/v2.1/swagger.json",
+    "note": "GET /records?where=idweb=\"<id>\"&limit=1 — the dataset's GET /records/{record_id} takes the internal record id, not the BOAMP number, so the notice is fetched by filtering on idweb. An unknown idweb returns no record (invalid_input). The full notice (eForms / legacy XML converted to JSON) is in raw.donnees and raw.gestion as JSON strings."
+   }
+  },
+  "not_offered": {
+   "me": "Anonymous open-data API; no account to verify.",
+   "submit_bid": "Read-only open-data API; tenders are submitted on the buyer's profile platform (raw.donnees/url_avis give the link).",
+   "withdraw_bid": "Read-only open-data API (see submit_bid).",
+   "bid_status": "Read-only open-data API (see submit_bid).",
+   "list_messages": "No messaging; the Explore API only supports GET over datasets.",
+   "send_message": "No messaging; 'Only the HTTP GET method is supported.'",
+   "credits": "No account or credit endpoint; the quota is reported in X-RateLimit-* headers only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

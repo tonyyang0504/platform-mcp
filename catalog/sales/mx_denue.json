@@ -1,0 +1,36 @@
+{
+ "id": "mx_denue",
+ "category": "sales",
+ "label": "INEGI DENUE API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "mx"
+ ],
+ "docs_url": "https://www.inegi.org.mx/servicios/api_denue.html",
+ "url": "https://www.inegi.org.mx/app/mapa/denue/",
+ "verified_at": "2026-09-05",
+ "terms_note": "REST API with a free INEGI token → platform-key; robots.txt (44 Disallow) irrelevant for the API.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,289 @@
+{
+ "id": "aws_partner_network",
+ "category": "deals",
+ "label": "AWS Partner Network",
+ "lane": "human",
+ "kind": "expert_directory",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.aws.amazon.com/partner-central/latest/APIReference/Welcome.html",
+ "url": "https://aws.amazon.com/partners/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "Only registered APN partners with Partner Central + an AWS account may call it; AWS SDK auth; APN terms apply; no fee for the API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "aws_sigv4 (IAM credentials of the partner's AWS account linked to Partner Central)",
+  "access": "partner_only",
+  "capabilities": [
+   "search",
+   "details",
+   "engagement_invitations",
+   "profile_sync"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "AWS SDKs (partnercentral-selling)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Partner Central Selling API — co-sell opportunities and engagement invitations for APN partners). Lane `human` → **keep** (partner gate). Confidence high.",
+  "base_urls": [],
+  "auth": [
+   "1. Join APN, link Partner Central to an AWS account, create IAM credentials with Partner Central permissions."
+  ],
+  "endpoints": [
+   {
+    "call": "ListEngagementInvitations` / `GetEngagementInvitation",
+    "purpose": "search + details (AWS-originated opportunities shared with the partner)",
+    "notes": "Catalog, status, payload"
+   },
+   {
+    "call": "StartEngagementByAcceptingInvitationTask",
+    "purpose": "accept an invitation",
+    "notes": "identifier"
+   },
+   {
+    "call": "ListOpportunities` / `GetOpportunity` / `CreateOpportunity",
+    "purpose": "co-sell pipeline",
+    "notes": "LifeCycle, Project, Customer"
+   }
+  ],
+  "limits": " - APN membership required; AWS Customer Agreement + APN terms; SDK throttling limits apply. - Only registered APN partners with Partner Central + an AWS account may call it; AWS SDK auth; APN terms apply; no fee for the API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.aws.amazon.com/partner-central/latest/APIReference/Welcome.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://partnercentral-selling.us-east-1.api.aws",
+  "rate_per_second": 2,
+  "headers": {
+   "Content-Type": "application/x-amz-json-1.0",
+   "X-Amzn-User-Agent": "platform-mcp|platform-mcp"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key_id",
+     "required": true,
+     "help": "Access key id of an IAM user or role session in the AWS Marketplace seller account linked to Partner Central, with a policy such as AWSPartnerCentralOpportunityManagement (https://docs.aws.amazon.com/partner-central/latest/developer-guide/setup-authentication.html)."
+    },
+    {
+     "name": "secret_access_key",
+     "required": true,
+     "help": "Secret access key of that IAM identity; never sent, used for the SigV4 signature."
+    },
+    {
+     "name": "session_token",
+     "required": false,
+     "help": "Session token when the keys are temporary (assumed role / SSO); sent as X-Amz-Security-Token."
+    }
+   ],
+   "sign": {
+    "mode": "aws_sigv4",
+    "service": "partnercentral-selling",
+    "region": "us-east-1"
+   }
+  },
+  "terms": "AWS Partner Central Selling API (https://docs.aws.amazon.com/partner-central/latest/developer-guide/setup-authentication.html): awsJson1_0 — every request is a POST to https://partnercentral-selling.us-east-1.api.aws/ with Content-Type application/x-amz-json-1.0, X-Amz-Target AWSPartnerCentralSelling.<Operation> and an AWS SigV4 signature (service partnercentral-selling, us-east-1 only: https://docs.aws.amazon.com/partner-central/latest/developer-guide/selling-regions.html). The AWS account must be linked to Partner Central. Catalog is always AWS (production); Sandbox is not selectable.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/",
+    "headers": {
+     "X-Amz-Target": "AWSPartnerCentralSelling.ListEngagementInvitations"
+    },
+    "body": {
+     "Catalog": "=AWS",
+     "ParticipantType": "=RECEIVER",
+     "MaxResults": "json:1"
+    },
+    "docs": "https://docs.aws.amazon.com/partner-central/latest/APIReference/API_ListEngagementInvitations.html",
+    "note": "No identity call exists in the Selling API; the probe lists one received engagement invitation, which verifies the signature and the Partner Central account link."
+   },
+   "search_postings": {
+    "method": "POST",
+    "path": "/",
+    "headers": {
+     "X-Amz-Target": "AWSPartnerCentralSelling.ListEngagementInvitations"
+    },
+    "body": {
+     "Catalog": "=AWS",
+     "ParticipantType": "=RECEIVER",
+     "MaxResults": "limit",
+     "NextToken": "cursor"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "EngagementInvitationSummaries",
+     "key": "postings",
+     "next_cursor": "NextToken",
+     "fields": {
+      "id": "Id",
+      "title": "EngagementTitle",
+      "buyer": "SenderCompanyName",
+      "posted_at": "InvitationDate",
+      "deadline": "ExpirationDate"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/partner-central/latest/APIReference/API_ListEngagementInvitations.html",
+    "note": "ListEngagementInvitations (ParticipantType RECEIVER): opportunities and leads that AWS shared with the partner ('helping them track opportunities shared by AWS'), each {Id (engi-…), EngagementTitle, SenderCompanyName, InvitationDate, ExpirationDate (invitations expire after 15 days), Status (PENDING, ACCEPTED, REJECTED, EXPIRED), PayloadType (OpportunityInvitation | LeadInvitation)}; paged with NextToken → next_cursor. query, category and min_budget are not sent (the API filters only by status, payload type, sender and engagement id)."
+   },
+   "get_posting": {
+    "method": "POST",
+    "path": "/",
+    "headers": {
+     "X-Amz-Target": "AWSPartnerCentralSelling.GetEngagementInvitation"
+    },
+    "body": {
+     "Catalog": "=AWS",
+     "Identifier": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "Id",
+      "title": "EngagementTitle",
+      "buyer": "SenderCompanyName",
+      "posted_at": "InvitationDate",
+      "deadline": "ExpirationDate",
+      "description": "EngagementDescription"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/partner-central/latest/APIReference/API_GetEngagementInvitation.html",
+    "note": "GetEngagementInvitation: the invitation with EngagementTitle, EngagementDescription, InvitationMessage, Payload.OpportunityInvitation {Customer, Project (Title, CustomerUseCase, ExpectedCustomerSpend …), SenderContacts, ReceiverResponsibilities} and EnrichmentContext insights (all in raw). Customer street address, contacts and AWS account id are only revealed after acceptance."
+   },
+   "submit_bid": {
+    "method": "POST",
+    "path": "/",
+    "headers": {
+     "X-Amz-Target": "AWSPartnerCentralSelling.StartEngagementByAcceptingInvitationTask"
+    },
+    "body": {
+     "Catalog": "=AWS",
+     "ClientToken": "uuid",
+     "Identifier": "posting_id"
+    },
+    "result": {
+     "fields": {
+      "bid_id": "TaskId",
+      "status": "TaskStatus"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/partner-central/latest/APIReference/API_StartEngagementByAcceptingInvitationTask.html",
+    "note": "Accepting an AWS referral is the partner's commitment to pursue it: StartEngagementByAcceptingInvitationTask 'starts the engagement by accepting an EngagementInvitation' — asynchronously accepts it and creates an opportunity in the partner's account. bid_id is the TaskId (task-…), status the TaskStatus (IN_PROGRESS, COMPLETE, FAILED); poll with bid_status. AWS referrals carry no price, so amount, currency, period_days and message are not sent. Accepting cannot be undone."
+   },
+   "bid_status": {
+    "method": "POST",
+    "path": "/",
+    "headers": {
+     "X-Amz-Target": "AWSPartnerCentralSelling.ListEngagementByAcceptingInvitationTasks"
+    },
+    "body": {
+     "Catalog": "=AWS",
+     "TaskIdentifier.0": "bid_id"
+    },
+    "result": {
+     "root": "TaskSummaries.0",
+     "fields": {
+      "bid_id": "TaskId",
+      "status": "TaskStatus"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/partner-central/latest/APIReference/API_ListEngagementByAcceptingInvitationTasks.html",
+    "note": "ListEngagementByAcceptingInvitationTasks filtered by TaskIdentifier: TaskStatus (IN_PROGRESS, COMPLETE, FAILED), ReasonCode/Message on failure, and OpportunityId of the opportunity created in the partner's account (raw)."
+   }
+  },
+  "not_offered": {
+   "withdraw_bid": "An accepted invitation cannot be withdrawn: RejectEngagementInvitation applies only to invitations not yet accepted ('If the partner decides not to pursue the opportunity, they can reject the invitation … Once rejected, access to the opportunity is lost', https://docs.aws.amazon.com/partner-central/latest/developer-guide/working-with-opportunities-from-aws.html), and it takes the invitation id, not the acceptance task id that submit_bid returns.",
+   "list_messages": "The Selling API has no messaging operations; its actions cover opportunities, engagement invitations, engagements, resource snapshots and solutions (https://docs.aws.amazon.com/partner-central/latest/APIReference/API_Operations.html).",
+   "send_message": "The Selling API has no messaging operations (https://docs.aws.amazon.com/partner-central/latest/APIReference/API_Operations.html); an invitation carries a one-way InvitationMessage from AWS.",
+   "credits": "Referrals are free to accept; the Selling API has no credit, quota-balance or connects concept (https://docs.aws.amazon.com/partner-central/latest/APIReference/Welcome.html)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key_id, secret_access_key; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

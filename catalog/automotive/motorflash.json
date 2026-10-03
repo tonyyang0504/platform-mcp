@@ -1,0 +1,43 @@
+{
+ "id": "motorflash",
+ "category": "automotive",
+ "label": "Motorflash",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.motorflash.com",
+ "domain": "motorflash.com",
+ "country": "Spain",
+ "official_api": false,
+ "docs_url": "https://apimf.motorflash.com/api/doc",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "HTTP Basic (docs and API behind credentials)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "search_listings"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Motorflash (dealer software/multipublisher) runs API Motorflash 1.0 whose docs are behind Basic auth; access for client dealers/integration partners only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://apimf.motorflash.com/",
+   "https://www.motorflashsolutions.com/en"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Motorflash (dealer software/multipublisher) runs API Motorflash 1.0 whose docs are behind Basic auth; access for client dealers/integration partners only."
+}

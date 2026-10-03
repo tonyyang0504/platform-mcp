@@ -1,0 +1,286 @@
+{
+ "id": "line",
+ "category": "social",
+ "label": "LINE",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "jp",
+  "tw",
+  "sea"
+ ],
+ "docs_url": "https://developers.line.biz/en/docs/messaging-api/",
+ "url": "https://www.line.me/en/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Needs a LINE Official Account + a Messaging API channel; reply messages are free, push / multicast / narrowcast / broadcast consume the plan's monthly message quota (free tier 200 messages/month in JP; paid Light / Standard plans; JP additional-message fees revised 2026-10-01); channel access tokens (long-lived, or v2.1 JWT-assertion tokens); webhook must answer over HTTPS; rate limits are per endpoint (e.g. Get rich menu list cut from 2,000 rps to 10 rps on 2026-05-26).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "inbox_dm",
+   "reply",
+   "broadcast",
+   "templates",
+   "analytics",
+   "upload_media",
+   "webhooks",
+   "rich_menu"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "line-bot-sdk-python / -nodejs / -java / -go / -php (official)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 5000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/bot/message/broadcast (all friends) · POST /v2/bot/message/push (one user) · /multicast · /narrowcast",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same endpoints with `{\"type\":\"image\",\"originalContentUrl\",\"previewImageUrl\"}`",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same endpoints with `{\"type\":\"video\",\"originalContentUrl\",\"previewImageUrl\"}`",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no feed, no comments)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/bot/message/reply (webhook `replyToken`, free, one-shot, ~1 min TTL)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no mention feed; group mention events arrive by webhook only)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/bot/message/push {to: userId}",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no message-history endpoint; inbound arrives only via webhook, plus GET /v2/bot/message/{messageId}/content for media)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "— (a sent message cannot be recalled through the Messaging API)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v2/bot/insight/message/delivery?date= (+ /message/event for narrowcast)",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v2/bot/insight/followers?date=yyyyMMdd · GET /v2/bot/insight/demographic · GET /v2/bot/message/quota[/consumption]",
+   "docs": "https://developers.line.biz/en/reference/messaging-api/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (messaging; the VOOM feed is being discontinued).",
+  "base_urls": [
+   "https://api.line.me/v2/bot/…",
+   "https://api-data.line.me/v2/bot/…"
+  ],
+  "auth": [
+   "1. Tenant creates a **LINE Official Account**, then a Messaging API channel in the LINE Developers Console.",
+   "2. Channel access token: long-lived token from the console, or v2.1 tokens issued by JWT assertion",
+   "3. Webhook URL (HTTPS) verified from the console; verify `x-line-signature` (HMAC-SHA256 with the channel secret)."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/reply` {replyToken, messages[≤5]}",
+    "purpose": "free; token valid ~1 min",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/push` {to, messages}",
+    "purpose": "counts against the monthly quota",
+    "notes": ""
+   },
+   {
+    "call": "POST /message/multicast` (≤ 500 ids), `/message/narrowcast` (audience + demographic filters), `/message/broadcast",
+    "purpose": "marketing → propose-only",
+    "notes": ""
+   },
+   {
+    "call": "GET /message/quota`, `GET /message/quota/consumption",
+    "purpose": "plan's monthly free messages",
+    "notes": ""
+   },
+   {
+    "call": "GET /insight/message/delivery?date=`, `/insight/followers?date=`, `/insight/demographic`, `/insight/message/event?requestId=`; rich-menu statistics (2026-07-01)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /profile/{userId}`, `GET /followers/ids` (verified / premium accounts)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET api-data…/message/{messageId}/content",
+    "purpose": "user media",
+    "notes": ""
+   },
+   {
+    "call": "POST /richmenu`, `/richmenu/{id}/content`, `/user/all/richmenu/{id}",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Reply messages free; push / multicast / narrowcast / broadcast consume the Official Account plan's monthly quota (free plan 200 messages/month in JP; JP additional-message fees revised 2026-10-01). - Rate limits are per endpoint (Get rich menu list cut from 2,000 rps to 10 rps on 2026-05-26; send endpoints are documented in the \"Rate limits\" section of the reference). - **LINE VOOM is scheduled to be discontinued** (news 2026-08-26) — no organic feed publishing to plan for. - LINE Official Account terms: no spam, unsubscribe honoured (block), Japanese specified-commercial-transaction rules.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.line.biz/en/docs/messaging-api/overview/",
+   "https://developers.line.biz/en/reference/messaging-api/",
+   "https://developers.line.biz/en/news/2026/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.line.me",
+  "auth": {
+   "type": "bearer",
+   "field": "channel_access_token",
+   "fields": [
+    {
+     "name": "channel_access_token",
+     "required": true,
+     "help": "Channel access token of the LINE Official Account's Messaging API channel (long-lived token from the LINE Developers Console, or a v2.1 token), sent as 'Authorization: Bearer {channel access token}' (securitySchemes Bearer in https://github.com/line/line-openapi/blob/main/messaging-api.yml)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "LINE is a messaging / broadcast surface (LINE VOOM is being discontinued): a 'post' here is a broadcast to every friend of the Official Account, counted against the plan's monthly message quota.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/bot/info",
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#get-bot-info",
+    "note": "'Get bot info' returns userId, basicId, premiumId, displayName, pictureUrl, chatMode and markAsReadMode of the Official Account."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/v2/bot/message/broadcast",
+    "body": {
+     "messages.0.type": "=text",
+     "messages.0.text": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "=broadcast"
+     }
+    },
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#send-broadcast-message",
+    "note": "PUBLISHES TO EVERY FRIEND: POST /v2/bot/message/broadcast {messages: [{type: 'text', text}]} 'Sends a message to multiple users at any time' - every user who added the Official Account receives it and each delivery counts against the plan's monthly message quota (409 when the quota is exhausted). The response body is empty ({}); the only identifier, the x-line-request-id response header, is not exposed, so `id` is the literal 'broadcast'. `reply_to` is ignored (a broadcast cannot reply). No X-Line-Retry-Key is sent, so a retried call can deliver twice."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/v2/bot/message/broadcast",
+    "body": {
+     "messages.0.type": "=image",
+     "messages.0.originalContentUrl": "image_urls.0",
+     "messages.0.previewImageUrl": "image_urls.0"
+    },
+    "result": {
+     "fields": {
+      "id": "=broadcast"
+     }
+    },
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#image-message",
+    "note": "PUBLISHES TO EVERY FRIEND: broadcast of one image message {type: 'image', originalContentUrl, previewImageUrl} (both HTTPS URLs; JPEG/PNG; the first image_urls entry is used for both). Only the first image is sent and `text` is NOT sent (broadcast it separately with publish_text). Counts against the monthly message quota; `id` is the literal 'broadcast' because the request id travels only in a response header."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/v2/bot/insight/message/event",
+    "params": {
+     "requestId": "post_id"
+    },
+    "result": {
+     "fields": {
+      "post_id": "overview.requestId",
+      "delivered": "overview.delivered",
+      "unique_impression": "overview.uniqueImpression",
+      "unique_click": "overview.uniqueClick"
+     }
+    },
+    "docs": "https://developers.line.biz/en/reference/messaging-api/#get-message-event",
+    "note": "'Get user interaction statistics' of a broadcast or narrowcast: `post_id` is the request ID of that send (the x-line-request-id response header, visible in the LINE Developers Console or your own logs - publish_text cannot return it). Counts are top-level fields (delivered, unique_impression, unique_click; LINE returns null below 20); per-bubble `messages` and `clicks` stay under raw."
+   }
+  },
+  "not_offered": {
+   "read_comments": "Broadcasts have no comments: user replies arrive only as webhook events to the channel's webhook URL (https://developers.line.biz/en/reference/messaging-api/#webhooks); there is no message-history endpoint.",
+   "reply_comment": "POST /v2/bot/message/reply needs the short-lived single-use `replyToken` of a webhook event, not a comment id (https://developers.line.biz/en/reference/messaging-api/#send-reply-message).",
+   "read_mentions": "Group mentions are delivered only inside webhook message events (mention.mentionees, https://developers.line.biz/en/reference/messaging-api/#wh-text); no REST feed exists.",
+   "delete": "A sent message cannot be recalled: the Messaging API reference (https://github.com/line/line-openapi/blob/main/messaging-api.yml) defines no delete / unsend operation for messages."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.line.me: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/line/line-openapi/main/messaging-api.yml, https://raw.githubusercontent.com/line/line-openapi/main/insight.yml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

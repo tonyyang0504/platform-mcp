@@ -1,0 +1,168 @@
+{
+ "id": "fl_ru",
+ "category": "deals",
+ "label": "FL",
+ "lane": "assist",
+ "kind": "freelance",
+ "regions": [
+  "ru",
+  "by",
+  "kz"
+ ],
+ "docs_url": "https://www.fl.ru/rss/all.xml",
+ "url": "https://www.fl.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS; bidding needs an FL.ru account (PRO for most projects); rules page not found.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (projects RSS). Lane `assist` → **keep**; RSS for discovery. Confidence high.",
+  "base_urls": [
+   "https://www.fl.ru/rss/all.xml"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /rss/all.xml",
+    "purpose": "search",
+    "notes": "title, link, description, pubDate"
+   }
+  ],
+  "limits": " - PRO subscription to bid on most projects. - Public RSS; bidding needs an FL.ru account (PRO for most projects); rules page not found.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.fl.ru/rss/all.xml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.fl.ru",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "FL.ru public project feed. Bids are placed on fl.ru with a logged-in (often PRO) account.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/rss/all.xml",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.fl.ru/rss/all.xml",
+    "note": "The feed answers its whole current list in one response ('Заказы на FL.ru', RSS 2.0, the latest ~60 projects); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). Titles/descriptions are Russian; the description is truncated by the feed ('…'); the category ('Раздел / Подраздел') is in raw.category; budgets are not in the feed."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Bids ('ответы') are placed on fl.ru with a logged-in account (PRO for most projects); FL.ru publishes no developer API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,272 @@
+{
+ "id": "baijiahao",
+ "category": "social",
+ "label": "Baijiahao",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/serviceIntroduction",
+ "url": "https://baijiahao.baidu.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "百家号 creator account (personal or enterprise, real-name verified); API credentials (app_id, app_token) generated in the account's own 开发者 settings — BYO per tenant; content rules (原创, no promotional content on 普通 accounts — 商业推广 blocked unless the account holds the marketing qualification).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "apply",
+  "capabilities": [
+   "post(article)",
+   "upload_media"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 20000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (documented only inside the creator console).",
+  "base_urls": [
+   "https://baijiahao.baidu.com/builderinner/open/resource/article/publish"
+  ],
+  "auth": [
+   "1. Tenant's 百家号 account (real-name verified; enterprise accounts for brands) → 设置 › 开发者 / 接口权限 → app_id +",
+   "2. Token is long-lived until regenerated; store it in the account vault."
+  ],
+  "endpoints": [
+   {
+    "call": "Path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST …/article/publish` {app_id, app_token, title, content (HTML), feed_cat, cover_images, is_original, origin_url?}",
+    "purpose": "→ article_id / status",
+    "notes": ""
+   },
+   {
+    "call": "POST …/image/upload` (multipart)",
+    "purpose": "returns a hosted URL for `content`",
+    "notes": ""
+   },
+   {
+    "call": "console only",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - 百家号 platform rules: originality, no promotional / marketing text on standard accounts, category (feed_cat) must match the account's registered field; daily publish quotas depend on the account level.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://baijiahao.baidu.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://baijiahao.baidu.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "errno",
+   "ok_value": 0,
+   "error_field": "errmsg"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "作者帐号ID (app_id) shown when you enable 开发者 service in the 百家号 creator console (开通开发者服务，获取app_token及app_id)."
+    },
+    {
+     "name": "app_token",
+     "required": true,
+     "help": "授权密钥 (app_token) from the same 开发者 settings; sent in the request body of every call. Reset it at once if it leaks."
+    }
+   ]
+  },
+  "terms": "百家号开发者文档 (https://baijiahao.baidu.com/docs/#/normalcomplex/developer/serviceIntroduction): the author enables developer service, receives app_id + app_token, and each call POSTs them with the call's fields to https://baijiahao.baidu.com/builderinner/open/resource/...; answers {errno (0 = 成功), errmsg, data}; error codes at https://baijiahao.baidu.com/docs/#/normalcomplex/developer/errorCode. Content follows 百家号 review rules and the account's daily posting quota.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/builderinner/open/resource/query/articleListall",
+    "body": {
+     "app_id": "@app_id",
+     "app_token": "@app_token",
+     "page_no": "json:1",
+     "page_size": "json:1"
+    },
+    "docs": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getArticleLists",
+    "note": "No self-profile call is documented, so the credentials are verified with query/articleListall (page_size 1): errno 0 answers {page, items{article_id: {article_id, nid, title, type, status, collection, article_url, updated_at}}}; errno 60001001 means 授权校验失败."
+   },
+   "read_comments": {
+    "method": "POST",
+    "path": "/builderinner/open/resource/query/articleCommentList",
+    "body": {
+     "app_id": "@app_id",
+     "app_token": "@app_token",
+     "article_id": "post_id",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "data.items.reply_list",
+     "key": "comments",
+     "fields": {
+      "id": "reply_id",
+      "author": "uname",
+      "text": "content",
+      "created_at": "create_time"
+     }
+    },
+    "docs": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getSingleArtsComment",
+    "note": "query/articleCommentList (article_id, page_no, page_size ≤ 20): comments on one article (post_id = the article_id from the 百家号 console or article list), each {reply_id, thread_id, uname, avatar, content, create_time (epoch s), like_count, reply_count, favor, is_fans, reply_to_uname?}; data.page.has_next tells whether another page exists. Replies to one comment are at query/articleCommentReplyList (https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getCommentResponse)."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/builderinner/open/resource/article/withdraw",
+    "body": {
+     "app_id": "@app_id",
+     "app_token": "@app_token",
+     "article_id": "post_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=withdrawn"
+     }
+    },
+    "docs": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/withdrawalContent",
+    "note": "article/withdraw (撤回内容) takes the published article's NID as article_id: the article stops being shown ('撤回后的文章将不再展示'); personalised-recommended articles cannot be withdrawn. Permanent deletion (article/delete, https://baijiahao.baidu.com/docs/#/normalcomplex/developer/delete) only applies to drafts of 图文/横版视频 and to published 小视频, so it is not what this verb maps to."
+   },
+   "analytics_post": {
+    "method": "POST",
+    "path": "/builderinner/open/resource/query/articleStatistics",
+    "body": {
+     "app_id": "@app_id",
+     "app_token": "@app_token",
+     "article_id": "post_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "views": "view_count",
+      "likes": "likes_count",
+      "comments": "comment_count",
+      "shares": "share_count",
+      "saves": "collect_count",
+      "recommendations": "recommend_count"
+     }
+    },
+    "docs": "https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getArtsRealTimeData",
+    "note": "query/articleStatistics (article_id): cumulative recommend_count, view_count (阅读/播放量), comment_count, share_count, collect_count and likes_count since publication (-1 = 获取失败); no per-day series. The runtime cannot compose a nested metrics object or echo the post_id argument, so counts are top-level fields (all of data stays in raw)."
+   }
+  },
+  "not_offered": {
+   "publish_text": "article/publish (https://baijiahao.baidu.com/docs/#/normalcomplex/developer/publishPT) requires a title of 5-40 characters and a unique origin_url ('相同URL的文章会被认为是同一篇文章，禁止提交') besides the rich-text content; the vocabulary's publish_text carries only text, so neither required field can be supplied.",
+   "publish_image": "There is no image post: 发布图片 (image/pushPic, https://baijiahao.baidu.com/docs/#/normalcomplex/developer/pushPic) submits images with per-image id, title, objurl, fromurl and edit_time to Baidu 图片搜索 (Image Search) for institutional original authors, not to the account's feed; image posts otherwise go through article/publish, which needs a title and origin_url.",
+   "reply_comment": "No comment-reply call is documented: the 评论管理 group has only read calls (commentAuthorListall, articleCommentStatistics, articleCommentList, articleCommentReplyList; https://baijiahao.baidu.com/docs/#/normalcomplex/developer/getAuthorCommentList).",
+   "read_mentions": "No mention or @-notification call is documented in the developer docs (https://baijiahao.baidu.com/docs/#/normalcomplex/developer/serviceIntroduction lists 内容发布, 内容管理, 文章查询, 评论管理, 数据查询, 用户管理)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_id, app_token; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

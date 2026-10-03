@@ -1,0 +1,29 @@
+{
+ "id": "coconala",
+ "category": "marketplaces",
+ "label": "Coconala (ココナラ)",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://coconala.com",
+ "url": "https://coconala.com",
+ "verified_at": null,
+ "terms_note": "No developer programme; 利用規約 第13条 bans 自動的に応答する装置・ソフトウェア (art. 2-22), 不正アクセス (2-16), 複数のユーザ名 (2-19), 不当に情報を操作 (2-15); off-platform contact/payment is the most-enforced rule.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "no_brreg-mcp",
+ "display_name": "Brønnøysundregistrene MCP",
+ "version": "0.1.0",
+ "description": "Brønnøysundregistrene (sales): me, search, get_company. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "no_brreg"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Open data without credentials: verified with a one-item entity search (no account endpoint)."
+  },
+  {
+   "name": "search",
+   "description": "Norwegian register only: `query` is the `navn` name search; `country` and `industry` are ignored. `page` is zero-based on the API ('page: Integer, zero-based (default 0)') — the 1-based `page` argument is converted; (page+1)*size must stay <= 10 000. `address` is the first line of forretningsadresse.adresse; `size` is the employee count (antallAnsatte); `industry` is naeringskode1.beskrivelse (Norwegian). Live check 2026-09-24: Accept: application/json returns the current (v2) representation."
+  },
+  {
+   "name": "get_company",
+   "description": "`id` is the nine-digit organisasjonsnummer. 404 when unknown; '410 Gone' when 'Fjernet av juridiske årsaker' (removed for legal reasons) → platform_error."
+  }
+ ]
+}

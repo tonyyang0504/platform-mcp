@@ -1,0 +1,36 @@
+{
+ "id": "foursquare_places",
+ "category": "sales",
+ "label": "Foursquare Places API",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.foursquare.com/",
+ "url": "https://foursquare.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Places Search on the user's Foursquare service key; the two documentation paths tried answered 404 (docs re-organised) — docs root not re-fetched.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

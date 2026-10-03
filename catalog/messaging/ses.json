@@ -1,0 +1,273 @@
+{
+ "id": "ses",
+ "category": "messaging",
+ "label": "Amazon SES",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.aws.amazon.com/ses/",
+ "url": "https://aws.amazon.com/ses/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation allowed with IAM credentials (SigV4-signed REST or SMTP interface). Every new account starts in the SANDBOX per region: only verified recipient addresses / domains or the mailbox simulator, 200 messages per 24 h, 1 message per second, suppression-list bulk actions disabled; production access is requested in the console or via `aws sesv2 put-account-details --production-access-enabled --mail-type TRANSACTIONAL|MARKETING --website-url …` and AWS Support answers within 24 h (the requester acknowledges sending only to people who asked and having a bounce / complaint process). From / Source / Return-Path identities must always be verified. Pay per volume sent and received.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "cli",
+   "smtp",
+   "events"
+  ],
+  "auth": "aws_sigv4",
+  "access": "apply",
+  "capabilities": [
+   "send",
+   "batch_send",
+   "templates",
+   "broadcasts",
+   "read_inbox",
+   "media",
+   "webhooks",
+   "analytics",
+   "suppressions",
+   "unsubscribe",
+   "contact_lists"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "AWS SDKs for SendEmail (sesv2): Python boto3, JavaScript v3, Java v2, Go v2, .NET v4, PHP v3, Ruby v3, Kotlin, C++; AWS CLI v2 (docs.aws.amazon.com/ses/latest/APIReference-V2/API_SendEmail.html)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://email.{region}.amazonaws.com/v2/…"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v2/email/outbound-emails` (SendEmail) `Content.Simple{Subject, Body{Html,Text}, Headers[], Attachments[]}` · `Content.Raw{Data}` · `Content.Template{TemplateName",
+    "purpose": "TemplateArn",
+    "notes": "TemplateContent, TemplateData}`"
+   },
+   {
+    "call": "SendBulkEmail` (v2)",
+    "purpose": "template fan-out for sequences",
+    "notes": "per-destination replacement data"
+   },
+   {
+    "call": "CreateEmailTemplate` / `UpdateEmailTemplate",
+    "purpose": "templates",
+    "notes": "Handlebars-style `{{var}}`"
+   },
+   {
+    "call": "CreateConfigurationSet` + `CreateConfigurationSetEventDestination` (SNS / EventBridge / Kinesis Firehose / CloudWatch)",
+    "purpose": "bounce / complaint / delivery / open / click events → our webhook",
+    "notes": "via SNS HTTPS subscription"
+   },
+   {
+    "call": "Receipt rule set + rule (actions: S3, SNS, Lambda, WorkMail, bounce, stop) + MX record",
+    "purpose": "read inbox",
+    "notes": "only in regions in the AWS General Reference inbound-endpoints table; Spamhaus / SES block lists applied"
+   },
+   {
+    "call": "PutSuppressedDestination` / `ListSuppressedDestinations",
+    "purpose": "suppression mirror",
+    "notes": "disabled while in the sandbox"
+   },
+   {
+    "call": "CreateContactList` / `CreateContact` / topics",
+    "purpose": "vendor-side unsubscribe",
+    "notes": "pairs with `ListManagementOptions`"
+   },
+   {
+    "call": "GetAccount` / `PutAccountDetails",
+    "purpose": "sandbox status / production request",
+    "notes": "`--production-access-enabled --mail-type --website-url`"
+   }
+  ],
+  "limits": " - Sandbox (per region): recipients must be verified (or the mailbox simulator), **200 messages / 24 h**, **1 message / second**, suppression bulk actions disabled. Production access: console or `aws sesv2 put-account-details`; AWS Support first response within 24 h; requester confirms opt-in-only sending and a bounce / complaint process. - Errors: `AccountSuspendedException`, `SendingPausedException`, `MailFromDomainNotVerifiedException`, `MessageRejected`, `LimitExceededException`, `TooManyRequestsException` (429). - Pay per volume sent and received. SES may accept-but-not-send (virus attach",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.aws.amazon.com/ses/latest/dg/Welcome.html",
+   "https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html",
+   "https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_SendEmail.html",
+   "https://docs.aws.amazon.com/ses/latest/dg/receiving-email.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://email.{region}.amazonaws.com",
+  "rate_per_second": 1,
+  "config_fields": [
+   {
+    "name": "region",
+    "required": true,
+    "help": "AWS Region of your SES account, e.g. us-east-1, eu-west-1 (the endpoint is email.<region>.amazonaws.com)."
+   },
+   {
+    "name": "from_address",
+    "required": true,
+    "help": "Verified sender identity (address or an address on a verified domain) used as FromEmailAddress."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key_id",
+     "required": true,
+     "help": "AWS access key id of an IAM principal allowed ses:SendEmail and ses:GetAccount."
+    },
+    {
+     "name": "secret_access_key",
+     "required": true,
+     "help": "The matching AWS secret access key; used only to derive the SigV4 signing key."
+    },
+    {
+     "name": "session_token",
+     "required": false,
+     "help": "Session token when the keys are temporary STS credentials (sent as X-Amz-Security-Token)."
+    }
+   ],
+   "sign": {
+    "mode": "aws_sigv4",
+    "service": "ses",
+    "region": "{@region}"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/v2/email/account",
+    "docs": "https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_GetAccount.html",
+    "note": "GetAccount (GET /v2/email/account): sending status (SendingEnabled, ProductionAccessEnabled = out of the sandbox), SendQuota {Max24HourSend, MaxSendRate, SentLast24Hours} and enforcement status in this Region."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/v2/email/outbound-emails",
+    "body": {
+     "FromEmailAddress": "@from_address",
+     "Destination.ToAddresses.0": "to",
+     "Content.Simple.Subject.Data": "subject",
+     "Content.Simple.Subject.Charset": "=UTF-8",
+     "Content.Simple.Body.Text.Data": "text",
+     "Content.Simple.Body.Text.Charset": "=UTF-8"
+    },
+    "result": {
+     "fields": {
+      "message_id": "MessageId",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_SendEmail.html",
+    "note": "SendEmail (POST /v2/email/outbound-emails) sends a Simple plain-text message from the configured verified sender to one address; always pass `subject`. In the SES sandbox the recipient must be verified too."
+   }
+  },
+  "not_offered": {
+   "list_inbound": "SES v2 has no API to read received mail: receiving is configured as receipt rules that deliver to S3, SNS or Lambda (https://docs.aws.amazon.com/ses/latest/dg/receiving-email.html); the API reference (https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_Operations.html) has no mailbox read operation.",
+   "get_thread": "SES is a send-only service with no conversation or thread store (https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_Operations.html).",
+   "reply": "Replies need the original message's Message-ID/References headers, which SES does not store (no inbound read API, https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_Operations.html); use send with the reply address.",
+   "mark_read": "SES keeps no read state for messages (https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_Operations.html)."
+  },
+  "terms": "Every SES v2 request is signed with AWS Signature Version 4 (service 'ses', the configured Region; https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html). New accounts start in the sandbox (verified recipients only, 200 messages/24 h)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key_id, secret_access_key, region, from_address; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

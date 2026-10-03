@@ -1,0 +1,201 @@
+{
+ "id": "trademe_jobs",
+ "category": "jobs",
+ "label": "Trade Me Jobs",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "anz"
+ ],
+ "docs_url": "https://developer.trademe.co.nz/api-reference/search-methods/jobs-search/",
+ "url": "https://www.trademe.co.nz/a/jobs",
+ "verified_at": "2026-09-25",
+ "terms_note": "New Zealand's main board; profile apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth"
+  ],
+  "auth": "oauth",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "saved_jobs (Favourite methods)",
+   "alerts (Job Agent methods)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Trade Me API v1: register an application (consumer key + secret), OAuth (member token, or app-only for public methods) then GET https://api.trademe.co.nz/v1/Search/Jobs.json (category",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "The API terms page linked from the nav is /terms-and-conditions (the /api-terms/ guess is 404).",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " rate limits granted at Trade Me's discretion (approved apps can request more); API Rules: access may be restricted or revoked for breaches; rate limits granted at Trade Me's discretion (approved apps can request more); submitted data must be accurate. Rate limit: 1,000 authenticated calls per hour per consumer application per user (HTTP 429), catalogue methods exempt. Registration is self-serve (developer portal); Jobs API contact api-jobs@trademe.co.nz. www.trademe.co.nz itself answers 406 to plain fetches and robots.txt has 309 Disallow rules.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.trademe.co.nz/",
+   "https://developer.trademe.co.nz/getting-started/",
+   "https://developer.trademe.co.nz/api-overview/authentication/",
+   "https://developer.trademe.co.nz/api-overview/rate-limiting/",
+   "https://developer.trademe.co.nz/terms-and-conditions",
+   "https://developer.trademe.co.nz/api-reference/search-methods/jobs-search/",
+   "https://developer.trademe.co.nz/api-reference/listing-methods/retrieve-the-details-of-a-single-listing/",
+   "https://www.trademe.co.nz/robots.txt"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.trademe.co.nz/v1",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "consumer_key",
+     "required": true,
+     "help": "Trade Me application consumer key (My Trade Me > My applications)."
+    },
+    {
+     "name": "consumer_secret",
+     "required": true,
+     "help": "Trade Me application consumer secret."
+    },
+    {
+     "name": "oauth_token",
+     "required": true,
+     "help": "Member access token from the OAuth 1.0a flow (Trade Me access tokens do not expire)."
+    },
+    {
+     "name": "oauth_token_secret",
+     "required": true,
+     "help": "Access token secret from the same flow."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "payload": "{nonce}",
+    "algorithm": "sha256",
+    "headers": {
+     "Authorization": "OAuth oauth_consumer_key={@consumer_key}, oauth_token={@oauth_token}, oauth_signature_method=PLAINTEXT, oauth_signature={@consumer_secret}%26{@oauth_token_secret}"
+    }
+   }
+  },
+  "rate_per_second": 1,
+  "terms": "Trade Me API: register an application under My Trade Me; production host api.trademe.co.nz, sandbox api.tmsandbox.co.nz. Calls are rate limited per application.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/MyTradeMe/Summary.json",
+    "docs": "https://developer.trademe.co.nz/api-reference/my-trade-me-methods/retrieve-your-profile-information/",
+    "note": "GET /v1/MyTradeMe/Summary.json ('Permission Required: MyTradeMeRead') returns the MemberSummary (MemberId, Nickname, ...)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/Search/Jobs.json",
+    "params": {
+     "search_string": "query",
+     "page": "page",
+     "rows": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 500,
+    "result": {
+     "items": "List",
+     "key": "postings",
+     "total": "TotalCount",
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "company": "Company",
+      "location": "Region",
+      "posted_at": "StartDate",
+      "description": "PayBenefits"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/search-methods/jobs-search/",
+    "note": "GET /v1/Search/Jobs.json: search_string ('One or more keywords'), page ('starting from 1'), rows (max 500 when authenticated). location is not sent because Trade Me filters by numeric region / district ids (see the Localities catalogue). company, Region and StartDate (/Date(ms)/) come per job; JobType, District, Category and pay details stay in raw; description is the PayBenefits text."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/Listings/{id}.json",
+    "result": {
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "company": "Agency.Name",
+      "location": "Region",
+      "posted_at": "StartDate",
+      "description": "Body"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/listing-methods/retrieve-the-details-of-a-single-listing/",
+    "note": "GET /v1/Listings/{listingId}.json: the full listing (Body, Attributes with job details, Agency for agency-posted jobs, ShortDescription)."
+   }
+  },
+  "not_offered": {
+   "apply": "The listing detail exposes HasAppliedForJob / JobApplicationDate only; the API reference documents no job-application method.",
+   "list_messages": "The Trade Me API reference documents no member-messaging method for job listings."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires consumer_key, consumer_secret, oauth_token, oauth_token_secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

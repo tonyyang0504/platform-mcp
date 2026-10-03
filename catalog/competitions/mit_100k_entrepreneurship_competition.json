@@ -1,0 +1,57 @@
+{
+ "id": "mit_100k_entrepreneurship_competition",
+ "category": "competitions",
+ "label": "MIT $100K Entrepreneurship Competition",
+ "lane": "",
+ "kind": "startup",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.mit100k.org/",
+ "verified_at": "2026-09-23",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

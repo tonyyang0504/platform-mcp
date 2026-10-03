@@ -1,0 +1,140 @@
+{
+ "id": "marktplaats_ads",
+ "category": "ads",
+ "label": "Marktplaats Zakelijk (Pro adverteren)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "eu",
+  "nl"
+ ],
+ "docs_url": "https://api.marktplaats.nl/docs/v2/advertisement.html",
+ "url": "https://www.marktplaatszakelijk.nl/ondernemers/pro-adverteren/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Marktplaats API (OAuth 2.0; user authorization code + refresh, or client token) for business sellers; resources: advertisements (own ads only), images, features / purchased features / buy feature, renewal, statistics, transactions, bids, users. Rate limits: not on the pages read. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (authorization code for users, client credentials for clients — Marktplaats API 1.0/2.0)",
+  "access": "signup",
+  "capabilities": [
+   "ads",
+   "budgets_bids",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (advertisement CRUD, feature purchase, statistics; no campaign / CPC objects) Confidence: **high** — official API docs read.",
+  "base_urls": [
+   "https://api.marktplaats.nl/v1/"
+  ],
+  "auth": [
+   "1. Register as a Marktplaats API client (business account); OAuth 2.0 authorization code (user) → access + refresh token, or client-credentials token.",
+   "2. `Authorization: Bearer`; `Accept` headers select tenant / locale (multi-tenant NL / BE).",
+   "3. Use `v2/categories/{l1}/{l2}/attributes` to learn writable fields before POSTing an ad."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/advertisements` · `POST` · `PATCH /v2/advertisements/{id}` · `DELETE",
+    "purpose": "ads (own listings) incl. status",
+    "notes": "title, description, price model, category, attributes, shipping"
+   },
+   {
+    "call": "POST /v2/advertisements/{id}/images` (image blob)",
+    "purpose": "creative upload",
+    "notes": "image bytes"
+   },
+   {
+    "call": "GET /v2/advertisements/{id}/features` · `POST …/purchased-features` (buy feature)",
+    "purpose": "paid promotion features",
+    "notes": "feature type, duration"
+   },
+   {
+    "call": "GET /v2/advertisements/{id}/statistics` · `/transactions",
+    "purpose": "reports (views, clicks, cost)",
+    "notes": "period"
+   },
+   {
+    "call": "Admarkt campaign budget / CPC bidding",
+    "purpose": "not exposed as campaign objects (Admarkt UI)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated; free; Marktplaats API terms; access to own ads only.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.marktplaats.nl/docs/v2/advertisement.html",
+   "https://api.marktplaats.nl/docs/v1/index.html"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the Marktplaats API 2.0 (https://api.marktplaats.nl/docs/v2/advertisement.html) manages classified listings ('Through the API you only have access to your own ads': create/update/delete advertisements, purchased features, renewal, per-listing statistics, bids, orders); it documents no CPC campaigns, daily budgets or pause/resume of paid promotion, so the ads vocabulary cannot be mapped faithfully."
+}

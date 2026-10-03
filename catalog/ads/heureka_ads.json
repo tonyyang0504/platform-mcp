@@ -1,0 +1,139 @@
+{
+ "id": "heureka_ads",
+ "category": "ads",
+ "label": "Heureka (PPC and Product Ads)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "eu",
+  "cz",
+  "sk"
+ ],
+ "docs_url": "https://sluzby.heureka.cz/napoveda/bidding-api/",
+ "url": "https://sluzby.heureka.cz/napoveda/pruvodce-heurekou-pro-eshopy/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Bidding API: 'potvrdit smlouvu o službě, poté obdržíte přístup/token a dokumentaci' (paid, access_key), JSON-RPC at api.heureka.cz/bidding_api/v1 (+ .sk); CPC via admin (recalculated every 30 min) or XML feed HEUREKA_CPC (max 1,000 CZK/click); credit top-ups. Free listing + PPC modes.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "api_key (access_key token issued after signing the Bidding API contract; JSON-RPC)",
+  "access": "paid",
+  "capabilities": [
+   "budgets_bids",
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** — paid JSON-RPC Bidding API (product-card data for bidding) + CPC via XML feed / admin; no campaign API.Confidence: **high**.",
+  "base_urls": [
+   "https://api.heureka.cz/bidding_api/v1/",
+   "https://api.heureka.sk/bidding_api/v1/"
+  ],
+  "auth": [
+   "1. Sign the Bidding API service contract → receive `access_key` token + documentation.",
+   "2. JSON-RPC calls with `access_key` in params (Python `json-rpc` library suggested).",
+   "3. Set CPC in Heureka admin (Bidding – Price settings, recalculated every 30 min) or in the XML feed with `HEUREKA_CPC` (imported every ~2 h); max 1,000 CZK/click."
+  ],
+  "endpoints": [
+   {
+    "call": "category.index` · product / offer methods (competitor prices, positions, shipping)",
+    "purpose": "bidding data (read)",
+    "notes": "access_key, category id, item ids"
+   },
+   {
+    "call": "XML feed `HEUREKA_CPC` per item · admin Bidding settings",
+    "purpose": "bids (CPC)",
+    "notes": "ITEM_ID, HEUREKA_CPC"
+   },
+   {
+    "call": "admin click report / conversion measurement",
+    "purpose": "reports",
+    "notes": "—"
+   },
+   {
+    "call": "campaigns · ad groups · creatives · audiences",
+    "purpose": "not applicable (price-comparison PPC)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Paid API (contract); 1 h server-side cache on shipping prices and category index; Heureka VOP terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://sluzby.heureka.cz/napoveda/bidding-api/",
+   "https://sluzby.heureka.cz/napoveda/pruvodce-heurekou-pro-eshopy/",
+   "https://api.heureka.cz/bidding_api/v1/apidoc"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: Heureka's only public API reference is the paid Bidding API (https://api.heureka.cz/bidding_api/v1/apidoc) with methods access_rate.index, category.index/get and product.index/get (catalog and competitor-offer data to decide bids), issued with an access_key after signing a contract (https://sluzby.heureka.cz/napoveda/bidding-api/). It has no advertiser account, campaign, CPC-bid, budget or spend-report method, so none of the ads verbs maps; PPC bids are set via the XML feed / shop administration behind the shop login."
+}

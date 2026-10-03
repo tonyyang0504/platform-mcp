@@ -1,0 +1,130 @@
+{
+ "id": "brainville",
+ "category": "deals",
+ "label": "Brainville",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "se",
+  "no",
+  "dk",
+  "fi"
+ ],
+ "docs_url": "https://www.brainville.com/PublicPage/API",
+ "url": "https://www.brainville.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Export is a subscription product (volume steps of 100); profile sharing free; applications must go through Brainville.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api (credentials issued by Brainville after contact)",
+  "access": "apply",
+  "capabilities": [
+   "search",
+   "details",
+   "profile_sync"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Assignment Export push + consultant-profile API; applying is site-only). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [],
+  "auth": [
+   "1. Contact Brainville → subscription for Assignment Export → endpoint registration."
+  ],
+  "endpoints": [
+   {
+    "call": "Assignment Export (push to your endpoint)",
+    "purpose": "search",
+    "notes": "assignments without personal data; volume in steps of 100"
+   },
+   {
+    "call": "Consultant profiles upload",
+    "purpose": "profile_sync",
+    "notes": "availability shared in the marketplace"
+   }
+  ],
+  "limits": " - 'Applications are still handled through Brainville' — no bid API. - Export is priced per volume; profile sharing free. - Export is a subscription product (volume steps of 100); profile sharing free; applications must go through Brainville.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.brainville.com/PublicPage/API"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://www.brainville.com/PublicPage/API is a marketing page ('we've created a number of APIs … Easily display a list of your company's assignments on your own web page'; 'Read more about our API and get in touch') whose only call to action is a contact form. No public endpoint, parameter or authentication reference exists to map; applications are made in Brainville."
+}

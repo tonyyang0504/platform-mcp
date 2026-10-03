@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/adform-mcp",
+ "description": "Adform FLOW (ads): me, list_accounts, list_campaigns. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.adform.com/help/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "adform"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ADFORM_CLIENT_ID",
+     "description": "Client id of an Adform API client enabled for the client-credentials flow (requested from Adform support; https://api.adform.com/help/guides/getting-started/authorization-guide).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ADFORM_CLIENT_SECRET",
+     "description": "The client's secret, sent in the form body of POST https://id.adform.com/sts/connect/token; the client must be granted the buyer.advertisers.readonly and buyer.campaigns.api.readonly scopes. Tokens last about an hour and are re-requested automatically.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

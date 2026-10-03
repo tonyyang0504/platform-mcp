@@ -1,0 +1,330 @@
+{
+ "id": "bigcommerce",
+ "category": "ecommerce_channels",
+ "label": "BigCommerce",
+ "lane": "api",
+ "kind": "storefront_platform",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.bigcommerce.com/docs/start/authentication/api-accounts",
+ "url": "https://www.bigcommerce.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Any BigCommerce store owner can create a store-level API account in the control panel (no review); public apps go through the Developer Portal + OAuth; rate limit per store plan — Standard/Plus 150 requests per 30 s, Pro 450 per 30 s, Enterprise custom / unlimited plan; quota shared by all apps on the store; 429 with reset headers.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "token (store-level API account: static X-Auth-Token created by the merchant; app-level accounts: OAuth grant-code flow per installing store)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "webhooks",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "BigCommerce Developer Portal apps (OAuth) — https://developer.bigcommerce.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.store_hash",
+  "token"
+ ],
+ "rate_limits": "per-plan request quotas (rate-limits page opened; numbers behind JS)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.bigcommerce.com/stores/{store_hash}/v3/..."
+  ],
+  "auth": [
+   "1. Store-level: merchant opens Settings › Store-level API accounts, creates a token with the minimum scopes (Products modify, Orders modify, Inventory modify, Webhooks default) → static access token + store hash.",
+   "2. App-level (multi-store): register the app in the Developer Portal; each installing store grants an OAuth code that is exchanged for a store-specific access token.",
+   "3. Pass the token as `X-Auth-Token` on REST and GraphQL Admin calls."
+  ],
+  "endpoints": [
+   {
+    "call": "POST/PUT/GET/DELETE /v3/catalog/products",
+    "purpose": "Catalog V3 products (name, sku, price, inventory_level, inventory_tracking, variants)",
+    "notes": "reference page 403 in this pass — shape from the API-accounts index"
+   },
+   {
+    "call": "/v3/pricelists",
+    "purpose": "Price Lists V3",
+    "notes": "customer-group / channel prices"
+   },
+   {
+    "call": "/v3/inventory/…",
+    "purpose": "Inventory V3 (+ Store Locations V3)",
+    "notes": "per-location stock"
+   },
+   {
+    "call": "GET/PUT /v2/orders · /v2/orders/{id}/shipments",
+    "purpose": "Orders V2 read, status update, shipments (tracking)",
+    "notes": "Order Transactions V3 for payments"
+   },
+   {
+    "call": "/v3/hooks",
+    "purpose": "Webhooks",
+    "notes": "store/order/*, store/product/* — available to every API account type"
+   }
+  ],
+  "limits": " Per store plan, refreshed every 30 s: Standard & Plus 150, Pro 450, Enterprise custom (Unlimited Rate Plan = no limit), dev/partner sandboxes by resource; every call = 1 unit; 429 with remaining / reset headers; back off exponentially. - Store-level accounts are for the merchant's own store; public apps must use app-level OAuth accounts. - Set scopes to the minimum needed (docs). - No app review for private/store-level use.",
+  "mcp_sdk": [
+   "SDK: BigCommerce Developer Portal apps (OAuth) — https://developer.bigcommerce.com"
+  ],
+  "sources": [
+   "https://docs.bigcommerce.com/docs/start/authentication/api-accounts",
+   "https://docs.bigcommerce.com/docs/start/best-practices/api-rate-limits",
+   "https://docs.bigcommerce.com/docs/rest-catalog/products",
+   "https://docs.bigcommerce.com/docs/rest-management/orders"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bigcommerce.com/stores/{store_hash}",
+  "auth": {
+   "type": "header",
+   "header": "X-Auth-Token",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Store-level API account access token (Settings > Store-level API accounts; scopes Products modify, Orders modify) sent as the X-Auth-Token header."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "store_hash",
+    "required": true,
+    "help": "Permanent store hash from the API path (https://api.bigcommerce.com/stores/{store_hash}/...), shown with the API account."
+   }
+  ],
+  "rate_per_second": 4,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v2/store",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/management/store-information/v2/get-store-information",
+    "note": "GET /stores/{store_hash}/v2/store returns the store's global settings {id, domain, secure_url, name, admin_email, currency, plan_name, ...}."
+   },
+   "create_listing": {
+    "method": "POST",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v3/catalog/products",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "body": {
+     "name": "title",
+     "type": "=physical",
+     "weight": "json:0",
+     "price": "price",
+     "sku": "sku",
+     "description": "description",
+     "inventory_level": "quantity"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "listing_id": "id",
+      "url": "custom_url.url",
+      "status": "availability"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/catalog/products/create-product",
+    "note": "POST /v3/catalog/products (required: name, type, weight, price): type=physical and weight=0 as in the documented example request; price, sku, description and inventory_level from the arguments. Response {data: product, meta}; `url` is the product's custom_url.url path on the storefront and `status` its availability (available|disabled|preorder). inventory_level only counts once inventory_tracking is `product` — set_inventory enables it. Stores with the V2 product experience also require `categories` (not sent); `currency`/`image_urls` are ignored (store currency; images via /images)."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v3/catalog/products/{listing_id}",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "body": {
+     "name": "title",
+     "price": "price",
+     "description": "description",
+     "inventory_level": "quantity"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/catalog/products/update-product",
+    "note": "PUT /v3/catalog/products/{product_id} with the given fields only (name, price, description, inventory_level); inventory_level applies when inventory_tracking is `product`. Response {data: product, meta}."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v3/catalog/products/{listing_id}",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "body": {
+     "is_visible": "json:false"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=hidden"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/catalog/products/update-product",
+    "note": "PUT /v3/catalog/products/{product_id} {is_visible: false} hides the product from customers browsing the store (documented flag; reversible with is_visible=true). DELETE /v3/catalog/products/{id} (204) is irreversible and not used."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v3/catalog/products/{listing_id}",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "body": {
+     "inventory_tracking": "=product",
+     "inventory_level": "quantity"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/catalog/products/update-product",
+    "note": "PUT /v3/catalog/products/{product_id} {inventory_tracking: product, inventory_level} sets product-level stock at the default location. `listing_id` (product id) is required: there is no update-by-SKU path (a GET /v3/catalog/products?sku= lookup is a second call), and variant-level stock uses /v3/catalog/products/{id}/variants/{vid} (not mapped)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v2/orders",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "params": {
+     "page": "page",
+     "limit": "limit",
+     "status_id": "status",
+     "min_date_created": "since"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "total_inc_tax",
+      "currency": "currency_code",
+      "created_at": "date_created"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/management/orders/get-orders",
+    "note": "GET /v2/orders?page&limit&status_id&min_date_created (RFC-2822 or ISO-8601). `status` must be the numeric BigCommerce status id (status_id) from GET /v2/order_statuses, e.g. 2 Shipped, 10 Completed, 11 Awaiting Fulfillment; `total` is total_inc_tax, a decimal string, and date_created is RFC-2822. The V2 API answers 204 No Content when no order matches (an empty list)."
+   },
+   "mark_shipped": {
+    "method": "PUT",
+    "path": "https://api.bigcommerce.com/stores/{store_hash}/v2/orders/{order_id}",
+    "path_params": {
+     "store_hash": "@store_hash"
+    },
+    "body": {
+     "status_id": "json:2"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://docs.bigcommerce.com/developer/api-reference/rest/admin/management/orders/update-order",
+    "note": "PUT /v2/orders/{order_id} {status_id: 2} — status id 2 is `Shipped` in GET /v2/order_statuses. `carrier` and `tracking_number` are NOT recorded: the shipment endpoint POST /v2/orders/{id}/shipments needs order_address_id and items[{order_product_id, quantity}] taken from the order, which the body form cannot supply."
+   }
+  },
+  "not_offered": {
+   "listing_metrics": "No per-product analytics endpoint in the Catalog or Orders APIs (product `view_count`/`total_sold` are read-only fields on the product record, not a metrics call; store analytics are in the control panel only)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bigcommerce.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

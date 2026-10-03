@@ -1,0 +1,348 @@
+{
+ "id": "feishu",
+ "category": "messaging",
+ "label": "Feishu / Lark",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn",
+  "global"
+ ],
+ "docs_url": "https://open.feishu.cn/document/",
+ "url": "https://www.feishu.cn/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed for an internal (自建) or store app: POST /open-apis/auth/v3/tenant_access_token/internal {app_id, app_secret} → token ≤7200 s; Send POST /open-apis/im/v1/messages?receive_id_type=open_id|user_id|union_id|email|chat_id with msg_type text / post / interactive (card) / share_chat / share_user / image / video / audio / file / sticker; permission one of im:message, im:message:send_as_bot, im:message:send; limits: 1,000 requests / minute and 50 / second per app, 5 / second per user, 5 / second per group shared by all bots; text ≤150 KB, cards / rich text ≤30 KB; bot must be in the group to post there; optional uuid (≤50 chars) dedups for 1 hour; error codes 230020 rate limit, 230025 too large, 230053 user blocked the bot, 232009 group dissolved. Reading 'all group messages' is a sensitive scope needing admin approval (registry note).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "events",
+   "websocket"
+  ],
+  "auth": "app_id_secret_token",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "group_admin",
+   "dm_initiate",
+   "reactions",
+   "media",
+   "webhooks",
+   "cards"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official Lark open SDKs (Go, Java, Python, Node.js) + long-connection (WebSocket) event client — open.larksuite.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (event subscription only; no inbox poll)",
+   "docs": "https://open.larksuite.com/document/server-docs/im-v1/message/create"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=open_id|user_id|union_id|email|chat_id",
+   "docs": "https://open.larksuite.com/document/server-docs/im-v1/message/create"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no bot read-state API)",
+   "docs": "https://open.larksuite.com/document/server-docs/im-v1/message/create"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://open.feishu.cn/open-apis/…",
+   "https://open.larksuite.com/open-apis/…"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /open-apis/im/v1/messages?receive_id_type=open_id",
+    "purpose": "user_id",
+    "notes": "union_id"
+   },
+   {
+    "call": "POST /open-apis/im/v1/messages/{message_id}/reply",
+    "purpose": "thread reply",
+    "notes": ""
+   },
+   {
+    "call": "GET /open-apis/im/v1/messages?container_id_type=chat&container_id=` · `GET …/messages/{id}",
+    "purpose": "read history",
+    "notes": "needs the sensitive scope for groups"
+   },
+   {
+    "call": "PUT` / `PATCH` / `DELETE …/messages/{id}",
+    "purpose": "edit / recall",
+    "notes": ""
+   },
+   {
+    "call": "POST /open-apis/im/v1/messages/{id}/reactions",
+    "purpose": "reactions",
+    "notes": ""
+   },
+   {
+    "call": "POST /open-apis/im/v1/chats` · `/chats/{id}/members` · `PUT /chats/{id}",
+    "purpose": "create group / add members / rename",
+    "notes": ""
+   },
+   {
+    "call": "POST /open-apis/im/v1/images` · `/files",
+    "purpose": "media",
+    "notes": ""
+   },
+   {
+    "call": "Event subscription `im.message.receive_v1`, `im.chat.member.bot.added_v1` (HTTP callback with challenge / encrypt key, or WebSocket)",
+    "purpose": "inbound",
+    "notes": ""
+   }
+  ],
+  "limits": " - Error codes with HTTP 200: `230020` frequency limit → `RateLimited`; `230025` content too large; `230053` user blocked the bot; `232009` group dissolved. msg_types: text, post, interactive, share_chat, share_user, image, video, audio, file, sticker. - Bot must be in a group to post there; DMs only to users in the tenant who can see the app (availability scope).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://open.larksuite.com/document/server-docs/im-v1/message/create"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://open.feishu.cn/open-apis",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth/v3/tenant_access_token/internal",
+    "body": {
+     "app_id": "@app_id",
+     "app_secret": "@app_secret"
+    }
+   },
+   "token_path": "tenant_access_token",
+   "expires_path": "expire",
+   "token_ttl_seconds": 7200,
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "App ID of a Feishu custom (self-built) app with the bot capability (cli_…); exchanged with app_secret at POST /open-apis/auth/v3/tenant_access_token/internal for a tenant_access_token (max 2 hours)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app (developer console, Credentials & Basic Info)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/bot/v3/info",
+    "docs": "https://open.feishu.cn/document/client-docs/bot-v3/obtain-bot-info",
+    "note": "Bot info: account.bot carries app_name, open_id, activate_status. Needs the bot capability enabled."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/im/v1/messages",
+    "params": {
+     "container_id": "channel",
+     "page_size": "limit"
+    },
+    "fixed_params": {
+     "container_id_type": "chat",
+     "sort_type": "ByCreateTimeDesc"
+    },
+    "max_limit": 50,
+    "default_limit": 20,
+    "result": {
+     "items": "data.items",
+     "key": "messages",
+     "fields": {
+      "id": "message_id",
+      "thread_id": "thread_id",
+      "from": "sender.id",
+      "text": "body.content",
+      "sent_at": "create_time"
+     }
+    },
+    "docs": "https://open.feishu.cn/document/server-docs/im-v1/message/list",
+    "note": "History of ONE chat (`channel` = chat_id oc_…, required; the bot must be in the chat), newest first; page_size 1–50. text is body.content, a JSON string such as {\"text\":\"…\"}; sent_at is create_time in milliseconds. Paging is by page_token, so `page` is ignored; `since` is not sent (start_time takes Unix seconds)."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/im/v1/messages",
+    "params": {
+     "container_id": "thread_id",
+     "page_size": "limit"
+    },
+    "fixed_params": {
+     "container_id_type": "thread",
+     "sort_type": "ByCreateTimeAsc"
+    },
+    "max_limit": 50,
+    "default_limit": 20,
+    "result": {
+     "items": "data.items",
+     "key": "messages",
+     "fields": {
+      "id": "message_id",
+      "thread_id": "thread_id",
+      "from": "sender.id",
+      "text": "body.content",
+      "sent_at": "create_time"
+     }
+    },
+    "docs": "https://open.feishu.cn/document/server-docs/im-v1/message/list",
+    "note": "All messages of a topic thread (`thread_id` = omt_… from a message's thread_id), oldest first; `page` is ignored."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/im/v1/messages",
+    "params": {
+     "receive_id_type": "@receive_id_type"
+    },
+    "body": {
+     "receive_id": "to",
+     "msg_type": "=text",
+     "content": "jsonstr:{\"text\": {text}}",
+     "uuid": "uuid"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://open.feishu.cn/document/server-docs/im-v1/message/create",
+    "note": "Text message to `to`, interpreted per config receive_id_type (chat_id oc_… by default choice; the bot must be in the chat, or the user within the app's availability scope). `content` is sent as the serialized JSON string {\"text\": …} the API requires; `uuid` de-duplicates retries. `subject`/`channel` are ignored."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/im/v1/messages/{thread_id}/reply",
+    "body": {
+     "msg_type": "=text",
+     "content": "jsonstr:{\"text\": {text}}",
+     "uuid": "uuid"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://open.feishu.cn/document/server-docs/im-v1/message/reply",
+    "note": "Replies to the message `thread_id` (a message id om_…, e.g. a list_inbound id) with a text message; `channel` is not needed."
+   }
+  },
+  "not_offered": {
+   "mark_read": "There is no API for a bot to mark messages read; read receipts are only queryable (https://open.feishu.cn/document/server-docs/im-v1/message/read_users)."
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "msg"
+  },
+  "envelope_note": "Every Open Platform response carries `code` ('错误码，非 0 取值表示失败') and `msg`; a non-zero code becomes an isError result.",
+  "config_fields": [
+   {
+    "name": "receive_id_type",
+    "required": true,
+    "help": "How `send`'s `to` is interpreted (receive_id_type query parameter): chat_id (group or p2p chat oc_…, the usual choice), open_id, union_id, user_id or email. Set it to chat_id unless you address users directly."
+   }
+  ]
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host open.feishu.cn: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal: 200 10003",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

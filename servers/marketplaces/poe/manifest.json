@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "poe-mcp",
+ "display_name": "Poe (Quora) MCP",
+ "version": "0.1.0",
+ "description": "Poe (Quora) (marketplaces): me, list_products. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "poe"
+   ],
+   "env": {
+    "PLATFORM_MCP_POE_API_KEY": "${user_config.platform_mcp_poe_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_poe_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_POE_API_KEY",
+   "description": "Poe API key (poe.com/api_key).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists the key owner's API bots."
+  },
+  {
+   "name": "list_products",
+   "description": "GET https://api.poe.com/bots ('None' query parameters) lists the creator's API bots in one response (page/limit ignored). id and name are the bot handle; price is not mapped: pricing is api_bot_settings.pricing {prompt, completion}, string dollar amounts PER TOKEN (in raw). is_private, model_name, base_url and api_type are in raw."
+  }
+ ]
+}

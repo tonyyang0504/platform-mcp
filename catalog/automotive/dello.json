@@ -1,0 +1,35 @@
+{
+ "id": "dello",
+ "category": "automotive",
+ "label": "Dello Gruppe",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://dello-gruppe.de",
+ "domain": "dello-gruppe.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dealer group; /b2b-fahrzeugeinkauf is a B2B trade portal, no API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dello-gruppe.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

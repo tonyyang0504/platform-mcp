@@ -1,0 +1,42 @@
+{
+ "id": "autorola",
+ "category": "automotive",
+ "label": "Autorola",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://autorola.com.tr",
+ "domain": "autorola.com.tr",
+ "country": "Turkey",
+ "official_api": false,
+ "docs_url": "https://app.swaggerhub.com/apis/Autorola/FM_Integration_API/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "fleet_defleet_integration"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Autorola Group exposes a fleet-management integration API for business customers (SwaggerHub); no public auction-listing API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autorolasolutions.com/digital-ecosystem/features/integrations/",
+   "https://www.autorolagroup.com/products-and-services/vehicle-auctions/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Autorola Group exposes a fleet-management integration API for business customers (SwaggerHub); no public auction-listing API."
+}

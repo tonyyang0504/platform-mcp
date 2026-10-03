@@ -1,0 +1,39 @@
+{
+ "id": "kleinanzeigen_de",
+ "category": "automotive",
+ "label": "Kleinanzeigen",
+ "vertical": "real_estate",
+ "lane": "scrape",
+ "url": "https://www.kleinanzeigen.de",
+ "domain": "kleinanzeigen.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kleinanzeigen offers import interfaces only for real-estate professionals; no official API for car listings, only unofficial wrappers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://kleinanzeigen.de/"
+  ],
+  "unofficial": [
+   "https://parse.bot/marketplace/d59bf3e0-b8c9-461c-98e3-d082be7f9163/kleinanzeigen-de-api",
+   "https://github.com/DanielWTE/ebay-kleinanzeigen-api",
+   "https://scrappa.co/services/kleinanzeigen-api"
+  ]
+ },
+ "official_mcp": []
+}

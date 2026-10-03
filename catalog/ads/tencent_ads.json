@@ -1,0 +1,368 @@
+{
+ "id": "tencent_ads",
+ "category": "ads",
+ "label": "腾讯广告 Tencent Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://developers.e.qq.com/",
+ "url": "https://e.qq.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Register as a developer (QQ account as the sole login credential), create an application — 私有应用 (own advertiser / agency accounts) or 第三方应用 (up to 20 each), debug in the sandbox, then apply for production interface permissions per scope. Rate limits: per-interface 接口频控 page in the developer console. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "oauth2 (oauth/authorize → oauth/token → oauth/refresh_token; scopes ads_management, account_management, ads_insights, audience_management, user_actions)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "catalog_products",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "developers.e.qq.com → 开发文档 › SDK (official SDKs listed in the docs navigation; languages not enumerated this pass)"
+  ]
+ },
+ "official_mcp": [
+  "https://developers.e.qq.com/mcp (official 腾讯营销 MCP — 快速投放 / 基础 MCP tools, MCP Key from the developer console)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (腾讯营销 Marketing API v3.0) Confidence: **high** — the official developer portal pages (quick start, interface list, MCP page) were read directly.",
+  "base_urls": [
+   "https://api.e.qq.com/v3.0/…",
+   "https://sandbox-api.e.qq.com/v3.0/"
+  ],
+  "auth": [
+   "1. Register as a developer at developers.e.qq.com with a QQ account (the only login credential; enterprises should use a shared QQ).",
+   "2. Create an application: 私有应用 (your own advertiser / agency accounts) or 第三方应用 (serve other advertisers) — up to 20 each; debug in the sandbox, then apply for production permissions by scope (`ads_management`, `account_management`, `ads_insights`, `audience_management`, `user_actions`).",
+   "3. `GET oauth/authorize` (advertiser consent) → `oauth/token` (authorization_code) → `access_token` + `refresh_token`; `oauth/refresh_token` to renew; tokens ride as query parameters with `nonce` / `timestamp`."
+  ],
+  "endpoints": [
+   {
+    "call": "advertiser/get` · `advertiser/add` (agency sub-accounts) · `advertiser/update",
+    "purpose": "accounts",
+    "notes": "account_id, fields, filtering"
+   },
+   {
+    "call": "advertiser_daily_budget/get` · `advertiser_daily_budget/update",
+    "purpose": "account daily budget",
+    "notes": "account_id, daily_budget"
+   },
+   {
+    "call": "adgroups/add` · `adgroups/update` · `adgroups/get` · `adgroups/delete` · `adgroup_negativewords/add",
+    "purpose": "get",
+    "notes": "update`"
+   },
+   {
+    "call": "dynamic_creatives/add` · `dynamic_creatives/get` · `dynamic_creatives/delete` · `dynamic_ad_images/add` · `dynamic_ad_video/add` · `creative_template/get",
+    "purpose": "creatives + media upload",
+    "notes": "account_id, adgroup_id, creative_template_id, creative_components{image, video, title, description}, page_spec"
+   },
+   {
+    "call": "daily_reports/get` · `async_reports/add` → `async_reports/get` → `async_report_files/get",
+    "purpose": "reports",
+    "notes": "account_id, level REPORT_LEVEL_ADGROUP…, date_range, group_by, fields"
+   },
+   {
+    "call": "custom_audiences/add",
+    "purpose": "update",
+    "notes": "get"
+   },
+   {
+    "call": "user_action_sets/add` · `user_actions/add",
+    "purpose": "conversions upload (数据接入)",
+    "notes": "account_id, user_action_set_id, actions[]{action_time, action_type, user_id{hash_imei, hash_phone…}, trace}"
+   },
+   {
+    "call": "funds/get` · `wallet/get` · `daily_balance_report/get",
+    "purpose": "spend / balance",
+    "notes": "account_id"
+   }
+  ],
+  "limits": " - Per-interface QPS in the console's 接口频控 page (TODO(verify) values); production permissions granted per scope after review; free API; 腾讯广告 developer terms.",
+  "mcp_sdk": [
+   "Official **腾讯营销 MCP** (developers.e.qq.com/mcp): MCP Key from the console; 快速投放 MCP reduces 40+ parameters to 4 required; covers marketing units / creatives / reports.",
+   "Official SDKs (docs navigation → SDK)."
+  ],
+  "sources": [
+   "https://developers.e.qq.com/",
+   "https://developers.e.qq.com/docs/start",
+   "https://developers.e.qq.com/v3.0/docs/apilist",
+   "https://developers.e.qq.com/mcp"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.e.qq.com/v3.0",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.e.qq.com/oauth/token",
+   "token_method": "GET",
+   "client_auth": "body",
+   "token_path": "data.access_token",
+   "token_ttl_seconds": 80000,
+   "token_param": "access_token",
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "payload": "{nonce}{timestamp}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_s",
+    "signature_param": "nonce"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "应用 id (client_id) of your Tencent Marketing API application (developers.e.qq.com > 应用程序管理)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "应用 secret (client_secret) of the same application."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from the one-time OAuth consent (oauth/authorize → GET https://api.e.qq.com/oauth/token?grant_type=authorization_code). The runtime mints 1-day access tokens with grant_type=refresh_token; the refresh token itself expires after refresh_token_expires_in (30 days) and must then be re-authorized."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "推广帐号 id (account_id) the token may operate; used by `me` and by update_budget / pause_resume (adgroups/update needs account_id). For agency tokens use the sub-account id to operate."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/advertiser/get",
+    "params": {
+     "account_id": "@account_id"
+    },
+    "fixed_params": {
+     "fields": "[\"account_id\",\"corporation_name\",\"daily_budget\",\"system_status\"]",
+     "pagination_mode": "PAGINATION_MODE_NORMAL",
+     "page": 1,
+     "page_size": 1
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/advertiser/get",
+    "note": "GET advertiser/get?account_id=…&fields=[…]&pagination_mode=PAGINATION_MODE_NORMAL&page=1&page_size=1 with the common access_token / timestamp (seconds) / nonce (32-char random) query parameters."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/advertiser/get",
+    "fixed_params": {
+     "fields": "[\"account_id\",\"corporation_name\",\"daily_budget\",\"system_status\"]",
+     "pagination_mode": "PAGINATION_MODE_NORMAL",
+     "page": 1,
+     "page_size": 100
+    },
+    "result": {
+     "items": "data.list",
+     "key": "accounts",
+     "total": "data.page_info.total_number",
+     "fields": {
+      "id": "account_id",
+      "name": "corporation_name",
+      "currency": "=CNY"
+     }
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/advertiser/get",
+    "note": "GET advertiser/get without account_id: for an agency (代理商) token this lists all sub-accounts ('如未传 account_id，则默认拉取该代理商下属所有子客信息'); a direct advertiser token must pass account_id, so use `me` instead. raw.daily_budget is in 分 (fen). Returns the first 100 accounts (list_accounts takes no page argument); total in `total`."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/adgroups/get",
+    "params": {
+     "account_id": "int:account_id",
+     "page": "page",
+     "page_size": "limit"
+    },
+    "fixed_params": {
+     "fields": "[\"adgroup_id\",\"adgroup_name\",\"configured_status\",\"daily_budget\",\"begin_date\",\"end_date\",\"system_status\"]"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data.list",
+     "key": "campaigns",
+     "total": "data.page_info.total_number",
+     "fields": {
+      "id": "adgroup_id",
+      "name": "adgroup_name",
+      "status": "configured_status",
+      "currency": "=CNY",
+      "start": "begin_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/adgroups/get",
+    "note": "Marketing API v3.0 has no campaign level: the 营销单元 (adgroup) carries the daily budget and on/off status, so campaigns here are adgroups (GET adgroups/get). status is configured_status (AD_STATUS_NORMAL / AD_STATUS_SUSPEND). The daily budget is in raw.daily_budget in 分 (fen, 1/100 CNY; 0 = unlimited), so `budget` is not mapped. `status` is not sent as a filter."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/daily_reports/get",
+    "params": {
+     "account_id": "int:account_id",
+     "date_range": "jsonstr:{\"start_date\": {date:date_from}, \"end_date\": {date:date_to}}",
+     "filtering": "jsonstr:[{\"field\": \"adgroup_id\", \"operator\": \"EQUALS\", \"values\": [{str:campaign_id}]}]"
+    },
+    "fixed_params": {
+     "level": "REPORT_LEVEL_ADGROUP",
+     "group_by": "[\"date\",\"adgroup_id\"]",
+     "fields": "[\"date\",\"adgroup_id\",\"view_count\",\"valid_click_count\",\"cost\",\"conversions_count\"]",
+     "page": 1,
+     "page_size": 1000
+    },
+    "result": {
+     "items": "data.list",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "campaign_id": "adgroup_id",
+      "impressions": "view_count",
+      "clicks": "valid_click_count",
+      "cost_fen": "cost",
+      "conversions": "conversions_count"
+     }
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/daily_reports/get",
+    "note": "GET daily_reports/get?account_id&level=REPORT_LEVEL_ADGROUP&date_range={start_date,end_date}&group_by=[date,adgroup_id]&fields=[…] (JSON-encoded query values, as the official SDK sends them); campaign_id filters on adgroup_id. cost_fen is spend in 分 (fen, 1/100 CNY). Up to 1000 rows (first page)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/adgroups/update",
+    "body": {
+     "account_id": "int:@account_id",
+     "adgroup_id": "int:campaign_id",
+     "daily_budget": "minor:daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "campaign_id": "adgroup_id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/adgroups/update",
+    "note": "POST adgroups/update {account_id, adgroup_id, daily_budget}: daily_budget is given in CNY (元) and sent in 分 (×100); allowed 5,000–400,000,000 分 (50–4,000,000 元), 0 = unlimited, and it may not go below 1.5× today's spend plus frozen funds. This changes spend. `currency` is ignored (CNY)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/adgroups/update",
+    "body": {
+     "account_id": "int:@account_id",
+     "adgroup_id": "int:campaign_id",
+     "configured_status": "map:action:pause=AD_STATUS_SUSPEND,resume=AD_STATUS_NORMAL"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "campaign_id": "adgroup_id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.e.qq.com/v3.0/docs/api/adgroups/update",
+    "note": "POST adgroups/update {account_id, adgroup_id, configured_status} (pause → AD_STATUS_SUSPEND, resume → AD_STATUS_NORMAL). Resuming restarts spend."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.e.qq.com: DNS ok, TLSv1.3 (DigiCert, Inc.)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 200 too, so the host authenticates before routing",
+   "token api.e.qq.com/oauth/token: 200 11010",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

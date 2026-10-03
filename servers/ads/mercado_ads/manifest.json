@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercado_ads-mcp",
+ "display_name": "Mercado Ads (Mercado Libre Publicidad) MCP",
+ "version": "0.1.0",
+ "description": "Mercado Ads (Mercado Libre Publicidad) (ads): me, list_accounts, list_campaigns, get_report. Every t",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mercado_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_MERCADO_ADS_CLIENT_ID": "${user_config.platform_mcp_mercado_ads_client_id}",
+    "PLATFORM_MCP_MERCADO_ADS_CLIENT_SECRET": "${user_config.platform_mcp_mercado_ads_client_secret}",
+    "PLATFORM_MCP_MERCADO_ADS_REFRESH_TOKEN": "${user_config.platform_mcp_mercado_ads_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mercado_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_ADS_CLIENT_ID",
+   "description": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercado_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_ADS_CLIENT_SECRET",
+   "description": "Secret Key of the same application; sent as client_secret in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercado_ads_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_ADS_REFRESH_TOKEN",
+   "description": "Refresh token (TG-...) from a one-time authorization-code consent by the advertiser's ADMIN account (Product Ads enabled under Mi perfil > Publicidad) (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /users/me: the authorised Mercado Libre user {id, nickname, site_id}."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /advertising/advertisers?product_id=PADS (Api-Version: 1): Product Ads advertisers the user can access ({advertiser_id, site_id, advertiser_name, account_name}); the currency follows raw.site_id. A 404 'No permissions found for user_id' means Product Ads is not enabled for the user."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /advertising/advertisers/{advertiser_id}/product_ads/campaigns (api-version: 2) with limit/offset and filters[status] (active or paused). `budget` is the campaign's daily budget in currency_id; raw carries strategy and acos_target."
+  },
+  {
+   "name": "get_report",
+   "description": "Campaign search with metrics: GET /advertising/advertisers/{advertiser_id}/product_ads/campaigns?date_from&date_to&metrics=clicks,prints,ctr,cost,cpc,acos,units_quantity,total_amount (optionally filters[campaign_ids]); one row per campaign with totals for the range (first 50 campaigns). Dates can reach 90 days back; data refreshes daily at 10:00 GMT-3."
+  }
+ ]
+}

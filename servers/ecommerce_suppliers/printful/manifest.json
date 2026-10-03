@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "printful-mcp",
+ "display_name": "Printful MCP",
+ "version": "0.1.0",
+ "description": "Printful (ecommerce suppliers): me, list_products, get_product, create_order, get_order. Every tool ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "printful"
+   ],
+   "env": {
+    "PLATFORM_MCP_PRINTFUL_TOKEN": "${user_config.platform_mcp_printful_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_printful_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRINTFUL_TOKEN",
+   "description": "Printful private (store-level) token or OAuth access token, sent as `Authorization: Bearer`. Account-level tokens also need the X-PF-Store-Id header, which the runtime cannot send: use a store token.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /oauth/scopes returns the scopes of the token ({code, result: {scopes: [{scope, display_name}]}})."
+  },
+  {
+   "name": "list_products",
+   "description": "Printful catalog products (blanks): GET /products?category_id=… returns the whole catalog in one {code, result[]} response (about 550 products). The catalog OpenAPI (https://developers.printful.com/docs/openapi.json) defines only category_id, and a live check (auth audit 2026-09-26, public endpoint) showed offset ignored and no paging object, so page/limit are not sent. `query` is not accepted; `category` maps to category_id."
+  },
+  {
+   "name": "get_product",
+   "description": "result.product; the variants [{id, name, size, color, price, currency, in_stock}] are in the sibling result.variants (not in `raw`, which is the product only)."
+  },
+  {
+   "name": "create_order",
+   "description": "Creates a DRAFT order (the `confirm` query parameter is not sent), so nothing is charged until the order is confirmed in Printful. `shipping_address` is Printful's recipient object {name, address1, city, state_code, country_code, zip, phone, email}; `items` are Printful items [{variant_id|sync_variant_id, quantity, files[{url}]}]; `shipping_option` is the shipping method id."
+  },
+  {
+   "name": "get_order",
+   "description": ""
+  }
+ ]
+}

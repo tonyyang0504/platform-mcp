@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/walmart-mcp",
+ "description": "Walmart Marketplace (ecommerce channels): me, list_orders, update_listing, set_inventory, end_listin",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.walmart.com/doc/us/mp/us-mp-getting-started/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "walmart"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WALMART_CLIENT_ID",
+     "description": "Walmart Marketplace API Client ID (Seller Center > Settings > API Key Management / Developer Portal, production keys).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WALMART_CLIENT_SECRET",
+     "description": "The matching Client Secret; sent only as HTTP Basic to POST /v3/token, which returns a 15-minute access token sent as WM_SEC.ACCESS_TOKEN.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WALMART_SHIP_NODE",
+     "description": "shipNode id for set_inventory when you have several ship nodes; empty = your default ship node.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_WALMART_ENV",
+     "description": "Vendor environment (default production): sandbox = https://sandbox.walmartapis.com; sandbox_dynamic = https://sandbox.walmartapis.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox",
+      "sandbox_dynamic"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_WALMART_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

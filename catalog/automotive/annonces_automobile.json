@@ -1,0 +1,42 @@
+{
+ "id": "annonces_automobile",
+ "category": "automotive",
+ "label": "Annonces Automobile",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.annonces-automobile.com",
+ "domain": "annonces-automobile.com",
+ "country": "France",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "FeedVO pro account",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Annonces-Automobile pros manage stock through the FeedVO extranet (Motors Gate); no public API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.feedvo.com/",
+   "https://annonces-automobile.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Annonces-Automobile pros manage stock through the FeedVO extranet (Motors Gate); no public API documentation."
+}

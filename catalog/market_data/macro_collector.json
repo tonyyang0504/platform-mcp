@@ -1,0 +1,111 @@
+{
+ "id": "macro_collector",
+ "category": "market_data",
+ "label": "FRED macro series (CSV)",
+ "provider": "FRED (St. Louis Fed)",
+ "lane": "api",
+ "base_urls": [
+  "https://fred.stlouisfed.org/graph/fredgraph.csv"
+ ],
+ "data_kinds": [
+  "macro series (policy rates, yields, curve slopes, credit spreads, inflation expectations, activity data)"
+ ],
+ "auth": "none (keyless CSV)",
+ "docs_url": "https://fred.stlouisfed.org/docs/api/fred/",
+ "verified_at": "2026-09-24",
+ "adapter": {
+  "base_url": "https://api.stlouisfed.org",
+  "auth": {
+   "type": "query",
+   "param": "api_key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "FRED API key ('32 character alpha-numeric lowercase string') requested at https://fredaccount.stlouisfed.org/apikeys; sent as the api_key query parameter (https://fred.stlouisfed.org/docs/api/api_key.html). Terms: show 'This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.'"
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "No numeric limit on the pages read; the terms of use say the Bank 'may impose or adjust the limit on … the number of transactions you may send or receive' and forbid 'an unreasonable amount of bandwidth' (https://fred.stlouisfed.org/docs/api/terms_of_use.html). A missing/invalid key answers HTTP 400 {error_code, error_message}. Base https://api.stlouisfed.org is the documented JSON API (the survey's base_urls list the keyless fredgraph.csv export the collector scrapes).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/fred/series",
+    "fixed_params": {
+     "series_id": "GNPCA",
+     "file_type": "json"
+    },
+    "docs": "https://fred.stlouisfed.org/docs/api/fred/series.html",
+    "note": "FRED has no account endpoint: the key is verified by fetching the docs' own example series (GET /fred/series?series_id=GNPCA); account carries realtime_start/end and seriess[]."
+   },
+   "get_series": {
+    "method": "GET",
+    "path": "/fred/series/observations",
+    "params": {
+     "series_id": "series_id",
+     "observation_start": "start",
+     "observation_end": "end"
+    },
+    "fixed_params": {
+     "file_type": "json"
+    },
+    "default_limit": 100000,
+    "result": {
+     "items": "observations",
+     "key": "points",
+     "total": "count",
+     "fields": {
+      "time": "date",
+      "value": "value"
+     }
+    },
+    "docs": "https://fred.stlouisfed.org/docs/api/fred/series_observations.html",
+    "note": "`start`/`end` are observation_start/observation_end (YYYY-MM-DD); the API's own limit (1-100,000, default 100,000) and offset are not exposed, so one call returns the full range. `value` is the documented numeric string ('.' marks a missing observation); units (lin), frequency and aggregation_method keep FRED's defaults. realtime_start/realtime_end stay in `raw`."
+   },
+   "search_symbols": {
+    "method": "GET",
+    "path": "/fred/series/search",
+    "params": {
+     "search_text": "query",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "file_type": "json"
+    },
+    "max_limit": 1000,
+    "default_limit": 25,
+    "result": {
+     "items": "seriess",
+     "key": "results",
+     "total": "count",
+     "fields": {
+      "symbol": "id",
+      "name": "title",
+      "type": "frequency"
+     }
+    },
+    "docs": "https://fred.stlouisfed.org/docs/api/fred/series_search.html",
+    "note": "Full-text search (search_type=full_text default) ordered by search_rank; limit 1-1000 with offset paging and `count` as the total. `type` is the series frequency (e.g. Monthly); units, seasonal_adjustment, observation_start/end, popularity and last_updated stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "get_candles": "FRED serves observations (one value per date), not OHLC candles — use get_series.",
+   "get_news": "No news endpoint on this API."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.stlouisfed.org: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

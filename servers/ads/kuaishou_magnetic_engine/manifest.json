@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "kuaishou_magnetic_engine-mcp",
+ "display_name": "磁力引擎 Kuaishou Magnetic Engine MCP",
+ "version": "0.1.0",
+ "description": "磁力引擎 Kuaishou Magnetic Engine (ads): me, list_campaigns, get_report, update_budget, pause_resume. Ev",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kuaishou_magnetic_engine"
+   ],
+   "env": {
+    "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_CLIENT_ID": "${user_config.platform_mcp_kuaishou_magnetic_engine_client_id}",
+    "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_CLIENT_SECRET": "${user_config.platform_mcp_kuaishou_magnetic_engine_client_secret}",
+    "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_REFRESH_TOKEN": "${user_config.platform_mcp_kuaishou_magnetic_engine_refresh_token}",
+    "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_ADVERTISER_ID": "${user_config.platform_mcp_kuaishou_magnetic_engine_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kuaishou_magnetic_engine_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_CLIENT_ID",
+   "description": "app_id returned when the 磁力引擎 MAPI developer application was approved (开发者平台 > 应用).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kuaishou_magnetic_engine_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_CLIENT_SECRET",
+   "description": "The application's secret; sent as `secret` in the refresh call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kuaishou_magnetic_engine_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_REFRESH_TOKEN",
+   "description": "refresh_token from 获取token (auth_code exchange after the advertiser authorised the app); valid 30 days and replaced on every refresh ('刷新后会生成新的 token，老的 access_token 和 refresh_token 将不可再使用'). Set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_kuaishou_magnetic_engine_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KUAISHOU_MAGNETIC_ENGINE_ADVERTISER_ID",
+   "description": "广告主 ID returned with the access token at authorisation; used by the probe, update_budget and pause_resume.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No profile call takes a POST/query form, so the probe lists one campaign of the configured advertiser (POST /rest/openapi/gw/dsp/campaign/list, page_size 1)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "查询广告计划 (POST /rest/openapi/gw/dsp/campaign/list {advertiser_id, page, page_size}): campaign_id, campaign_name, put_status (1 投放中, 2 暂停, 3 删除), status (1 暂停, 3 超预算, 4 有效, 5 删除, 6 余额不足), day_budget (厘, 0 = 不限), campaign_type, bid_type, create_time, update_time. The numeric status codes and the budget in 厘 stay in raw. status is not sent (put_status_list/status are numeric codes)."
+  },
+  {
+   "name": "get_report",
+   "description": "广告计划数据 (POST /rest/openapi/v1/report/campaign_report {advertiser_id, start_date, end_date, campaign_ids?, temporal_granularity: DAILY, page_size ≤ 2000}): one row per campaign and day with stat_date, campaign_id, charge (花费, 元), show, photo_click, aclick, bclick, conversion metrics. Only the first 2000 rows are returned."
+  },
+  {
+   "name": "update_budget",
+   "description": "修改广告计划 (POST /rest/openapi/gw/dsp/campaign/update {advertiser_id, campaign_id, day_budget}) with daily_budget in 元 converted to 厘 (×1000); 0 means unlimited, otherwise ≥ 500 元, and a cut may not go below 120% of today's spend. Uses the configured advertiser_id. This spends money; currency is ignored (CNY)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "修改广告计划状态 (POST /rest/openapi/v1/campaign/update/status {advertiser_id, campaign_id, put_status}) with pause → 2 (暂停) and resume → 1 (投放); 3 (删除) is never sent. Partial failures are listed in data.errors. Resuming restarts spend."
+  }
+ ]
+}

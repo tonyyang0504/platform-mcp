@@ -1,0 +1,122 @@
+{
+ "manifest_version": "0.2",
+ "name": "amazon-mcp",
+ "display_name": "Amazon MCP",
+ "version": "0.1.0",
+ "description": "Amazon (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "amazon"
+   ],
+   "env": {
+    "PLATFORM_MCP_AMAZON_CLIENT_ID": "${user_config.platform_mcp_amazon_client_id}",
+    "PLATFORM_MCP_AMAZON_CLIENT_SECRET": "${user_config.platform_mcp_amazon_client_secret}",
+    "PLATFORM_MCP_AMAZON_REFRESH_TOKEN": "${user_config.platform_mcp_amazon_refresh_token}",
+    "PLATFORM_MCP_AMAZON_REGION": "${user_config.platform_mcp_amazon_region}",
+    "PLATFORM_MCP_AMAZON_SELLER_ID": "${user_config.platform_mcp_amazon_seller_id}",
+    "PLATFORM_MCP_AMAZON_MARKETPLACE_ID": "${user_config.platform_mcp_amazon_marketplace_id}",
+    "PLATFORM_MCP_AMAZON_CURRENCY": "${user_config.platform_mcp_amazon_currency}",
+    "PLATFORM_MCP_AMAZON_ENV": "${user_config.platform_mcp_amazon_env}",
+    "PLATFORM_MCP_AMAZON_BASE_URL": "${user_config.platform_mcp_amazon_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_amazon_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_CLIENT_ID",
+   "description": "LWA client identifier of your SP-API application (Developer Central / Solution Provider Portal > app > LWA credentials).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_CLIENT_SECRET",
+   "description": "LWA client secret of the same application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_REFRESH_TOKEN",
+   "description": "LWA refresh token (Atzr|...) from self-authorising the app for your seller account (or from the seller's OAuth authorization); exchanged at https://api.amazon.com/auth/o2/token for 1-hour access tokens sent as x-amz-access-token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_amazon_region": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_REGION",
+   "description": "SP-API endpoint region: na (Canada, US, Mexico, Brazil), eu (Europe, UK, India, Middle East, Turkey, South Africa) or fe (Japan, Australia, Singapore); calls go to https://sellingpartnerapi-<region>.amazon.com.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_amazon_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_SELLER_ID",
+   "description": "Selling partner (merchant token) id used in the Listings Items path /listings/2021-08-01/items/{sellerId}/{sku} (Seller Central > Settings > Account Info > Merchant Token).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_amazon_marketplace_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_MARKETPLACE_ID",
+   "description": "Marketplace id the tools act on, e.g. ATVPDKIKX0DER (US) or A1F83G8C2ARO7P (UK); see the SP-API Marketplace IDs page.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_amazon_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_CURRENCY",
+   "description": "Currency of the marketplace's offers (e.g. USD, GBP, EUR); needed only when update_listing changes the price (purchasable_offer selector).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_amazon_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_ENV",
+   "description": "Vendor environment (default production): sandbox = https://sandbox.sellingpartnerapi-{region}.amazon.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_amazon_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AMAZON_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /sellers/v1/marketplaceParticipations returns {payload: [{marketplace{id, countryCode, name, defaultCurrencyCode}, participation{isParticipating, hasSuspendedListings}}]} — the marketplaces the seller can sell in."
+  },
+  {
+   "name": "update_listing",
+   "description": "PATCH /listings/2021-08-01/items/{sellerId}/{sku}?marketplaceIds (listing_id = your SKU) with productType PRODUCT and two JSON-Patch `merge` operations as in the Manage purchasable offer / Merge a listing guides: /attributes/purchasable_offer [{marketplace_id, currency, audience: ALL, our_price[{schedule[{value_with_tax: price}]}]}] and /attributes/fulfillment_availability [{fulfillment_channel_code: DEFAULT, quantity}]; a merge leaves omitted sub-attributes unchanged. `currency` comes from the config field. `title`/`description` (item_name / product_description need language_tag per marketplace) are not changed. Returns {sku, status ACCEPTED|INVALID|VALID, submissionId, issues[]}; processing is asynchronous."
+  },
+  {
+   "name": "end_listing",
+   "description": "DELETE /listings/2021-08-01/items/{sellerId}/{sku}?marketplaceIds deletes the listings item for that marketplace (irreversible; listing_id = your SKU). Returns {sku, status ACCEPTED|INVALID, submissionId, issues[]}."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PATCH /listings/2021-08-01/items/{sellerId}/{sku} with a `merge` on /attributes/fulfillment_availability [{fulfillment_channel_code: DEFAULT, quantity}] (Merge a listing guide) sets seller-fulfilled (MFN) quantity without touching restock_date / lead time. `sku` (or listing_id, which is the SKU on Amazon) addresses the listing. FBA stock is Amazon's and cannot be set."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /orders/v0/orders?MarketplaceIds&CreatedAfter(ISO-8601)&OrderStatuses(Pending|Unshipped|PartiallyShipped|Shipped|Canceled|Unfulfillable|...)&MaxResultsPerPage(1-100). `since` is REQUIRED in practice (Amazon: either CreatedAfter or LastUpdatedAfter must be set). Only the first page is returned: Amazon paginates with NextToken (raw payload.NextToken), not page numbers, so `page` > 1 repeats page 1. Rate 0.0167 req/s, burst 20. OrderTotal.Amount is a decimal string. Orders v0 getOrders is marked deprecated in favour of Orders v2026-01-01 searchOrders."
+  }
+ ]
+}

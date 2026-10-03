@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "taobao_fenxiao_alimama-mcp",
+ "display_name": "Taobao/Tmall distribution (淘宝分销 → Tmall 供销平台) + Taobao Affiliate (淘宝联盟) MCP",
+ "version": "0.1.0",
+ "description": "Taobao/Tmall distribution (淘宝分销 → Tmall 供销平台) + Taobao Affiliate (淘宝联盟) (ecommerce suppliers): me, l",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "taobao_fenxiao_alimama"
+   ],
+   "env": {
+    "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_KEY": "${user_config.platform_mcp_taobao_fenxiao_alimama_app_key}",
+    "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_SECRET": "${user_config.platform_mcp_taobao_fenxiao_alimama_app_secret}",
+    "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_ADZONE_ID": "${user_config.platform_mcp_taobao_fenxiao_alimama_adzone_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_taobao_fenxiao_alimama_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_KEY",
+   "description": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taobao_fenxiao_alimama_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_SECRET",
+   "description": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taobao_fenxiao_alimama_adzone_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_ADZONE_ID",
+   "description": "Promotion slot id: the last number of your 淘宝联盟 PID mm_xxx_xxx_<adzone_id> (pub.alimama.com > 推广管理 > 推广位管理).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "taobao.time.get: Taobao server time; a signed call that verifies the app_key/app_secret pair."
+  },
+  {
+   "name": "list_products",
+   "description": "淘宝联盟 taobao.tbk.dg.material.optional.upgrade (物料搜索升级版): keyword (`query`) or category (`category`, comma-separated backend cids) search of promotable Taobao/Tmall items for your adzone; price = current selling price (zk_final_price), final_price = estimated price after coupons, url = your promotion click_url, income_rate = commission + subsidy %. `id` is the new-style 淘宝客 item id."
+  },
+  {
+   "name": "get_product",
+   "description": "淘宝联盟 taobao.tbk.item.info.get (简版): one item's title, list price (reserve_price), selling price (zk_final_price), images, shop, 30-day sales and location."
+  }
+ ]
+}

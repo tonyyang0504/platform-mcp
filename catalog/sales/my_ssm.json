@@ -1,0 +1,36 @@
+{
+ "id": "my_ssm",
+ "category": "sales",
+ "label": "Companies Commission of Malaysia",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "my"
+ ],
+ "docs_url": null,
+ "url": "https://www.ssm.com.my/",
+ "verified_at": "2026-09-05",
+ "terms_note": "e-Search sells company profiles per lookup → tenant account; robots.txt (5 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

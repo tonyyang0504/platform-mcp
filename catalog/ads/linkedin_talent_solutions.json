@@ -1,0 +1,128 @@
+{
+ "id": "linkedin_talent_solutions",
+ "category": "ads",
+ "label": "LinkedIn Talent Solutions (Job Posts)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/linkedin/talent/",
+ "url": "https://business.linkedin.com/talent-solutions",
+ "verified_at": "2026-09-04",
+ "terms_note": "Talent APIs are for approved integration partners (developer portal product catalog); console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (LinkedIn Talent Solutions partner programme; 2-legged / 3-legged)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "reports",
+   "account_management"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Job Posting API etc. for approved partners only) Confidence: **high**.",
+  "base_urls": [
+   "https://api.linkedin.com/rest/simpleJobPostings"
+  ],
+  "auth": [
+   "1. Apply to the LinkedIn Talent Solutions Partner Program (ATS / job distribution).",
+   "2. OAuth 2.0 client credentials (2-legged) for partner apps.",
+   "3. Post jobs on behalf of customers (contract-based)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /rest/simpleJobPostings",
+    "purpose": "job posts (+ promoted budget)",
+    "notes": "integrationContext, companyApplyUrl, title, description, location, listingType BASIC/PREMIUM"
+   },
+   {
+    "call": "job posting status / analytics",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "employer self-serve API",
+    "purpose": "not offered",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Partner approval; LinkedIn API Terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://learn.microsoft.com/en-us/linkedin/talent/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://learn.microsoft.com/en-us/linkedin/talent/ presents Apply Connect, Apply with LinkedIn and other ATS integrations for approved LinkedIn Talent Solutions partners; they post jobs and exchange applicant data rather than manage ad campaigns, budgets or reports, and no vocabulary verb maps to a call an ordinary account can make."
+}

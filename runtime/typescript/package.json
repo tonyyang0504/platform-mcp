@@ -1,0 +1,60 @@
+{
+  "name": "platform-mcp-hub",
+  "version": "0.1.0",
+  "description": "MCP servers for 450+ platform APIs from one evidence-only catalog: one package, one CLI (npx platform-mcp-hub serve <id>). TypeScript runtime; the same CLI ships on PyPI.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "api",
+    "catalog",
+    "agents"
+  ],
+  "license": "Apache-2.0",
+  "author": "platform-mcp contributors",
+  "homepage": "https://github.com/tonyyang0504/platform-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/tonyyang0504/platform-mcp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonyyang0504/platform-mcp.git",
+    "directory": "runtime/typescript"
+  },
+  "mcpName": "io.github.tonyyang0504/platform-mcp-hub",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": {
+    "platform-mcp-hub": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "catalog",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "node scripts/pack-catalog.mjs copy",
+    "postpack": "node scripts/pack-catalog.mjs clean"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/node": "2.1.0",
+    "@modelcontextprotocol/server": "^2.1.0",
+    "fast-xml-parser": "^5.11.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.1.0",
+    "@types/node": "^26.6.2",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "whop-mcp",
+ "display_name": "Whop MCP",
+ "version": "0.1.0",
+ "description": "Whop (marketplaces): me, list_products, get_product, create_product, update_price, list_sales, list_",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "whop"
+   ],
+   "env": {
+    "PLATFORM_MCP_WHOP_API_KEY": "${user_config.platform_mcp_whop_api_key}",
+    "PLATFORM_MCP_WHOP_COMPANY_ID": "${user_config.platform_mcp_whop_company_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_whop_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WHOP_API_KEY",
+   "description": "Whop Account API key (dashboard > Developer > API keys; server-side only) sent as Authorization: Bearer. Permissions used: access_pass:basic:read/manage (products), plan:basic:read/manage (update_price), payment:basic:read (sales, refunds) and payment:manage (refund). Sandbox keys use https://sandbox-api.whop.com/api/v1, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_whop_company_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WHOP_COMPANY_ID",
+   "description": "The company's account id (biz_..., shown in the dashboard URL/settings). Sent as account_id on list_products, create_product, update_price, list_sales and list_refunds; without it GET /products would search the public marketplace.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /accounts/me returns the account (biz_...) associated with the Account API key: {id, title, route, business_name, balances[], ...}. It verifies the key and identifies the company."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /products?account_id (the company_id setting; required, otherwise the public marketplace is searched)&first=limit&visibilities=status (visible|hidden|archived|quick_link; a single value of the documented array filter). Rows are {id, title, headline, visibility, route, created_at, updated_at, member_count, ...}; `status` is the visibility. Prices live on plans (GET /plans?product_ids=..., see update_price), so `price`/`currency` are null. Cursor paging (`after` = page_info.end_cursor) cannot be carried by page/limit: `page` is ignored and only the first page is returned."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /products/{id} (product id prod_... or its route slug) returns the Product {id, title, description, headline, visibility, route, company{id, route, title}, created_at, updated_at, member_count, ...}. Prices are on the product's plans, so `price`/`currency` are null."
+  },
+  {
+   "name": "create_product",
+   "description": "POST /products {account_id (company_id setting), title (required, max 80 chars), description, plan_options{initial_price (decimal major units, e.g. 10.43), base_currency, plan_type: one_time}} creates the product together with one auto-generated one-time plan carrying the price. `base_currency` is Whop's lowercase currency enum (usd, eur, gbp, ...): pass `currency` in lowercase. The product is created with Whop's default visibility (visible unless the request says otherwise). `url` is not accepted (route is a slug, not a URL)."
+  },
+  {
+   "name": "update_price",
+   "description": "Whop prices live on plans, so this CREATES a new one-time plan with POST /plans {account_id, product_id, initial_price (decimal major units, e.g. 10.43 for $10.43), currency (ISO code; defaults to USD when omitted), plan_type: one_time}; existing plans stay on sale until archived (PATCH /plans/{id} visibility=archived, not mapped). The result's `id` is the product id; the new plan id is raw.id (plan_...)."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /payments?account_id&first=limit&created_after=since (date-time)&product_ids=product_id (single value of the documented array filter), newest first. Rows carry {id (pay_...), status (draft|open|paid|void|...), substatus, total (creator total in decimal major units), subtotal, currency, product{id, title}, user{id, name, username, email}, created_at, paid_at, refunded_amount, refunded_at}. `refunded` is not a boolean field (see raw.refunded_amount). Cursor paging: `page` is ignored, first page only."
+  },
+  {
+   "name": "list_refunds",
+   "description": "GET /refunds?account_id&first=limit&created_after=since, newest first: {id, amount (decimal major units), currency, status (pending|requires_action|succeeded|failed|canceled), payment{id}, provider, created_at}. No reason field exists. Cursor paging: `page` is ignored, first page only."
+  },
+  {
+   "name": "refund",
+   "description": "DESTRUCTIVE: POST /payments/{id}/refund {partial_amount} refunds the payment (pay_...) — in FULL when `amount` is omitted, or partially by `amount` in decimal major units of the charge currency (e.g. 6.9). `reason` is not accepted by the endpoint and is dropped. The result is the updated Payment: `amount` is refunded_amount and `created_at` is refunded_at; the refund records are raw.refunds[]."
+  }
+ ]
+}

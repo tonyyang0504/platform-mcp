@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "the_trade_desk-mcp",
+ "display_name": "The Trade Desk MCP",
+ "version": "0.1.0",
+ "description": "The Trade Desk (ads): me, list_accounts, list_campaigns, update_budget. Every tool maps to a documen",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "the_trade_desk"
+   ],
+   "env": {
+    "PLATFORM_MCP_THE_TRADE_DESK_API_TOKEN": "${user_config.platform_mcp_the_trade_desk_api_token}",
+    "PLATFORM_MCP_THE_TRADE_DESK_PARTNER_ID": "${user_config.platform_mcp_the_trade_desk_partner_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_the_trade_desk_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_THE_TRADE_DESK_API_TOKEN",
+   "description": "Platform API token generated in OpenTTD > Access Management > Generate Token / Key (Application: Platform API; lifetime one week to one year), sent as the TTD-Auth header. Short-lived tokens from POST /v3/authentication also work until they expire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_the_trade_desk_partner_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_THE_TRADE_DESK_PARTNER_ID",
+   "description": "Your Partner ID (e.g. from POST /v3/partner/query); list_accounts lists the advertisers of this partner (POST /v3/advertiser/query/partner needs PartnerId).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "POST /v3/partner/query {PageStartIndex: 0, PageSize: 1}: 'Get all Partners that are accessible' to the token; account.Result[0].PartnerId is the partner id to configure."
+  },
+  {
+   "name": "list_accounts",
+   "description": "POST /v3/advertiser/query/partner {PartnerId (config partner_id), PageStartIndex: 0, PageSize: 100}: 'Get Advertisers that belong to the specified Partner' (first 100). The advertiser id is the account_id for list_campaigns."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /v3/campaign/query/advertiser {AdvertiserId, PageStartIndex (zero-based offset), PageSize, Availabilities}: 'Get a page of Campaigns that belong to the specified Advertiser'. `status` is an Availability (Available or Archived). `budget` is the campaign's total Budget (Money {Amount, CurrencyCode}); DailyBudget, PacingMode and CampaignFlights are in raw."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /v3/campaign {CampaignId, DailyBudget: {Amount, CurrencyCode}} ('Update an existing campaign'). DailyBudget is Money: Amount is a decimal in the advertiser's currency and CurrencyCode (e.g. USD) is REQUIRED, so pass `currency`. TTD: 'For campaigns with multiple flights, this property becomes read-only and its value is determined by individual flight budget values' - such campaigns are rejected; change the flight budget in the platform instead."
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "wahu_mx",
+ "category": "automotive",
+ "label": "Wahu",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://wahu.com.mx",
+ "domain": "wahu.com.mx",
+ "country": "Mexico",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Mexico); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://wahu.com.mx/"
+  ],
+  "unofficial": [
+   "https://github.com/wazuh/wazuh-API"
+  ]
+ },
+ "official_mcp": []
+}

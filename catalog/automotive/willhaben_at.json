@@ -1,0 +1,34 @@
+{
+ "id": "willhaben_at",
+ "category": "automotive",
+ "label": "Illhaben",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.willhaben.at",
+ "domain": "illhaben.at",
+ "country": "Austria",
+ "official_api": "unknown",
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). Domain does not resolve; likely a typo of willhaben.at (which has no public listings API).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: Domain does not resolve; likely a typo of willhaben.at (which has no public listings API)."
+}

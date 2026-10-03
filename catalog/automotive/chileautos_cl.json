@@ -1,0 +1,43 @@
+{
+ "id": "chileautos_cl",
+ "category": "automotive",
+ "label": "Chileautos",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.chileautos.cl",
+ "domain": "chileautos.cl",
+ "country": "Chile",
+ "official_api": true,
+ "docs_url": "https://www.chileautos.cl/staticpages/global-inventory-integration",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API credentials for certified integrators",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "leads"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Chileautos (carsales group) documents a stock and leads integration API for certified dealer integrators.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.chileautos.cl/staticpages/global-inventory-integration",
+   "https://ayuda.chileautos.cl/hc/es/articles/14636113202713--C%C3%B3mo-puedo-hacer-la-Integraci%C3%B3n-de-Stock-con-la-API-de-Chileautos"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.chileautos.cl/staticpages/global-inventory-integration): Chileautos (carsales group) documents a stock and leads integration API for certified dealer integrators. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

@@ -1,0 +1,79 @@
+{
+ "id": "bitflyer",
+ "category": "trading",
+ "label": "bitFlyer Lightning",
+ "lane": "api",
+ "country": "JP",
+ "docs_url": "https://lightning.bitflyer.com/docs?lang=ja",
+ "url": "https://bitflyer.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public HTTP API only (no key). Docs in Japanese (lightning.bitflyer.com/docs?lang=ja, also English), HTML only. The docs limit the HTTP API to 500 requests per 5 minutes per IP. No OHLC endpoint in the public HTTP API. Live 2026-10-01: an unknown product answers 400 {\"status\":-100,\"error_message\":\"Invalid product\"}; product codes are matched case-insensitively (btc_jpy works) but answered upper-case.",
+ "adapter": {
+  "base_url": "https://api.bitflyer.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/v1/getmarkets",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "product_code",
+      "type": "market_type"
+     }
+    },
+    "docs": "https://lightning.bitflyer.com/docs?lang=ja#マーケットの一覧",
+    "note": "Every product (BTC_JPY, ETH_BTC, FX_BTC_JPY ...) with its market type (Spot, FX, Futures)."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/v1/getticker",
+    "params": {
+     "product_code": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "product_code",
+      "last": "ltp",
+      "bid": "best_bid",
+      "ask": "best_ask",
+      "volume": "volume_by_product"
+     }
+    },
+    "docs": "https://lightning.bitflyer.com/docs?lang=ja#ticker",
+    "note": "volume is the 24h volume of this product (volume_by_product); `volume` in raw is the total across products."
+   }
+  },
+  "not_offered": {
+   "me": "Private API calls need ACCESS-KEY and an HMAC-SHA256 ACCESS-SIGN; public-data entry only.",
+   "get_candles": "The public HTTP API has no OHLC endpoint (only executions and the board); not mapped.",
+   "get_balances": "GET /v1/me/getbalance needs an API key; public-data entry only.",
+   "list_orders": "GET /v1/me/getchildorders needs an API key; public-data entry only.",
+   "place_order": "POST /v1/me/sendchildorder needs an API key and spends money; not mapped.",
+   "cancel_order": "POST /v1/me/cancelchildorder needs an API key; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

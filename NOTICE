@@ -1,0 +1,7 @@
+platform-mcp (platform-mcp-hub)
+Copyright 2026 the platform-mcp contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The catalog (catalog/) describes third-party platforms and their public APIs. Platform names and marks belong to their
+owners; the catalog cites each platform's own documentation and implies no affiliation or endorsement.

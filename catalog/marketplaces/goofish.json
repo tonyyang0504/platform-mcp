@@ -1,0 +1,43 @@
+{
+ "id": "goofish",
+ "category": "marketplaces",
+ "label": "Goofish (闲鱼)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://www.goofish.com/",
+ "url": "https://www.goofish.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "partner",
+  "access": "partner_only",
+  "capabilities": [
+   "merchant_open_platform(apply)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "adapter_status": "blocked",
+ "reason": "Invitation-only and hosting-restricted (re-checked 2026-09-25 in headless Chromium): https://open.goofish.com/ still redirects to the 闲鱼 login page (登录_闲鱼). The public 闲鱼小程序 docs now render - https://open.goofish.com/doc/quick-start.html says '闲鱼小程序目前不对外公开开放申请，只面向闲鱼运营小二定向邀请的服务商，未经邀请的注册将不予通过', and https://open.goofish.com/doc/development/dev/server.html requires every service to be deployed inside 聚石塔 ('用户id、订单信息等必须存储在聚石塔内的数据库中') and to call Taobao TOP APIs (alibaba.idle.isv.order.* / refund.query / goosefish.user.info.query) with per-API permissions granted by 闲鱼. No listing/product API is documented, and neither the invitation nor the in-聚石塔 hosting can be met by a self-hosted MCP server."
+}

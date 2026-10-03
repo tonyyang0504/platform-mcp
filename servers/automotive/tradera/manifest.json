@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "tradera-mcp",
+ "display_name": "Tradera MCP",
+ "version": "0.1.0",
+ "description": "Tradera (automotive): get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "tradera"
+   ],
+   "env": {
+    "PLATFORM_MCP_TRADERA_APP_ID": "${user_config.platform_mcp_tradera_app_id}",
+    "PLATFORM_MCP_TRADERA_APP_KEY": "${user_config.platform_mcp_tradera_app_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tradera_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADERA_APP_ID",
+   "description": "Application ID (integer) of an app registered in the Tradera Developer Center (self-service).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tradera_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADERA_APP_KEY",
+   "description": "Application key (GUID) of that app. Read-only calls (search, items, categories) need only these two headers.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "get_listing",
+   "description": "GET /v4/items/{itemId} with X-App-Id/X-App-Key (REST v4, beta). price is the Buy Now price (SEK, integer); auction state (maxBid, nextBid, totalBids, endDate), attributeValues, imageLinks and seller stay in raw."
+  }
+ ]
+}

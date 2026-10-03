@@ -1,0 +1,316 @@
+{
+ "id": "dropshipzone",
+ "category": "ecommerce_suppliers",
+ "label": "Dropshipzone",
+ "lane": "api",
+ "kind": "regional",
+ "regions": [
+  "au_nz"
+ ],
+ "docs_url": "https://www.dropshipzone.com.au/apidoc/index.html",
+ "url": "https://www.dropshipzone.com.au/",
+ "verified_at": "2026-09-24",
+ "terms_note": "not stated beyond retailer/supplier T&Cs",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token — POST https://api.dropshipzone.com.au/auth (account credentials) → access token header",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "order_create",
+   "orders",
+   "tracking"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "apiDoc JSON https://www.dropshipzone.com.au/apidoc/api_data.js"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.dropshipzone.com.au"
+  ],
+  "auth": [
+   "1. Tenant registers a Dropshipzone retailer account",
+   "2. POST /auth with account credentials → access token",
+   "3. Send the token header on every call (per Header-Example)"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/products",
+    "purpose": "catalogue with filters (paged)",
+    "notes": ""
+   },
+   {
+    "call": "POST /stock",
+    "purpose": "stock for SKUs",
+    "notes": ""
+   },
+   {
+    "call": "POST /get_zone_mapping · /get_zone_rates (v1 + v2)",
+    "purpose": "postcode → zone, shipping rates",
+    "notes": ""
+   },
+   {
+    "call": "POST /placingOrder",
+    "purpose": "place a dropship order",
+    "notes": ""
+   },
+   {
+    "call": "GET /orders",
+    "purpose": "orders with status / tracking (filters)",
+    "notes": ""
+   }
+  ],
+  "limits": " Not stated. - Retailer account - Shopify app + CSV alternatives",
+  "mcp_sdk": [
+   "apiDoc JSON https://www.dropshipzone.com.au/apidoc/api_data.js"
+  ],
+  "sources": [
+   "https://www.dropshipzone.com.au/apidoc/index.html",
+   "https://www.dropshipzone.com.au/apidoc/api_data.js",
+   "https://api.dropshipzone.com.au)"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.dropshipzone.com.au",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth",
+    "body": {
+     "email": "@email",
+     "password": "@password"
+    }
+   },
+   "token_path": "token",
+   "prefix": "jwt ",
+   "token_ttl_seconds": 840,
+   "fields": [
+    {
+     "name": "email",
+     "required": true,
+     "help": "Dropshipzone API user e-mail; POST /auth {email, password} returns a token valid 15 minutes, sent as `Authorization: jwt <token>` and renewed automatically."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Dropshipzone API user password."
+    }
+   ]
+  },
+  "headers": {
+   "Content-Type": "application/json"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/categories",
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Category-V2GetCategory",
+    "note": "Dropshipzone has no account endpoint; the probe logs in and lists the categories ([{category_id, title, parent_id, path}]), so `account` is empty on success."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/v2/products",
+    "params": {
+     "keywords": "query",
+     "category_id": "category",
+     "page_no": "page",
+     "limit": "limit"
+    },
+    "default_limit": 40,
+    "max_limit": 200,
+    "result": {
+     "items": "result",
+     "key": "products",
+     "total": "total",
+     "fields": {
+      "id": "sku",
+      "title": "title",
+      "price": "price",
+      "currency": "currency",
+      "sku": "sku",
+      "url": "website_url",
+      "image_url": "gallery.0",
+      "stock": "stock_qty",
+      "entity_id": "entity_id",
+      "rrp": "RrpPrice",
+      "category_path": "Category",
+      "brand": "brand"
+     }
+    },
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Product-V2GetProducts",
+    "note": "GET /v2/products {result[{entity_id, sku, title, price, cost, RrpPrice, currency (AUD), stock_qty, status, gallery[], website_url, Category, brand, desc}], total, total_pages, current_page}. `query` is `keywords` (comma-separated, up to 20), `category` is category_id; the page size must be between 40 and 200 (default 40). `id` is the SKU (get_product and orders use SKUs)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/v2/products",
+    "params": {
+     "skus": "id"
+    },
+    "result": {
+     "root": "result.0",
+     "fields": {
+      "id": "sku",
+      "title": "title",
+      "price": "price",
+      "currency": "currency",
+      "sku": "sku",
+      "url": "website_url",
+      "image_url": "gallery.0",
+      "stock": "stock_qty",
+      "entity_id": "entity_id",
+      "rrp": "RrpPrice",
+      "description": "desc"
+     }
+    },
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Product-V2GetProducts",
+    "note": "GET /v2/products?skus={id}: the first result for that SKU ({sku, title, price, stock_qty, gallery, desc, weight, length, width, height, ...}); an unknown SKU is an empty result (invalid_input)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/placingOrder",
+    "body": {
+     "your_order_no": "uuid",
+     "first_name": "shipping_address.first_name",
+     "last_name": "shipping_address.last_name",
+     "address1": "shipping_address.address1",
+     "address2": "shipping_address.address2",
+     "suburb": "shipping_address.suburb",
+     "state": "shipping_address.state",
+     "postcode": "shipping_address.postcode",
+     "telephone": "shipping_address.telephone",
+     "comment": "shipping_address.comment",
+     "order_items": "items"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "serial_number",
+      "result_status": "status",
+      "errmsg": "errmsg"
+     }
+    },
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Order-Place_Order",
+    "note": "POST /placingOrder creates a 'Not Submitted' order that is only charged once paid on the Dropshipzone website. `shipping_address` uses Dropshipzone's consignee keys {first_name, last_name, address1, address2, suburb, state, postcode, telephone, comment} (Australian addresses); `items` are order_items [{sku, qty}]; your_order_no is a fresh UUID. The API answers HTTP 200 with [{status, serial_number, errmsg}]: result_status 1 is success, -1 a rejection explained in `errmsg`. `shipping_option` is not sent (no such field)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "order_ids": "id"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "id": "increment_id",
+      "status": "status",
+      "created_at": "created_at",
+      "tracking_number": "shipment.0.track_number",
+      "serial_number": "serial_number",
+      "grand_total": "grand_total",
+      "shipping_fee": "shipping_fee"
+     }
+    },
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Order-GetHttpsApiDropshipzoneComAuOrders",
+    "note": "GET /orders?order_ids={id} (Dropshipzone order id): data[{increment_id, serial_number, status (unpaid, pending, processing, complete, canceled), created_at, grand_total (decimal string, AUD), items, shipment[{track_number, title, created_at}], shipping_address}]."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "order_ids": "order_id"
+    },
+    "result": {
+     "items": "data.0.shipment",
+     "key": "events",
+     "fields": {
+      "tracking_number": "track_number",
+      "carrier": "title",
+      "date": "created_at"
+     }
+    },
+    "docs": "https://www.dropshipzone.com.au/apidoc/index.html#api-Order-GetHttpsApiDropshipzoneComAuOrders",
+    "note": "The shipment[{track_number, title (carrier), created_at}] list of GET /orders?order_ids={order_id}; empty until the order is dispatched."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /v2/get_zone_rates takes skus and returns per-SKU rate tables keyed by Australian zone ({sku, standard{act, nsw_m, nsw_r, ..., nz}, defined{adelaide, brisbane, ...}}) after a postcode -> zone lookup (POST /v2/get_zone_mapping); there is no country-level options list for the product_id/country/quantity shape."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.dropshipzone.com.au: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "login api.dropshipzone.com.au/auth: 401 Unauthorized",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "openfigi-mcp",
+ "display_name": "OpenFIGI (instrument identifiers) MCP",
+ "version": "0.1.0",
+ "description": "OpenFIGI (instrument identifiers) (market data): search_symbols. Every tool maps to a documented end",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "openfigi"
+   ],
+   "env": {
+    "PLATFORM_MCP_OPENFIGI_API_KEY": "${user_config.platform_mcp_openfigi_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_openfigi_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OPENFIGI_API_KEY",
+   "description": "Optional OpenFIGI API key (sign up at https://www.openfigi.com/user/signup); raises the search limit from 5 to 20 requests per minute. Sent as X-OPENFIGI-APIKEY.",
+   "sensitive": true,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "search_symbols",
+   "description": "Keyword search over FIGIs (POST /v3/search {query, start}); symbol is the FIGI, raw carries ticker, exchCode, marketSector and compositeFIGI. The API always answers pages of 100 and ignores the page size, so the server returns `limit` results and a next_cursor that walks the rest of that page before asking for the next one (the page is held for 60 s, so walking it costs no extra searches). Pass next_cursor back as cursor. Without an API key only 5 searches per minute are allowed."
+  }
+ ]
+}

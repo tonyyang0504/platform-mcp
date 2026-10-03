@@ -1,0 +1,44 @@
+{
+ "id": "aaa_auto",
+ "category": "automotive",
+ "label": "Aaaauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://aaaauto.otomoto.pl",
+ "domain": "aaaauto.otomoto.pl",
+ "country": "Poland",
+ "official_api": true,
+ "docs_url": "https://www.otomoto.pl/api/doc/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key + OAuth user credentials (register as API partner, test account via api@otomoto.pl)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). AAA Auto storefront on OTOMOTO; OTOMOTO offers a free documented partner REST API for managing own adverts (create/get/edit/delete), no public search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.otomoto.pl/api/doc/",
+   "https://www.otomoto.pl/news/jak-uzyskac-dostep-do-api",
+   "https://www.otomoto.pl/news/przeglad-funkcji-api"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.otomoto.pl/api/doc/): AAA Auto storefront on OTOMOTO; OTOMOTO offers a free documented partner REST API for managing own adverts (create/get/edit/delete), no public search. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

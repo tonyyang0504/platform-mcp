@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/jd_jzt-mcp",
+ "description": "京准通 JD JZT (ads): me, list_campaigns, update_budget, pause_resume. Every tool maps to a documented e",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://opendoc.jd.com/ads_api/jzt/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "jd_jzt"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_JD_JZT_APP_KEY",
+     "description": "app_key of the JOS (京东宙斯) application approved for the 京准通 API permission package (https://opendoc.jd.com/ads_api/jzt/api/word/settle.html).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_JD_JZT_APP_SECRET",
+     "description": "appSecret of that application; never sent, used for the MD5 request signature.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_JD_JZT_ACCESS_TOKEN",
+     "description": "OAuth access_token of the 京准通 PIN that authorised the app (https://jos.jd.com/commondoc?listId=32); renew it through the JOS authorisation flow when it expires.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

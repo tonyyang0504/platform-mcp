@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "ocean_engine-mcp",
+ "display_name": "巨量引擎 Ocean Engine MCP",
+ "version": "0.1.0",
+ "description": "巨量引擎 Ocean Engine (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ocean_engine"
+   ],
+   "env": {
+    "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_ID": "${user_config.platform_mcp_ocean_engine_client_id}",
+    "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_SECRET": "${user_config.platform_mcp_ocean_engine_client_secret}",
+    "PLATFORM_MCP_OCEAN_ENGINE_REFRESH_TOKEN": "${user_config.platform_mcp_ocean_engine_refresh_token}",
+    "PLATFORM_MCP_OCEAN_ENGINE_ADVERTISER_ID": "${user_config.platform_mcp_ocean_engine_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ocean_engine_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_ID",
+   "description": "开发者应用的 APP_ID (app_id) from 开发者后台 > 应用管理 (https://open.oceanengine.com/labels/7/docs/1696710506097679).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ocean_engine_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_SECRET",
+   "description": "应用的私钥 Secret from 应用管理 > 编辑应用; sent as `secret` in the refresh call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ocean_engine_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OCEAN_ENGINE_REFRESH_TOKEN",
+   "description": "A refresh_token from 获取Access Token (auth_code exchange after the advertiser authorised the app). It is single-use: every refresh returns a new one and invalidates the old ('再次刷新需要使用本次刷新获取的新的RefreshToken'); set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ocean_engine_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OCEAN_ENGINE_ADVERTISER_ID",
+   "description": "投放账户 id (advertiser_id) used by update_budget and pause_resume, whose inputs carry only the project id; list_accounts shows the authorised ids.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "获取授权User信息 (GET /open_api/2/user/info/): display_name, masked email, id, app_id, token_scope_list and token_api_list of the authorised user."
+  },
+  {
+   "name": "list_accounts",
+   "description": "获取已授权账户 (GET /open_api/oauth2/advertiser/get/?access_token=…, the minted token as a query parameter): accounts authorised under the token with advertiser_id, advertiser_name, account_role (ADVERTISER, AGENT, …) and is_valid."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "获取项目列表 (巨量引擎体验版 projects, GET /open_api/v3.0/project/list/?advertiser_id&page&page_size ≤ 100): projects are the budget-carrying campaign level of 升级版. status filters on status_first (PROJECT_STATUS_ENABLE, PROJECT_STATUS_DISABLE, PROJECT_STATUS_DONE, PROJECT_STATUS_DELETE; default all but deleted). Each project has project_id, name, opt_status (ENABLE/DISABLE), status_first, status_second[], budget_mode and budget (a decimal string in 元, left in raw), bid_type, landing_type; project_create_time/project_modify_time are in raw."
+  },
+  {
+   "name": "get_report",
+   "description": "自定义报表 (GET /open_api/v3.0/report/custom/get/, data_topic BASIC_DATA): one row per project over the window with dimensions {cdp_project_id} and metrics {stat_cost (消耗, 元), show_cnt, click_cnt, convert_cnt} as strings, sorted by cost, first 100 rows; data.total_metrics holds the totals. campaign_id is not applied (filter the rows by dimensions.cdp_project_id). Other dimensions/metrics are listed by 获取自定义报表可用指标和维度 (https://open.oceanengine.com/labels/7/docs/1755261744248832)."
+  },
+  {
+   "name": "update_budget",
+   "description": "批量更新项目预算 (POST /open_api/v3.0/project/budget/update/ {advertiser_id, data: [{project_id, budget_mode: BUDGET_MODE_DAY, budget}]}) sets a daily budget in 元 for one project of the configured advertiser_id (minimums depend on the project, e.g. ≥ 100 for NO_BID). This spends money. Per-project failures come back with code 0 in data.errors [{project_id, error_message}] (see raw). currency is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "批量更新项目状态 (POST /open_api/v3.0/project/status/update/ {advertiser_id, data: [{project_id, opt_status: ENABLE|DISABLE}]}) for the configured advertiser_id (pause → DISABLE, resume → ENABLE). Per-project failures are listed in data.errors with code 0. Resuming restarts spend."
+  }
+ ]
+}

@@ -1,0 +1,183 @@
+{
+ "id": "talentlyft",
+ "category": "jobs",
+ "label": "TalentLyft",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "eu",
+  "global"
+ ],
+ "docs_url": "https://developers.talentlyft.com/",
+ "url": "https://www.talentlyft.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Career sites *.talentlyft.com; form apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "company_info",
+   "employer_posting"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (tokenless per-employer careers-site jobs API; apply only through the employer's private",
+  "base_urls": [
+   "https://api.talentlyft.com"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET /v2/public/{subdomain}/jobs",
+    "purpose": "list an employer's published jobs",
+    "notes": "query `page` (default 1), `perPage` (default 20), `details` (bool, \"Form\" — include the application form), `departments[]` (ids), `locations[]`, `languageCode`; response is a generic `PagingResult` (job fields not enumerated in the spec)"
+   },
+   {
+    "call": "GET /v2/public/{subdomain}/departments",
+    "purpose": "departments of the public jobs",
+    "notes": "—"
+   },
+   {
+    "call": "GET /v2/public/{subdomain}/locations",
+    "purpose": "locations of the public jobs",
+    "notes": "—"
+   },
+   {
+    "call": "POST /v2/candidates` (Customer API, token)",
+    "purpose": "create candidate / application — **employer side only**",
+    "notes": "see Customer swagger; also `GET /v2/candidates/{id}/applications/{applicationId}`, `move_to_stage`, `disqualify`, education / experience sub-resources"
+   },
+   {
+    "call": "Customer API `Subscriptions",
+    "purpose": "webhooks (\"register a URL which will have notifications posted to it\")",
+    "notes": "employer side"
+   }
+  ],
+  "limits": " - Authenticated API: \"All API calls are limited to 600 requests every 10 minutes\" (Requests page). - Public API: not published. - Terms and Conditions (help.talentlyft.com article 21993), s.7.5 \"Restricted actions\": no modifying / translating / derivative copies, no reverse engineering, no redistributing access. No clause about bots, scraping or automated applications was found; the Public API is expressly offered for rendering jobs without a token. - Governing law Croatia (s.8.1).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.talentlyft.com/",
+   "https://www.talentlyft.com/en/api",
+   "https://developers.talentlyft.com/)",
+   "https://developers.talentlyft.com/llms.txt",
+   "https://developers.talentlyft.com/master.md",
+   "https://developers.talentlyft.com/authorization-types.md",
+   "https://developers.talentlyft.com/requests.md",
+   "https://developers.talentlyft.com/public-api-reference/jobs.md",
+   "https://api.talentlyft.com/swagger/index.html",
+   "https://api.talentlyft.com/swagger/public/swagger.json",
+   "https://api.talentlyft.com/swagger/v2/swagger.json",
+   "https://help.talentlyft.com/en/articles/21993-terms-and-conditions"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.talentlyft.com/v2/public",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "subdomain",
+    "required": true,
+    "help": "The company's TalentLyft careers-site subdomain, e.g. 'demo' in https://demo.talentlyft.com."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/{subdomain}/jobs",
+    "path_params": {
+     "subdomain": "@subdomain"
+    },
+    "params": {
+     "page": "page",
+     "perPage": "limit"
+    },
+    "fixed_params": {
+     "details": "true"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "Results",
+     "key": "postings",
+     "total": "Count",
+     "fields": {
+      "id": "Id",
+      "title": "Title",
+      "location": "City",
+      "url": "ShortlinkUrl",
+      "description": "Description"
+     }
+    },
+    "docs": "https://developers.talentlyft.com/public-api-reference/jobs",
+    "note": "Public Customer API ('rendering jobs without API token') for ONE company (config subdomain): GET https://api.talentlyft.com/v2/public/{subdomain}/jobs with page ('default 1'), perPage ('default 20') and details=true, returning a paging result {Results, Count, Page, PerPage, Pages}. The spec (https://api.talentlyft.com/swagger/public/swagger.json) has no keyword filter (departments and locations take ids), so query/location are not sent — filter client-side. The job objects are untyped in the spec; the mapped names (Id, Title, City, ShortlinkUrl, Description) are from a live response read 2026-09-25, with Country, Department, Requirements and JobTags in raw."
+   }
+  },
+  "not_offered": {
+   "me": "The Public Customer API needs no token and has no account endpoint.",
+   "get_posting": "The public API reference documents only the jobs, departments and locations lists; there is no public single-job endpoint. Re-read the record from the search hit.",
+   "apply": "Creating candidates/applications is in the Private Customer API with the company's API token ('manipulation of candidates … candidate applications'), not a candidate credential; candidates apply through the job's ShortlinkUrl.",
+   "list_messages": "No candidate messaging in the public API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "verified against the public subdomain span; all read tools answered, schema-valid, pagination advances"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "id": "ikman_lk",
+ "category": "automotive",
+ "label": "Ikman",
+ "vertical": "real_estate",
+ "lane": "scrape",
+ "url": "https://ikman.lk",
+ "domain": "ikman.lk",
+ "country": "Sri Lanka",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Membership programme for businesses; no API or bulk upload docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ikman.lk/en/membership"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,37 @@
+{
+ "id": "automoto",
+ "category": "automotive",
+ "label": "Automoto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.automoto.it",
+ "domain": "automoto.it",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dealer stock reaches Automoto.it via third-party multiposting tools (e.g. GestionaleAuto); no official API/spec published.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.automoto.it/"
+  ],
+  "unofficial": [
+   "https://www.automoto.it/news/gestionale-auto-la-nuova-app-per-il-concessionario-che-fidelizza-il-cliente.html"
+  ]
+ },
+ "official_mcp": []
+}

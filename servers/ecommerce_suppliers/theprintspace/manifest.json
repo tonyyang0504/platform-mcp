@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "theprintspace-mcp",
+ "display_name": "theprintspace / creativehub MCP",
+ "version": "0.1.0",
+ "description": "theprintspace / creativehub (ecommerce suppliers): me, list_products, get_product, quote_shipping, c",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "theprintspace"
+   ],
+   "env": {
+    "PLATFORM_MCP_THEPRINTSPACE_API_TOKEN": "${user_config.platform_mcp_theprintspace_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_theprintspace_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_THEPRINTSPACE_API_TOKEN",
+   "description": "creativehub API token (Settings > API access at https://sell.creativehub.io/settings; API access must be enabled on the account, otherwise 403). Shown once at creation; sent as Authorization: Bearer <token>.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one drop (GET /v1/drops?limit=1 -> {drops[{id, title, status, slug, created_at}], limit, offset}). 401 invalid/revoked token, 403 API access disabled."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v1/products?limit&offset: YOUR creativehub catalogue (products you created from your artwork), newest first, max 200 per page: {id, name, description, artwork_url, artwork_preview_medium_url, artwork_thumbnail_url, shopify_handle, variant_count, created_at, updated_at}. There is no keyword or category filter (query/category are ignored); prices are per variant (get_product)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v1/products/{product_id}: the product with variants[{id, sku, size, print_width_mm, print_height_mm, is_framed, frame_color, paper_id, retail_price, price_currency, delivery_price_uk, delivery_price_eu_na, delivery_price_row, edition_size}]. price/currency/sku are the FIRST variant's; every variant is in raw.variants, and quote_shipping/create_order take a variant id. 404 if the product does not exist or is not yours."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "POST /v1/orders/quote {items[{variant_id, quantity 1-50}], delivery_country_code (ISO-2)}: one priced option {currency, total_incl_vat, total_excl_vat, total_vat, production_cost, delivery_cost, addon_cost, ddp_total} (what your account will be billed). `product_id` is a VARIANT id from get_product. 409 delivery_zone_unavailable when the destination needs a manual quote."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /v1/orders: `items` is sent as given, [{variant_id, quantity}] (up to 20 lines); shipping_address {name, address1, address2, city, postcode, state (county), country_code (ISO-2), email, phone} becomes delivery_name/_line1/_line2/_city/_postcode/_county/_country_code/_email/_phone. Returns 201 {order_id, order_number, currency, total_incl_vat, lines}; billed to your account's saved card on the next merchant rollup. 409 delivery_zone_unavailable: nothing placed."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v1/orders/{order_id} (the order_id from create_order): order_number, status, date_due, totals, delivery summary and items[] with per-item production status (all in raw). The docs do not name the order-id or totals fields of this response, so `id` is left empty and total/currency are not mapped; read raw."
+  }
+ ]
+}

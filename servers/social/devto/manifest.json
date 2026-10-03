@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "devto-mcp",
+ "display_name": "Dev.to MCP",
+ "version": "0.1.0",
+ "description": "Dev.to (social): me, read_comments, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "devto"
+   ],
+   "env": {
+    "PLATFORM_MCP_DEVTO_API_KEY": "${user_config.platform_mcp_devto_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_devto_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DEVTO_API_KEY",
+   "description": "DEV Community API key (dev.to > Settings > Extensions > DEV Community API Keys); sent as the `api-key` header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/users/me returns the authenticated user (MyUser: id, username, name, ...)."
+  },
+  {
+   "name": "read_comments",
+   "description": "Threaded: each top-level comment carries its replies nested inline (in `raw`); `page` filters top-level comments only. The v1 schema documents only type_of, id_code, created_at, image_url, so author/text are not mapped."
+  },
+  {
+   "name": "analytics_post",
+   "description": "Public reaction counts from the article record (ArticleIndex); the runtime cannot compose a nested `metrics` object, so counts are top-level fields."
+  }
+ ]
+}

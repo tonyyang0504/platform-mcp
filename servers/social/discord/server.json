@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/discord-social-mcp",
+ "description": "Discord (social): me, publish_text, read_comments, reply_comment, delete, publish_image. Every tool ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.discord.com/developers/intro",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/discord"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DISCORD_BOT_TOKEN",
+     "description": "Bot token from the app's Bot page in the Developer Portal, pasted WITHOUT the 'Bot ' prefix: the runtime adds it and sends 'Authorization: Bot <token>' ('authentication is performed with the Authorization HTTP header in the format Authorization: TOKEN_TYPE TOKEN', https://docs.discord.com/developers/reference#authentication). Channel permissions needed: VIEW_CHANNEL + READ_MESSAGE_HISTORY (read_comments), SEND_MESSAGES (publish_text, reply_comment), MANAGE_MESSAGES to delete other users' messages; the MESSAGE_CONTENT privileged intent to read other users' message content. Same field as the messaging entry (env PLATFORM_MCP_DISCORD_BOT_TOKEN).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DISCORD_CHANNEL_ID",
+     "description": "Snowflake id of the guild text / announcement channel (or forum-post thread) the bot publishes to (Discord client: User Settings > Advanced > Developer Mode, then right-click the channel > Copy Channel ID). The social vocabulary carries no channel argument, so publish_text, reply_comment and delete all address /channels/<channel_id>/messages; env PLATFORM_MCP_DISCORD_CHANNEL_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

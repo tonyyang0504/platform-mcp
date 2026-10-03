@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/gooten-mcp",
+ "description": "Gooten (ecommerce suppliers): me, list_products, create_order, get_order, track. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.gooten.com/api-documentation/getting-started/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "gooten"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GOOTEN_RECIPE_ID",
+     "description": "Gooten RecipeID (public key, Admin Panel > Settings > API), sent as the `recipeid` query parameter on every call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOTEN_PARTNER_BILLING_KEY",
+     "description": "Gooten PartnerBillingKey (private key from the same API settings page), sent inside create_order's Payment object so Gooten bills your account; required only for create_order.",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/tiktok-ads-mcp",
+ "description": "TikTok for Business (TikTok Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, updat",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://business-api.tiktok.com/portal/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ads/tiktok"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TIKTOK_ACCESS_TOKEN",
+     "description": "Long-term advertiser access token from the TikTok API for Business authorization flow (/oauth2/access_token/), sent as the `Access-Token` header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TIKTOK_APP_ID",
+     "description": "Developer app id (Application Management page); sent as a query parameter only to /oauth2/advertiser/get/ (me, list_accounts).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TIKTOK_SECRET",
+     "description": "The developer app's secret, sent as the `secret` query parameter only to /oauth2/advertiser/get/ (me, list_accounts).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TIKTOK_ADVERTISER_ID",
+     "description": "Advertiser (ad account) id that update_budget writes to (campaign/update requires advertiser_id in the body).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

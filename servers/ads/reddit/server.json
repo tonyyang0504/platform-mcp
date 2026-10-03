@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/reddit-ads-mcp",
+ "description": "Reddit Ads (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://ads-api.reddit.com/docs/v3/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ads/reddit"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_REDDIT_CLIENT_ID",
+     "description": "App ID of your Reddit Ads developer application (business > developer applications), sent as HTTP Basic user on the token call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REDDIT_CLIENT_SECRET",
+     "description": "The developer application's secret (HTTP Basic password on https://www.reddit.com/api/v1/access_token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REDDIT_REFRESH_TOKEN",
+     "description": "Refresh token from one authorization-code consent with duration=permanent and scope adsread,adsedit (https://ads-api.reddit.com/docs/v3/guides/quick-start/authenticate); access tokens last one hour or one day and are re-minted from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REDDIT_BUSINESS_ID",
+     "description": "Reddit business id whose ad accounts list_accounts returns (GET /me/businesses lists yours).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

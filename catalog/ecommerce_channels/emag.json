@@ -1,0 +1,293 @@
+{
+ "id": "emag",
+ "category": "ecommerce_channels",
+ "label": "eMAG Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "ro",
+  "bg",
+  "hu"
+ ],
+ "docs_url": "https://marketplace.emag.ro/infocenter/emag-academy/how-to-add-a-product/product-import-through-api-or-feeds/api-documentation/?lang=en",
+ "url": "https://www.emag.ro/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Active eMAG Marketplace seller account; API user created by the seller and caller IP addresses registered; HTTP Basic auth; rate limits per resource (≈ 3 requests / s standard, order/read up to 12 requests / s); legal terms for API use published with the docs; a test environment exists.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "basic (dedicated API user created in the seller's Marketplace account; caller IPs registered)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "messages",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official PDF documentation v4.5.1 (valid from 2026-03-02) linked from the infocenter"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.country",
+  "config.courier_account_id"
+ ],
+ "rate_limits": "documented (\"rate limiting\" section; PDF not opened)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://marketplace-api.emag.ro/api-3/"
+  ],
+  "auth": [
+   "1. Seller account manager creates an API user in the Marketplace back-office and registers the IP addresses that will call the API.",
+   "2. Every request uses HTTP Basic auth with that API user; JSON body `{\"data\": [...]}`.",
+   "3. No token exchange, no OAuth, no third-party app model."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /api-3/product_offer/save",
+    "purpose": "create / update product + offer (price, stock, status, handling time)",
+    "notes": "part_number, name, category_id, sale_price, stock[], status, vat_id, handling_time"
+   },
+   {
+    "call": "POST /api-3/product_offer/read · /count",
+    "purpose": "read offers",
+    "notes": "filters + pagination"
+   },
+   {
+    "call": "POST /api-3/order/read · /count",
+    "purpose": "orders",
+    "notes": "status, date filters; ≤ 12 req/s"
+   },
+   {
+    "call": "POST /api-3/order/save",
+    "purpose": "acknowledge / change order status",
+    "notes": "id + status"
+   },
+   {
+    "call": "POST /api-3/awb/save · /read · /read_pdf",
+    "purpose": "create waybill (tracking) with an eMAG courier account",
+    "notes": "order_id, courier_account_id, packages"
+   },
+   {
+    "call": "POST /api-3/rma/read · /save",
+    "purpose": "returns (RMA)",
+    "notes": ""
+   },
+   {
+    "call": "POST /api-3/message",
+    "purpose": "buyer messages",
+    "notes": ""
+   },
+   {
+    "call": "POST /api-3/category/read · vat/read · handling_time/read · locality/read · courier_accounts/read",
+    "purpose": "reference data",
+    "notes": ""
+   }
+  ],
+  "limits": " Per resource: about 3 requests / second standard; order/read up to 12 requests / second (infocenter page). - Marketplace seller agreement; API terms published with the documentation. - Registered caller IPs only — the platform's egress must be static. - One API user per seller account; no third-party app review.",
+  "mcp_sdk": [
+   "SDK: official PDF documentation v4.5.1 (valid from 2026-03-02) linked from the infocenter"
+  ],
+  "sources": [
+   "https://marketplace.emag.ro/infocenter/emag-academy/how-to-add-a-product/product-import-through-api-or-feeds/api-documentation/?lang=en",
+   "https://marketplace-api.emag.ro/api-3/docs"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}/api-3",
+  "auth": {
+   "type": "basic",
+   "username_field": "username",
+   "password_field": "password",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "Username of the API user created in your eMAG Marketplace seller account (the user must be granted API rights, and eMAG only accepts calls from the IPs you whitelisted with them); sent as HTTP Basic."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Password of that API user; sent as HTTP Basic."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "API host of your platform: marketplace-api.emag.ro (eMAG RO), marketplace-api.emag.bg (BG), marketplace-api.emag.hu (HU), marketplace-ro-api.fashiondays.com or marketplace-bg-api.fashiondays.com (Fashion Days); calls go to https://<api_host>/api-3/..."
+   }
+  ],
+  "envelope": {
+   "ok_field": "isError",
+   "ok_value": false,
+   "error_field": "messages"
+  },
+  "rate_per_second": 3,
+  "terms": "Every response must carry \"isError\": false (a product-documentation error on save is the one documented exception). Rate limits: 12 requests/second for orders, 3/second cumulated for all other resources (HTTP 429 beyond). API access is IP-whitelisted.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/vat/read",
+    "docs": "https://marketplace-api.emag.ro/api-doc#operation/readVAT",
+    "note": "No account endpoint; the probe reads the platform's VAT rates ({isError, messages, results[]}) to verify the API user, its API rights and the IP whitelist."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/offer/save",
+    "body": {
+     "data.0.id": "int:listing_id",
+     "data.0.sale_price": "price"
+    },
+    "result": {
+     "fields": {
+      "status": "=saved"
+     }
+    },
+    "docs": "https://marketplace-api.emag.ro/api-doc#operation/saveOffer",
+    "note": "Light offer API POST /offer/save {data: [{id, sale_price}]}: changes the LIVE sale price of an existing offer. `listing_id` is your seller internal product id; `price` is the sale price WITHOUT VAT in the platform currency. Only the price is applied: use set_inventory for stock; title and description are product data (product_offer/save) and are not changed here."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/offer_stock/{listing_id}",
+    "body": {
+     "data.stock.0.warehouse_id": "json:1",
+     "data.stock.0.value": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=stock_updated"
+     }
+    },
+    "docs": "https://marketplace-api.emag.ro/api-doc#operation/updateOfferStock",
+    "note": "PATCH /offer_stock/{resourceId} {data: {stock: [{warehouse_id: 1, value}]}} sets the available quantity of one offer (listing_id = seller internal product id, required; offers are not addressed by SKU). Uses warehouse_id 1, which the docs prescribe for sellers with a single warehouse."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/offer/save",
+    "body": {
+     "data.0.id": "int:listing_id",
+     "data.0.status": "json:0"
+    },
+    "result": {
+     "fields": {
+      "status": "=inactive"
+     }
+    },
+    "docs": "https://marketplace-api.emag.ro/api-doc#operation/saveOffer",
+    "note": "POST /offer/save {data: [{id, status: 0}]} makes the offer inactive (reversible with status 1; status 2 = End of Life is not used)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/order/read",
+    "body": {
+     "status": "int:status",
+     "createdAfter": "since",
+     "currentPage": "page",
+     "itemsPerPage": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "date",
+      "currency": "products.0.currency"
+     }
+    },
+    "docs": "https://marketplace-api.emag.ro/api-doc#operation/readOrders",
+    "note": "POST /order/read with top-level filters: status is the numeric order status (1 New, 2 In progress, 3 Prepared, 4 Finalized, 0 Canceled, 5 Returned), since = createdAfter in 'YYYY-mm-dd HH:ii:ss', itemsPerPage max 100. Orders carry no order total field; products (sale_price without VAT, quantity), customer and shipping_tax are in raw. New orders must be acknowledged (POST /order/acknowledge/{id}), which this tool does not do."
+   }
+  },
+  "not_offered": {
+   "create_listing": "New offers go through POST /product_offer/save, which needs category_id, part_number, brand, characteristics, vat_id, handling_time and stock per warehouse (or an attach by EAN/part_number_key); the vocabulary has no category, brand or VAT inputs.",
+   "mark_shipped": "There is no tracking-number call: shipping is done by issuing an AWB with an eMAG courier account (POST /awb/save, sender/receiver/parcels), and finalising an order (status 4) goes through POST /order/save, which requires ALL order fields initially read ('When updating an order, send ALL the fields initially read')."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host marketplace-api.emag.ro: DNS ok, TLSv1.3 (Key-Systems GmbH)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "e_zamowienia-mcp",
+ "display_name": "Platforma e-Zamówienia MCP",
+ "version": "0.1.0",
+ "description": "Platforma e-Zamówienia (deals): search_postings, get_posting. Every tool maps to a documented endpoi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "e_zamowienia"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /mo-board/api/v1/notice (API BZP WebService, 'Notices Board API' bzp.external.API.yaml in Załącznik 3). NoticeType, PublicationDateFrom/To and PageSize are required by the API: the window is fixed to contract notices (NoticeType=ContractNotice, 'ogłoszenie o zamówieniu') published from the 1st of the current month (UTC) until now. `query` → OrderObject (subject of the contract, Polish text match), `category` → CpvCode (e.g. 34121400-5). Results come OLDEST FIRST within the window and the API pages with a SearchAfter cursor that this adapter does not follow, so only the first `limit` (≤ 100) matches are returned and page is ignored — narrow with query/category. min_budget is not sent (no value filter). id is the notice number (e.g. 2026/BZP 00415198/01); deadline = submittingOffersDate; the full notice is in raw.htmlBody, the notice page is https://ezamowienia.gov.pl/mo-client-board/bzp/notice-details/id/<raw.objectId>. Throttling: calls a second or two apart are answered 403 'Dostęp zablokowany / Access Blocked' (an HTML WAF page) for a while; calls 5 s apart pass, so the client-side limit is one call per 5 s (live check 2026-09-26)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /mo-board/api/v1/notice?NoticeNumber=<id> over the whole platform period (2021-01-01 → now; the required date window). Only contract notices (NoticeType=ContractNotice) are looked up; a number of another notice type or an unknown number returns no record (invalid_input)."
+  }
+ ]
+}

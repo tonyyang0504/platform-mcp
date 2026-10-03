@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "fourdayweek-mcp",
+ "display_name": "4dayweek.io MCP",
+ "version": "0.1.0",
+ "description": "4dayweek.io (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "fourdayweek"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "'A free, public, no-auth JSON API for every live job on 4dayweek.io': q = full-text search, page ('Default 1'), limit ('Default 25. Max 100'), country 'matches office or remote-allowed country' — a country name, so location is sent as country and the alpha-2 country argument is not. id is the slug (use it with get_posting); salary_min/salary_max are in cents of salary_currency per salary_period ('8000000 = $80,000 USD'); location is the primary location's country (locations[] and work_arrangement in raw). Limits: '60 requests per minute per IP across both /api/v1 and /api/v2' (429 + Retry-After), responses cached 60 s. 'Please link back to https://4dayweek.io.'"
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /api/v2/jobs/{slug} 'Returns a single V2JobDTO (same shape as an item from the list) or 404'."
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "id": "kia",
+ "category": "automotive",
+ "label": "Kia",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.kia.si",
+ "domain": "kia.si",
+ "country": "Slovenia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kia Connect business APIs are connected-car only; no listings API for kia.si.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://kia.si/"
+  ],
+  "unofficial": [
+   "https://github.com/Hyundai-Kia-Connect/hyundai_kia_connect_api",
+   "https://github.com/Hyundai-Kia-Connect"
+  ]
+ },
+ "official_mcp": []
+}

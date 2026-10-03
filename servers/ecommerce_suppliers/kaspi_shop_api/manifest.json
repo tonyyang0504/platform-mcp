@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "kaspi_shop_api-mcp",
+ "display_name": "Kaspi.kz Shop (merchant API) MCP",
+ "version": "0.1.0",
+ "description": "Kaspi.kz Shop (merchant API) (ecommerce suppliers): me, get_order. Every tool maps to a documented e",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kaspi_shop_api"
+   ],
+   "env": {
+    "PLATFORM_MCP_KASPI_SHOP_API_TOKEN": "${user_config.platform_mcp_kaspi_shop_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kaspi_shop_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KASPI_SHOP_API_TOKEN",
+   "description": "Kaspi.kz merchant authorisation token from the seller cabinet (Настройки > Токен API), sent as the X-Auth-Token header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe reads the product-import JSON schema, which requires a valid X-Auth-Token."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v2/orders?filter[orders][code]={id}: `id` is the order NUMBER (attribute code) of a customer order placed with your shop. status is APPROVED_BY_BANK, ACCEPTED_BY_MERCHANT, COMPLETED, CANCELLED, CANCELLING, KASPI_DELIVERY_RETURN_REQUESTED or RETURNED; totalPrice is in tenge; dates are epoch milliseconds (creation_date_ms). The order entries are at /v2/orders/{uid}/entries (not mapped)."
+  }
+ ]
+}

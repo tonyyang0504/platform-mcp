@@ -1,0 +1,70 @@
+{
+ "manifest_version": "0.2",
+ "name": "prodigi-mcp",
+ "display_name": "Prodigi MCP",
+ "version": "0.1.0",
+ "description": "Prodigi (ecommerce suppliers): me, get_product, create_order, get_order. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "prodigi"
+   ],
+   "env": {
+    "PLATFORM_MCP_PRODIGI_API_KEY": "${user_config.platform_mcp_prodigi_api_key}",
+    "PLATFORM_MCP_PRODIGI_ENV": "${user_config.platform_mcp_prodigi_env}",
+    "PLATFORM_MCP_PRODIGI_BASE_URL": "${user_config.platform_mcp_prodigi_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_prodigi_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRODIGI_API_KEY",
+   "description": "Prodigi API key for the LIVE environment (dashboard), sent as `X-API-Key`. A Sandbox key needs PLATFORM_MCP_PRODIGI_ENV=sandbox (https://api.sandbox.prodigi.com/v4.0).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_prodigi_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRODIGI_ENV",
+   "description": "Vendor environment (default production): sandbox = https://api.sandbox.prodigi.com/v4.0. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_prodigi_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PRODIGI_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Prodigi has no account endpoint; the probe lists one order (GET /v4.0/Orders?top=1)."
+  },
+  {
+   "name": "get_product",
+   "description": "`id` is the Prodigi SKU (e.g. GLOBAL-CAN-10X10); productDimensions, attributes, printAreas and variants[] are in `raw`. Prices come from POST /quotes, not from the product."
+  },
+  {
+   "name": "create_order",
+   "description": "Spends money on the live account. `shipping_address` is Prodigi's recipient {name, email, phoneNumber, address{line1, line2, postalOrZipCode, countryCode, townOrCity, stateOrCounty}}; `items` are Prodigi items [{sku, copies, sizing, attributes, assets[{printArea, url}]}]; `shipping_option` is the required shippingMethod (Budget|Standard|Express|Overnight)."
+  },
+  {
+   "name": "get_order",
+   "description": "status.stage is one of the order stages (InProgress, Complete, ...); charges[] and shipments[{carrier, tracking{number, url}}] are in `raw`."
+  }
+ ]
+}

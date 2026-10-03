@@ -1,0 +1,252 @@
+{
+ "id": "dingtalk",
+ "category": "messaging",
+ "label": "DingTalk (钉钉)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.dingtalk.com/document/",
+ "url": "https://www.dingtalk.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed: custom group robot POST https://oapi.dingtalk.com/robot/send?access_token=… with one of three security settings — keyword, IP allowlist, or 加签 (timestamp in ms + '\\n' + secret, HMAC-SHA256, Base64, URL-encoded, appended as &timestamp=&sign=); message types text / link / markdown / actionCard / feedCard; rate limit 20 messages per minute per robot, exceeding it throttles the robot for 10 minutes. Enterprise-app APIs (work notifications, group management, robot callbacks) use appKey / appSecret access tokens.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk",
+   "stream"
+  ],
+  "auth": "app_key_secret_or_webhook_signature",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "group_admin",
+   "broadcast",
+   "media",
+   "webhooks",
+   "work_notifications"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "DingTalk open SDKs (Java / Python / Go / Node.js) + Stream mode event client — open.dingtalk.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (bot callbacks only; no inbox poll)",
+   "docs": "https://open.dingtalk.com/document/orgapp/robot-overview"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://oapi.dingtalk.com/robot/send?access_token= (custom robot, HMAC-SHA256 `timestamp`+`sign`) · POST https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token= (enterprise app: agent_id, userid_list, msg)",
+   "docs": "https://open.dingtalk.com/document/orgapp/asynchronous-sending-of-enterprise-session-messages"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.dingtalk.com/document/orgapp/robot-overview"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://oapi.dingtalk.com/…",
+   "https://api.dingtalk.com/v1.0/…"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST https://oapi.dingtalk.com/robot/send?access_token=…[&timestamp=&sign=]` `{msgtype, text",
+    "purpose": "link",
+    "notes": "markdown"
+   },
+   {
+    "call": "Enterprise robot: `POST /v1.0/robot/oToMessages/batchSend` (DM to users) · `/v1.0/robot/groupMessages/send",
+    "purpose": "DMs / group via app robot",
+    "notes": "(2026-09-02 read)"
+   },
+   {
+    "call": "POST /topapi/message/corpconversation/asyncsend_v2",
+    "purpose": "work notifications (工作通知) to members",
+    "notes": "per-app daily caps (2026-09-02)"
+   },
+   {
+    "call": "Robot callback (HTTP or Stream) → `{msgtype, text{content}, conversationType 1",
+    "purpose": "2, senderStaffId, sessionWebhook}`",
+    "notes": "inbound; reply via `sessionWebhook`"
+   },
+   {
+    "call": "/v1.0/im/sceneGroups` (create / update / members)",
+    "purpose": "group admin (scene groups)",
+    "notes": ""
+   },
+   {
+    "call": "/topapi/media/upload",
+    "purpose": "media",
+    "notes": ""
+   }
+  ],
+  "limits": " - Custom robots post only into the group they were added to (no DM, no reading). Enterprise apps reach members of the user's organisation; there is no cross-organisation cold messaging. - `errcode` non-zero with HTTP 200; 加签 timestamps must be within 1 hour of server time.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://open.dingtalk.com/document/orgapp/custom-robot-access"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.dingtalk.com",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/v1.0/oauth2/accessToken",
+    "body": {
+     "appKey": "@app_key",
+     "appSecret": "@app_secret"
+    }
+   },
+   "token_path": "accessToken",
+   "expires_path": "expireIn",
+   "token_ttl_seconds": 7200,
+   "header": "x-acs-dingtalk-access-token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "Client ID (formerly AppKey) of the internal enterprise app that owns the robot; exchanged at POST https://api.dingtalk.com/v1.0/oauth2/accessToken for a 7200-second accessToken."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "Client Secret (formerly AppSecret) of the same app (developer console, 凭证与基础信息)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "robot_code",
+    "required": true,
+    "help": "robotCode of the internal-app robot (developer console robot page; usually equals the app key)."
+   }
+  ],
+  "tools": {
+   "send": {
+    "method": "POST",
+    "path": "/v1.0/robot/oToMessages/batchSend",
+    "body": {
+     "robotCode": "@robot_code",
+     "userIds.0": "to",
+     "msgKey": "=sampleText",
+     "msgParam": "jsonstr:{\"content\": {text}}"
+    },
+    "result": {
+     "fields": {
+      "message_id": "processQueryKey",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://open.dingtalk.com/document/orgapp/chatbots-send-one-on-one-chat-messages-in-batches",
+    "note": "One-to-one robot message (msgKey sampleText, msgParam serialized {\"content\": …}) to the user whose userId is `to`; message_id is processQueryKey (for the read-status and recall APIs). Users the robot may not reach come back in raw.invalidStaffIdList / flowControlledStaffIdList. `subject`/`channel` are ignored."
+   }
+  },
+  "not_offered": {
+   "me": "No identity endpoint exists for an app accessToken; the token call itself (POST /v1.0/oauth2/accessToken, https://open.dingtalk.com/document/orgapp/obtain-the-access_token-of-an-internal-app) is the only credential check.",
+   "list_inbound": "Messages to a robot are delivered only to the robot's callback (Stream mode or HTTP) (https://open.dingtalk.com/document/orgapp/robot-overview); there is no inbox poll.",
+   "get_thread": "No conversation-history endpoint for robot chats (https://open.dingtalk.com/document/orgapp/robot-overview).",
+   "reply": "Robot one-to-one chats have no threads; inbound callbacks carry a short-lived sessionWebhook instead (https://open.dingtalk.com/document/orgapp/robot-overview). Use send to the same userId.",
+   "mark_read": "A robot can only query whether its own messages were read (POST /v1.0/robot/oToMessages/readStatus); it cannot mark messages read (https://open.dingtalk.com/document/orgapp/chatbot-batch-query-the-read-status-of-messages)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.dingtalk.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 1/1 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 200 too, so the host authenticates before routing",
+   "login api.dingtalk.com/v1.0/oauth2/accessToken: 400 invalidClientIdOrSecret",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,300 @@
+{
+ "id": "amazon_fire_tv_ads",
+ "category": "ads",
+ "label": "Amazon Fire TV / Prime Video Streaming TV Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://advertising.amazon.com/API/docs/en-us/",
+ "url": "https://advertising.amazon.com/solutions/products/streaming-tv-ads",
+ "verified_at": "2026-09-25",
+ "terms_note": "Covered by the Amazon Ads API onboarding (approved application required)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Login with Amazon; Amazon Ads API credentials + profile scope)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** via the Amazon Ads API **Sponsored TV** endpoints (self-serve streaming TV); reserved Prime Video /",
+  "base_urls": [
+   "https://advertising-api.amazon.com"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "Sponsored TV › Campaign (list / create / update / delete)",
+    "purpose": "STV campaigns + budget",
+    "notes": "name, state, budget{budget, budgetType}, startDate, endDate"
+   },
+   {
+    "call": "Sponsored TV › AdGroup (4 requests)",
+    "purpose": "ad groups + bid",
+    "notes": "campaignId, name, state, bid / bidding"
+   },
+   {
+    "call": "Sponsored TV › Ad (4 requests)",
+    "purpose": "ads referencing creatives",
+    "notes": "adGroupId, creativeId, state"
+   },
+   {
+    "call": "Sponsored TV › Creatives (5 requests) · `POST /assets/upload` → `/assets/register",
+    "purpose": "video creative upload + moderation",
+    "notes": "assetType VIDEO, fileName, upload url; creative {assetId, landingPage}"
+   },
+   {
+    "call": "POST /reporting/reports` (adProduct SPONSORED_TELEVISION)",
+    "purpose": "reports",
+    "notes": "configuration{reportTypeId, groupBy, columns, timeUnit DAILY}, startDate, endDate"
+   },
+   {
+    "call": "audiences upload · conversions upload",
+    "purpose": "not in the STV surface (Amazon attribution is native)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-endpoint throttling (429, Retry-After). Eligibility: Sponsored TV available to advertisers in supported marketplaces; brand registry / product requirements apply (TODO(verify)). Free API.",
+  "mcp_sdk": [
+   "Official Postman collection (github.com/amzn/ads-advanced-tools-docs)."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/postman/Amazon_Ads_API.postman_collection.json"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.amazon.com/auth/o2/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "Amazon-Advertising-API-ClientId": "client_id",
+    "Amazon-Advertising-API-Scope": "profile_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Login with Amazon client id of the app approved for the Amazon Ads API; also sent as the Amazon-Advertising-API-ClientId header."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The LWA client secret (form body of the refresh_token grant)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "LWA refresh token from the advertiser's consent (scope advertising::campaign_management); the runtime mints hourly access tokens from it at https://api.amazon.com/auth/o2/token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "Regional Amazon Ads API host: advertising-api.amazon.com (North America), advertising-api-eu.amazon.com (Europe) or advertising-api-fe.amazon.com (Far East)."
+   },
+   {
+    "name": "profile_id",
+    "required": true,
+    "help": "Advertising profile id of the advertiser running Sponsored TV (from GET /v2/profiles), sent as the Amazon-Advertising-API-Scope header."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/profiles/{profile_id}",
+    "path_params": {
+     "profile_id": "@profile_id"
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/reference/profiles",
+    "note": "GET /v2/profiles/{profileId}: the configured profile {profileId, countryCode, currencyCode, timezone, accountInfo {id, type, name, marketplaceStringId}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v2/profiles",
+    "result": {
+     "items": "$",
+     "key": "accounts",
+     "fields": {
+      "id": "profileId",
+      "name": "accountInfo.name",
+      "currency": "currencyCode"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/reference/profiles",
+    "note": "GET /v2/profiles (apiProgram=campaign, accessLevel=edit by default): one profile per advertiser and marketplace in the configured region. `id` is the profileId used as the Amazon-Advertising-API-Scope; country is raw.countryCode."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/st/campaigns/list",
+    "headers": {
+     "Content-Type": "application/vnd.stCampaign.v1+json",
+     "Accept": "application/vnd.stCampaign.v1+json"
+    },
+    "body": {
+     "maxResults": "limit",
+     "stateFilter.include.0": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "totalCount",
+     "fields": {
+      "id": "campaignId",
+      "name": "name",
+      "status": "state",
+      "budget": "budgetSettings.budget.budgetValue.amount",
+      "currency": "budgetSettings.budget.budgetValue.budgetCurrencyCode",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-tv#tag/Campaigns/operation/ListSponsoredTvCampaigns",
+    "note": "Sponsored TV (Fire TV / Prime Video streaming TV ads) POST /st/campaigns/list with media type application/vnd.stCampaign.v1+json and {maxResults, stateFilter: {include: [status]}} (ENABLED, PAUSED, ARCHIVED). The advertiser is the configured profile_id (Amazon-Advertising-API-Scope); account_id is not sent. `budget` is the DAILY budget. Only the first page is returned (nextToken paging)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/st/campaigns",
+    "headers": {
+     "Content-Type": "application/vnd.stCampaign.v1+json",
+     "Accept": "application/vnd.stCampaign.v1+json"
+    },
+    "body": {
+     "campaigns.0.campaignId": "campaign_id",
+     "campaigns.0.budgetSettings.budget.budgetValue.amount": "daily_budget",
+     "campaigns.0.budgetSettings.budget.budgetValue.budgetCurrencyCode": "currency",
+     "campaigns.0.budgetSettings.budget.recurrenceType": "=DAILY"
+    },
+    "result": {
+     "root": "campaigns.success.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-tv#tag/Campaigns/operation/UpdateSponsoredTvCampaigns",
+    "note": "PUT /st/campaigns {campaigns: [{campaignId, budgetSettings: {budget: {budgetValue: {amount, budgetCurrencyCode}, recurrenceType: DAILY}}}]}: changes a daily budget that is spent on streaming TV ads. The API answers 207 with campaigns.success[] / campaigns.error[]; a rejected update is reported as invalid_input."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/st/campaigns",
+    "headers": {
+     "Content-Type": "application/vnd.stCampaign.v1+json",
+     "Accept": "application/vnd.stCampaign.v1+json"
+    },
+    "body": {
+     "campaigns.0.campaignId": "campaign_id",
+     "campaigns.0.state": "map:action:pause=PAUSED,resume=ENABLED"
+    },
+    "result": {
+     "root": "campaigns.success.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "campaign.state"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-tv#tag/Campaigns/operation/UpdateSponsoredTvCampaigns",
+    "note": "PUT /st/campaigns {campaigns: [{campaignId, state: PAUSED|ENABLED}]}. Resuming restarts spending. A rejected update (campaigns.error only) is reported as invalid_input."
+   }
+  },
+  "not_offered": {
+   "get_report": "Amazon Ads reporting is asynchronous: \"POST /reporting/reports\" creates a report job that is polled with \"GET /reporting/reports/{reportId}\" and downloaded from a URL (Amazon Ads API Postman collection, https://github.com/amzn/ads-advanced-tools-docs, Reporting); the runtime has no report polling."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host advertising-api.amazon.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.amazon.com/auth/o2/token: 401 Client authentication failed",
+   "authorize https://www.amazon.com/ap/oa: 200",
+   "spec https://d1y2lf8k3vrkfu.cloudfront.net/openapi/en-us/dest/Profiles_prod_3p.json, https://d1y2lf8k3vrkfu.cloudfront.net/openapi/en-us/dest/SponsoredTV_prod_3p.json: 3/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "me: spec says \"path not in spec: GET /v2/profiles/X1X\"; waived: Amazon's published Profiles OpenAPI (Profiles_prod_3p.json) lists GET /profiles; the adapter uses GET /v2/profiles, the path on Amazon's reference page and in its SDKs. Both answer 401 with a dummy token while an unknown route answers 403 'Invalid key=value pair … in Authorization header', so both routes exist. list_accounts: spec says \"path not in spec: GET /v2/profiles\"; waived: Amazon's published Profiles OpenAPI (Profiles_prod_3p.json) lists GET /profiles; the adapter uses GET /v2/profiles, the path on Amazon's reference page and in its SDKs. Both answer 401 with a dummy token while an unknown route answers 403 'Invalid key=value pair … in Authorization header', so both routes exist."
+ }
+}

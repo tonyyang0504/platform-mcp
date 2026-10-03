@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/stockx-mcp",
+ "description": "StockX (ecommerce channels): me, update_listing, end_listing, list_orders. Every tool maps to a docu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.stockx.com/portal/getting-started/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "stockx"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_STOCKX_API_KEY",
+     "description": "StockX API key from the Developer Portal Keys page (issued after developer access approval), sent as x-api-key on every call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_STOCKX_CLIENT_ID",
+     "description": "Client ID of your StockX application (Developer Portal > Applications; one application per StockX account).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_STOCKX_CLIENT_SECRET",
+     "description": "Client Secret of the same application.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_STOCKX_REFRESH_TOKEN",
+     "description": "Refresh token from a one-time Authorization Code consent (https://accounts.stockx.com/authorize with scope 'offline_access openid' and audience gateway.stockx.com, then POST /oauth/token grant_type=authorization_code). The runtime exchanges it for 12-hour access tokens (grant_type=refresh_token, audience=gateway.stockx.com).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_STOCKX_CURRENCY",
+     "description": "Currency code of your asks (AUD, CAD, CHF, EUR, GBP, HKD, JPY, KRW, MXN, NZD, SGD, USD); StockX defaults to USD when omitted.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

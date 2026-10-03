@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/meta_audience_network-mcp",
+ "description": "Meta Audience Network (ads): me, get_report. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/audience-network/optimization/report-api/guide-v2",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "meta_audience_network"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_META_AUDIENCE_NETWORK_ACCESS_TOKEN",
+     "description": "Long-lived Meta User Access Token with the read_audience_network_insights permission (system user tokens are not supported by this endpoint); long-lived user tokens last about 60 days and must then be renewed.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "kite_ly-mcp",
+ "display_name": "Kite (Prodigi Group) MCP",
+ "version": "0.1.0",
+ "description": "Kite (Prodigi Group) (ecommerce suppliers): me, create_order, get_order, track. Every tool maps to a",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kite_ly"
+   ],
+   "env": {
+    "PLATFORM_MCP_KITE_LY_API_KEY_PAIR": "${user_config.platform_mcp_kite_ly_api_key_pair}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kite_ly_api_key_pair": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KITE_LY_API_KEY_PAIR",
+   "description": "Your Kite API key and secret key joined by a colon, exactly as the Authorization header expects them: <public_key>:<secret_key> (dashboard > credentials). The secret key is required for order requests, which are then charged to the card on your Kite account; test-mode keys never create real products.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one order ({meta{total_count}, objects[]}), which needs the key and secret."
+  },
+  {
+   "name": "create_order",
+   "description": "Places a print order charged to the card on your Kite account (secret key in the Authorization header; live keys create and ship real products). `shipping_address` uses Kite's address keys {recipient_name, address_line_1, address_line_2, city, county_state, postcode, country_code (ISO-3, e.g. GBR)} plus `phone` (customer_phone, required by Kite) and `email` (customer_email); `items` are Kite jobs [{template_id, assets[image URLs], options, shipping_class}] - the shipping class is per job, so `shipping_option` is not sent. Answers {print_order_id}."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v4.0/order/{order_id}: {order_id, status, dispatch_status (e.g. In Print Queue, Dispatched), time_submitted, time_processed, test_order, jobs[{job_id, status, shipped_time, template{id, name}}]}. No tracking number is documented on the order."
+  },
+  {
+   "name": "track",
+   "description": "Per-job production status of the order (jobs[{job_id, status, shipped_time, template}]); carrier tracking numbers are not part of the documented response."
+  }
+ ]
+}

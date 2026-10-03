@@ -1,0 +1,36 @@
+{
+ "id": "mynaghi",
+ "category": "automotive",
+ "label": "Mynaghi",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://mynaghi.sa",
+ "domain": "mynaghi.sa",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). MyNaghi /partners lists its technology vendors, not an API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mynaghi.sa/ar/partners",
+   "https://mynaghi.sa/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

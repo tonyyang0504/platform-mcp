@@ -1,0 +1,35 @@
+{
+ "id": "inter_auction_in_th_wl",
+ "category": "automotive",
+ "label": "Sakalon Auction (Inter-Auction)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.inter-auction.in.th",
+ "domain": "inter-auction.in.th",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auction (Thailand); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://inter-auction.in.th/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

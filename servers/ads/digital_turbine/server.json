@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/digital_turbine-mcp",
+ "description": "Digital Turbine (DT Ads) (ads): update_budget, pause_resume. Every tool maps to a documented endpoin",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.digitalturbine.com/offerwall-advertisers/advertiser-management-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "digital_turbine"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DIGITAL_TURBINE_MANAGEMENT_API_TOKEN",
+     "description": "Offerwall Advertiser Management API token (ACP Edge Console > Account > Security Tokens > Add Token > Management API Token; shown once), sent as the x-api-key header. It identifies the advertiser account.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

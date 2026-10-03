@@ -1,0 +1,153 @@
+{
+ "id": "wildberries_ads",
+ "category": "ads",
+ "label": "WB Promotion (ВБ Продвижение)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "ru",
+  "kz",
+  "by"
+ ],
+ "docs_url": "https://dev.wildberries.ru/en/docs/openapi/promotion",
+ "url": "https://cmp.wildberries.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Seller cabinet → Настройки → Доступ к API → token with the 'Продвижение' category; Authorization header; per-method rate limits documented on the portal. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (seller API token with the Promotion category, header Authorization)",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "budgets_bids",
+   "reports",
+   "keywords"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Wildberries Promotion API in the seller developer portal).",
+  "base_urls": [
+   "https://advert-api.wildberries.ru/adv/…"
+  ],
+  "auth": [
+   "1. Seller cabinet → Настройки → Доступ к API → create token with category Продвижение (Promotion).",
+   "2. Send the token in the `Authorization` header (no OAuth).",
+   "3. Respect per-method rate limits documented per endpoint."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /adv/v1/promotion/count` · `POST /adv/v1/promotion/adverts",
+    "purpose": "campaigns list + details",
+    "notes": "advert ids, status, type"
+   },
+   {
+    "call": "POST /adv/v1/save-ad` (auction) · `POST /adv/v1/auto/…` (auto campaigns)",
+    "purpose": "create campaigns",
+    "notes": "name, subject/nm ids, cpm, budget"
+   },
+   {
+    "call": "GET /adv/v0/start` · `/pause` · `/stop",
+    "purpose": "status",
+    "notes": "id"
+   },
+   {
+    "call": "POST /adv/v1/budget/deposit` · `GET /adv/v1/budget",
+    "purpose": "budgets",
+    "notes": "sum, type"
+   },
+   {
+    "call": "POST /adv/v0/cpm",
+    "purpose": "bids (CPM)",
+    "notes": "advertId, type, cpm, param"
+   },
+   {
+    "call": "POST /adv/v2/fullstats` · `/adv/v1/stat/words",
+    "purpose": "statistics + keywords",
+    "notes": "ids, dates, clusters"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in Promotion API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-method limits on the portal (TODO(verify)); free; WB seller offer.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://dev.wildberries.ru/en/docs/openapi/promotion",
+   "https://openapi.wildberries.ru/promotion/api/ru/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium on a datacenter host: https://dev.wildberries.ru/en/docs/openapi/promotion first shows the anti-bot wall 'Подозрительная активность. Пожалуйста, подождите… Новая попытка через 00:48', then stays on 'Проверяем браузер' even after a 75 s wait; plain HTTP clients get HTTP 498 and the old openapi.wildberries.ru host no longer resolves. The promotion endpoints (advert-api.wildberries.ru /adv/v1/promotion/adverts, /adv/v0/pause, /adv/v2/fullstats) cannot be verified against a readable official page, and the bot check is not bypassed."
+}

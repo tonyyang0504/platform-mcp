@@ -1,0 +1,227 @@
+{
+ "id": "highergov",
+ "category": "deals",
+ "label": "HigherGov",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://www.highergov.com/api-external/",
+ "url": "https://www.highergov.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Subscription product with a free tier; api_key query param; custom plans; HigherGov terms.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (subscriber key; free tier)",
+  "access": "paid",
+  "capabilities": [
+   "search",
+   "details",
+   "contracts",
+   "awards"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for search (REST, api_key). Lane `assist` → **api for search**. Confidence high.",
+  "base_urls": [
+   "https://www.highergov.com/api-external/"
+  ],
+  "auth": [
+   "1. Subscribe (free tier) → API key → `?api_key=`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api-external/opportunity-full/?api_key=&last_modified_date=&page_number=",
+    "purpose": "search + details",
+    "notes": "opportunity fields"
+   },
+   {
+    "call": "GET /api-external/contract/",
+    "purpose": "awards",
+    "notes": "—"
+   },
+   {
+    "call": "GET /api-external/pursuit/",
+    "purpose": "pipeline",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Subscription tiers; no numeric rate limit read.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.highergov.com/api-external/",
+   "https://r.jina.ai/https://www.highergov.com/api/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.highergov.com/api-external",
+  "auth": {
+   "type": "query",
+   "param": "api_key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "HigherGov API key (account admins: gear icon → API, per https://www.highergov.com/api-external/docs/)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "search_id",
+    "required": false,
+    "help": "Optional HigherGov SearchID of a saved opportunity search; the API has no keyword parameter, so filtering is done by a saved search."
+   }
+  ],
+  "rate_per_second": 1,
+  "rate_note": "'All subscriptions include base usage of 10,000 records per month.' No per-second limit is published. One request per second.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/opportunity/",
+    "params": {
+     "search_id": "@search_id",
+     "page_number": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "total": "meta.pagination.count",
+     "fields": {
+      "id": "opp_key",
+      "title": "title",
+      "description": "description_text",
+      "buyer": "agency.agency_name",
+      "posted_at": "posted_date",
+      "deadline": "due_date",
+      "url": "source_path"
+     }
+    },
+    "docs": "https://www.highergov.com/api-external/docs/#/api-external/api_external_opportunity_list",
+    "note": "GET /api-external/opportunity/ (federal contract, DIBBS, grant and state/local opportunities; updated every 30 minutes): page_number, page_size ≤ 100, optional search_id from config. No keyword, category or budget parameter exists, so query/category/min_budget are not sent. val_est_low/high are strings (raw); source_path links to the source notice."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/opportunity/",
+    "params": {
+     "opp_key": "id"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "id": "opp_key",
+      "title": "title",
+      "description": "description_text",
+      "buyer": "agency.agency_name",
+      "posted_at": "posted_date",
+      "deadline": "due_date",
+      "url": "source_path"
+     }
+    },
+    "docs": "https://www.highergov.com/api-external/docs/#/api-external/api_external_opportunity_list",
+    "note": "Same list endpoint filtered by opp_key (the HigherGov opportunity key returned as id); an unknown key yields an empty list (invalid_input)."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint in the OpenAPI schema; the api_key is a query parameter.",
+   "submit_bid": "HigherGov is a market-intelligence database; offers go to the contracting agency named in the notice.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API is documented.",
+   "send_message": "No messaging API is documented.",
+   "credits": "Record usage is a monthly subscription allowance; no usage endpoint is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.highergov.com: DNS ok, TLSv1.2 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; names not found on the page: get_posting:opp_key, search_postings:page_number, search_postings:page_size, search_postings:search_id"
+  ],
+  "notes": "-"
+ }
+}

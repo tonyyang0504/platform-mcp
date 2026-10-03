@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "gitlab_public-mcp",
+ "display_name": "GitLab.com (public projects, no token) MCP",
+ "version": "0.1.0",
+ "description": "GitLab.com (public projects, no token) (builder tools): list_items, get_item. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gitlab_public"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_items",
+   "description": "Public projects (oldest id first) whose name or path matches query; collection is ignored (projects only). Pages by cursor: pass next_cursor back."
+  },
+  {
+   "name": "get_item",
+   "description": "item_id is the numeric project id (list_items), or the URL-encoded path 'group%2Fproject' (GitLab rejects a raw slash)."
+  }
+ ]
+}

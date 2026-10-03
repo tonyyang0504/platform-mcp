@@ -1,0 +1,258 @@
+{
+ "id": "depop",
+ "category": "ecommerce_channels",
+ "label": "Depop",
+ "lane": "assist",
+ "kind": "niche",
+ "regions": [
+  "eu",
+  "gb",
+  "us",
+  "au"
+ ],
+ "docs_url": "https://partnerapi.depop.com/api-docs/terms/",
+ "url": "https://www.depop.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Private Partner API: apply by e-mail, sign Depop's API Terms or an Order Form; credentials issued by Depop; rate limits 20 req/s for create/update, 100 req/s otherwise; no diverting users off Depop, no mirroring the UI, no scraping; anti-fraud + data-protection + 'circularity' obligations; sandbox with purchase simulation.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "openapi"
+  ],
+  "auth": "oauth2 (partner credentials issued by Depop; refresh-token management)",
+  "access": "partner_only",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "offers",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI specification downloadable from the partner docs"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "refresh",
+  "secret",
+  "config.client_id"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened",
+  "base_urls": [
+   "https://partnerapi.depop.com"
+  ],
+  "auth": [
+   "1. Contact Depop's partner team by e-mail; execute the API Terms / Order Form.",
+   "2. Receive partner credentials; OAuth with refresh tokens to connect each seller.",
+   "3. Use the sandbox (with purchase simulation) before production access."
+  ],
+  "endpoints": [
+   {
+    "call": "listings (create / update / delete)",
+    "purpose": "inventory management",
+    "notes": "Depop may trim copy / images to its limits"
+   },
+   {
+    "call": "orders (retrieve / manage)",
+    "purpose": "orders + webhooks",
+    "notes": "real-time order events; validation guidance"
+   },
+   {
+    "call": "offers (send / respond)",
+    "purpose": "buyer-offer automation",
+    "notes": ""
+   },
+   {
+    "call": "shipping how-tos",
+    "purpose": "shipping / tracking",
+    "notes": "per docs section"
+   }
+  ],
+  "limits": " 20 requests per second for create / update operations; 100 requests per second for other features (API Terms). - Access only to approved partner organisations. - No user diversion, no UI mirroring, no scraping or reverse engineering. - Anti-fraud, data-protection and circularity (resale-mission) obligations.",
+  "mcp_sdk": [
+   "SDK: OpenAPI specification downloadable from the partner docs"
+  ],
+  "sources": [
+   "https://partnerapi.depop.com/api-docs/terms/",
+   "https://partnerapi.depop.com/api-docs/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Depop Partner API key (issued by Depop to approved enterprise partners; API-key tokens carry every scope); sent as Authorization: Bearer."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "partnerapi.depop.com (production) or partnerapi-staging.depop.com (staging)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Depop Partner API is for approved enterprise partners (terms at https://partnerapi.depop.com/api-docs/terms/). Products are addressed by your SKU.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v1/shop/",
+    "docs": "https://partnerapi.depop.com/api-docs/#operation/getSellerDetails",
+    "note": "getSellerDetails: {id, username, country_code} of your Depop shop."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/api/v1/products/by-sku/{listing_id}/",
+    "body": {
+     "price_amount": "str:price",
+     "quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://partnerapi.depop.com/api-docs/#operation/patchProduct",
+    "note": "patchProduct PATCH /api/v1/products/by-sku/{sku}/ {price_amount, quantity} changes the LIVE price (a decimal string in the listing's currency) and/or quantity of an ON SALE product; `listing_id` is your SKU. Title/description changes need the full PUT (all product fields) and are not done here."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/api/v1/products/by-sku/{sku}/",
+    "body": {
+     "quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://partnerapi.depop.com/api-docs/#operation/patchProduct",
+    "note": "patchProduct {quantity} sets the quantity of an ON SALE product by SKU (`sku` required). Restocking a sold-out product requires the full PUT createOrUpdateProduct, which this tool does not send."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/api/v1/products/by-sku/{listing_id}/",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://partnerapi.depop.com/api-docs/#operation/deleteProduct",
+    "note": "deleteProduct DELETE /api/v1/products/by-sku/{sku}/ DELETES the listing from Depop; `listing_id` is your SKU."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/api/v1/orders/",
+    "params": {
+     "limit": "limit",
+     "from": "since"
+    },
+    "default_limit": 20,
+    "max_limit": 200,
+    "result": {
+     "items": "data",
+     "key": "orders",
+     "fields": {
+      "id": "purchase_id",
+      "status": "status",
+      "total": "buyer_pays_amount",
+      "currency": "currency",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://partnerapi.depop.com/api-docs/#operation/getAllOrders",
+    "note": "getAllOrders ?limit(max 200)&from(ISO date-time): {meta: {cursor, has_more}, data: [{purchase_id, status (SHIPPING_PENDING|SHIPPED|REFUNDED|CANCELLED|COMPLETED), currency, buyer_pays_amount, seller_receives_amount, line_items[{parcel_id...}]}]}. No status filter; pagination is by meta.cursor, so only the first page is returned. Amounts are decimal strings."
+   }
+  },
+  "not_offered": {
+   "create_listing": "PUT /api/v1/products/by-sku/{sku}/ requires address.country_code, department, product_type, condition, brand_name, attributes, pictures and price_currency besides price and quantity; the vocabulary has no department, product type, condition or brand.",
+   "mark_shipped": "markOrderAsShipped is POST /api/v1/orders/{purchase_id}/parcels/{parcel_id}/mark-as-shipped/ — it needs the parcel_id of the order's line items, which is not a vocabulary input."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host partnerapi.depop.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://partnerapi.depop.com/api-docs/openapi.yaml: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,98 @@
+{
+ "manifest_version": "0.2",
+ "name": "ebay-mcp",
+ "display_name": "eBay MCP",
+ "version": "0.1.0",
+ "description": "eBay (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ebay"
+   ],
+   "env": {
+    "PLATFORM_MCP_EBAY_CLIENT_ID": "${user_config.platform_mcp_ebay_client_id}",
+    "PLATFORM_MCP_EBAY_CLIENT_SECRET": "${user_config.platform_mcp_ebay_client_secret}",
+    "PLATFORM_MCP_EBAY_REFRESH_TOKEN": "${user_config.platform_mcp_ebay_refresh_token}",
+    "PLATFORM_MCP_EBAY_CURRENCY": "${user_config.platform_mcp_ebay_currency}",
+    "PLATFORM_MCP_EBAY_ENV": "${user_config.platform_mcp_ebay_env}",
+    "PLATFORM_MCP_EBAY_BASE_URL": "${user_config.platform_mcp_ebay_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ebay_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_CLIENT_ID",
+   "description": "Production keyset App ID (Client ID) from developer.ebay.com > Application Keys; sent with the Cert ID as HTTP Basic on the token call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ebay_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_CLIENT_SECRET",
+   "description": "Production keyset Cert ID (Client Secret).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ebay_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_REFRESH_TOKEN",
+   "description": "User refresh token (v^1.1#...) from a one-time authorization-code consent that granted at least sell.inventory, sell.fulfillment and sell.account (the refresh request re-asks exactly these scopes, which must be a subset of the consent); long-lived (about 18 months), revoked when the seller changes password. 2-hour user access tokens are minted from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ebay_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_CURRENCY",
+   "description": "Currency of your listings' marketplace (e.g. USD, GBP, EUR); needed only by update_listing, since eBay prices are {value, currency} objects.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_ebay_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_ENV",
+   "description": "Vendor environment (default production): sandbox = https://api.sandbox.ebay.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_ebay_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EBAY_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /sell/account/v1/privilege (scope sell.account) returns {sellerRegistrationCompleted, sellingLimit{amount, quantity}} for the seller the refresh token belongs to."
+  },
+  {
+   "name": "update_listing",
+   "description": "POST /sell/inventory/v1/bulk_update_price_quantity {requests: [{offers: [{offerId, availableQuantity, price{value, currency}}]}]} revises price and/or quantity of one published offer (listing_id = the Inventory API offerId). price.value is sent as the documented decimal string and price.currency comes from the `currency` config field — pass `price` whenever currency is configured. `title`/`description` are not changed (they live on the inventory item, whose PUT replaces the whole record). eBay answers 200 with a per-offer statusCode and errors[] under responses[]: check raw.statusCode (200 = applied)."
+  },
+  {
+   "name": "end_listing",
+   "description": "POST /sell/inventory/v1/offer/{offerId}/withdraw ends the single-variation listing of the offer; the offer object stays (unpublished) and can be republished. Returns {listingId, warnings}. deleteOffer is not used."
+  },
+  {
+   "name": "set_inventory",
+   "description": "POST /sell/inventory/v1/bulk_update_price_quantity {requests: [{sku, shipToLocationAvailability{quantity}}]} sets the inventory item's total ship-to-home quantity (flows to its published offers). `sku` is required (the Inventory API keys items by SKU; listing_id is not used). Per-item statusCode / errors come back 200 under responses[] (see raw)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /sell/fulfillment/v1/order?limit(max 200, default 50)&offset (scope sell.fulfillment) returns {total, orders[{orderId, orderFulfillmentStatus NOT_STARTED|IN_PROGRESS|FULFILLED, pricingSummary.total{value, currency}, creationDate}]} for up to the last 2 years. `since` and `status` are ignored: eBay filters through one composed `filter` string (creationdate:[<ISO>..],orderfulfillmentstatus:{NOT_STARTED|IN_PROGRESS}) that the adapter cannot assemble. `total` is the decimal string eBay returns."
+  }
+ ]
+}

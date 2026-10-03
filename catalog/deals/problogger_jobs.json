@@ -1,0 +1,171 @@
+{
+ "id": "problogger_jobs",
+ "category": "deals",
+ "label": "ProBlogger Jobs",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://problogger.com/jobs/feed/",
+ "url": "https://problogger.com/jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public WordPress RSS; no terms read; no items.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://problogger.com/jobs/feed/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://problogger.com/jobs/feed/",
+   "docs": "https://problogger.com/jobs/feed/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://problogger.com/jobs/feed/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS exists but is EMPTY) Confidence high (feed opened twice, 2026-09-02 and today).",
+  "base_urls": [
+   "https://problogger.com/jobs/feed/"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /jobs/feed/",
+    "purpose": "search",
+    "notes": "no <item> elements today"
+   }
+  ],
+  "limits": " - No terms read; scanning returns [] silently.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://problogger.com/jobs/feed/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://problogger.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "ProBlogger Jobs public WordPress feed. Apply through each listing.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/jobs/wpjobboard/xml/rss/",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://problogger.com/jobs/wpjobboard/xml/rss/?filter=active",
+    "note": "ProBlogger Job Board RSS of active postings (WPJobBoard, RSS 2.0): GET /jobs/wpjobboard/xml/rss/?filter=active, with `query` carried into the board's search (?query=writer narrows it). The WordPress /jobs/feed/ used before carried no <item> elements on 2026-09-25 and 2026-09-26 while this feed listed the board's live postings (live check 2026-09-26). The feed is one list, so page and limit are not sent (next_page is always null); category, min_budget are not sent. Items use the standard RSS fields (title, link, pubDate, description); id is the posting link.",
+    "params": {
+     "query": "query"
+    },
+    "fixed_params": {
+     "filter": "active"
+    }
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Applications go through each listing; ProBlogger Jobs publishes no API and its REST index has no job-listing route.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: /jobs/feed/ carries no items; now the board's WPJobBoard feed (/jobs/wpjobboard/xml/rss/?filter=active) with query; all read tools answered, schema-valid"
+ }
+}

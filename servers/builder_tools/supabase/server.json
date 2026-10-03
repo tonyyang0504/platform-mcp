@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/supabase-mcp",
+ "description": "Supabase (builder tools): list_items, get_item, create_item, update_item, delete_item. Every tool ma",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://supabase.com/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "supabase"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SUPABASE_SECRET_KEY",
+     "description": "Project secret key (sb_secret_…, Project Settings > API Keys), sent in the apikey header as Supabase documents for publishable/secret keys. It bypasses Row Level Security: keep it server-side.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SUPABASE_PROJECT_REF",
+     "description": "Project reference (the subdomain of https://<ref>.supabase.co).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

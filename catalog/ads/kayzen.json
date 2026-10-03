@@ -1,0 +1,305 @@
+{
+ "id": "kayzen",
+ "category": "ads",
+ "label": "Kayzen",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.kayzen.io/",
+ "url": "https://kayzen.io/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Kayzen self-serve DSP account; authentication token endpoint; rate limits not stated on the landing page. Free API (media spend via the DSP).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (POST authentication token with Kayzen account credentials / API key)",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Kayzen DSP REST API) Confidence: **high** — official developer hub read.",
+  "base_urls": [
+   "https://api.kayzen.io/v1/…"
+  ],
+  "auth": [
+   "1. Kayzen DSP account (self-serve).",
+   "2. `POST /authentication/token` with credentials → bearer token.",
+   "3. Order → campaign → creatives → reports."
+  ],
+  "endpoints": [
+   {
+    "call": "GET/POST /orders` · `PATCH /orders/{id}` · `DELETE",
+    "purpose": "orders (budget / flight)",
+    "notes": "name, budget, start_date, end_date"
+   },
+   {
+    "call": "POST /campaigns` · `GET /campaigns` · `GET /campaigns/{id}` · `PATCH` · `PUT …/pause",
+    "purpose": "resume` · `DELETE`",
+    "notes": "campaigns: bid, budget, targeting"
+   },
+   {
+    "call": "POST /asset_files` (upload) · `POST /creatives` (video / HTML / image / native) · `PATCH /creatives/{id}` · status",
+    "purpose": "creatives upload",
+    "notes": "asset_file_id, type, size, click_url, tracker_asset_id"
+   },
+   {
+    "call": "POST /reports` · `POST /reports/{id}/data` · `GET …/csv` · totals · row count",
+    "purpose": "reports",
+    "notes": "dimensions, metrics, date range"
+   },
+   {
+    "call": "POST /custom_audiences` · first-party audience API (audience API key)",
+    "purpose": "audiences",
+    "notes": "name, condition types, device ids"
+   },
+   {
+    "call": "GET/POST /app_lists",
+    "purpose": "targeting (app lists)",
+    "notes": "app ids"
+   },
+   {
+    "call": "conversions upload",
+    "purpose": "via tracker assets / MMP postbacks",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated; free API; Kayzen terms.",
+  "mcp_sdk": [
+   "OpenAPI + markdown docs (developers.kayzen.io/llms.txt)."
+  ],
+  "sources": [
+   "https://developers.kayzen.io/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.kayzen.io",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/v1/authentication/token",
+    "body": {
+     "grant_type": "password",
+     "username": "@username",
+     "password": "@password"
+    },
+    "headers": {
+     "Authorization": "Basic {@api_basic}"
+    }
+   },
+   "token_path": "access_token",
+   "token_ttl_seconds": 1500,
+   "fields": [
+    {
+     "name": "api_basic",
+     "required": true,
+     "help": "base64(<API_Key>:<API_Secret_Key>) — the Kayzen API key and secret (Kayzen UI > Account > API Key; 'Obtaining your Kayzen API key') joined by a colon and Base64-encoded, e.g. `printf '%s' 'KEY:SECRET' | base64`. Sent as `Authorization: Basic …` on POST /v1/authentication/token only."
+    },
+    {
+     "name": "username",
+     "required": true,
+     "help": "Kayzen login email of the user the API key belongs to (token request body `username`)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Kayzen account password for that login (token request body `password`); the runtime exchanges it for a 30-minute bearer token and re-logs in on expiry or 401."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "Kayzen advertiser id used by `me` (GET /v1/balance?advertiser_id=…). Leave empty to use the API key's default advertiser."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/balance",
+    "params": {
+     "advertiser_id": "@advertiser_id"
+    },
+    "docs": "https://developers.kayzen.io/reference/view-balance",
+    "note": "GET /v1/balance → {advertiser: {balance, warning}}; there is no user endpoint, so the balance call verifies the token (and the optional configured advertiser)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/v1/campaigns",
+    "params": {
+     "advertiser_id": "account_id",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "total": "meta.total_entries",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "day_budget",
+      "start": "start_time",
+      "end": "end_time"
+     }
+    },
+    "docs": "https://developers.kayzen.io/reference/campaigns",
+    "note": "GET /v1/campaigns?advertiser_id=…&page=…&per_page=… (data[] + meta.total_entries). `account_id` is the Kayzen advertiser id (an enterprise admin switches advertisers with it). status is running / paused / …; `budget` is day_budget in USD (total_budget in raw). No status filter is documented, so `status` is not sent."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/v1/report_data",
+    "body": {
+     "advertiser_id": "int:account_id",
+     "start_date": "date:date_from",
+     "end_date": "date:date_to",
+     "metrics": "json:[\"impressions\",\"clicks\",\"advertiser_spend\",\"ctr\"]",
+     "group_by": "json:[\"day\",\"campaign_id\",\"campaign_name\"]",
+     "filters.campaign_id.0": "int:campaign_id",
+     "per_page": "json:1000",
+     "time_zone": "=UTC"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "date": "day",
+      "campaign_id": "campaign_id",
+      "campaign": "campaign_name",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "advertiser_spend",
+      "ctr": "ctr"
+     }
+    },
+    "docs": "https://developers.kayzen.io/reference/report-data",
+    "note": "POST /v1/report_data {advertiser_id, start_date, end_date, metrics [impressions, clicks, advertiser_spend, ctr], group_by [day, campaign_id, campaign_name], filters {campaign_id: [id]} when campaign_id is given, per_page 1000, time_zone UTC} — synchronous 'Report Data' (no reusable report id). spend is advertiser_spend in USD."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/v1/campaigns/{campaign_id}",
+    "body": {
+     "data.campaign.day_budget": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kayzen.io/reference/update-campaign",
+    "note": "PATCH /v1/campaigns/{id} {data: {campaign: {day_budget}}} — day_budget is an integer number of US dollars (whole dollars only; a fractional amount is rejected before sending). This changes spend. A 422 `budget_overspend_risks` answer is returned as an error; the overspend warning is not bypassed. `currency` is ignored. Kayzen answers 200 with an empty object, so the result carries only status."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/v1/campaigns/{campaign_id}/status",
+    "body": {
+     "status": "map:action:pause=paused,resume=running"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kayzen.io/reference/pauseresume-campaign",
+    "note": "PUT /v1/campaigns/{id}/status {status: paused|running} (pause → paused, resume → running). Resuming restarts spend; a 422 `budget_overspend_risks` answer is returned as an error rather than bypassed."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The API reference (https://developers.kayzen.io/reference) has no advertiser-listing endpoint; calls act on the API key's advertiser, and enterprise admins pass another 'Advertiser ID (for enterprise admin user)' explicitly (List Campaigns: 'The advertiser of the api key becomes the default advertiser. To switch advertisers, pass the advertiser id of that advertiser')."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.kayzen.io: DNS ok, TLSv1.2 (GoDaddy.com, Inc.)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.kayzen.io/v1/authentication/token: 401",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

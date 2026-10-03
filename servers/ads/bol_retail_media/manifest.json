@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "bol_retail_media-mcp",
+ "display_name": "bol Retail Media (Sponsored Products) MCP",
+ "version": "0.1.0",
+ "description": "bol Retail Media (Sponsored Products) (ads): me, list_campaigns, get_report. Every tool maps to a do",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bol_retail_media"
+   ],
+   "env": {
+    "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_ID": "${user_config.platform_mcp_bol_retail_media_client_id}",
+    "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_SECRET": "${user_config.platform_mcp_bol_retail_media_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bol_retail_media_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_ID",
+   "description": "Client id of bol API credentials with Advertising API access (seller dashboard > Settings > API settings, or intermediary authorization for agencies); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a ~5-minute JWT.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bol_retail_media_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOL_RETAIL_MEDIA_CLIENT_SECRET",
+   "description": "The matching client secret. The JWT is cached and re-requested before expiry (bol bans IPs that request a token per call).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe is GET /advertiser/sponsored-products/budget-management/budget-settings ({mode: BASIC|ADVANCED}), which verifies the JWT has Advertising API access."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /advertiser/sponsored-products/campaign-management/campaigns/list {filter: {states: [status]}, page, pageSize (≤100)}. status is ENABLED, PAUSED or ARCHIVED. `budget` is the daily budget in EUR (totalBudget, campaignType AUTO|MANUAL, targetCountries NL/BE and constraints such as OUT_OF_DAILY_BUDGET in raw). `account_id` is not sent (the JWT selects the retailer account)."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /advertiser/sponsored-products/reporting/performance?entity-type=CAMPAIGN&entity-ids=<campaign_id>&period-start-date&period-end-date: one aggregated row for the campaign over the period (dates within the last 30 days, inclusive). campaign_id is REQUIRED (entity-ids is mandatory; the account-level /performance/advertiser returns a single total, not rows). cost in EUR; conversions and sales are 14-day attributed."
+  }
+ ]
+}

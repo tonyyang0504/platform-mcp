@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "ted_eu-mcp",
+ "display_name": "TED — Tenders Electronic Daily MCP",
+ "version": "0.1.0",
+ "description": "TED — Tenders Electronic Daily (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ted_eu"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "`query` is sent verbatim as the TED EXPERT query (PublicExpertSearchRequestV1.query: 'Expert search query to filter and sort notices'); plain words are refused with QUERY_SYNTAX_ERROR ('expecting {NOT, IN, '!=', '=', '~', '!~', COMPARISON_OPERATOR}'). Use the full-text field documented in api-v3.yaml: FT~\"<words>\" (e.g. FT~\"cloud hosting\"), or a field search such as notice-title~\"software\", combinable with AND/OR, e.g. (FT~\"software\") AND (classification-cpv=72000000). `category` and `min_budget` are not sent. scope=ACTIVE restricts to active notices; page/limit paginate (limit ≤ 250). The fixed `fields` list is what the vocabulary needs; `title` is notice-title.eng and `buyer` buyer-name.eng[0] (i18n maps keyed by ISO 639-2 language — null when the notice has no English text; other languages stay in `raw`), `url` links.html.ENG, `deadline` the first deadline-receipt-tender-date-lot (null on older notices). Total = totalNoticeCount."
+  }
+ ]
+}

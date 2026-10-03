@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/autoria-mcp",
+ "description": "AUTO.RIA (automotive): get_listing, get_valuation. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs-developers.ria.com/en/used-cars/auto_search_and_info/auto_info",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "autoria"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AUTORIA_API_KEY",
+     "description": "Personal API key from the developers.ria.com cabinet (Особистий кабінет); sent as the api_key query parameter. auto/info is freemium, statistic-avarage-price is paid.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AUTORIA_USER_ID",
+     "description": "Your RIA user id (integer); required by get_valuation (auto/statistic-avarage-price takes user_id and api_key in the query).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

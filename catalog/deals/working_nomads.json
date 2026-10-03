@@ -1,0 +1,169 @@
+{
+ "id": "working_nomads",
+ "category": "deals",
+ "label": "Working Nomads",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.workingnomads.com/api/exposed_jobs/",
+ "url": "https://www.workingnomads.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public keyless JSON; terms not read; no published limit.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://www.workingnomads.com/api/exposed_jobs/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.workingnomads.com/api/exposed_jobs/",
+   "docs": "https://www.workingnomads.com/api/exposed_jobs/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://www.workingnomads.com/api/exposed_jobs/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search JSON) Confidence high.",
+  "base_urls": [
+   "https://www.workingnomads.com/api/exposed_jobs/"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/exposed_jobs/",
+    "purpose": "search + details",
+    "notes": "url, title, description (HTML), company, category, tags, location, pub_date"
+   }
+  ],
+  "limits": " - Keyless; terms not read.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.workingnomads.com/api/exposed_jobs/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.workingnomads.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "rate_note": "Keyless public feed; no rate limit or terms published on the endpoint (page: 'Keyless; terms not read'). One request every two seconds; a call returns the whole feed.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/exposed_jobs/",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "url",
+      "title": "title",
+      "buyer": "company_name",
+      "url": "url",
+      "posted_at": "pub_date",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.workingnomads.com/api/exposed_jobs/",
+    "note": "Single keyless JSON array (fields: url, title, description (HTML), company_name, category_name, tags, location, pub_date) with no query/page/limit parameters: `query`, `category`, `min_budget`, `page` and `limit` are not sent and the whole feed is returned; filter client-side. The feed has no id field, so `id` is the posting `url`. `tags` is a comma-separated string (not an array) and stays in `raw` with category_name and location."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'no proposal / message / contract surface exists on this venue' — applicants use the posting's own application page.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; re-read the record from the search hit (`url`)."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

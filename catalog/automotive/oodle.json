@@ -1,0 +1,44 @@
+{
+ "id": "oodle",
+ "category": "automotive",
+ "label": "Cars",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://cars.oodle.com",
+ "domain": "cars.oodle.com",
+ "country": "USA",
+ "official_api": true,
+ "docs_url": "https://www.oodle.com/info/developer/listings/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key (key= query param)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). Oodle documents a REST listings API (api.oodle.com/api/v2/listings, category vehicle/car, XML/JSON) plus feed ingest; endpoint was Cloudflare-challenged in test, current key issuance unverified.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.oodle.com/info/developer/listings/",
+   "https://www.oodle.com/info/developer/categories-list/",
+   "https://www.oodle.com/info/feed/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "The 'listings' method is documented (https://www.oodle.com/info/developer/listings/, rendered 2026-09-25: GET https://api.oodle.com/api/v2/listings?key&region&category=vehicle/car&q&attributes&location&start&num≤50&format), but the endpoint (and the page's own sample link) answers a Cloudflare JS challenge, the JSON response fields are not described on the page, and current key issuance is unverified."
+}

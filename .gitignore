@@ -1,0 +1,19 @@
+.venv/
+node_modules/
+dist/
+build/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.env
+.DS_Store
+# npm pack copies these into the package and removes them afterwards (runtime/typescript/scripts/pack-catalog.mjs)
+runtime/typescript/catalog/
+runtime/typescript/LICENSE
+runtime/typescript/NOTICE
+# per-developer Claude Code settings
+.claude/settings.local.json
+# live verification reports written by `platform-mcp-hub verify --json`
+*.report.json

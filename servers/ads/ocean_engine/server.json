@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ocean_engine-mcp",
+ "description": "巨量引擎 Ocean Engine (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.oceanengine.com/labels/7/docs/1696710498372623",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ocean_engine"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_ID",
+     "description": "开发者应用的 APP_ID (app_id) from 开发者后台 > 应用管理 (https://open.oceanengine.com/labels/7/docs/1696710506097679).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_OCEAN_ENGINE_CLIENT_SECRET",
+     "description": "应用的私钥 Secret from 应用管理 > 编辑应用; sent as `secret` in the refresh call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_OCEAN_ENGINE_REFRESH_TOKEN",
+     "description": "A refresh_token from 获取Access Token (auth_code exchange after the advertiser authorised the app). It is single-use: every refresh returns a new one and invalidates the old ('再次刷新需要使用本次刷新获取的新的RefreshToken'); set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_OCEAN_ENGINE_ADVERTISER_ID",
+     "description": "投放账户 id (advertiser_id) used by update_budget and pause_resume, whose inputs carry only the project id; list_accounts shows the authorised ids.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

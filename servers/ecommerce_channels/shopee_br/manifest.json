@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "shopee_br-mcp",
+ "display_name": "Shopee Brasil MCP",
+ "version": "0.1.0",
+ "description": "Shopee Brasil (ecommerce channels): me, list_orders, mark_shipped, set_inventory, update_listing, en",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "shopee_br"
+   ],
+   "env": {
+    "PLATFORM_MCP_SHOPEE_BR_PARTNER_KEY": "${user_config.platform_mcp_shopee_br_partner_key}",
+    "PLATFORM_MCP_SHOPEE_BR_REFRESH_TOKEN": "${user_config.platform_mcp_shopee_br_refresh_token}",
+    "PLATFORM_MCP_SHOPEE_BR_PARTNER_ID": "${user_config.platform_mcp_shopee_br_partner_id}",
+    "PLATFORM_MCP_SHOPEE_BR_SHOP_ID": "${user_config.platform_mcp_shopee_br_shop_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_shopee_br_partner_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_BR_PARTNER_KEY",
+   "description": "partner_key (live key) of the app; signs the token refresh and every shop call (HMAC-SHA256). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_br_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_BR_REFRESH_TOKEN",
+   "description": "refresh_token from GetAccessToken (/api/v2/auth/token/get) after the shop authorised the app (https://open.shopee.com/developer-guide/20). Valid 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the newest one survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_br_partner_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_BR_PARTNER_ID",
+   "description": "partner_id of your Shopee Open Platform app (Console > App).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_shopee_br_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_BR_SHOP_ID",
+   "description": "shop_id of the authorised shop (returned in the authorisation redirect).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "v2.shop.get_shop_info: shop_name, region, status and the authorisation expire_time."
+  },
+  {
+   "name": "list_orders",
+   "description": "v2.order.get_order_list: orders created from `since` (required; the window up to now may be at most 15 days) newest pages via next_cursor. `status`: UNPAID, READY_TO_SHIP, PROCESSED, SHIPPED, COMPLETED, IN_CANCEL, CANCELLED, INVOICE_PENDING. Amounts and items: v2.order.get_order_detail (not mapped)."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "v2.logistics.ship_order for NON-INTEGRATED logistics channels: ships order `order_id` with the carrier's `tracking_number` (non_integrated.tracking_number). Integrated channels need pickup/dropoff details from v2.logistics.get_shipping_parameter and are not mapped; `carrier` is not sent."
+  },
+  {
+   "name": "set_inventory",
+   "description": "v2.product.update_stock: sets the seller stock of item `listing_id`; `sku` is the model_id (0 for an item without variations). Check `failures` (failure_list with failed_reason)."
+  },
+  {
+   "name": "update_listing",
+   "description": "v2.product.update_price: sets the original price of item `listing_id` without variations (model_id 0) in the shop's local currency. Items with models need per-model prices (not mapped); title/description edits (v2.product.update_item) are not mapped."
+  },
+  {
+   "name": "end_listing",
+   "description": "v2.product.unlist_item: unlists item `listing_id` (reversible with unlist=false)."
+  }
+ ]
+}

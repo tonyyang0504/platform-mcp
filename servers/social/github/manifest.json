@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "github-mcp",
+ "display_name": "GitHub MCP",
+ "version": "0.1.0",
+ "description": "GitHub (social): me, read_comments, delete, analytics_post. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "github"
+   ],
+   "env": {
+    "PLATFORM_MCP_GITHUB_TOKEN": "${user_config.platform_mcp_github_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_github_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GITHUB_TOKEN",
+   "description": "GitHub personal access token (fine-grained: repository permission Discussions read / write on the repositories used; classic: repo or public_repo scope) sent as 'Authorization: bearer TOKEN' (https://docs.github.com/en/graphql/guides/forming-calls-with-graphql).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /user returns the token's user {login, id, node_id, name, html_url, ...}."
+  },
+  {
+   "name": "read_comments",
+   "description": "Top-level comments of a discussion: `post_id` is the discussion's GraphQL node id (e.g. D_kwDO...; the `id` field of a Discussion, not its number). Discussion.comments is cursor-paginated (first / after): only the first `limit` (max 100) comments are returned and `page` is not honoured; replies to comments are not included. A node id that is not a Discussion yields an empty list."
+  },
+  {
+   "name": "delete",
+   "description": "DESTRUCTIVE: the deleteDiscussion mutation permanently deletes the discussion with node id `post_id` and all its comments (needs maintain / admin on the repository or authorship). Failures come back as a GraphQL errors array."
+  },
+  {
+   "name": "analytics_post",
+   "description": "Counts for one discussion (node id): comments.totalCount and reactions.totalCount as top-level fields; there are no view counts in the API."
+  }
+ ]
+}

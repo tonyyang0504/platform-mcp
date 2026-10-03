@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kakao-mcp",
+ "description": "KakaoTalk (messaging): me, send. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.kakao.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kakao"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KAKAO_CLIENT_ID",
+     "description": "REST API key of the Kakao app ([App] > [Platform Key] > [REST API key]), sent as client_id to POST https://kauth.kakao.com/oauth/token (https://developers.kakao.com/docs/en/kakaologin/rest-api).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAKAO_CLIENT_SECRET",
+     "description": "Client secret of the REST API key; 'Required when the setting is [ON]' (enabled by default for new keys).",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAKAO_REFRESH_TOKEN",
+     "description": "Refresh token from Kakao Login (authorization code flow) of the SENDING user, with consent to the talk_message scope and friends-list access (friends scope); valid about 60 days (refresh_token_expires_in 5184000). Kakao returns a renewed refresh_token when less than a month is left: the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/kakao.json (mode 0600).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAKAO_LINK_URL",
+     "description": "Web URL opened when the message is tapped (text template link.web_url / mobile_web_url, 'O' required); its domain must be registered as a Web domain under Product Link on the app management page (https://developers.kakao.com/docs/en/message-template/default).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

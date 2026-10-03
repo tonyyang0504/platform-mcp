@@ -1,0 +1,312 @@
+{
+ "id": "onbuy",
+ "category": "ecommerce_channels",
+ "label": "OnBuy",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": "https://docs.api.onbuy.com/",
+ "url": "https://www.onbuy.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "OnBuy seller account (UK); consumer key + secret from the seller dashboard; bearer request-token with expiry; rate limits apply (numbers not on the overview); sandbox api-test.onbuy.com.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "token (consumer key + secret key from the seller dashboard → request-token bearer with expiry)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.site_id",
+  "config.test"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.onbuy.com/v2",
+   "https://api-test.onbuy.com"
+  ],
+  "auth": [
+   "1. Seller dashboard → API credentials (consumer key + secret key).",
+   "2. POST auth/request-token → bearer token with expiry; refresh before expiry.",
+   "3. Bearer on every call; site_id (UK) as parameter."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v2/listings · PUT /v2/listings/by-sku",
+    "purpose": "create listing on an OPC; update price / stock",
+    "notes": "opc, price, stock, condition, handling_time"
+   },
+   {
+    "call": "POST /v2/products",
+    "purpose": "create products when no OPC exists",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/orders",
+    "purpose": "orders",
+    "notes": "status filters"
+   },
+   {
+    "call": "PUT /v2/orders/dispatch",
+    "purpose": "dispatch with tracking",
+    "notes": "tracking_id, supplier (carrier)"
+   },
+   {
+    "call": "PUT /v2/orders/cancel · POST /v2/orders/refund",
+    "purpose": "cancel / refund",
+    "notes": ""
+   },
+   {
+    "call": "returns endpoints",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/queues/{id}",
+    "purpose": "async queue status",
+    "notes": ""
+   }
+  ],
+  "limits": " Rate limiting applies (overview); numbers not read. - OnBuy seller terms; keys are the seller's own.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://docs.api.onbuy.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.onbuy.com",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/v2/auth/request-token",
+    "body_format": "form",
+    "body": {
+     "secret_key": "@secret_key",
+     "consumer_key": "@consumer_key"
+    }
+   },
+   "token_path": "access_token",
+   "token_ttl_seconds": 840,
+   "prefix": "",
+   "fields": [
+    {
+     "name": "consumer_key",
+     "required": true,
+     "help": "Consumer key from the OnBuy/OnCommerce Seller Control Panel > Integrations > OnBuy API (Test and Live keys differ)."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "Secret key from the same page; exchanged with the consumer key at POST /v2/auth/request-token for a 15-minute access token (bound to the calling IP), sent as the raw Authorization header."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "site_id",
+    "required": true,
+    "help": "OnBuy site id your listings/orders belong to: 2000 = OnBuy UK (GET /v2/sites lists the others)."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "OnBuy (OnCommerce) API v2: hourly and daily limits per request method; access tokens last 15 minutes and are tied to the requesting IP. Listing updates are recommended in batches (up to 1000 SKUs) to stay within limits.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/sites/{site}",
+    "path_params": {
+     "site": "@site_id"
+    },
+    "docs": "https://docs.api.onbuy.com/#sites-view",
+    "note": "No seller-profile call without the seller id; the probe obtains a token (verifying the consumer/secret keys) and reads the configured site."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/v2/listings/by-sku",
+    "body": {
+     "site_id": "int:@site_id",
+     "listings.0.sku": "listing_id",
+     "listings.0.price": "price",
+     "listings.0.stock": "quantity"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.api.onbuy.com/#product-listings-update-by-sku",
+    "note": "Product Listings: Update by SKU — PUT /v2/listings/by-sku {site_id, listings: [{sku, price, stock}]} changes the LIVE price and/or stock of your listing; `listing_id` is your SKU. Per-SKU problems come back in results[].error (e.g. 'SKU does not exist') with HTTP 200 — check raw/error. Title/description belong to the product (OPC) and are not changed here."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/v2/listings/by-sku",
+    "body": {
+     "site_id": "int:@site_id",
+     "listings.0.sku": "sku",
+     "listings.0.stock": "quantity"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.api.onbuy.com/#product-listings-update-by-sku",
+    "note": "Update by SKU with {sku, stock}: sets the stock of one listing (`sku` required). Per-SKU errors are returned in results[].error with HTTP 200."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/v2/listings/by-sku",
+    "body": {
+     "site_id": "int:@site_id",
+     "skus.0": "listing_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=delete_requested"
+     }
+    },
+    "docs": "https://docs.api.onbuy.com/#product-listings-delete-by-sku",
+    "note": "Product Listings: Delete by SKU — DELETE /v2/listings/by-sku {site_id, skus: [sku]} DELETES your listing (the product/OPC remains; re-listing needs a new create). `listing_id` is your SKU; the per-SKU outcome ({status: ok} or {error}) is in raw.results."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v2/orders",
+    "params": {
+     "site_id": "@site_id",
+     "filter[status]": "status",
+     "filter[date_from]": "since"
+    },
+    "result": {
+     "items": "results",
+     "key": "orders",
+     "fields": {
+      "id": "order_id",
+      "status": "status",
+      "total": "price_total",
+      "currency": "currency_code",
+      "created_at": "date"
+     }
+    },
+    "docs": "https://docs.api.onbuy.com/#orders-browse",
+    "note": "Orders: Browse — filter[status] awaiting_dispatch (the default when omitted) | dispatched | partially_dispatched | cancelled | cancelled_by_seller | cancelled_by_buyer | refunded | partially_refunded | all; since = filter[date_from] as 'YYYY-MM-DD HH:MM:SS'. price_total is a decimal string; buyer, addresses and products are in raw. No page parameters are documented, so only the first result page is returned."
+   },
+   "mark_shipped": {
+    "method": "PUT",
+    "path": "/v2/orders/dispatch",
+    "body": {
+     "site_id": "int:@site_id",
+     "orders.0.order_id": "order_id",
+     "orders.0.tracking.supplier_name": "carrier",
+     "orders.0.tracking.number": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=dispatched"
+     }
+    },
+    "docs": "https://docs.api.onbuy.com/#orders-dispatch",
+    "note": "Orders: Dispatch — PUT /v2/orders/dispatch {site_id, orders: [{order_id, tracking: {supplier_name, number}}]} marks the WHOLE order dispatched and e-mails the buyer. supplier_name (`carrier`) is required whenever a tracking number is sent and is for internal reference only (OnBuy detects the courier from the number). Per-order success/failure is in raw.results[order_id]."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Listings are created on an existing OnBuy product: POST /v2/products/{opc}/listings needs the product's OPC code (or a product must first be created with category, brand and technical details via POST /v2/products); the vocabulary has no OPC or category."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.onbuy.com: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.onbuy.com/v2/auth/request-token: 400 {",
+   "HTML docs spot-check (render-doc): 3/6 tool paths found verbatim on their docs pages; names not found on the page: end_listing:skus"
+  ],
+  "notes": "-"
+ }
+}

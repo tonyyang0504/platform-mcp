@@ -1,0 +1,339 @@
+{
+ "id": "upwork",
+ "category": "deals",
+ "label": "Upwork",
+ "lane": "assist",
+ "kind": "freelance",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html",
+ "url": "https://www.upwork.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Upwork's User Agreement and API Terms of Use ban automated access to a freelancer account and automated proposal submission — the GraphQL API exposes no proposal mutation and a key is granted to the account holder, never to a platform. Registering, editing the profile or submitting a proposal through a browser session is automation those terms forbid; the tenant opts in per account, and Upwork's usual enforcement is a suspended or closed account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql"
+  ],
+  "auth": "oauth2 (API key applied for per organization; Upwork approves)",
+  "access": "apply",
+  "capabilities": [
+   "search",
+   "details",
+   "contracts",
+   "milestones",
+   "messages"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  {
+   "name": "client_id",
+   "label": "OAuth2 client key",
+   "secret": false,
+   "required": true
+  },
+  {
+   "name": "client_secret",
+   "label": "OAuth2 client secret",
+   "secret": true,
+   "required": true
+  },
+  {
+   "name": "refresh",
+   "label": "Refresh token (one authorization of your account)",
+   "secret": true,
+   "required": true
+  },
+  {
+   "name": "token",
+   "label": "Access token (optional — minted from the refresh token when absent)",
+   "secret": true,
+   "required": false
+  }
+ ],
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (GraphQL API — job search, contracts, milestones, messaging; no proposal submission documented). Lane `assist` → **api for search + status** after key approval; proposals assist. Confidence high (docs + terms read via r.jina.ai).",
+  "base_urls": [
+   "https://api.upwork.com/graphql"
+  ],
+  "auth": [
+   "1. Apply for an API key at upwork.com/developer/keys/apply (organization context, intended use, 40k/day confirmation) → Upwork approval → OAuth2 authorization code → access token."
+  ],
+  "endpoints": [
+   {
+    "call": "query marketplaceJobPostingsSearch(marketPlaceJobFilter, searchType, sortAttributes)",
+    "purpose": "search",
+    "notes": "permission 'Read marketplace Job Postings'; MarketplaceJobPostingsSearchConnection"
+   },
+   {
+    "call": "query marketplaceJobPosting(id)",
+    "purpose": "details",
+    "notes": "TODO(verify) name"
+   },
+   {
+    "call": "contracts / milestones queries + `approveMilestone",
+    "purpose": "contract & milestone status (client-side approval)",
+    "notes": "ApproveMilestoneInput"
+   },
+   {
+    "call": "rooms / messages",
+    "purpose": "messages",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - 300 req/min/IP, 40,000/day; webhooks subscriptions need Upwork approval; ToS: no robots/scrapers without written permission, no proposal spam.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://r.jina.ai/https://www.upwork.com/developer/documentation/graphql/api/docs/index.html",
+   "https://r.jina.ai/https://www.upwork.com/legal/api-terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.upwork.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://www.upwork.com/api/v3/oauth2/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "X-Upwork-API-TenantId": "tenant_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of an approved Upwork API key (apply at https://www.upwork.com/developer/keys/apply; Upwork reviews every key)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same API key (form body of the refresh_token grant)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the Authorization Code Grant for the freelancer/agency account; the runtime mints access tokens (TTL 86400 s) at https://www.upwork.com/api/v3/oauth2/token and keeps the rotated refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it)."
+    },
+    {
+     "name": "tenant_id",
+     "required": false,
+     "help": "Optional organization id sent as X-Upwork-API-TenantId (the execution context; without it the user's default organization is used)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "'We allow 300 requests per minute per IP address … HTTP 429' and the key application confirms staying within 40,000 requests per day; caching beyond 24 hours is not allowed. Two requests per second.",
+  "envelope": {
+   "ok_field": "data",
+   "error_field": "errors"
+  },
+  "terms": "Upwork API Terms of Use (https://www.upwork.com/legal#api): no robots or scrapers without written permission, no proposal spam, no caching for more than 24 hours; every key is approved by Upwork for a declared use.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query { user { id nid rid } }"
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-user",
+    "note": "POST /graphql query { user { id nid rid } } — the authenticated user (account.data.user)."
+   },
+   "search_postings": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query SearchJobs($filter: MarketplaceJobPostingsSearchFilter) { marketplaceJobPostingsSearch(marketPlaceJobFilter: $filter, searchType: USER_JOBS_SEARCH, sortAttributes: [{ field: RECENCY }]) { totalCount edges { node { id title description ciphertext publishedDateTime createdDateTime amount { rawValue currency displayValue } hourlyBudgetMin { rawValue currency } hourlyBudgetMax { rawValue currency } skills { name } category subcategory totalApplicants client { totalFeedback } } } pageInfo { endCursor hasNextPage } } }",
+     "variables.filter.searchExpression_eq": "query",
+     "variables.filter.categoryIds_any.0": "category",
+     "variables.filter.budgetRange_eq.rangeStart": "int:min_budget",
+     "variables.filter.pagination_eq.after": "str:offset",
+     "variables.filter.pagination_eq.first": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "data.marketplaceJobPostingsSearch.edges",
+     "key": "postings",
+     "total": "data.marketplaceJobPostingsSearch.totalCount",
+     "fields": {
+      "id": "node.id",
+      "title": "node.title",
+      "description": "node.description",
+      "currency": "node.amount.currency",
+      "posted_at": "node.publishedDateTime"
+     }
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-marketplaceJobPostingsSearch",
+    "note": "POST https://api.upwork.com/graphql marketplaceJobPostingsSearch (permission 'Read marketplace Job Postings'), searchType USER_JOBS_SEARCH, newest first (sortAttributes RECENCY), following the documented real-life example. `query` → searchExpression_eq (partial Lucene syntax); `category` → categoryIds_any[0] (an Upwork category id); `min_budget` → budgetRange_eq.rangeStart (whole number; hourly jobs are returned regardless of budget); page/limit → pagination_eq {after: offset as a string, as in the example's \"0\", first: limit}. Money values are strings (amount.rawValue / displayValue, hourlyBudgetMin/Max) and skills are {name} objects, so they stay in raw; the job page is https://www.upwork.com/jobs/~<raw.node.ciphertext>. GraphQL failures arrive as HTTP 200 with errors[]: a null data is reported as an error, but a permission error on the field alone yields an empty list."
+   },
+   "get_posting": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query JobDetails($id: ID!) { marketplaceJobPosting(id: $id) { id content { title description } contractTerms { contractType } clientCompanyPublic { id } } }",
+     "variables.id": "id"
+    },
+    "result": {
+     "root": "data.marketplaceJobPosting",
+     "fields": {
+      "id": "id",
+      "title": "content.title",
+      "description": "content.description"
+     }
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-marketplaceJobPosting",
+    "note": "POST /graphql marketplaceJobPosting(id) with the documented fields (content.title/description, contractTerms.contractType, clientCompanyPublic.id in raw). id is the job posting id (the search result id)."
+   },
+   "bid_status": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query Proposal($id: ID!) { vendorProposal(id: $id) { id status { status } viewedByClient } }",
+     "variables.id": "bid_id"
+    },
+    "result": {
+     "root": "data.vendorProposal",
+     "fields": {
+      "bid_id": "id",
+      "status": "status.status"
+     }
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-vendorProposal",
+    "note": "POST /graphql vendorProposal(id) → status.status (VendorProposalStatusName: Accepted, Declined, Withdrawn, Offered, Activated, Archived, Hired, Pending); viewedByClient in raw. For freelancers/agencies (permission 'Client Proposals - Read And Write Access'); the agency context follows X-Upwork-API-TenantId."
+   },
+   "list_messages": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query RoomMessages($filter: RoomStoryFilter!) { roomStories(filter: $filter) { edges { node { id message createdDateTime user { id name } } } } }",
+     "variables.filter.roomId_eq": "thread_id",
+     "variables.filter.storyFilter.pagination.after": "=",
+     "variables.filter.storyFilter.pagination.first": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "data.roomStories.edges",
+     "key": "messages",
+     "fields": {
+      "id": "node.id",
+      "text": "node.message",
+      "sent_at": "node.createdDateTime",
+      "from": "node.user.name"
+     }
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-roomStories",
+    "note": "POST /graphql roomStories(filter: {roomId_eq, storyFilter.pagination {after: \"\", first}}) as in the documented example. thread_id is the room id (e.g. room_d4ad…) and is required by the API. Only the first `limit` stories are returned (cursor paging is not followed; page is ignored)."
+   },
+   "send_message": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation SendRoomMessage($roomId: ID!, $message: String!) { createRoomStoryV2(input: { roomId: $roomId, message: $message }) { id message } }",
+     "variables.roomId": "thread_id",
+     "variables.message": "text"
+    },
+    "result": {
+     "root": "data.createRoomStoryV2",
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#mutation-createRoomStoryV2",
+    "note": "POST /graphql createRoomStoryV2(input: {roomId, message}) — posts a message into the Upwork room as the authenticated user (visible to the other party immediately)."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "The GraphQL reference documents no mutation that submits a freelancer proposal (only clientProposals/messageClientProposal for clients and vendorProposals reads); proposals are submitted on upwork.com.",
+   "withdraw_bid": "No mutation to withdraw a vendor proposal is documented.",
+   "credits": "Connects balance is not exposed by a documented query."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.upwork.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token www.upwork.com/api/v3/oauth2/token: 400 Client authentication failed (e.g.",
+   "authorize https://www.upwork.com/ab/account-security/oauth2/authorize: 302",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; names not found on the page: bid_status:variables, get_posting:variables, list_messages:variables, search_postings:variables, send_message:variables"
+  ],
+  "notes": "-"
+ }
+}

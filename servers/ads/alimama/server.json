@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/alimama-mcp",
+ "description": "阿里妈妈 Alimama (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool maps to ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.taobao.com/api.htm?docId=68584&docType=2",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "alimama"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ALIMAMA_APP_KEY",
+     "description": "AppKey of a 淘宝开放平台 application granted the 阿里妈妈 万相台无界 API permission (https://open.taobao.com).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIMAMA_APP_SECRET",
+     "description": "AppSecret of that application; never sent, used for the MD5 request signature.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIMAMA_SESSION",
+     "description": "Seller session key (授权信息 'session') issued when the merchant authorised the app through the TOP OAuth flow (https://open.taobao.com/doc.htm?docId=101617&docType=1: session is required for APIs marked 需要授权); renew it by re-authorising when it expires.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ALIMAMA_BIZ_CODE",
+     "description": "万相台无界 scene code (api业务线编码) sent in top_service_context, e.g. onebpDisplay (人群推广), onebpSearch (关键词推广) or onebpSite (全站推广); taobao.universalbp.new.account.get.can.use.bizcode lists the codes the account may use.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

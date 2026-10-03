@@ -1,0 +1,35 @@
+{
+ "id": "autobeeb_om",
+ "category": "automotive",
+ "label": "Autobeeb",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autobeeb.com",
+ "domain": "autobeeb.com",
+ "country": "Oman",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Rendered site shows 'Become a dealer' only; dev paths are soft-404s; no API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autobeeb.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

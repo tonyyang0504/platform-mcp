@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "mgid-mcp",
+ "display_name": "MGID MCP",
+ "version": "0.1.0",
+ "description": "MGID (ads): me, update_budget, pause_resume. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mgid"
+   ],
+   "env": {
+    "PLATFORM_MCP_MGID_API_TOKEN": "${user_config.platform_mcp_mgid_api_token}",
+    "PLATFORM_MCP_MGID_CLIENT_ID": "${user_config.platform_mcp_mgid_client_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mgid_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MGID_API_TOKEN",
+   "description": "32-character MGID REST API token from the MGID Ads dashboard (Settings > API), sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mgid_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MGID_CLIENT_ID",
+   "description": "The advertiser's MGID client (account) id; every campaign path is /goodhits/clients/{client_id}/…",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/clients/{client_id}: the client's financial status {id, timezone, wallet {balance, credit, income, currency}} (amounts in cents). API version 1 (the public reference); v2 docs are only inside the dashboard."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /v1/goodhits/clients/{client_id}/campaigns/{campaign_id} with limitType=budget_limits and dailyLimit (two decimals, account currency; the minimum depends on currency and campaign type). This spends money. Parameters are sent in the query string, as the reference's PATCH examples do. The existing overallLimit is not sent (it must stay above the daily limit). A refusal comes back as {errors: [...]}. `currency` is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /v1/goodhits/clients/{client_id}/campaigns/{campaign_id} with whetherToBlockByClient=1 (pause: lock the campaign) or 0 (resume: unlock), sent in the query string. Resuming restarts spend."
+  }
+ ]
+}

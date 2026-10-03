@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "gelato-mcp",
+ "display_name": "Gelato MCP",
+ "version": "0.1.0",
+ "description": "Gelato (ecommerce suppliers): me, list_products, get_product, get_order. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gelato"
+   ],
+   "env": {
+    "PLATFORM_MCP_GELATO_API_KEY": "${user_config.platform_mcp_gelato_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_gelato_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GELATO_API_KEY",
+   "description": "Gelato API key (dashboard > Developer > API keys), sent as `X-API-KEY`. Product endpoints live on product.gelatoapis.com and are called by absolute URL.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Gelato has no account endpoint; the probe lists the catalogs ([{catalogUid, title}]) with the key, so `account` is empty on success."
+  },
+  {
+   "name": "list_products",
+   "description": "POST /v3/catalogs/{catalogUid}/products:search; `category` is the catalogUid (posters, cards, apparel, ... from GET /v3/catalogs) and is required by this endpoint, `query` is not accepted (attributeFilters are not mapped). Products have no name: `title` is the productUid; attributes, weight and dimensions are in `raw`."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v3/products/{productUid}: {productUid, attributes, weight, supportedCountries, notSupportedCountries, isStockable, isPrintable, validPageCounts}; `title` is the productUid. Prices per quantity come from GET /v3/products/{productUid}/prices (not mapped)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v4/orders/{orderId}: {id, orderType, orderReferenceId, fulfillmentStatus, financialStatus, currency, createdAt, items[], shipment{shipmentMethodUid, packages[{trackingCode, trackingUrl}]}, receipts[{totalInclVat}]}; `status` is the fulfillmentStatus (created, passed, printed, shipped, draft, ...), `total` the first receipt's totalInclVat."
+  }
+ ]
+}

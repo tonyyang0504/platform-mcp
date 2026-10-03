@@ -1,0 +1,179 @@
+{
+ "id": "seoclerks",
+ "category": "deals",
+ "label": "SEOClerks",
+ "lane": "assist",
+ "kind": "gig",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.seoclerks.com/api/page/serviceads",
+ "url": "https://www.seoclerks.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public read-only listing API; selling / bidding in the UI.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (read-only listings URL API). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://www.seoclerks.com/api/…"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "API URL for Services / Trades / Job Listings",
+    "purpose": "search",
+    "notes": "ad title, price, seller, link (HTML or component output)"
+   }
+  ],
+  "limits": " - Read-only; orders / job offers in the UI. - Public read-only listing API; selling / bidding in the UI.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.seoclerks.com/api/page/serviceads"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.seoclerks.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "The Service Ads API page publishes no rate limit; the API is a keyless GET. One request per second.",
+  "terms": "SEOClerks Service Ads API (https://www.seoclerks.com/api/page/serviceads) is intended for embedding listings (optionally with an affiliate id); buyers' job requests are answered by sellers logged in on seoclerks.com.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api",
+    "params": {
+     "s": "query",
+     "c": "category",
+     "am": "limit"
+    },
+    "fixed_params": {
+     "type": "inlinead",
+     "dt": "wtb",
+     "oby": "bidstart",
+     "f": "json"
+    },
+    "default_limit": 20,
+    "max_limit": 40,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "buyer": "buyer_username",
+      "url": "service_url"
+     }
+    },
+    "docs": "https://www.seoclerks.com/api/page/serviceads",
+    "note": "GET https://www.seoclerks.com/api?type=inlinead&dt=wtb&s=<query>&c=<category>&am=<limit>&oby=bidstart&f=json — the Service Ads API builder with 'Search Where' = Jobs (dt=wtb, buyers' want-to-buy requests), 'Search Term' s (matched against titles), 'Category' c (numeric id from the builder's category list, e.g. 64 Graphics & Logos), 'Amount to Select' am (Max: 40), 'Order By' Start Date (oby=bidstart, newest first) and 'Output Type' JSON. The API has no paging, so only the first `limit` matches are returned (page is ignored). No match answers a bare JSON null body: the Python runtime returns an empty list, the TypeScript runtime currently reports it as an internal_error (treat that as 'no results'). The buyer's budget is raw.price (a string, USD) and delivery days raw.days; create_date/last_update are Unix timestamps in raw. min_budget is not sent (the 'Minimum Price' option applies to services, not job requests)."
+   }
+  },
+  "not_offered": {
+   "me": "Keyless API; no account endpoint.",
+   "get_posting": "The API only selects lists of ads; there is no per-listing call. Re-read the record from the search hit (service_url opens the request).",
+   "submit_bid": "No offer API; sellers respond to job requests on seoclerks.com while logged in.",
+   "withdraw_bid": "No offer API (see submit_bid).",
+   "bid_status": "No offer API (see submit_bid).",
+   "list_messages": "No messaging API; the Service Ads API is read-only listings.",
+   "send_message": "No messaging API; the Service Ads API is read-only listings.",
+   "credits": "No account or balance endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

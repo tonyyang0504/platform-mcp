@@ -1,0 +1,140 @@
+{
+ "id": "kakao",
+ "category": "social",
+ "label": "KakaoTalk Channel",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://developers.kakao.com/",
+ "url": "https://www.kakaocorp.com/page/service/service/KakaoTalk",
+ "verified_at": "2026-09-25",
+ "terms_note": "Kakao Developers app (business app + Kakao Sync approval for messaging); the Kakao Talk Channel API only adds a channel / checks the relationship / registers customer files; channel broadcast and marketing messages go through the Channel Manager Center or official dealers (paid); the Kakao Talk Message API (talk/memo/default/send, talk/friends/message/default/send) reaches only friends who also use the app, with daily quotas.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "add_channel(SDK)",
+   "check_relationship",
+   "inbox_dm(Kakao Talk Message API to app friends only)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Kakao SDK (JS / Android / iOS) for followChannel / addChannel"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (channel add / relationship + friend messaging only; no channel posts). Lane",
+  "base_urls": [
+   "https://kapi.kakao.com/…"
+  ],
+  "auth": [
+   "1. Kakao Developers app; Kakao Login (OAuth 2.0) for user-context calls; **business app** conversion + Kakao Sync",
+   "2. A Kakao Talk Channel is linked to the app in the console (channel public id)."
+  ],
+  "endpoints": [],
+  "limits": " - Message API daily quotas per user; Kakao Sync + business verification; Korean IT Network Act consent rules for marketing messages; dealer contract for 알림톡 / 친구톡.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.kakao.com/docs/en/kakaotalk-channel/common"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the Kakao Talk Channel API (https://developers.kakao.com/docs/en/kakaotalk-channel/common#api-list) only adds a channel / opens a chat through the Kakao SDK, checks the user's channel relationship, and uploads customer files (kapi.kakao.com/v1/talkchannel/create/target_user_file, update/target_users, delete/target_users) for friend groups; channel messages are sent in the Kakao Talk Channel Manager Center, and the remaining 'message' docs are Kakao Talk user-to-user messaging and Kakao Moment ad creatives. No endpoint posts to a channel, reads comments or mentions, or deletes a post."
+}

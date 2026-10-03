@@ -1,0 +1,42 @@
+{
+ "id": "trovit_ph",
+ "category": "automotive",
+ "label": "Cars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://cars.trovit.com.ph",
+ "domain": "cars.trovit.com.ph",
+ "country": "Philippines",
+ "official_api": false,
+ "docs_url": "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed",
+   "xml"
+  ],
+  "auth": null,
+  "access": "signup",
+  "capabilities": [
+   "listing_feed_ingest"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). Trovit (Lifull Connect/Thribee) is an aggregator that ingests publisher XML car feeds per documented spec; no query API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Trovit (Lifull Connect/Thribee) is an aggregator that ingests publisher XML car feeds per documented spec; no query API. No request/response API to serve."
+}

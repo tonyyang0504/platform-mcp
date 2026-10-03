@@ -1,0 +1,35 @@
+{
+ "id": "dieteren",
+ "category": "automotive",
+ "label": "Stock",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://stock.dieterenmobilitycompany.be",
+ "domain": "stock.dieterenmobilitycompany.be",
+ "country": "Belgium",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dealer stock site front-end JSON only; no public API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://stock.dieterenmobilitycompany.be/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

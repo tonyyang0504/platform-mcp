@@ -1,0 +1,101 @@
+{
+ "manifest_version": "0.2",
+ "name": "aliexpress_ds-mcp",
+ "display_name": "AliExpress Dropshipping (DS) API / AliExpress Open Platform MCP",
+ "version": "0.1.0",
+ "description": "AliExpress Dropshipping (DS) API / AliExpress Open Platform (ecommerce suppliers): me, list_products",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "aliexpress_ds"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALIEXPRESS_DS_APP_KEY": "${user_config.platform_mcp_aliexpress_ds_app_key}",
+    "PLATFORM_MCP_ALIEXPRESS_DS_APP_SECRET": "${user_config.platform_mcp_aliexpress_ds_app_secret}",
+    "PLATFORM_MCP_ALIEXPRESS_DS_ACCESS_TOKEN": "${user_config.platform_mcp_aliexpress_ds_access_token}",
+    "PLATFORM_MCP_ALIEXPRESS_DS_SHIP_TO_COUNTRY": "${user_config.platform_mcp_aliexpress_ds_ship_to_country}",
+    "PLATFORM_MCP_ALIEXPRESS_DS_CURRENCY": "${user_config.platform_mcp_aliexpress_ds_currency}",
+    "PLATFORM_MCP_ALIEXPRESS_DS_LANGUAGE": "${user_config.platform_mcp_aliexpress_ds_language}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_aliexpress_ds_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_APP_KEY",
+   "description": "App Key of your AliExpress Open Platform Dropshipping app (Console > App Management; https://openservice.aliexpress.com/doc/doc.htm#/?docId=1589).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_aliexpress_ds_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_APP_SECRET",
+   "description": "App Secret of the same app; signs every call (uppercase hex HMAC-SHA256 over the parameters sorted by name as name+value, docId=1386). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_aliexpress_ds_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_ACCESS_TOKEN",
+   "description": "Buyer (dropshipper) access_token from the authorization-code exchange /auth/token/create (docId=1592). Production tokens last 30 days (expires_in 2592000); renew with /auth/token/refresh (docId=1593) and update this value — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_aliexpress_ds_ship_to_country": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_SHIP_TO_COUNTRY",
+   "description": "Two-letter destination country used for DS prices, stock and search (countryCode / ship_to_country), e.g. US.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_aliexpress_ds_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_CURRENCY",
+   "description": "Currency for search and product prices (currency / target_currency), e.g. USD.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_aliexpress_ds_language": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIEXPRESS_DS_LANGUAGE",
+   "description": "Locale for search, product text and tracking (local / target_language / language), e.g. en_US.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "aliexpress.ds.member.benefit.get: the connected dropshipper's DS benefits ({aliexpress_ds_member_benefit_get_response: {result: [{code: 'auto-pay', title, canApply, canBenefit}]}}); an IllegalAccessToken error means the access_token expired."
+  },
+  {
+   "name": "list_products",
+   "description": "aliexpress.ds.text.search (docId=1698): keyword search of the AliExpress DS catalogue for the configured country/currency/locale; `category` is an AliExpress categoryId (aliexpress.ds.category.get). Prices are strings in the configured currency; `id` is the product_id for get_product."
+  },
+  {
+   "name": "get_product",
+   "description": "aliexpress.ds.product.get (docId=1790): full DS product — ae_item_base_info_dto (subject, detail HTML), ae_item_sku_info_dtos[] (sku_id, sku_attr, sku_price, offer_sale_price, sku_available_stock, currency_code), ae_multimedia_info_dto.image_urls (';'-separated), package_info_dto, logistics_info_dto, ae_store_info in `raw`. The mapped price/sku/stock are the FIRST SKU's; `sku_attr` is what create_order's items take."
+  },
+  {
+   "name": "create_order",
+   "description": "aliexpress.ds.order.create (docId=1617) places an unpaid DS order (pay it in AliExpress or with API Pay, docId=1640). Pass `items` in AliExpress form: [{product_id, product_count, sku_attr (from get_product), logistics_service_name (a delivery option code), order_memo}] and `shipping_address` as the logistics_address object: {address, address2, city, province, country, zip, full_name, contact_person, mobile_no, phone_country, locale, cpf/tax_number where required}. Both are sent verbatim inside param_place_order_request4_open_api_d_t_o. Check `status` (is_success) and error_code (e.g. B_DROPSHIPPER_DELIVERY_ADDRESS_VALIDATE_FAIL, DELIVERY_METHOD_NOT_EXIST); `id` is the first AliExpress order id."
+  },
+  {
+   "name": "get_order",
+   "description": "aliexpress.trade.ds.order.get (docId=1595): order_status (PLACE_ORDER_SUCCESS, IN_CANCEL, WAIT_SELLER_SEND_GOODS, SELLER_PART_SEND_GOODS, WAIT_BUYER_ACCEPT_GOODS, FUND_PROCESSING, FINISH, ...), logistics_status, amounts, child_order_list and logistics_info_list in `raw`. The response carries no order id, so `id` is not returned."
+  },
+  {
+   "name": "track",
+   "description": "aliexpress.ds.order.tracking.get (docId=1660): one row per parcel {mail_no, carrier_name, cp_name, eta_time_stamps (ms), detail_node_list[{tracking_name, tracking_detail_desc, time_stamp (ms)}], package_item_list}. 'TRACKING DATA NOT FOUND' until the seller ships."
+  }
+ ]
+}

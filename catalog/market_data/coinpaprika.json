@@ -1,0 +1,54 @@
+{
+ "id": "coinpaprika",
+ "category": "market_data",
+ "label": "CoinPaprika",
+ "lane": "api",
+ "docs_url": "https://docs.coinpaprika.com/api-reference/tools/search",
+ "url": "https://coinpaprika.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Free plan, no key (api.coinpaprika.com). HTML docs. Live 2026-10-01: the documented path /v1/search answers 301 to /v1/search/ (followed, same host); response headers RateLimit-Limit: 20000 (calls per month on the free plan). Historical OHLCV older than about 24 hours answers 402 'not allowed in this plan'. An unknown coin id on ohlcv answers 200 [] (no error).",
+ "adapter": {
+  "base_url": "https://api.coinpaprika.com/v1",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search_symbols": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "q": "query",
+     "c": "=currencies",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 250,
+    "result": {
+     "items": "currencies",
+     "key": "results",
+     "fields": {
+      "symbol": "id",
+      "name": "name",
+      "type": "type"
+     }
+    },
+    "docs": "https://docs.coinpaprika.com/api-reference/tools/search",
+    "note": "Coins and tokens matching the query; symbol is CoinPaprika's coin id (btc-bitcoin), the ticker symbol is in raw.symbol. The API returns at most `limit` matches and has no paging, so there is no next page."
+   }
+  },
+  "not_offered": {
+   "me": "The free API has no account endpoint.",
+   "get_candles": "GET /coins/{coin_id}/ohlcv/historical answers 402 'Getting historical OHLCV data before <yesterday> is not allowed in this plan' on the free plan (live 2026-10-01); the latest-day endpoints return one candle, not a series.",
+   "get_series": "No named macro/indicator series in this API.",
+   "get_news": "Events per coin exist (/coins/{id}/events) but there is no headline search; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

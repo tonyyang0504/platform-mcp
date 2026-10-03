@@ -1,0 +1,35 @@
+{
+ "id": "racingbazar_hu",
+ "category": "automotive",
+ "label": "Racingbazar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://racingbazar.hu",
+ "domain": "racingbazar.hu",
+ "country": "Hungary",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). Racing Bazár offers a PartnerPortál for parts sellers (web UI); no documented API found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://racingbazar.hu/partnerportal/informaciok"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

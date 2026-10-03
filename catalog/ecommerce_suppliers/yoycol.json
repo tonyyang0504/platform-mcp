@@ -1,0 +1,234 @@
+{
+ "id": "yoycol",
+ "category": "ecommerce_suppliers",
+ "label": "Yoycol",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.yoycol.com/api/2025/redoc",
+ "url": "https://www.yoycol.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (HMAC-SHA256 request signing with accessKey/secretKey issued by Yoycol)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "HMAC-SHA256 request signing with accessKey / secretKey issued by Yoycol (per earlier research; spec file not retrievable headless)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not read.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.yoycol.com/api/2025/redoc"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.yoycol.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "100000",
+   "error_field": "msg"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "accessKey issued by Yoycol for OPEN API V4 (sent as X-API-Access-Key)."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "secretKey issued with it; signs every request (Base64 HMAC-SHA256 over method, path, timestamp, nonce, accessKey, algorithm, version and the sorted query). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "method={method}\npath={path}\ntimestamp={timestamp}\nnonce={nonce}\naccessKey={@access_key}\nalgorithm=HmacSHA256\nversion=4.0\nparams={sorted_query}",
+    "key_field": "secret_key",
+    "algorithm": "sha256",
+    "encoding": "base64",
+    "headers": {
+     "X-API-Access-Key": "{@access_key}",
+     "X-API-Timestamp": "{timestamp}",
+     "X-API-Nonce": "{nonce}",
+     "X-API-Algorithm": "HmacSHA256",
+     "X-API-Version": "4.0",
+     "X-API-Signature": "{signature}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/2025/open/v4/catalog/products",
+    "fixed_params": {
+     "page": "1",
+     "size": "1"
+    },
+    "docs": "https://www.yoycol.com/api/2025/redoc",
+    "note": "No account endpoint; the probe lists one catalogue product (GET /api/2025/open/v4/catalog/products?page=1&size=1). Auth failures come back as codes 300001-300010 in the body."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/api/2025/open/v4/catalog/products",
+    "params": {
+     "query": "query",
+     "page": "page",
+     "size": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "data.records",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "sku": "spuCode",
+      "image_url": "spuDisplayImg",
+      "online": "onlineStatus",
+      "variant_count": "variantCount"
+     }
+    },
+    "docs": "https://www.yoycol.com/api/2025/redoc",
+    "note": "List Products (Catalog): Yoycol print-on-demand blanks {id, spuCode, name, spuDisplayImg, onlineStatus, variantCount}; `query` is a fuzzy name keyword; `category` is not supported. No prices in the list — use get_product."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/api/2025/open/v4/catalog/products/{id}",
+    "fixed_params": {
+     "include": "variants"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "product.id",
+      "title": "product.name",
+      "sku": "variants.0.skuCode",
+      "price": "variants.0.salesPrice",
+      "currency": "variants.0.currency",
+      "image_url": "product.spuDisplayImg",
+      "spu_code": "product.spuCode"
+     }
+    },
+    "docs": "https://www.yoycol.com/api/2025/redoc",
+    "note": "Get Product with include=variants: product {id, spuCode, name, spuDisplayImg} and variants[{id, skuCode, size, color, weight, salesPrice, currency, onlineStatus}] in `raw`; mapped price/sku are the first variant's. A variant skuCode is what quote_shipping takes."
+   },
+   "quote_shipping": {
+    "method": "GET",
+    "path": "/api/2025/open/v4/shipping/sku_quotes",
+    "params": {
+     "sku_code": "product_id"
+    },
+    "result": {
+     "items": "data",
+     "key": "options",
+     "fields": {
+      "region": "regionCode",
+      "region_name": "regionName",
+      "primary": "primaryRegion",
+      "levels": "levels"
+     }
+    },
+    "docs": "https://www.yoycol.com/api/2025/redoc",
+    "note": "Get Sku Quotes: `product_id` must be a variant skuCode (from get_product). Returns every shipping region with its logistics levels [{levelCode, levelName, firstPrice, additionalPrice, timeEffectPriority}]; `country` and `quantity` are not inputs of this endpoint — pick the region and compute firstPrice + (quantity-1) x additionalPrice."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /api/2025/open/v4/orders has no query string, and the V4 signatureData appends '\\nparams=<sorted query>' only 'if (paramStr)' (Signature Guide, https://www.yoycol.com/api/2025/redoc, Docs Guide section); the runtime's sign payload is one fixed template, so a request with no query string would be signed with a trailing empty params line and rejected.",
+   "get_order": "GET /api/2025/open/v4/orders/{orderId} has no query parameters, and the V4 signatureData appends '\\nparams=<sorted query>' only 'if (paramStr)' (Signature Guide, https://www.yoycol.com/api/2025/redoc, Docs Guide section); the runtime's sign payload is one fixed template, so a request with no query string would be signed with a trailing empty params line and rejected.",
+   "track": "GET /api/2025/open/v4/orders/{orderId}/tracking has no query parameters, and the V4 signatureData appends '\\nparams=<sorted query>' only 'if (paramStr)' (Signature Guide, https://www.yoycol.com/api/2025/redoc, Docs Guide section); the runtime's sign payload is one fixed template, so a request with no query string would be signed with a trailing empty params line and rejected."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key, secret_key; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

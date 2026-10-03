@@ -1,0 +1,35 @@
+{
+ "id": "metrousados_co",
+ "category": "automotive",
+ "label": "Metrousados",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://metrousados.com",
+ "domain": "metrousados.com",
+ "country": "Colombia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). dealer site (Colombia); no developer/API/partner-feed pages on the domain and no official API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://metrousados.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

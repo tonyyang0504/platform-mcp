@@ -1,0 +1,16 @@
+{
+ "id": "funding_collector",
+ "category": "market_data",
+ "label": "Funding rates (Binance/Hyperliquid)",
+ "provider": "Binance, Hyperliquid",
+ "lane": "api",
+ "base_urls": [
+  "https://fapi.binance.com/fapi/v1/fundingRate",
+  "https://api.hyperliquid.xyz/info"
+ ],
+ "data_kinds": [
+  "funding rates"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

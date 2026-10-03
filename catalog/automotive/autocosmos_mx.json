@@ -1,0 +1,44 @@
+{
+ "id": "autocosmos_mx",
+ "category": "automotive",
+ "label": "Autocosmos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autocosmos.com.mx",
+ "domain": "autocosmos.com.mx",
+ "country": "Mexico",
+ "official_api": true,
+ "docs_url": "https://api.autocosmos.com.mx/DocsV3",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhook"
+  ],
+  "auth": "HMAC with AppKey/AppSecret requested from developers@autocosmos.com",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "vehicle_catalog"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Autocosmos runs a public-docs REST API v3 (openapi.json, webhooks) since 2010; keys by request with permissions for publishing/catalog access.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.autocosmos.com.mx/",
+   "https://api.autocosmos.com.mx/DocsV3"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://api.autocosmos.com.mx/DocsV3): Autocosmos runs a public-docs REST API v3 (openapi.json, webhooks) since 2010; keys by request with permissions for publishing/catalog access. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

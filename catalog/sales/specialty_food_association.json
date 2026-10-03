@@ -1,0 +1,36 @@
+{
+ "id": "specialty_food_association",
+ "category": "sales",
+ "label": "Specialty Food Association member directory",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.specialtyfood.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Member / Fancy Food Show exhibitor directory public; robots.txt (1 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

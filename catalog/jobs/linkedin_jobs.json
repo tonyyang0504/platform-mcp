@@ -1,0 +1,68 @@
+{
+ "id": "linkedin_jobs",
+ "category": "jobs",
+ "label": "LinkedIn Jobs",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/linkedin/talent/",
+ "url": "https://www.linkedin.com/jobs/",
+ "verified_at": "2026-09-04",
+ "terms_note": "User Agreement §8.2 forbids scrapers/bots/automation; Easy Apply is driven by a human-assisted browser session on the member's own session, the member clicks submit. Recruiter API is employer-side only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program",
+   "oauth2"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

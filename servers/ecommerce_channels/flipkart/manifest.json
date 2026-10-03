@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "flipkart-mcp",
+ "display_name": "Flipkart MCP",
+ "version": "0.1.0",
+ "description": "Flipkart (ecommerce channels): me, list_orders. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "flipkart"
+   ],
+   "env": {
+    "PLATFORM_MCP_FLIPKART_ACCESS_TOKEN": "${user_config.platform_mcp_flipkart_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_flipkart_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FLIPKART_ACCESS_TOKEN",
+   "description": "Seller API access token of your Self Access Application (Seller Dashboard > Manage Profile > Developer Access): obtain it with GET https://api.flipkart.net/oauth-service/oauth/token?grant_type=client_credentials&scope=Seller_Api,Default using HTTP Basic appId:appSecret. It is valid about 60 days; replace it when calls start failing with 401 (the runtime cannot run Flipkart's GET token call itself).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe searches one APPROVED pre-dispatch shipment ({shipments[], hasMore, nextPageUrl}) to verify the token."
+  },
+  {
+   "name": "list_orders",
+   "description": "Search Shipments POST /v3/shipments/filter/ {filter: {type, states: [status], orderDate: {from: since}}, pagination: {pageSize ≤ 20}}. `status` is REQUIRED and selects the filter type: APPROVED|PACKING_IN_PROGRESS|PACKED|FORM_FAILED|READY_TO_DISPATCH (preDispatch) or SHIPPED|DELIVERED|PICKUP_COMPLETE (postDispatch). One row per SHIPMENT (raw.shipmentId); id/status/total/created_at come from its first order item (INR). Further pages are only reachable through raw.nextPageUrl."
+  }
+ ]
+}

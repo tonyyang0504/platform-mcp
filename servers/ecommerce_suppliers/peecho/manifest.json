@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "peecho-mcp",
+ "display_name": "Peecho (Prodigi Group) MCP",
+ "version": "0.1.0",
+ "description": "Peecho (Prodigi Group) (ecommerce suppliers): me, quote_shipping, create_order, get_order. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "peecho"
+   ],
+   "env": {
+    "PLATFORM_MCP_PEECHO_MERCHANT_API_KEY": "${user_config.platform_mcp_peecho_merchant_api_key}",
+    "PLATFORM_MCP_PEECHO_CURRENCY": "${user_config.platform_mcp_peecho_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_peecho_merchant_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PEECHO_MERCHANT_API_KEY",
+   "description": "Peecho Merchant API key (dashboard > Settings > API), sent as the merchantApiKey query parameter and inside order/quote bodies. Test-environment keys belong to https://test.www.peecho.com/rest/v3/, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_peecho_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_PEECHO_CURRENCY",
+   "description": "Currency for create_order (required by Peecho, e.g. EUR or USD) and quote_shipping prices (EUR when unset).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists the offerings active on the account (grouped by category and sub-category codes)."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "POST /rest/v3/quote for one offering (product_id = offeringId from Settings > Products) shipped to `country` (ISO-2): quotedItems[{productPrice, shippingWholesale, totalItemPrice, vat}] with quoteDetails and quoteSummary{totalWholesalePrice, totalShippingPrice} in `raw`. numberOfPages is not sent, so Peecho quotes the product's minimum page count; the default STANDARD shipping option is used."
+  },
+  {
+   "name": "create_order",
+   "description": "Creates an OPEN (unpaid) order: nothing is produced or charged until the order is paid with POST /order/payment, which this server does not call. `items` are Peecho item_details [{offering_id, quantity, item_reference, file_details{content_url, content_width, content_height, number_of_pages}}]; `shipping_address` is Peecho's address_details {email_address, shipping_address{first_name, last_name, address_line_1, address_line_2, zip_code, city, state, country_code (ISO-2)}}; `shipping_option` is STANDARD or EXPEDITED. The currency setting is required by Peecho. Answers 201 {order_id}."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /rest/v3/order/details?orderId=: {order_id, order_state (OPEN, PAID, PAYMENT_ERROR, IN_PRINT_QUEUE, SHIPPED, ...), created_date, currency, tracking_code, tracking_url, order_price_data (decimal strings, so the wholesale total is returned as wholesale_total_inc_taxes), item_price_data, address_details, fulfilment_location}."
+  }
+ ]
+}

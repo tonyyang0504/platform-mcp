@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/evalai-mcp",
+ "description": "EvalAI (competitions): me, discover, get_competition, standings, enter. Every tool maps to a documen",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://eval.ai/api/docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "evalai"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_EVALAI_AUTH_TOKEN",
+     "description": "EvalAI auth token from https://eval.ai/web/profile ('Get your Auth Token'; the token the evalai CLI uses). Sent as Authorization: Bearer.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_EVALAI_PARTICIPANT_TEAM_ID",
+     "description": "Numeric id of your EvalAI participant team (from GET /api/participants/participant_team or the Participant Teams page); needed only by `enter`.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

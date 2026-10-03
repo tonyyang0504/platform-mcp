@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "google_chat-mcp",
+ "display_name": "Google Chat MCP",
+ "version": "0.1.0",
+ "description": "Google Chat (messaging): me, send, reply, list_inbound, get_thread, mark_read. Every tool maps to a ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "google_chat"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOGLE_CHAT_CLIENT_ID": "${user_config.platform_mcp_google_chat_client_id}",
+    "PLATFORM_MCP_GOOGLE_CHAT_CLIENT_SECRET": "${user_config.platform_mcp_google_chat_client_secret}",
+    "PLATFORM_MCP_GOOGLE_CHAT_REFRESH_TOKEN": "${user_config.platform_mcp_google_chat_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_google_chat_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CHAT_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_chat_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CHAT_CLIENT_SECRET",
+   "description": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_chat_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_CHAT_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/chat.messages, chat.spaces.readonly and chat.users.readstate (user authentication; app authentication needs a service-account JWT, which this runtime does not sign). 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Chat has no who-am-I method: spaces.list?pageSize=1 verifies the token; account carries the first space the user belongs to."
+  },
+  {
+   "name": "send",
+   "description": "`to` is the space ID (the part after `spaces/`, e.g. AAAAAAAAAAA). With user authentication 'The content of message can only contain text'. message_id is the message resource name (spaces/…/messages/…). `subject`/`channel` are ignored."
+  },
+  {
+   "name": "reply",
+   "description": "`channel` is the space ID (required); `thread_id` is the thread resource name spaces/{space}/threads/{thread}. REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD: 'If it fails, the message starts a new thread instead'."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Lists ONE space: `channel` (space ID) is required, newest first. Chat pages by pageToken, so `page` is ignored; `since` is not sent."
+  },
+  {
+   "name": "get_thread",
+   "description": "spaces.messages.list with filter `thread.name = spaces/{space}/threads/{thread}`: `thread_id` is that full thread name and `channel` the space ID. `page` is ignored."
+  },
+  {
+   "name": "mark_read",
+   "description": "Sets the caller's lastReadTime in the space `channel` (space ID) to now: 'To mark the space as read, set lastReadTime to any value later (larger) than the latest message create time'. Replies inside threads are unaffected. Needs chat.users.readstate."
+  }
+ ]
+}

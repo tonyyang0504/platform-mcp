@@ -1,0 +1,33 @@
+{
+ "id": "usedcarsni",
+ "category": "automotive",
+ "label": "Usedcarsni",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.usedcarsni.com",
+ "domain": "usedcarsni.com",
+ "country": "UK",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No documented API; dealers use the UsedCarsNI dealer dashboard / third-party stock feeds.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

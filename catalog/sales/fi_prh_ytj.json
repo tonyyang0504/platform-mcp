@@ -1,0 +1,36 @@
+{
+ "id": "fi_prh_ytj",
+ "category": "sales",
+ "label": "PRH / YTJ open data API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "fi"
+ ],
+ "docs_url": "https://avoindata.prh.fi/ytj_en.html",
+ "url": "https://www.prh.fi/en/index.html",
+ "verified_at": "2026-09-05",
+ "terms_note": "Open Data API (Business Information System) without a key, CC BY 4.0.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

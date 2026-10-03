@@ -1,0 +1,272 @@
+{
+ "id": "xandr",
+ "category": "ads",
+ "label": "Microsoft Invest (Xandr DSP, discontinued)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/api-getting-started",
+ "url": "https://learn.microsoft.com/en-us/xandr/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Xandr / Microsoft Invest seat + API onboarding; token auth via the auth service; API usage constraints documented. Contract fees.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (Xandr API auth service: username + password → token; API onboarding)",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "targeting_search",
+   "audiences",
+   "reports",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Xandr Digital Platform API — seat holders after API onboarding) Confidence: **high**.",
+  "base_urls": [
+   "https://api.appnexus.com/…"
+  ],
+  "auth": [
+   "1. Seat + API Onboarding Process (Microsoft Learn).",
+   "2. `POST /auth` with username / password → token (2-hour validity — TODO(verify)).",
+   "3. `Authorization: <token>` header on services."
+  ],
+  "endpoints": [
+   {
+    "call": "GET/POST /advertiser",
+    "purpose": "advertisers",
+    "notes": "name, state"
+   },
+   {
+    "call": "POST /insertion-order` · `/line-item",
+    "purpose": "IOs + line items (budget, bid, targeting)",
+    "notes": "budget_intervals, revenue_type, bid strategy, profile_id"
+   },
+   {
+    "call": "POST /creative",
+    "purpose": "creatives",
+    "notes": "media_url, format, click_url"
+   },
+   {
+    "call": "POST /segment` · pixels",
+    "purpose": "audiences / conversions",
+    "notes": "segment id, pixel"
+   },
+   {
+    "call": "POST /report` → `GET /report-download",
+    "purpose": "reports",
+    "notes": "report_type, columns, dates"
+   }
+  ],
+  "limits": " - API usage constraints page; contract; breaking-changes policy.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://learn.microsoft.com/en-us/xandr/digital-platform-api/api-getting-started"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.appnexus.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth",
+    "body": {
+     "auth.username": "@username",
+     "auth.password": "@password"
+    }
+   },
+   "token_path": "response.token",
+   "token_ttl_seconds": 6600,
+   "prefix": "",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "Xandr / Microsoft Advertising platform API user name (an API-enabled user created through the API Onboarding Process)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Password of that API user. POST /auth {auth: {username, password}} returns a token valid for 2 hours after the last call (24-hour hard expiry); the runtime re-authenticates on expiry or 401 (the API allows 10 successful logins per 5 minutes)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "Advertiser id that owns the line items; required for pause_resume (PUT /line-item?id=…&advertiser_id=…)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user?current",
+    "docs": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/user-service",
+    "note": "GET /user?current ('View the current user') with `Authorization: <token>` (no scheme)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/advertiser",
+    "result": {
+     "items": "response.advertisers",
+     "key": "accounts",
+     "total": "response.count",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "default_currency"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/advertiser-service",
+    "note": "GET /advertiser?start_element=0&num_elements=100 ('View all of your advertisers'); the first 100 advertisers (the vocabulary's list_accounts takes no page argument), total in `total`.",
+    "fixed_params": {
+     "start_element": 0,
+     "num_elements": 100
+    }
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/line-item",
+    "params": {
+     "advertiser_id": "account_id",
+     "state": "status",
+     "start_element": "offset",
+     "num_elements": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "response.line-items",
+     "key": "campaigns",
+     "total": "response.count",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "state",
+      "currency": "currency",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/line-item-service",
+    "note": "GET /line-item?advertiser_id=…&start_element&num_elements — line items are the buying unit that carries state and budget (campaigns under augmented line items are generated). `status` filters on state (active / inactive). Budgets live on raw.budget_intervals (seamless line items) or raw.daily_budget (legacy), in the line item's currency, so `budget` is not mapped."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/line-item",
+    "params": {
+     "id": "campaign_id",
+     "advertiser_id": "@advertiser_id"
+    },
+    "body": {
+     "line-item.state": "map:action:pause=inactive,resume=active"
+    },
+    "result": {
+     "root": "response",
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/xandr/digital-platform-api/line-item-service",
+    "note": "PUT /line-item?id=…&advertiser_id=<configured advertiser_id> {\"line-item\": {\"state\": \"inactive\"|\"active\"}}. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "get_report": "Reporting is asynchronous: 'POST the report request to the Report Service', then poll 'GET https://api.appnexus.com/report?id=REPORT_ID' until execution_status is ready and download from report-download (https://learn.microsoft.com/en-us/xandr/digital-platform-api/report-service); one adapter call cannot request, poll and download.",
+   "update_budget": "Seamless line items keep daily budgets per billing period: 'If you use budget_intervals, the following fields should not be used on the line-item object: … daily_budget' (https://learn.microsoft.com/en-us/xandr/digital-platform-api/line-item-service), so a budget change must target a specific budget_intervals element by id, which the vocabulary's campaign_id + daily_budget cannot address."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.appnexus.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.appnexus.com/auth: 401 No match found for username/password.",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

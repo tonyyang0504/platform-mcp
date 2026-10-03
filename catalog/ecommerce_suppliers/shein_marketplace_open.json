@@ -1,0 +1,109 @@
+{
+ "id": "shein_marketplace_open",
+ "category": "ecommerce_suppliers",
+ "label": "SHEIN Marketplace seller program + SHEIN Developer Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://open.sheincorp.cn/",
+ "url": "https://sheinmarketplace.cn/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer Onboarding Terms of Use Agreement (/contract) and Seller Authorization Agreement govern API use (text JS-rendered, not read)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "Open Platform account → create application → review → seller authorization (Developer Onboarding Terms of Use + Seller Authorization Agreement)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Developer onboarding terms + seller authorization agreement; application review.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.sheincorp.cn/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Rendered in headless Chromium on 2026-09-25: https://open.sheincorp.com/ shows only the solution tiles (Product Management, SHEIN Fulfill / Seller Fulfill / Stock Preparation Order Management) and the onboarding steps (account application, app review, authorization), and https://open.sheincorp.com/documents/system answers 'Please try again later' with no endpoint, parameter or signature reference. The Open Platform is seller-side (a sales channel for authorised SHEIN sellers; see ecommerce_channels/shein), not a sourcing API."
+}

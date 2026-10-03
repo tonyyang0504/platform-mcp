@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/theprintspace-mcp",
+ "description": "theprintspace / creativehub (ecommerce suppliers): me, list_products, get_product, quote_shipping, c",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://sell.creativehub.io/api-docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "theprintspace"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_THEPRINTSPACE_API_TOKEN",
+     "description": "creativehub API token (Settings > API access at https://sell.creativehub.io/settings; API access must be enabled on the account, otherwise 403). Shown once at creation; sent as Authorization: Bearer <token>.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

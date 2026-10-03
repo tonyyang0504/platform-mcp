@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ecwid-mcp",
+ "description": "Ecwid by Lightspeed (ecommerce channels): me, create_listing, update_listing, end_listing, set_inven",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.ecwid.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ecwid"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ECWID_TOKEN",
+     "description": "Secret token of a custom app (Ecwid admin > Apps > Develop Apps > app Details; scopes read_catalog, create_catalog, update_catalog, read_orders, update_orders); non-expiring, sent as `Authorization: Bearer secret_...`.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ECWID_STORE_ID",
+     "description": "Ecwid store id (shown in the admin footer / URL); every call goes to https://app.ecwid.com/api/v3/{store_id}/...",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

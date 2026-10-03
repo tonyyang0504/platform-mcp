@@ -1,0 +1,35 @@
+{
+ "id": "leparking",
+ "category": "automotive",
+ "label": "Leparking",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.leparking.be",
+ "domain": "leparking.be",
+ "country": "Belgium",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). LeParking is an aggregator with no API or feed docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://leparking.be/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,123 @@
+{
+ "id": "coroflot",
+ "category": "deals",
+ "label": "Coroflot",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.coroflot.com/design-jobs (Design Jobs RSS link in the footer)",
+ "url": "https://www.coroflot.com/design-jobs",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS; Coroflot Terms of Use not opened this pass; no developer programme.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://www.coroflot.com/design-jobs"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.coroflot.com/jobs/rss",
+   "docs": "https://www.coroflot.com/design-jobs"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://www.coroflot.com/design-jobs"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public jobs RSS) Confidence high (feed opened).",
+  "base_urls": [
+   "https://www.coroflot.com/jobs/rss"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /jobs/rss",
+    "purpose": "search",
+    "notes": "item link → /design-jobs/<slug>, pubDate"
+   }
+  ],
+  "limits": " - Public RSS, no key; Coroflot Terms of Use not read this pass. - Applying is on the posting / employer page — no seller API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.coroflot.com/jobs/rss",
+   "https://www.coroflot.com/design-jobs"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Coroflot publishes no API. The 'Design Jobs RSS' URL linked from the job pages (https://www.coroflot.com/design-jobs/rss) answered text/html on 2026-09-25 — the ordinary HTML job list (its own <meta name='url'> points at /design-jobs/rss), not an RSS document — even with 'Accept: application/rss+xml', and https://www.coroflot.com/design-jobs answers 403 to non-browser clients. No documented XML/JSON feed remains, so the runtime's XML parser has nothing to read. Missing: a machine-readable feed from Coroflot (HTML scraping is out of scope)."
+}

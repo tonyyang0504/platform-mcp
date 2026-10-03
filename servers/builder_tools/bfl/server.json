@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bfl-mcp",
+ "description": "Black Forest Labs (FLUX) (builder tools): me, generate_image, generate_video. Every tool maps to a d",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.bfl.ai",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bfl"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BFL_API_KEY",
+     "description": "BFL API key (bfl.ai dashboard > organisation > project > API keys), sent as the x-key header. Requests spend pay-as-you-go credits (1 credit = $0.01).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BFL_WEBHOOK_URL",
+     "description": "Optional HTTPS URL that BFL POSTs finished results to (webhook_url on every generation request); the way to receive results, since polling needs the per-task polling_url.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

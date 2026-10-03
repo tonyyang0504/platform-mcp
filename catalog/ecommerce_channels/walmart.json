@@ -1,0 +1,336 @@
+{
+ "id": "walmart",
+ "category": "ecommerce_channels",
+ "label": "Walmart Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "us",
+  "ca",
+  "mx"
+ ],
+ "docs_url": "https://developer.walmart.com/doc/us/mp/us-mp-getting-started/",
+ "url": "https://www.walmart.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer Portal terms; Solution Providers need approval for delegated access",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "sandbox"
+  ],
+  "auth": "oauth2 client credentials (client id + secret from the Developer Portal → POST /v3/token, 15-minute access tokens; Solution Providers get delegated access via seller approval)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox",
+   "advertising"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official SDKs listed on the Developer Portal"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.channel_type"
+ ],
+ "rate_limits": "token bucket per API with x-current-token-count / X-Next-Replenishment-Time; e.g. All orders 5,000/min, item setup spec 3 TPM/seller, lag time 20/h; 429 on exhaustion",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer docum",
+  "base_urls": [
+   "https://marketplace.walmartapis.com/v3/…"
+  ],
+  "auth": [
+   "1. Seller approved on Walmart Marketplace → Developer Portal → generate client id + client secret (or authorise a Solution Provider).",
+   "2. POST /v3/token (client_credentials, Basic) → access token valid 15 minutes; refresh on expiry.",
+   "3. Send the token + Walmart headers on every call."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v3/feeds?feedType=MP_ITEM · GET /v3/feeds/{feedId}",
+    "purpose": "item setup / update via feed",
+    "notes": "spec by product type; poll feed status"
+   },
+   {
+    "call": "GET /v3/items · PUT /v3/items retire",
+    "purpose": "read / retire items",
+    "notes": ""
+   },
+   {
+    "call": "PUT /v3/price · POST /v3/feeds?feedType=price",
+    "purpose": "price (single + bulk)",
+    "notes": ""
+   },
+   {
+    "call": "PUT /v3/inventory · POST /v3/feeds?feedType=inventory",
+    "purpose": "inventory (single + bulk)",
+    "notes": "100–200 / min"
+   },
+   {
+    "call": "GET /v3/orders · GET /v3/orders/{purchaseOrderId}",
+    "purpose": "orders",
+    "notes": "5,000 / min retrieval"
+   },
+   {
+    "call": "POST /v3/orders/{id}/acknowledge · POST /v3/orders/{id}/shipping · /cancel · /refund",
+    "purpose": "acknowledge, ship with carrier + tracking, cancel, refund",
+    "notes": ""
+   },
+   {
+    "call": "GET /v3/returns · POST /v3/returns/{returnOrderId}/refund",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "POST /v3/reports/reportRequests · GET /v3/reports/…",
+    "purpose": "reports",
+    "notes": ""
+   }
+  ],
+  "limits": " Token bucket per seller and per API: e.g. orders retrieval 5,000 / min, inventory 100–200 / min, items 10–900 / min, advertising 5–10 / min; headers x-current-token-count + X-Next-Replenishment-Time; 429 when empty; separate pools for Solution Providers. - Marketplace Retailer Agreement + Developer Portal terms; Solution Provider approval for delegated access. - US-only fulfilment (WFS or compatible), GTIN requirements (registry research).",
+  "mcp_sdk": [
+   "SDK: official SDKs listed on the Developer Portal"
+  ],
+  "sources": [
+   "https://developer.walmart.com/doc/us/mp/us-mp-getting-started/",
+   "https://developer.walmart.com/doc/us/mp/us-mp-throttling/",
+   "https://developer.walmart.com/doc/us/mp/us-mp-rate-limits/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://marketplace.walmartapis.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://sandbox.walmartapis.com",
+    "token_url": "https://sandbox.walmartapis.com/v3/token",
+    "docs": "https://developer.walmart.com/us-marketplace/reference/tokenapi",
+    "verified_at": "2026-09-27",
+    "notes": "Walmart Marketplace static sandbox (mock responses): base URL https://sandbox.walmartapis.com, listed as 'Sandbox URL' in the servers of Walmart's Token API reference (the Test Marketplace APIs guide calls https://sandbox.walmartapis.com/v3/inventory). Needs sandbox keys: Developer Portal > API Keys > Sandbox Keys (https://developer.walmart.com/us-marketplace/docs/sandbox-testing-for-marketplace-partners); production credentials are refused."
+   },
+   "sandbox_dynamic": {
+    "base_url": "https://sandbox.walmartapis.com",
+    "token_url": "https://sandbox.walmartapis.com/v3/token",
+    "headers": {
+     "WM_SANDBOX": "v2"
+    },
+    "docs": "https://developer.walmart.com/us-marketplace/docs/dynamic-sandbox",
+    "verified_at": "2026-09-27",
+    "notes": "Walmart dynamic sandbox (US only): same base URL plus the header WM_SANDBOX: v2 ('If the WM_SANDBOX header is omitted, null, or contains another value, the request is routed to the static sandbox'). Custom test data and multi-step workflows; inventory (/v3/inventory, /v3/inventories) and orders (/v3/orders…) are available, items are created through the Simulation APIs (/v1/simulations/items). Uses dynamic-sandbox credentials; production credentials cannot be used."
+   }
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://marketplace.walmartapis.com/v3/token",
+   "client_auth": "basic",
+   "token_headers": {
+    "WM_SVC.NAME": "Walmart Marketplace",
+    "WM_QOS.CORRELATION_ID": "platform-mcp-{timestamp}"
+   },
+   "header": "WM_SEC.ACCESS_TOKEN",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Walmart Marketplace API Client ID (Seller Center > Settings > API Key Management / Developer Portal, production keys)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The matching Client Secret; sent only as HTTP Basic to POST /v3/token, which returns a 15-minute access token sent as WM_SEC.ACCESS_TOKEN."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "sha256",
+    "payload": "{nonce}",
+    "headers": {
+     "WM_QOS.CORRELATION_ID": "{nonce}"
+    }
+   }
+  },
+  "headers": {
+   "WM_SVC.NAME": "Walmart Marketplace"
+  },
+  "config_fields": [
+   {
+    "name": "ship_node",
+    "required": false,
+    "help": "shipNode id for set_inventory when you have several ship nodes; empty = your default ship node."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Walmart US Marketplace APIs: client-credentials token (15 min) from POST /v3/token, then WM_SEC.ACCESS_TOKEN, WM_SVC.NAME and a fresh WM_QOS.CORRELATION_ID on every call (the runtime sends a random 32-hex id per request via the signing hook). Price and inventory changes can take minutes to show on walmart.com.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v3/token/detail",
+    "docs": "https://developer.walmart.com/us-marketplace/reference/gettokendetail",
+    "note": "Token detail: expiry, validity and the scopes (orders, item, price, inventory…) granted to these API keys."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v3/orders",
+    "params": {
+     "createdStartDate": "since",
+     "status": "status",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 200,
+    "result": {
+     "items": "list.elements.order",
+     "key": "orders",
+     "total": "list.meta.totalCount",
+     "fields": {
+      "id": "purchaseOrderId",
+      "customer_order_id": "customerOrderId",
+      "order_type": "orderType"
+     }
+    },
+    "docs": "https://developer.walmart.com/us-marketplace/reference/getallorders",
+    "note": "All orders (last 180 days, seller-fulfilled): `since` = createdStartDate (ISO date/datetime; Walmart's default is 7 days ago); `status` = Created, Acknowledged, Shipped, Delivered or Cancelled (a purchase-order LINE status). Up to 200 per call; Walmart pages with an opaque list.meta.nextCursor query string (kept under raw), not page numbers, so narrow with `since` instead of `page`. orderDate and line details are in raw (orderDate is epoch ms)."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/v3/price",
+    "body": {
+     "sku": "listing_id",
+     "pricing.0.currentPriceType": "=BASE",
+     "pricing.0.currentPrice.currency": "=USD",
+     "pricing.0.currentPrice.amount": "price"
+    },
+    "result": {
+     "root": "ItemPriceResponse",
+     "fields": {
+      "listing_id": "sku",
+      "status": "=price_updated",
+      "message": "message"
+     }
+    },
+    "docs": "https://developer.walmart.com/us-marketplace/reference/updateprice",
+    "note": "Update a price: sets the BASE price (USD) of one SKU (listing_id = your seller SKU). Only `price` is applied (required); title/description go through the item feed and stock through set_inventory. Allow up to five minutes to reach walmart.com."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/v3/inventory",
+    "params": {
+     "sku": "sku",
+     "shipNode": "@ship_node"
+    },
+    "body": {
+     "sku": "sku",
+     "quantity.unit": "=EACH",
+     "quantity.amount": "quantity"
+    },
+    "result": {
+     "fields": {
+      "sku": "sku",
+      "status": "=inventory_updated"
+     }
+    },
+    "docs": "https://developer.walmart.com/us-marketplace/reference/updateinventoryforanitem",
+    "note": "Update inventory for one item: `sku` (your seller SKU) is required; the quantity is set in EACH at the configured shipNode (or your default ship node)."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/v3/items/{listing_id}",
+    "result": {
+     "fields": {
+      "listing_id": "sku",
+      "status": "=retire_submitted",
+      "message": "message"
+     }
+    },
+    "docs": "https://developer.walmart.com/us-marketplace/reference/retireanitem",
+    "note": "Retire an item (listing_id = seller SKU): \"it can take up to 48 hours for items to be retired from our catalog\"; to sell it again the item must be set up anew."
+   }
+  },
+  "not_offered": {
+   "create_listing": "New items are created only through the asynchronous item feed (POST /v3/feeds?feedType=MP_ITEM with the category's item spec: productIdentifiers, brand, category attributes, shipping weight — https://developer.walmart.com/us-marketplace/docs/item-management-api-overview); the vocabulary carries none of the required spec fields.",
+   "mark_shipped": "Shipping updates (POST /v3/orders/{purchaseOrderId}/shipping, https://developer.walmart.com/us-marketplace/reference/shippingupdates) are per ORDER LINE: each orderLine needs its lineNumber, statusQuantity and trackingInfo (shipDateTime, carrierName.carrier, methodCode); line numbers are not a vocabulary input."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host marketplace.walmartapis.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token marketplace.walmartapis.com/v3/token: 400",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "POST /v3/token answers a bare 400 'Bad Request' to a dummy client even with the documented WM_SVC.NAME / WM_QOS.CORRELATION_ID headers (a UUID correlation id changes nothing), where an OAuth error was expected; the API calls themselves answer 401 UNAUTHORIZED.GMP_GATEWAY_API, and the reference pages list only WM_SEC.ACCESS_TOKEN, WM_SVC.NAME and WM_QOS.CORRELATION_ID as headers, as the adapter sends."
+ }
+}

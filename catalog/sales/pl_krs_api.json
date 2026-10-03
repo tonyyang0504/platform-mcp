@@ -1,0 +1,36 @@
+{
+ "id": "pl_krs_api",
+ "category": "sales",
+ "label": "KRS",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "pl"
+ ],
+ "docs_url": "https://api-krs.ms.gov.pl/",
+ "url": "https://ekrs.ms.gov.pl/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Ministry of Justice open API (/api/krs/OdpisAktualny/<KRS>?rejestr=P&format=json) without a key; the live call answered 200 this pass; the portal redirects to prs.ms.gov.pl.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

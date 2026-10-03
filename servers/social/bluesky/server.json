@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bluesky-mcp",
+ "description": "Bluesky (social): me, publish_text, read_comments, read_mentions, analytics_post. Every tool maps to",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.bsky.app/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bluesky"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BLUESKY_IDENTIFIER",
+     "description": "Bluesky handle (e.g. alice.bsky.social) or the account's e-mail; sent as `identifier` to com.atproto.server.createSession.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BLUESKY_PASSWORD",
+     "description": "An app password from Settings → Privacy and security → App Passwords, never the account password; the runtime exchanges it for a short-lived accessJwt (createSession is capped at 300/day per IP, so the token is cached and re-issued only on expiry or 401).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BLUESKY_DID",
+     "description": "The account's DID (did:plc:..., shown in Settings → Account or returned by com.atproto.server.getSession); used as `repo` when writing records. The createRecord lexicon also accepts the handle here.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

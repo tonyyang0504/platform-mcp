@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "wecom-mcp",
+ "display_name": "WeCom (企业微信) MCP",
+ "version": "0.1.0",
+ "description": "WeCom (企业微信) (messaging): me, send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "wecom"
+   ],
+   "env": {
+    "PLATFORM_MCP_WECOM_CORPID": "${user_config.platform_mcp_wecom_corpid}",
+    "PLATFORM_MCP_WECOM_CORPSECRET": "${user_config.platform_mcp_wecom_corpsecret}",
+    "PLATFORM_MCP_WECOM_AGENT_ID": "${user_config.platform_mcp_wecom_agent_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_wecom_corpid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WECOM_CORPID",
+   "description": "Enterprise ID (我的企业 > 企业信息), sent with corpsecret to GET https://qyapi.weixin.qq.com/cgi-bin/gettoken; the returned access_token (7200 s) travels as the access_token query parameter of every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wecom_corpsecret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WECOM_CORPSECRET",
+   "description": "Secret of the self-built app (应用管理 > 应用 > Secret); each app has its own secret and token. Do not call gettoken frequently (rate-limited); the runtime caches the token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wecom_agent_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WECOM_AGENT_ID",
+   "description": "AgentId (integer) of the self-built app shown on its settings page; required by message/send and agent/get.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "agent/get: the app's name, description, allow_userinfos, visibility; verifies corpid/corpsecret and agent_id together."
+  },
+  {
+   "name": "send",
+   "description": "App text message: `to` is one or more member UserIDs joined with '|' (max 1,000) or @all; content up to 2,048 bytes. Per app ≤ 30 messages/minute and 1,000/hour to the same member. Recipients that could not be reached come back in raw.invaliduser / unlicenseduser with errcode 0; message_id is msgid (for recall). `subject`/`channel` are ignored."
+  }
+ ]
+}

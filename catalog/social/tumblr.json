@@ -1,0 +1,267 @@
+{
+ "id": "tumblr",
+ "category": "social",
+ "label": "Tumblr",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.tumblr.com/docs/en/api/v2",
+ "url": "https://www.tumblr.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "5,000 calls/day per consumer key, 250 published posts/day/user, 250 image uploads/day, <=30 tags; Community Guidelines forbid spam; links nofollow.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "schedule",
+   "reply(replies / reblog)",
+   "read_comments(notes)",
+   "edit",
+   "delete",
+   "inbox_dm(none — asks only)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "pytumblr (official Python), tumblr.js (official)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4096,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.tumblr.com/v2/"
+  ],
+  "auth": [
+   "1. Register an application (www.tumblr.com/oauth/apps) → consumer key / secret.",
+   "2. OAuth 2.0 authorization code: `https://www.tumblr.com/oauth2/authorize?client_id&scope=basic write offline_access`",
+   "3. Blog identifier = `<name>.tumblr.com` or the custom domain; `GET /v2/user/info` lists the user's blogs."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/blog/{blog-identifier}/posts` {content[{type text",
+    "purpose": "image",
+    "notes": "link"
+   },
+   {
+    "call": "PUT /v2/blog/{b}/posts/{post-id}`, `POST /v2/blog/{b}/post/delete` {id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/blog/{b}/posts?npf=true",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/blog/{b}/notes?id=` (likes, reblogs, replies)",
+    "purpose": "the \"comments\" surface",
+    "notes": ""
+   },
+   {
+    "call": "reply via the post's replies (community label) or reblog with comment (`parent_tumblelog_uuid`, `parent_post_id`)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/user/notifications` (mentions, replies, reblogs)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/blog/{b}/posts/queue`, reorder / shuffle",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/tagged?tag=",
+    "purpose": "research",
+    "notes": ""
+   }
+  ],
+  "limits": " - 300 calls/min and 18,000/hour per IP; 5,000 calls/day per consumer key; 250 new published posts (incl. reblogs) per day per user; 250 image uploads/day; 200 follows/day. - Tumblr Community Guidelines (no spam, mature-content labels); links nofollow; posts can carry ≤ 30 tags.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.tumblr.com/docs/en/api/v2"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.tumblr.com/v2",
+  "auth": {
+   "type": "query",
+   "param": "api_key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "The OAuth Consumer Key of an app registered at https://www.tumblr.com/oauth/apps, sent as the `api_key` query parameter ('API key: Requires an API key. Use your OAuth Consumer Key as your api_key', https://www.tumblr.com/docs/en/api/v2#authentication). It only unlocks the public blog methods; everything at the 'OAuth' level (posting, notes, user info, deletion) needs a signed OAuth 1.0a request or an OAuth2 user token and is listed under not_offered."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "blog_identifier",
+    "required": true,
+    "help": "The blog to read, as its blog name (staff), hostname (staff.tumblr.com or a custom domain) or UUID (t:0aY0xL2Fi1OFJg4YxpmegQ) ('blog-identifier', https://www.tumblr.com/docs/en/api/v2#blog-identifiers); env PLATFORM_MCP_TUMBLR_BLOG_IDENTIFIER."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "'Usage of the Tumblr API is rate limited in a few ways, but we respond with a 429 Limit Exceeded response whenever a consumer hits one of these limits': '300 API calls per minute, per IP address', '1,000 API calls per hour, per consumer key', '5,000 API calls per day, per consumer key', '250 new published posts (including reblogs) per day, per user' (https://www.tumblr.com/docs/en/api/v2#rate-limits). One client-side bucket at 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/blog/{blog_identifier}/info",
+    "path_params": {
+     "blog_identifier": "@blog_identifier"
+    },
+    "docs": "https://www.tumblr.com/docs/en/api/v2#info---retrieve-blog-info",
+    "note": "GET /v2/blog/{blog-identifier}/info?api_key= (API key level) returns {meta{status, msg}, response{blog{title, posts, name, updated, description, ask, ask_anon, likes, url, uuid, avatar[], ...}}}; the 'account' is the configured blog (account.response.blog), and a rejected consumer key is a 401 auth_error. The API-key level cannot say which user owns the key (/v2/user/info is OAuth-level, https://www.tumblr.com/docs/en/api/v2#userinfo--get-a-users-information)."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/blog/{blog_identifier}/posts",
+    "path_params": {
+     "blog_identifier": "@blog_identifier"
+    },
+    "params": {
+     "id": "post_id"
+    },
+    "result": {
+     "root": "response.posts.0",
+     "fields": {
+      "post_id": "id_string",
+      "notes": "note_count",
+      "url": "post_url",
+      "type": "type",
+      "created_at": "date"
+     }
+    },
+    "docs": "https://www.tumblr.com/docs/en/api/v2#posts--retrieve-published-posts",
+    "note": "GET /v2/blog/{blog-identifier}/posts?api_key=&id=<post id> (API key level; `id`: 'A specific post ID. Returns the single post specified or (if not found) a 404 error') returns {meta, response{blog, posts[{id, id_string, post_url, type, timestamp, date, note_count, tags, ...}], total_posts}}; the counts come from response.posts[0]. Tumblr's only public metric is `note_count` (likes + reblogs + replies combined); the runtime cannot compose a nested `metrics` object, so it is a top-level field. Only published posts of the configured blog are visible."
+   }
+  },
+  "not_offered": {
+   "publish_text": "POST /v2/blog/{blog-identifier}/posts (Neue Post Format) is at the 'OAuth' authentication level: 'OAuth: Requires a signed request that meets the OAuth 1.0a Protocol', or an OAuth2 bearer token from the Authorization Code grant whose response carries 'expires_in: 2520' seconds and a refresh_token (Refresh Token grant). The runtime has no OAuth 1.0a request signer, no authorization-code flow and no refresh-token flow, and the Client Credentials grant it does support carries no user, so it cannot post to a blog (needs_runtime: OAuth 1.0a signing or OAuth2 refresh-token grant; https://www.tumblr.com/docs/en/api/v2#oauth2-authorization, https://www.tumblr.com/docs/en/api/v2#posts---createreblog-a-post-neue-post-format).",
+   "publish_image": "Same OAuth-level create endpoint as publish_text (image blocks in NPF `content` need a media upload or a URL block, and the runtime has neither the user token nor an expression to spread `image_urls` into content blocks).",
+   "read_comments": "GET /v2/blog/{blog-identifier}/notes ('Get notes for a specific Post') is at the OAuth level, so it needs a signed OAuth 1.0a request or an OAuth2 user token that the runtime cannot obtain or refresh (https://www.tumblr.com/docs/en/api/v2#notes---get-notes-for-a-specific-post).",
+   "reply_comment": "The API documents no method that creates a reply note; replies are only made in the Tumblr apps (the v2 reference lists post creation, editing, reblogging and deletion, all at the OAuth level).",
+   "read_mentions": "The API documents no mention feed; the closest, GET /v2/blog/{blog-identifier}/notifications ('Retrieve Blog's Activity Feed'), is an OAuth-level endpoint that the runtime cannot call without a user token (https://www.tumblr.com/docs/en/api/v2#notifications--retrieve-blogs-activity-feed).",
+   "delete": "POST /v2/blog/{blog-identifier}/post/delete {id} is at the OAuth level ('Delete a Post', parameter `id`: 'The ID of the post to delete'); it needs a signed OAuth 1.0a request or an OAuth2 user token, which the runtime cannot obtain or refresh (https://www.tumblr.com/docs/en/api/v2#postdelete--delete-a-post)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.tumblr.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

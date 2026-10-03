@@ -1,0 +1,257 @@
+{
+ "id": "abound",
+ "category": "ecommerce_suppliers",
+ "label": "Abound (acquired — now Carro)",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.moderndropship.com/reference/introduction",
+ "url": "https://www.helloabound.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "webhooks"
+  ],
+  "auth": "api_key (key generated in Settings › Dropshipping › Integrations, sent as `Authorization: <key>`; Buyer accounts reach Buyer + Shared endpoints)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "product_import",
+   "order_create",
+   "tracking",
+   "returns",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI definitions (Shared / Buyer / Seller) — no vendor client libraries; llms.txt index at developers.moderndropship.com/llms.txt"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Carro Modern Dropship Buyer API).",
+  "base_urls": [],
+  "auth": [
+   "1. Tenant signs a Carro retailer (buyer) contract (custom pricing, demo)",
+   "2. In Settings › Dropshipping › Integrations the tenant generates an API key",
+   "3. Every call sends `Authorization: <key>`; buyer keys reach the Buyer + Shared endpoint groups",
+   "4. Optional: register webhook configurations for order / fulfilment events"
+  ],
+  "endpoints": [
+   {
+    "call": "GET buyer products / {id}",
+    "purpose": "catalogue the buyer has access to",
+    "notes": "'Returns a list of products that the buyer has access to'"
+   },
+   {
+    "call": "GET buyer product variants / variant by id",
+    "purpose": "variants",
+    "notes": "per-product variant list"
+   },
+   {
+    "call": "POST select / deselect buyer product",
+    "purpose": "mark products chosen for the store",
+    "notes": "import gate"
+   },
+   {
+    "call": "PATCH buyer product · DELETE product image",
+    "purpose": "edit title / description / tags in the buyer instance",
+    "notes": ""
+   },
+   {
+    "call": "POST buyer order · GET orders / {id} · PATCH order · POST cancel",
+    "purpose": "order placement + lifecycle",
+    "notes": "'Buyer creates new orders'; cancel whole order"
+   },
+   {
+    "call": "POST return · GET returns / {id}",
+    "purpose": "returns",
+    "notes": "per order item"
+   },
+   {
+    "call": "GET / POST / PATCH webhook configurations",
+    "purpose": "webhooks",
+    "notes": ""
+   }
+  ],
+  "limits": " 5 requests per second per key (`X-Rate-Limit-Limit: 5`, `X-Rate-Limit-Duration: 1`), HTTP 429 above; `X-Request-ID` on every response for support. - Retailer account is contract / demo gated (custom pricing) — no self-serve signup - API ordering is the intended integration path (EDI / SFTP / CSV are the alternatives listed) - Supplier brands are paid when the retailer's customer buys; the retailer is the seller of record",
+  "mcp_sdk": [
+   "OpenAPI definitions (Shared / Buyer / Seller) — no vendor client libraries; llms.txt index at developers.moderndropship.com/llms.txt"
+  ],
+  "sources": [
+   "https://www.helloabound.com/",
+   "https://getcarro.com/",
+   "https://developers.moderndropship.com/reference/introduction",
+   "https://developers.moderndropship.com/llms.txt"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.moderndropship.com",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Modern Dropship (Carro) API key generated under Settings > Dropshipping > Integrations, sent raw as `Authorization: <key>` (securityScheme ApiKeyAuth, no Bearer prefix). A buyer (retailer) key reaches the Buyer + Shared endpoints used here."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/auth/me",
+    "docs": "https://developers.moderndropship.com/openapi/shared-api.json",
+    "note": "GET /auth/me returns {data: {user, company, flags, subscriptions}} for the key's user and company."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/buyer/products",
+    "params": {
+     "page": "page0",
+     "limit": "limit",
+     "title": "query",
+     "companyId": "category"
+    },
+    "default_limit": 50,
+    "max_limit": 250,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "images.0.source",
+      "price": "variants.0.basePrice",
+      "currency": "variants.0.baseCurrency",
+      "sku": "variants.0.sku",
+      "stock": "variants.0.inventoryAmount",
+      "brand": "brand"
+     }
+    },
+    "docs": "https://developers.moderndropship.com/openapi/buyer-api.json",
+    "note": "GET /buyer/products lists the products the buyer has access to ({data: [{id, title, brand, description, images[{source}], variants[{id, sku, basePrice, baseCurrency, retailPrice, inventoryAmount}]}], hasMore}); `page` is 0-based, `query` is the case-insensitive `title` substring filter and `category` is passed as `companyId` (a seller company id from GET /partners). Price/sku/stock are taken from the first variant."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/buyer/products/{product_id}",
+    "path_params": {
+     "product_id": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "images.0.source",
+      "price": "variants.0.basePrice",
+      "currency": "variants.0.baseCurrency",
+      "sku": "variants.0.sku",
+      "stock": "variants.0.inventoryAmount",
+      "brand": "brand"
+     }
+    },
+    "docs": "https://developers.moderndropship.com/openapi/buyer-api.json",
+    "note": "GET /buyer/products/{product_id} -> {data: product}; all variants [{id, sku, basePrice, baseCurrency, retailPrice, inventoryAmount, options}] are in `raw.variants` (variant ids are what an order needs)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/buyer/orders/{order_id}",
+    "path_params": {
+     "order_id": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "created_at": "created",
+      "tracking_number": "sellerOrders.0.fulfillments.0.trackingCode"
+     }
+    },
+    "docs": "https://developers.moderndropship.com/openapi/buyer-api.json",
+    "note": "GET /buyer/orders/{order_id} -> {data: {id, buyerReference, created, items[], sellerOrders[{id, posted, fulfilled, fulfillments[{carrier, trackingCode, trackingUrls}]}]}}. There is no single order status or total: per-seller `posted`/`fulfilled` flags are in `raw.sellerOrders`."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /buyer/orders requires `buyerReference` ('A reference to an ID in your (the buyer's) system. The ID must be unique.') and `orderedDate`, items[{variantId, quantity, buyerReference}] and shippingMethods[{code, title, price{amount, currency}}]; the vocabulary carries no order reference and its `shipping_option` string cannot be shaped into that array, so the body cannot be built without inventing values.",
+   "quote_shipping": "No rate-quote endpoint: GET /shipping/methods lists the company's own configured shipping methods (page/limit) and takes no product or destination.",
+   "track": "No tracking-events endpoint; sellerOrders[].fulfillments[{carrier, trackingCode, trackingUrls}] are part of GET /buyer/orders/{order_id} (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.moderndropship.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://developers.moderndropship.com/openapi/buyer-api.json, https://developers.moderndropship.com/openapi/shared-api.json: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

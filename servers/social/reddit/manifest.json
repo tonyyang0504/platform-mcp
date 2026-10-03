@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "reddit-social-mcp",
+ "display_name": "Reddit MCP",
+ "version": "0.1.0",
+ "description": "Reddit (social): read_comments, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/reddit"
+   ],
+   "env": {
+    "PLATFORM_MCP_REDDIT_CLIENT_ID": "${user_config.platform_mcp_reddit_client_id}",
+    "PLATFORM_MCP_REDDIT_CLIENT_SECRET": "${user_config.platform_mcp_reddit_client_secret}",
+    "PLATFORM_MCP_REDDIT_USER_AGENT": "${user_config.platform_mcp_reddit_user_agent}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_reddit_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_CLIENT_ID",
+   "description": "Client id of a `script` or `web` app registered at https://www.reddit.com/prefs/apps; sent as the HTTP Basic username to POST https://www.reddit.com/api/v1/access_token (grant_type=client_credentials).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reddit_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_CLIENT_SECRET",
+   "description": "The app's secret (HTTP Basic password on the token request). The resulting app-only bearer expires after `expires_in` seconds and is re-requested automatically; it carries no user context, so only read endpoints are offered.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reddit_user_agent": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_USER_AGENT",
+   "description": "Reddit requires a unique, descriptive User-Agent of the form \"<platform>:<app ID>:<version string> (by /u/<reddit username>)\", e.g. \"server:com.example.myapp:v1.0 (by /u/you)\"; default or misrepresented agents are throttled or blocked (https://github.com/reddit-archive/reddit/wiki/API). The runtime appends it to its own platform-mcp/reddit token.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "read_comments",
+   "description": "GET /comments/{article} (scope read; article = the post's id36 without the t3_ prefix; `limit` is documented only as an optional integer, so the runtime's default cap of 100 applies) returns two Listings: [0] the link, [1] the comment tree; `comments` come from the second Listing's data.children (things of kind t1 whose data carries id, name, author, body, body_html, created_utc (epoch seconds), score, parent_id, link_id, replies: https://github.com/reddit-archive/reddit/wiki/JSON). `created_at` is not mapped: comments carry only `created_utc` (epoch seconds, a number, available as raw.data.created_utc) and the vocabulary's created_at is a string. Nested replies stay under raw.data.replies. Reddit paginates with after/before fullnames, so `page` is not sent. `more` stubs (kind more) map to rows with an id but no author/body."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /api/info?id=<fullname> (scope read) returns a Listing whose data.children[0].data is the link object (name, score, ups, downs, num_comments, permalink, title, url, ...: https://github.com/reddit-archive/reddit/wiki/JSON). Callers pass the post's fullname `t3_<id36>` as post_id: the runtime cannot add the t3_ prefix. The runtime cannot compose a nested `metrics` object, so counts are top-level fields; the response is empty (404 result) for an unknown fullname."
+  }
+ ]
+}

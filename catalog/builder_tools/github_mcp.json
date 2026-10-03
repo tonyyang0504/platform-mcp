@@ -1,0 +1,63 @@
+{
+ "id": "github_mcp",
+ "category": "builder_tools",
+ "label": "GitHub",
+ "lane": "mcp_http",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://github.com/github/github-mcp-server",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "mcp",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "mcp_repos_read_write",
+   "mcp_issues",
+   "mcp_pull_requests",
+   "mcp_actions",
+   "mcp_code_search",
+   "rest_repos",
+   "rest_contents",
+   "graphql_v4",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/octokit"
+  ]
+ },
+ "official_mcp": [
+  "https://api.githubcopilot.com/mcp/",
+  "https://github.com/github/github-mcp-server"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://api.githubcopilot.com/mcp/",
+   "https://github.com/github/github-mcp-server",
+   "https://github.com/octokit"
+  ],
+  "sources": []
+ },
+ "adapter_status": "official_mcp",
+ "official_mcp_url": "https://api.githubcopilot.com/mcp/",
+ "reason": "This entry is GitHub's official MCP server itself (https://github.com/github/github-mcp-server, remote at https://api.githubcopilot.com/mcp/, OAuth or PAT) covering repos, issues, pull requests, Actions and code search; pointer entry, no generated server."
+}

@@ -1,0 +1,241 @@
+{
+ "id": "udbud_dk",
+ "category": "deals",
+ "label": "Udbud",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "dk"
+ ],
+ "docs_url": "https://udbud.dk/hjaelp/",
+ "url": "https://udbud.dk/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Danish public tenders; API access on request for system providers.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api (systemudbydere access)",
+  "access": "apply",
+  "capabilities": [
+   "search"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (API access for system providers). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. Request API access as a system provider."
+  ],
+  "endpoints": [
+   {
+    "call": "notice search (TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Public notices; bids via buyer systems. - Danish public tenders; API access on request for system providers.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://r.jina.ai/https://udbud.dk/hjaelp/",
+   "https://r.jina.ai/https://udbud.dk/hjaelp/hjaelpSystemudbydere"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.udbud.dk/udbud",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://auth.virk.dk/realms/erst/protocol/openid-connect/token",
+   "client_auth": "body",
+   "scope": "professional dk:gov:virk:roles",
+   "token_fields": {
+    "client_secret": null
+   },
+   "token_jwt": {
+    "mode": "jwt_rs256",
+    "key_field": "private_key",
+    "claims": {
+     "iss": "{@client_id}",
+     "sub": "{@client_id}",
+     "aud": "https://auth.virk.dk/realms/erst/protocol/openid-connect/token",
+     "iat": "{timestamp_s}",
+     "exp": "+120",
+     "jti": "{nonce}"
+    },
+    "jwt_header": {
+     "kid": "{@key_id}"
+    }
+   },
+   "token_params": {
+    "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+    "client_assertion": "{client_assertion}"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "client_id issued by Udbud.dk / Erhvervsstyrelsen after registering your system (registration form linked from the SDK README) with the MU_API_DATASYNK role."
+    },
+    {
+     "name": "private_key",
+     "required": true,
+     "help": "PEM RSA private key whose public key you expose in the JWKS endpoint registered with Udbud.dk (private_key_jwt client assertion, RS256)."
+    },
+    {
+     "name": "key_id",
+     "required": true,
+     "help": "kid of that key in your JWKS."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/ekstern-data/bekendtgoerelse/v1/fraKilde/DKUDBUD",
+    "params": {
+     "since": "fmt:{days_ago:1}T00:00:00"
+    },
+    "fixed_params": {
+     "page": "1",
+     "size": "1"
+    },
+    "docs": "https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml",
+    "note": "Mints a token with the private_key_jwt client assertion and reads one notice registered since yesterday: verifies the MU_API_DATASYNK role."
+   },
+   "search_postings": {
+    "path": "/ekstern-data/bekendtgoerelse/v1/fraKilde/DKUDBUD",
+    "params": {
+     "since": "fmt:{days_ago:30}T00:00:00",
+     "page": "page",
+     "size": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "bekendtgoerelser",
+     "key": "postings",
+     "total": "totalt",
+     "fields": {
+      "id": "noticeId",
+      "version": "noticeVersion",
+      "publication_number": "noticePublicationNumber",
+      "posted_at": "registreringsTidspunkt",
+      "xml_base64": "bekendtgoerelseXml"
+     }
+    },
+    "docs": "https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml",
+    "note": "GET /ekstern-data/bekendtgoerelse/v1/fraKilde/DKUDBUD?since=<30 days ago>&page&size: the data-sync feed of Danish notices (DKUDBUD source) registered in the last 30 days, oldest first. Each record is noticeId, noticeVersion, publication number, registration time and the full eForms notice as base64-encoded UTF-8 XML (xml_base64 — decode it for title, buyer and deadlines). There is no keyword search: `query`/`category`/`min_budget` are not applied. For get_posting pass id as <noticeId>/<noticeVersion>."
+   },
+   "get_posting": {
+    "path": "/ekstern-data/bekendtgoerelse/v1/{id}",
+    "result": {
+     "fields": {
+      "id": "noticeId",
+      "version": "noticeVersion",
+      "publication_number": "noticePublicationNumber",
+      "posted_at": "registreringsTidspunkt",
+      "xml_base64": "bekendtgoerelseXml"
+     }
+    },
+    "docs": "https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml",
+    "note": "GET /ekstern-data/bekendtgoerelse/v1/{noticeId}/{noticeVersion}: pass id as '<noticeId>/<noticeVersion>' (e.g. 6a26cc22-a211-41ea-867f-c34b4d726154/01). The notice is returned as base64-encoded eForms XML (xml_base64)."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Tenders are submitted in the buyers' e-tendering systems; the Udbud.dk API only validates/publishes notices for system providers and syncs published notices (paths valider, publicer, {noticeId}/{noticeVersion}, fraKilde/{kilde} in https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml).",
+   "withdraw_bid": "No bid operations exist in the Udbud.dk API (https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml); bids are handled in the buyers' e-tendering systems.",
+   "bid_status": "No bid operations exist in the Udbud.dk API (https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml).",
+   "list_messages": "No messaging endpoint: the API offers only notice validation, publication and retrieval (https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml).",
+   "send_message": "No messaging endpoint: the API offers only notice validation, publication and retrieval (https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml).",
+   "credits": "The API has no credits or quota endpoint (https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml)."
+  },
+  "terms": "Udbud.dk external API (OpenAPI https://git.erst.dk/udbud-dk/sdk/-/blob/master/openapi.yml, linked from https://udbud.dk/hjaelp/hjaelpSystemudbydere): data-sync endpoints require the MU_API_DATASYNK role granted by Erhvervsstyrelsen after registration. Foreign systems authenticate with a JWT client assertion (private_key_jwt) against https://auth.virk.dk/realms/erst/protocol/openid-connect/token; Danish systems may instead use OCES3 mTLS (not supported here). The old Basic-auth token server closes on 31/01/2027."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.udbud.dk: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token auth.virk.dk/realms/erst/protocol/openid-connect/token: 401 invalid_client",
+   "spec https://git.erst.dk/udbud-dk/sdk/-/raw/master/openapi.yml: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

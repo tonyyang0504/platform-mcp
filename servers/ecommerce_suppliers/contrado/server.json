@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/contrado-mcp",
+ "description": "Contrado (ecommerce suppliers): me, list_products, get_product, get_order. Every tool maps to a docu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.contrado.app/helix/docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "contrado"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CONTRADO_API_KEY",
+     "description": "Contrado Helix private token (Contrado Store Account > API Integration; shown once at creation), sent as `X-API-Key`. Scopes: StoresRead, StoreProductsRead, StoreOrdersRead.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CONTRADO_STORE_ID",
+     "description": "Store id sent as `X-Store-Id`; needed only with an account-level token (a store-level token already names its store).",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

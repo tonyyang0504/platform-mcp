@@ -1,0 +1,25 @@
+{
+ "id": "freemarket",
+ "category": "marketplaces",
+ "label": "Freemarket (Freelancer Sites)",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.freemarket.com/sites/terms-and-conditions.php",
+ "url": "https://www.freemarket.com/freemarket",
+ "verified_at": null,
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": [
+  "login",
+  "password?",
+  "notes?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

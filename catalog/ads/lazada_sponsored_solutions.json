@@ -1,0 +1,339 @@
+{
+ "id": "lazada_sponsored_solutions",
+ "category": "ads",
+ "label": "Lazada Sponsored Solutions",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "sea",
+  "sg",
+  "my",
+  "id",
+  "th",
+  "vn",
+  "ph"
+ ],
+ "docs_url": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FsearchCampaignList",
+ "url": "https://www.lazadasolutions.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "FAQ read; no API and no automation clause mentioned",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "hmac (LazOP app key + app secret signature + seller access_token after seller authorization)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (LSS Open API on the Lazada Open Platform).",
+  "base_urls": [
+   "https://api.lazada.{sg|com.my|co.th|vn|com.ph|co.id}/rest/sponsor/solutions/…"
+  ],
+  "auth": [
+   "1. Register as a LazOP developer (open.lazada.com) → create an application → App Key + App Secret.",
+   "2. Request API permission for Sponsored Solutions; the seller authorizes the app (seller authorization flow) → `access_token` (+ refresh).",
+   "3. Sign requests (HMAC-SHA256 over sorted params with app secret; `sign`, `timestamp`, `app_key`, `access_token`)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /sponsor/solutions/campaign/list` · create / update campaign",
+    "purpose": "campaigns + budget + schedule",
+    "notes": "campaign name, daily budget, start/end, status"
+   },
+   {
+    "call": "ad (SKU) endpoints under `/sponsor/solutions/…",
+    "purpose": "ads (sponsored products)",
+    "notes": "sku ids, bid"
+   },
+   {
+    "call": "keyword endpoints",
+    "purpose": "keywords + bids",
+    "notes": "keyword, match type, bid"
+   },
+   {
+    "call": "report endpoints",
+    "purpose": "reports",
+    "notes": "date range, level"
+   },
+   {
+    "call": "audiences · creative upload · conversions",
+    "purpose": "not in LSS",
+    "notes": "—"
+   }
+  ],
+  "limits": " - LazOP per-app call quotas (TODO(verify)); Developer Agreement + ToS; free.",
+  "mcp_sdk": [
+   "Official LazOP SDKs (Java / PHP / Python) on the Open Platform (TODO(verify) links)."
+  ],
+  "sources": [
+   "https://developer.alibaba.com/docs/doc.htm?treeId=499&articleId=121250&docType=1",
+   "https://open.lazada.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://{api_domain}/rest",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "api_domain",
+    "required": true,
+    "help": "Regional API host of the seller's venture: api.lazada.sg, api.lazada.com.my, api.lazada.com.ph, api.lazada.co.th, api.lazada.co.id or api.lazada.vn (Service Endpoints of each Sponsored Solutions API)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://auth.lazada.com/rest/auth/token/refresh",
+   "client_auth": "body",
+   "client_id_field": "app_key",
+   "token_fields": {
+    "client_id": null,
+    "client_secret": null,
+    "grant_type": null
+   },
+   "token_sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "case": "upper",
+    "payload": "/auth/token/refreshapp_key{@app_key}refresh_token{@refresh_token}sign_methodsha256timestamp{timestamp}"
+   },
+   "token_query": {
+    "app_key": "{@app_key}",
+    "timestamp": "{timestamp}",
+    "sign_method": "sha256",
+    "sign": "{signature}"
+   },
+   "token_ttl_seconds": 86400,
+   "state_key": "lazada_sponsored_solutions",
+   "header": "",
+   "token_param": "access_token",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "App Key of your Lazada Open Platform app with the Sponsored Solutions API permission (App Console)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app; signs every call and the token refresh (uppercase hex HMAC-SHA256 over the API name + sorted name/value pairs). Never sent on the wire."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Seller refresh_token from /auth/token/create after the seller authorised the app; the runtime mints access tokens with the signed /auth/token/refresh (https://auth.lazada.com/rest) and keeps the refresh_token it returns ('The refresh token cannot be refreshed': when refresh_expires_in runs out the seller must re-authorise). Set PLATFORM_MCP_STATE_DIR so the newest one survives restarts."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "case": "upper",
+    "path_strip": "/rest",
+    "payload": "{path}{sorted_params}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "params": {
+     "app_key": "{@app_key}",
+     "sign_method": "sha256"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "terms": "Lazada Open Platform Sponsored Solutions API (https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FsearchCampaignList): calls to https://api.lazada.<venture>/rest/sponsor/solutions/… carry app_key, timestamp (ms), sign_method=sha256, access_token and sign = uppercase hex HMAC-SHA256(app_secret, API name + sorted name/value pairs) (https://open.lazada.com/apps/doc/doc?nodeId=10450&docId=108068). Seller tokens are renewed with the signed system API /auth/token/refresh on https://auth.lazada.com/rest. Answers {code ('0' = success), success, result, errorMsg, request_id}; gateway errors carry code/message.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sponsor/solutions/account/getAccountSignInfo",
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Faccount%2FgetAccountSignInfo",
+    "note": "getAccountSignInfo: whether the seller has signed the Sponsored Solutions agreement (result boolean); verifies the app key, signature and seller token."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/sponsor/solutions/campaign/searchCampaignList",
+    "params": {
+     "pageNo": "page",
+     "pageSize": "limit",
+     "startDate": "days_ago:7",
+     "endDate": "today"
+    },
+    "fixed_params": {
+     "bizCode": "sponsoredSearch"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "result",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "campaignName",
+      "status": "campaignSwitchStatus",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FsearchCampaignList",
+    "note": "searchCampaignList (bizCode sponsoredSearch = Sponsored Discovery) with the last 7 days as the metrics window: campaignId, campaignName, dailyBudget, startDate, endDate, status (combined on/off), campaignSwitchStatus (1 online, 0 offline — mapped to status), budget/balance/schedule flags and the window's impressions, clicks, ctr, cpc, spend, store orders and revenue (strings, '-' = no data; all in raw). totalCount is the number of campaigns. account_id and status are not sent (the seller token selects the shop)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/sponsor/solutions/report/getDiscoveryReportCampaign",
+    "params": {
+     "startDate": "date:date_from",
+     "endDate": "date:date_to",
+     "campaignId": "campaign_id"
+    },
+    "fixed_params": {
+     "pageNo": "1",
+     "pageSize": "100"
+    },
+    "result": {
+     "items": "result.result",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "campaignId",
+      "campaign": "campaignName",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "spend",
+      "orders": "storeOrders",
+      "revenue": "storeRevenue"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Freport%2FgetDiscoveryReportCampaign",
+    "note": "getDiscoveryReportCampaign (Sponsored Discovery, campaign level, startDate/endDate yyyy-MM-dd, first 100 rows): per campaign impressions, clicks, ctr, cpc, spend, store/product orders, units, revenue, ROI and dayBudget. campaign_id filters to one campaign; useRtTable (realtime data for today) is not sent."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/sponsor/solutions/campaign/updateCampaign",
+    "params": {
+     "campaignId": "campaign_id",
+     "dayBudget": "str:daily_budget"
+    },
+    "fixed_params": {
+     "bizCode": "sponsoredSearch"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FupdateCampaign",
+    "note": "updateCampaign {campaignId, bizCode sponsoredSearch, dayBudget} — 'the maximum amount you're willing to pay each day' in the shop currency. This spends money; currency is ignored."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/sponsor/solutions/campaign/updateCampaign",
+    "params": {
+     "campaignId": "campaign_id",
+     "switchStatus": "map:action:pause=0,resume=1"
+    },
+    "fixed_params": {
+     "bizCode": "sponsoredSearch"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fsponsor%2Fsolutions%2Fcampaign%2FupdateCampaign",
+    "note": "updateCampaign {campaignId, bizCode sponsoredSearch, switchStatus: 1 online | 0 offline} (pause → 0, resume → 1). Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The Sponsored Solutions API acts for the seller whose token is used; its account calls report agreement status and auto top-up settings (getAccountSignInfo, getLatestSignInfo, sign, wallet …AutoTopUp…), none lists ad accounts (Sponsored Solutions API category, https://open.lazada.com/apps/doc/api)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.lazada.sg: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 200 too, so the host authenticates before routing",
+   "token auth.lazada.com/rest/auth/token/refresh: 200 InvalidAppKey",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

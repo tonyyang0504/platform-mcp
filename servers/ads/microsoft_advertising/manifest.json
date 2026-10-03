@@ -1,0 +1,114 @@
+{
+ "manifest_version": "0.2",
+ "name": "microsoft_advertising-mcp",
+ "display_name": "Microsoft Advertising (Bing Ads) MCP",
+ "version": "0.1.0",
+ "description": "Microsoft Advertising (Bing Ads) (ads): me, list_accounts, list_campaigns, update_budget, pause_resu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "microsoft_advertising"
+   ],
+   "env": {
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_ID": "${user_config.platform_mcp_microsoft_advertising_client_id}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_SECRET": "${user_config.platform_mcp_microsoft_advertising_client_secret}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_REFRESH_TOKEN": "${user_config.platform_mcp_microsoft_advertising_refresh_token}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_DEVELOPER_TOKEN": "${user_config.platform_mcp_microsoft_advertising_developer_token}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_CUSTOMER_ID": "${user_config.platform_mcp_microsoft_advertising_customer_id}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_ACCOUNT_ID": "${user_config.platform_mcp_microsoft_advertising_account_id}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_ENV": "${user_config.platform_mcp_microsoft_advertising_env}",
+    "PLATFORM_MCP_MICROSOFT_ADVERTISING_BASE_URL": "${user_config.platform_mcp_microsoft_advertising_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_microsoft_advertising_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_ID",
+   "description": "Application (client) id of the Microsoft Entra app registration used for the Microsoft Advertising consent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_advertising_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CLIENT_SECRET",
+   "description": "The app's client secret; required for web apps, omit for native/public clients.",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_microsoft_advertising_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_REFRESH_TOKEN",
+   "description": "Refresh token from the authorization-code flow with scope https://ads.microsoft.com/msads.manage offline_access; the runtime mints access tokens from it at https://login.microsoftonline.com/common/oauth2/v2.0/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_advertising_developer_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_DEVELOPER_TOKEN",
+   "description": "Microsoft Advertising developer token (Developer Portal > Account), sent as the DeveloperToken header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_advertising_customer_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_CUSTOMER_ID",
+   "description": "Manager account (customer) id sent as the CustomerId header; list_accounts searches this customer's accounts.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_microsoft_advertising_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_ACCOUNT_ID",
+   "description": "Ad account id sent as the CustomerAccountId header; it must equal the AccountId in campaign calls, so pass the same id as list_campaigns' account_id.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_microsoft_advertising_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_ENV",
+   "description": "Vendor environment (default production): sandbox = https://campaign.api.sandbox.bingads.microsoft.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_microsoft_advertising_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_ADVERTISING_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "REST POST /CustomerManagement/v13/Accounts/Search with the predicate AccountId Equals <configured account_id>: {Accounts: [AdvertiserAccount]} describes the connected ad account (Id, Name, Number, CurrencyCode, AccountLifeCycleStatus, ParentCustomerId)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "REST POST /CustomerManagement/v13/Accounts/Search with the predicate CustomerId Equals <configured customer_id> and PageInfo {Index: 0, Size: 100} (list_accounts takes no paging arguments, so the first 100 accounts are returned)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "REST POST /CampaignManagement/v13/Campaigns/QueryByAccountId {AccountId}. account_id must equal the configured account_id (sent as CustomerAccountId). Without CampaignType only Search campaigns are returned; the call is unpaged and `status`/`page` are not sent. `budget` is DailyBudget in the account currency (BudgetType in raw)."
+  },
+  {
+   "name": "update_budget",
+   "description": "REST PUT /CampaignManagement/v13/Campaigns {AccountId (config), Campaigns: [{Id, DailyBudget}]}: only the sent elements change. Campaigns using a shared budget must be changed on the budget instead. The service answers 200 with per-item failures in PartialErrors: the update succeeded only when partial_errors is empty. `currency` is ignored (account currency)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "REST PUT /CampaignManagement/v13/Campaigns {AccountId (config), Campaigns: [{Id, Status: Paused|Active}]}; per-item failures come back in PartialErrors (the change applied only when partial_errors is empty)."
+  }
+ ]
+}

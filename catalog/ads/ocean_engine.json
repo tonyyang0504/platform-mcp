@@ -1,0 +1,354 @@
+{
+ "id": "ocean_engine",
+ "category": "ads",
+ "label": "巨量引擎 Ocean Engine",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.oceanengine.com/labels/7/docs/1696710498372623",
+ "url": "https://www.oceanengine.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "'使用SDK需要首先注册成为巨量引擎开发者' and API access is tied to the application's permission groups (权限组) approved on the open platform; advertisers authorize the app (OAuth) and calls carry Access-Token. Rate limits (频控) are documented per interface on the portal (JS-only). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (developer app → advertiser authorization → Access-Token header; refresh token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "bulk"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/oceanengine/ad_open_sdk_java (official, Maven org.openapitools oceanengine-mapi-java-client)",
+   "https://github.com/oceanengine/ad_open_sdk_go (official)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (巨量引擎 Marketing API) Confidence: **high** — read from ByteDance's official Java SDK repository (the portal is a JS shell).",
+  "base_urls": [
+   "https://api.oceanengine.com"
+  ],
+  "auth": [
+   "1. Register as a 巨量引擎 developer (开发者快速入门) and create an application; request permission groups (账户 / 广告投放 / 报表 / 人群 / 转化).",
+   "2. The advertiser authorizes the app (OAuth authorization page) → `auth_code` → `/open_api/oauth2/access_token/` → `access_token` + `refresh_token` (TODO(verify) path).",
+   "3. Send `Access-Token: <token>` on every request; refresh via `/open_api/oauth2/refresh_token/`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /open_api/2/advertiser/info/` · `GET /open_api/v1.0/qianchuan/account/balance/get/",
+    "purpose": "advertiser info, balance",
+    "notes": "advertiser_ids[], fields"
+   },
+   {
+    "call": "GET /open_api/v1.0/qianchuan/account/budget/get/` · `POST …/account/budget/update/",
+    "purpose": "account daily budget",
+    "notes": "advertiser_id, budget, budget_mode"
+   },
+   {
+    "call": "巨量广告升级版 `POST /open_api/v3.0/project/create/` · `/project/update/` · `/project/status/update/` · `GET /project/list/",
+    "purpose": "campaigns (项目)",
+    "notes": "advertiser_id, name, delivery_mode, budget, budget_mode, bid_type, delivery_range, audience"
+   },
+   {
+    "call": "POST /open_api/v3.0/promotion/create/` · `/promotion/update/` · `/promotion/status/update/` · `/promotion/budget/update/` · `/promotion/bid/update/",
+    "purpose": "ads (广告) with budget + bid",
+    "notes": "project_id, name, promotion_materials{image_material_list, video_material_list, title_material_list}, budget, bid"
+   },
+   {
+    "call": "POST /open_api/2/file/image/ad/` · `POST /open_api/2/file/video/ad/",
+    "purpose": "creatives upload (materials)",
+    "notes": "advertiser_id, image_file / video_file, upload_type"
+   },
+   {
+    "call": "GET /open_api/v3.0/report/custom/get/` · 千川 `GET /open_api/v1.0/qianchuan/report/ad/get/",
+    "purpose": "reports",
+    "notes": "advertiser_id, dimensions[stat_time_day], metrics[], start_date, end_date"
+   },
+   {
+    "call": "POST /open_api/v1.0/qianchuan/audience_file/upload/` → `POST …/audience/create_by_file/` · `POST …/audience/push/",
+    "purpose": "audiences",
+    "notes": "advertiser_id, file, data_source_type, name"
+   },
+   {
+    "call": "POST /open_api/2/tools/event/…` (事件管理 / 转化回传)",
+    "purpose": "conversions upload",
+    "notes": "event_type, callback params (TODO(verify))"
+   },
+   {
+    "call": "GET /open_api/v1.0/qianchuan/ad/keywords/get/` · `/ad/recommend_keywords/get/",
+    "purpose": "keywords",
+    "notes": "ad_id, filtering"
+   }
+  ],
+  "limits": " - Per-interface 频控 (QPS) published on the portal; 429-style codes in the JSON `code` field. Free API; 巨量引擎开放平台 developer agreement; permission groups reviewed per application.",
+  "mcp_sdk": [
+   "Official SDKs: Java (`ad_open_sdk_java`, Maven `oceanengine-mapi-java-client`), Go (`ad_open_sdk_go`). No MCP server found."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/oceanengine/ad_open_sdk_java/main/README.md",
+   "https://api.github.com/orgs/oceanengine/repos",
+   "https://open.oceanengine.com/labels/7/docs/1696710498372623"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.oceanengine.com/open_api",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.oceanengine.com/open_api/oauth2/refresh_token/",
+   "token_body": "json",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": "secret",
+    "grant_type": null
+   },
+   "token_path": "data.access_token",
+   "refresh_token_path": "data.refresh_token",
+   "expires_path": "data.expires_in",
+   "state_key": "ocean_engine",
+   "header": "Access-Token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "开发者应用的 APP_ID (app_id) from 开发者后台 > 应用管理 (https://open.oceanengine.com/labels/7/docs/1696710506097679)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "应用的私钥 Secret from 应用管理 > 编辑应用; sent as `secret` in the refresh call."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "A refresh_token from 获取Access Token (auth_code exchange after the advertiser authorised the app). It is single-use: every refresh returns a new one and invalidates the old ('再次刷新需要使用本次刷新获取的新的RefreshToken'); set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "payload": "",
+    "params": {
+     "access_token": "{access_token}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "投放账户 id (advertiser_id) used by update_budget and pause_resume, whose inputs carry only the project id; list_accounts shows the authorised ids."
+   }
+  ],
+  "terms": "巨量引擎开放平台 Marketing API (https://open.oceanengine.com/labels/7/docs/1696710498372623): calls send the Access-Token header (valid 24 h); tokens are refreshed with POST /open_api/oauth2/refresh_token/ {app_id, secret, refresh_token}, which rotates the refresh token. Answers {code (0 = OK), message, data, request_id}. Requires a developer app approved for the 投放管理 / 数据报表 scopes and advertiser authorisation.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/2/user/info/",
+    "sign": false,
+    "docs": "https://open.oceanengine.com/labels/7/docs/1696710507039756",
+    "note": "获取授权User信息 (GET /open_api/2/user/info/): display_name, masked email, id, app_id, token_scope_list and token_api_list of the authorised user."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/oauth2/advertiser/get/",
+    "result": {
+     "items": "data.list",
+     "key": "accounts",
+     "fields": {
+      "id": "advertiser_id",
+      "name": "advertiser_name"
+     }
+    },
+    "docs": "https://open.oceanengine.com/labels/7/docs/1696710506574848",
+    "note": "获取已授权账户 (GET /open_api/oauth2/advertiser/get/?access_token=…, the minted token as a query parameter): accounts authorised under the token with advertiser_id, advertiser_name, account_role (ADVERTISER, AGENT, …) and is_valid."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/v3.0/project/list/",
+    "sign": false,
+    "params": {
+     "advertiser_id": "account_id",
+     "page": "page",
+     "page_size": "limit",
+     "filtering": "jsonstr:{\"status_first\": {status}}"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data.list",
+     "key": "campaigns",
+     "total": "data.page_info.total_number",
+     "fields": {
+      "id": "project_id",
+      "name": "name",
+      "status": "status_first"
+     }
+    },
+    "docs": "https://open.oceanengine.com/labels/7/docs/1740937147595776",
+    "note": "获取项目列表 (巨量引擎体验版 projects, GET /open_api/v3.0/project/list/?advertiser_id&page&page_size ≤ 100): projects are the budget-carrying campaign level of 升级版. status filters on status_first (PROJECT_STATUS_ENABLE, PROJECT_STATUS_DISABLE, PROJECT_STATUS_DONE, PROJECT_STATUS_DELETE; default all but deleted). Each project has project_id, name, opt_status (ENABLE/DISABLE), status_first, status_second[], budget_mode and budget (a decimal string in 元, left in raw), bid_type, landing_type; project_create_time/project_modify_time are in raw."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/v3.0/report/custom/get/",
+    "sign": false,
+    "params": {
+     "advertiser_id": "account_id",
+     "start_time": "fmt:{date:date_from} 00:00:00",
+     "end_time": "fmt:{date:date_to} 23:59:59"
+    },
+    "fixed_params": {
+     "data_topic": "BASIC_DATA",
+     "dimensions": "[\"cdp_project_id\"]",
+     "metrics": "[\"stat_cost\",\"show_cnt\",\"click_cnt\",\"convert_cnt\"]",
+     "order_by": "[{\"field\":\"stat_cost\",\"type\":\"DESC\"}]",
+     "page": 1,
+     "page_size": 100
+    },
+    "result": {
+     "items": "data.rows",
+     "key": "rows",
+     "total": "data.page_info.total_number"
+    },
+    "docs": "https://open.oceanengine.com/labels/7/docs/1741387668314126",
+    "note": "自定义报表 (GET /open_api/v3.0/report/custom/get/, data_topic BASIC_DATA): one row per project over the window with dimensions {cdp_project_id} and metrics {stat_cost (消耗, 元), show_cnt, click_cnt, convert_cnt} as strings, sorted by cost, first 100 rows; data.total_metrics holds the totals. campaign_id is not applied (filter the rows by dimensions.cdp_project_id). Other dimensions/metrics are listed by 获取自定义报表可用指标和维度 (https://open.oceanengine.com/labels/7/docs/1755261744248832)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/v3.0/project/budget/update/",
+    "sign": false,
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "data.0.project_id": "int:campaign_id",
+     "data.0.budget_mode": "=BUDGET_MODE_DAY",
+     "data.0.budget": "daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.oceanengine.com/labels/7/docs/1755353873798155",
+    "note": "批量更新项目预算 (POST /open_api/v3.0/project/budget/update/ {advertiser_id, data: [{project_id, budget_mode: BUDGET_MODE_DAY, budget}]}) sets a daily budget in 元 for one project of the configured advertiser_id (minimums depend on the project, e.g. ≥ 100 for NO_BID). This spends money. Per-project failures come back with code 0 in data.errors [{project_id, error_message}] (see raw). currency is ignored."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/v3.0/project/status/update/",
+    "sign": false,
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "data.0.project_id": "int:campaign_id",
+     "data.0.opt_status": "map:action:pause=DISABLE,resume=ENABLE"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.oceanengine.com/labels/7/docs/1740941413906432",
+    "note": "批量更新项目状态 (POST /open_api/v3.0/project/status/update/ {advertiser_id, data: [{project_id, opt_status: ENABLE|DISABLE}]}) for the configured advertiser_id (pause → DISABLE, resume → ENABLE). Per-project failures are listed in data.errors with code 0. Resuming restarts spend."
+   }
+  },
+  "not_offered": {}
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.oceanengine.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.oceanengine.com/open_api/oauth2/refresh_token/: 200 40113",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

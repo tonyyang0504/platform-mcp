@@ -1,0 +1,42 @@
+{
+ "id": "mitula_tn",
+ "category": "automotive",
+ "label": "Afariat",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://afariat.com",
+ "domain": "afariat.com",
+ "country": "Tunisia",
+ "official_api": true,
+ "docs_url": "https://developer.afariat.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": null,
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence low). Afariat/Tayara runs an official developer site (adverts management, json/xml formats) per indexed pages, but it was unreachable (Cloudflare 522) so access terms are unverified.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.afariat.com/feed"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Listed under afariat.com's developer site, which was unreachable (Cloudflare 522) during the audit; endpoints unverified."
+}

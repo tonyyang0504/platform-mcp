@@ -1,0 +1,57 @@
+{
+ "id": "pirate_software_game_jam",
+ "category": "competitions",
+ "label": "Pirate Software Game Jam",
+ "lane": "",
+ "kind": "game_jam",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://itch.io/jam/pirate",
+ "verified_at": "2026-09-23",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

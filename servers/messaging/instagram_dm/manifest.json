@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "instagram_dm-mcp",
+ "display_name": "Instagram DM MCP",
+ "version": "0.1.0",
+ "description": "Instagram DM (messaging): me, list_inbound, get_thread, send. Every tool maps to a documented endpoi",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "instagram_dm"
+   ],
+   "env": {
+    "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ACCESS_TOKEN": "${user_config.platform_mcp_instagram_dm_page_access_token}",
+    "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID": "${user_config.platform_mcp_instagram_dm_page_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_instagram_dm_page_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ACCESS_TOKEN",
+   "description": "Page access token of the Facebook Page linked to the Instagram professional account, requested by a person who can perform the MESSAGE task on that Page, with instagram_basic, instagram_manage_messages and pages_manage_metadata (Messenger Platform > Instagram Messaging, https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message); sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_instagram_dm_page_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID",
+   "description": "Numeric id of the Facebook Page linked to the Instagram professional account; conversations are listed with /<page_id>/conversations?platform=instagram and messages sent with /<page_id>/messages. Env: PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /{page_id}?fields=id,name,instagram_business_account: the Facebook Page linked to the Instagram professional account and the linked IG account id."
+  },
+  {
+   "name": "list_inbound",
+   "description": "GET /{page_id}/conversations?platform=instagram with field expansion messages.limit(1){...}: one row per conversation carrying its most recent message (which may be the Page's own outbound message - compare from_id with the Page / account id). thread_id is the conversation id for get_thread; from_id is the Instagram-scoped id (IGSID) for send. 'Conversations that are within the Requests folder that have not been active for 30 days will not be returned'. `since`/`channel` are not sent; cursor paging, so `page` is ignored."
+  },
+  {
+   "name": "get_thread",
+   "description": "GET /{conversation_id}/messages?fields=id,message,from,to,created_time (newest first). 'you can only get details about the 20 most recent messages in the conversation' (https://developers.facebook.com/docs/messenger-platform/conversations), so limit is capped at 20."
+  },
+  {
+   "name": "send",
+   "description": "POST /{page_id}/messages {recipient: {id: IGSID}, message: {text}} answers {recipient_id, message_id}. `to` must be the Instagram-scoped ID of a person who messaged the account (list_inbound from_id); 'Text message must be less than 1,000 characters'; 'Apps with Standard Access can only send messages to people that have a role on the app'. `subject`/`channel` are ignored."
+  }
+ ]
+}

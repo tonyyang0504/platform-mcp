@@ -1,0 +1,36 @@
+{
+ "id": "ahla_members",
+ "category": "sales",
+ "label": "AHLA member directory",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.ahla.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (37 Disallow: oembed, PDFs) — member pages allowed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

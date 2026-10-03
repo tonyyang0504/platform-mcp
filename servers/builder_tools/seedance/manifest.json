@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "seedance-mcp",
+ "display_name": "Seedance (BytePlus ModelArk) MCP",
+ "version": "0.1.0",
+ "description": "Seedance (BytePlus ModelArk) (builder tools): me, generate_image, generate_video, get_job. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "seedance"
+   ],
+   "env": {
+    "PLATFORM_MCP_SEEDANCE_API_KEY": "${user_config.platform_mcp_seedance_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_seedance_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SEEDANCE_API_KEY",
+   "description": "BytePlus ModelArk API key (console.byteplus.com > ModelArk > API keys, ap-southeast-1), sent as Authorization: Bearer. Activate the Seedance/Seedream models first.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /contents/generations/tasks?page_num=1&page_size=1: lists the latest video task; used as the credential check (no account endpoint)."
+  },
+  {
+   "name": "generate_image",
+   "description": "POST /images/generations {model (required: a Seedream model id or endpoint id), prompt, image (reference URL/base64), size (e.g. 2K or 2048x2048), seed, response_format: url} -> {data: [{url, size}]}: synchronous; URLs are valid for 24 h (all images in raw.data)."
+  },
+  {
+   "name": "generate_video",
+   "description": "POST /contents/generations/tasks {model (required, e.g. seedance-1-5-pro-251215 or dreamina-seedance-2-0-260128), content: [{type: text, text}], ratio (16:9, 9:16, 1:1 …), duration (s)} -> {id}; poll with get_job. Text-to-video only: an image_url content entry cannot be added conditionally, so image_url is not sent."
+  },
+  {
+   "name": "get_job",
+   "description": "GET /contents/generations/tasks/{id}: status queued|running|cancelled|succeeded|failed|expired; content.video_url (valid 24 h) when succeeded."
+  }
+ ]
+}

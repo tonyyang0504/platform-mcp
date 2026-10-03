@@ -1,0 +1,38 @@
+{
+ "id": "yallamotor_qa",
+ "category": "automotive",
+ "label": "Qatar",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://qatar.yallamotor.com",
+ "domain": "qatar.yallamotor.com",
+ "country": "Qatar",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). qatar.yallamotor.com (YallaMotor) has no official developer portal; 'YallaMotor API' references online are third-party blog/scraper content.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://qatar.yallamotor.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/getascraper/yallamotor-cars-scraper/api",
+   "https://dev.to/mcatee/certified-pre-owned-growth-yallamotor-apis-role-in-formalizing-used-car-channels-1089"
+  ]
+ },
+ "official_mcp": []
+}

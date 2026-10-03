@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/wecom-mcp",
+ "description": "WeCom (企业微信) (messaging): me, send. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.work.weixin.qq.com/document/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "wecom"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WECOM_CORPID",
+     "description": "Enterprise ID (我的企业 > 企业信息), sent with corpsecret to GET https://qyapi.weixin.qq.com/cgi-bin/gettoken; the returned access_token (7200 s) travels as the access_token query parameter of every call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WECOM_CORPSECRET",
+     "description": "Secret of the self-built app (应用管理 > 应用 > Secret); each app has its own secret and token. Do not call gettoken frequently (rate-limited); the runtime caches the token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WECOM_AGENT_ID",
+     "description": "AgentId (integer) of the self-built app shown on its settings page; required by message/send and agent/get.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

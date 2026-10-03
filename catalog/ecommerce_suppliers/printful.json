@@ -1,0 +1,191 @@
+{
+ "id": "printful",
+ "category": "ecommerce_suppliers",
+ "label": "Printful",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.printful.com/docs/",
+ "url": "https://www.printful.com/",
+ "verified_at": null,
+ "terms_note": "API terms apply (not read); no anti-automation clause seen",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.printful.com",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Printful private (store-level) token or OAuth access token, sent as `Authorization: Bearer`. Account-level tokens also need the X-PF-Store-Id header, which the runtime cannot send: use a store token."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/oauth/scopes",
+    "docs": "https://developers.printful.com/docs/#tag/OAuth-API",
+    "note": "GET /oauth/scopes returns the scopes of the token ({code, result: {scopes: [{scope, display_name}]}})."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "params": {
+     "category_id": "category"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "result",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "image",
+      "currency": "currency",
+      "brand": "brand",
+      "model": "model",
+      "variant_count": "variant_count"
+     }
+    },
+    "docs": "https://developers.printful.com/docs/#tag/Catalog-API",
+    "note": "Printful catalog products (blanks): GET /products?category_id=… returns the whole catalog in one {code, result[]} response (about 550 products). The catalog OpenAPI (https://developers.printful.com/docs/openapi.json) defines only category_id, and a live check (auth audit 2026-09-26, public endpoint) showed offset ignored and no paging object, so page/limit are not sent. `query` is not accepted; `category` maps to category_id."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{id}",
+    "result": {
+     "root": "result.product",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "image_url": "image",
+      "currency": "currency",
+      "brand": "brand",
+      "model": "model",
+      "variant_count": "variant_count"
+     }
+    },
+    "docs": "https://developers.printful.com/docs/#tag/Catalog-API",
+    "note": "result.product; the variants [{id, name, size, color, price, currency, in_stock}] are in the sibling result.variants (not in `raw`, which is the product only)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders",
+    "body": {
+     "recipient": "shipping_address",
+     "items": "items",
+     "shipping": "shipping_option"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "costs.total",
+      "currency": "costs.currency",
+      "created_at": "created",
+      "tracking_number": "shipments.0.tracking_number"
+     }
+    },
+    "docs": "https://developers.printful.com/docs/#tag/Orders-API/operation/createOrder",
+    "note": "Creates a DRAFT order (the `confirm` query parameter is not sent), so nothing is charged until the order is confirmed in Printful. `shipping_address` is Printful's recipient object {name, address1, city, state_code, country_code, zip, phone, email}; `items` are Printful items [{variant_id|sync_variant_id, quantity, files[{url}]}]; `shipping_option` is the shipping method id."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{id}",
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "costs.total",
+      "currency": "costs.currency",
+      "created_at": "created",
+      "tracking_number": "shipments.0.tracking_number"
+     }
+    },
+    "docs": "https://developers.printful.com/docs/#tag/Orders-API"
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /shipping/rates takes nested recipient{address1, city, country_code, state_code, zip} + items[{variant_id, quantity}]; the vocabulary's product_id/country/quantity cannot be shaped into that body by the runtime's flat body form.",
+   "track": "No tracking-events endpoint; shipments[{tracking_number, tracking_url, carrier, service}] are part of GET /orders/{id} (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host api.printful.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "spec https://developers.printful.com/docs/openapi.json: 5/5 tools match (path, method, parameters, body keys, response paths)",
+   "live read without credentials: get_product, list_products returned data that validates against the vocabulary"
+  ],
+  "notes": "Fixed: list_products no longer sends offset/limit (not in the catalog spec; live, offset was ignored and no paging object came back)."
+ }
+}

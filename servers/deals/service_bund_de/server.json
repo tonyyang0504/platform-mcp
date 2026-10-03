@@ -1,0 +1,33 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/service_bund_de-mcp",
+ "description": "service.bund.de — Ausschreibungen (deals): search_postings. Every tool maps to a documented endpoint",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.service.bund.de/Content/DE/Ausschreibungen/Suche/Formular.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "service_bund_de"
+    }
+   ],
+   "environmentVariables": []
+  }
+ ]
+}

@@ -1,0 +1,293 @@
+{
+ "id": "vk_ads",
+ "category": "ads",
+ "label": "VK Ads (VK Реклама)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://ads.vk.ru/doc/api/",
+ "url": "https://ads.vk.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access from the VK Ads cabinet (agency / client tokens; 'Авторизация в API'); ОРД labelling methods for Russian ad-marking law; rate limits on the 'Особенности API' page (not read). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (client credentials / agency client tokens per the 'Авторизация в API' section)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (VK Ads API) Confidence: **high** — official reference navigation read (auth page path 404'd; content on the main docs page).",
+  "base_urls": [
+   "https://ads.vk.ru/api/v2/…"
+  ],
+  "auth": [
+   "1. Create the VK Ads cabinet (advertiser or agency); in settings obtain API credentials (client_id / client_secret) → OAuth2 client-credentials token; agencies mint client tokens (AgencyClients).",
+   "2. `Authorization: Bearer <token>` on every request; ОРД (ad-marking) data must be registered for Russian campaigns.",
+   "3. Reference sections: Быстрый старт → Добавление объявлений."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v2/user.json` · `GET /api/v2/agency/clients.json",
+    "purpose": "account / agency clients",
+    "notes": "id, username, account balance"
+   },
+   {
+    "call": "GET/POST /api/v2/ad_plans.json` · `POST /api/v2/ad_plans/{id}.json` · `AdPlanMassAction",
+    "purpose": "ad plans (campaigns): objective, budget, dates",
+    "notes": "name, objective, budget_limit, budget_limit_day, date_start, date_end, status"
+   },
+   {
+    "call": "GET/POST /api/v2/ad_groups.json` · `POST /api/v2/ad_groups/{id}.json` · `AdGroupMassAction",
+    "purpose": "ad groups: targeting, bid, budget, packages/pads",
+    "notes": "name, ad_plan_id, package_id, targetings{age, sex, geo, interests, segments}, max_price, autobidding_mode, budget_limit_day, banners[]"
+   },
+   {
+    "call": "GET/POST /api/v2/banners.json` · `POST /api/v2/content/static.json` / `/content/video.json",
+    "purpose": "banners (ads) + content upload",
+    "notes": "ad_group_id, content{image_id, video_id}, textblocks{title, text}, urls{primary}"
+   },
+   {
+    "call": "GET /api/v2/statistics/ad_plans",
+    "purpose": "ad_groups",
+    "notes": "banners/day.json`"
+   },
+   {
+    "call": "POST /api/v2/remarketing/users_lists.json` · `/segments.json` · counters / goals / in-app events",
+    "purpose": "audiences",
+    "notes": "name, type, file (hashed emails / phones / ids), relations"
+   },
+   {
+    "call": "RemarketingOfflineGoals` · `InAppEvent",
+    "purpose": "offline conversions / events",
+    "notes": "goal id, payload"
+   },
+   {
+    "call": "LeadForms` · `Leads",
+    "purpose": "lead ads",
+    "notes": "form fields, leads export"
+   }
+  ],
+  "limits": " - Rate limits on 'Особенности API' (TODO(verify)); free; VK Ads offer + ОРД marking obligations.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://ads.vk.ru/doc/api/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ads.vk.ru",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://ads.vk.ru/api/v2/oauth2/token.json",
+   "client_auth": "body",
+   "token_ttl_seconds": 43200,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "VK Ads API client_id (issued on request in the ad account settings; https://ads.vk.ru/ru/doc/api/info/Авторизация в API)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The API client's client_secret (form body of the token request)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from one POST /api/v2/oauth2/token.json with grant_type=client_credentials (your own account) or agency_client_credentials (an agency client). Refreshing does not create a new token instance, which keeps you under VK's per-user token limit; a token unused for a month is deleted and must be issued again."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v3/user.json",
+    "docs": "https://ads.vk.ru/ru/doc/api/resource/User",
+    "note": "GET /api/v3/user.json: the account the token belongs to ({id, username, status, currency, types})."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/v2/ad_plans.json",
+    "params": {
+     "limit": "limit",
+     "offset": "offset",
+     "_status": "status"
+    },
+    "fixed_params": {
+     "fields": "id,name,status,budget_limit_day,budget_limit,date_start,date_end,objective"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "campaigns",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget_limit_day",
+      "start": "date_start",
+      "end": "date_end"
+     }
+    },
+    "docs": "https://ads.vk.ru/ru/doc/api/resource/AdPlans",
+    "note": "GET /api/v2/ad_plans.json (campaigns = ad plans of the token's account; account_id is not sent) with limit/offset and _status (active, blocked, deleted). `budget` is budget_limit_day (a decimal string in the account currency; raw.budget_limit is the total budget)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/api/v2/statistics/ad_plans/day.json",
+    "params": {
+     "id": "campaign_id",
+     "date_from": "date:date_from",
+     "date_to": "date:date_to"
+    },
+    "fixed_params": {
+     "metrics": "base"
+    },
+    "result": {
+     "items": "items.0.rows",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "impressions": "base.shows",
+      "clicks": "base.clicks",
+      "spend": "base.spent",
+      "cpc": "base.cpc",
+      "ctr": "base.ctr",
+      "goals": "base.vk.goals"
+     }
+    },
+    "docs": "https://ads.vk.ru/ru/doc/api/info/Statistics",
+    "note": "GET /api/v2/statistics/ad_plans/day.json?id={campaign_id}&date_from&date_to&metrics=base: daily rows for one campaign (id is required by VK, so pass campaign_id). Up to 366 days back; spent is a decimal string in the account currency."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/api/v2/ad_plans/{campaign_id}.json",
+    "body": {
+     "budget_limit_day": "str:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://ads.vk.ru/ru/doc/api/resource/AdPlan",
+    "note": "POST /api/v2/ad_plans/{id}.json {budget_limit_day}: the campaign's daily budget in the account currency (`currency` is ignored); spends money. Campaigns budgeted per ad group ignore it. Answers 204; validation errors come back as 400."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/api/v2/ad_plans/{campaign_id}.json",
+    "body": {
+     "status": "map:action:pause=blocked,resume=active"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://ads.vk.ru/ru/doc/api/resource/AdPlan",
+    "note": "POST /api/v2/ad_plans/{id}.json {status: blocked|active}. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "Each VK Ads token is bound to one account (\"доступ к данным аккаунта возможен только с токеном, полученным для данного аккаунта\", https://ads.vk.ru/ru/doc/api/info/Авторизация в API); agency clients need their own agency_client_credentials token, so there is no multi-account listing for one token. Use me."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads.vk.ru: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token ads.vk.ru/api/v2/oauth2/token.json: 401 invalid_client",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; names not found on the page: pause_resume:status, update_budget:budget_limit_day"
+  ],
+  "notes": "-"
+ }
+}

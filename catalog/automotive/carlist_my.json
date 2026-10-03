@@ -1,0 +1,37 @@
+{
+ "id": "carlist_my",
+ "category": "automotive",
+ "label": "Carlist",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.carlist.my",
+ "domain": "carlist.my",
+ "country": "Malaysia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Carlist.my (iCar Asia/Carsome) has no public developer API or documented dealer feed.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://carlist.my/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/rainminer/icarasia-scraper"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "digistore24-mcp",
+ "display_name": "Digistore24 MCP",
+ "version": "0.1.0",
+ "description": "Digistore24 (marketplaces): me, list_products, get_product, create_product, update_price, list_sales",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "digistore24"
+   ],
+   "env": {
+    "PLATFORM_MCP_DIGISTORE24_API_KEY": "${user_config.platform_mcp_digistore24_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_digistore24_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DIGISTORE24_API_KEY",
+   "description": "Digistore24 API key (vendor view > Settings > Account access > API keys; a writable / Full access key for create_product, update_price and refund, read-only suffices for the rest) sent as the X-DS-API-KEY header. The staging host https://www.digitest24.de/api/call is not switched to.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET getUserInfo returns the API-key holder: data{user_id, user_name (Digistore ID), granted_roles, granted_roles_msg}; 401/403 for a bad key."
+  },
+  {
+   "name": "list_products",
+   "description": "GET listProducts returns ALL products in one unpaged array data.products[{id, name, note, tag, language, product_group_id, product_group_name, units_left, created_at, modified_at}]; `page`, `limit` and `status` are not sent (the only parameters are sort_by name|group and merchant_id; ignore next_page). Prices are payment plans (see update_price) and approval status is on getProduct, so price/currency/status are null here."
+  },
+  {
+   "name": "get_product",
+   "description": "GET getProduct?product_id returns data.product, the product record (the spec documents it only as 'Product data record with properties'; the fields mapped here — name, currency, approval_status, salespage_url — are the ones createProduct/updateProduct accept, and stay null when absent). Prices are payment plans (listPaymentPlans, not mapped), so `price` is null."
+  },
+  {
+   "name": "create_product",
+   "description": "POST createProduct with the documented data[...] parameters (name_intern and name_en = name, description_en = description (filtered HTML), currency, salespage_url = url) creates the product as a NEW (unapproved, not yet sellable) product and answers data{product_id}. The price is NOT set here: Digistore24 prices are payment plans — call update_price next (createPaymentplan). Approval must be requested with updateProduct data[approval_status]=pending (not mapped)."
+  },
+  {
+   "name": "update_price",
+   "description": "Digistore24 prices are payment plans, so this CREATES a single-payment plan with POST createPaymentplan?product_id&data[first_amount]=price (decimal major units)&data[currency] (required by Digistore24, 3 letters)&data[number_of_installments]=1; existing plans stay active until updated (updatePaymentplan, not mapped). The result's `id` is the new paymentplan_id (the product id is the input); `price`/`currency` are read from the returned plan object."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET listPurchases?from=since ('2014-02-28 23:11:24', ISO 8601, 'now', '-3d' or 'start'; Digistore24 DEFAULTS TO -24h when `since` is omitted)&search[product_id]&page_no&page_size&sort_by=date&sort_order=desc. Rows are data.purchase_list[] whose purchase fields (purchase_id, product_id, product_name, amount, currency, payment_status, buyer_email, created_at) the spec only partly documents; mapped fields stay null when absent. Amounts are decimal major units."
+  },
+  {
+   "name": "get_sales_stats",
+   "description": "GET statsSales?from&to (dates) answers data{amounts{<currency>: [{from, to, vendor_share_amount, vendor_brutto_amount, vendor_netto_amount, total_share_amount, total_brutto_amount, total_netto_amount, ...}]}, period} grouped by Digistore24's default period. The amounts are keyed by currency, so revenue/sales/refunds are not flattened: read them from `raw.data.amounts`. There is no product filter, so `product_id` is not sent."
+  },
+  {
+   "name": "list_refunds",
+   "description": "GET listTransactions?search[transaction_type]=refund,chargeback&from=since (DEFAULTS TO -24h when omitted; use 'start' for everything)&page_no&page_size (max 1000)&sort_by=date&sort_order=desc: data.transaction_list[{id, purchase_id, amount, currency, transaction_type, transaction_type_msg, created_at, buyer{email, ...}}]. `status` is the transaction type (refund|chargeback); no reason field exists."
+  },
+  {
+   "name": "refund",
+   "description": "DESTRUCTIVE: POST refundPurchase?purchase_id=sale_id refunds ALL refundable payments of the order, subject to the product's refund policy (force=true, which bypasses the policy, is not sent). `amount` and `reason` are NOT sent: a partial amount needs refundPartially?purchase_id&amount (a different function, not mapped). The spec does not document the response data, so `id`/`status` are fixed markers; the platform's answer (status completed|refused|pending|error, note, pending_reason, action_url as documented for refundTransaction) is in `raw`."
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "id": "cardekho_in",
+ "category": "automotive",
+ "label": "Cardekho",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.cardekho.com",
+ "domain": "cardekho.com",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No public developer API from CarDekho; only third-party scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cardekho.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/truefetch/cardekho-api",
+   "https://parse.bot/marketplace/65d6430c-f72f-4f27-893f-054bf01f0c93/cardekho-com-api"
+  ]
+ },
+ "official_mcp": []
+}

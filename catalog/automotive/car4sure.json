@@ -1,0 +1,38 @@
+{
+ "id": "car4sure",
+ "category": "automotive",
+ "label": "Car4Sure",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.car4sure.com",
+ "domain": "car4sure.com",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Thailand); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://car4sure.com/"
+  ],
+  "unofficial": [
+   "https://github.com/Bethhelemuel/Car4Sure",
+   "https://github.com/MfundoM/car4sure-api"
+  ]
+ },
+ "official_mcp": []
+}

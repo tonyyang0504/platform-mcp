@@ -1,0 +1,227 @@
+{
+ "id": "runway",
+ "category": "builder_tools",
+ "label": "Runway",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://docs.dev.runwayml.com",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "text_to_image(gen4_image)",
+   "image_to_video(gen4_turbo|gen4_aleph)",
+   "text_to_video",
+   "video_to_video",
+   "video_upscale",
+   "character_performance",
+   "tasks_poll_cancel",
+   "organization_usage"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/runwayml/sdk-node",
+   "https://github.com/runwayml/sdk-python"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/runwayml/sdk-node",
+   "https://github.com/runwayml/sdk-python"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.dev.runwayml.com",
+  "rate_per_second": 1,
+  "headers": {
+   "X-Runway-Version": "2024-11-06"
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Runway API key (dev.runwayml.com > API keys), sent as Authorization: Bearer; every request also carries X-Runway-Version: 2024-11-06."
+    }
+   ]
+  },
+  "terms": "Output URLs expire within 24–48 hours; fetch the task again for fresh URLs.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/organization",
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Organization/paths/~1v1~1organization/get",
+    "note": "GET /v1/organization: tier limits, credit balance and usage."
+   },
+   "generate_image": {
+    "method": "POST",
+    "path": "/v1/text_to_image",
+    "body": {
+     "model": "model",
+     "promptText": "prompt",
+     "ratio": "aspect_ratio",
+     "seed": "seed",
+     "referenceImages.0.uri": "image_url"
+    },
+    "result": {
+     "fields": {
+      "job_id": "id",
+      "estimated_credits": "estimatedCost.credits",
+      "status": "=PENDING"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Start-generating/paths/~1v1~1text_to_image/post",
+    "note": "POST /v1/text_to_image {model (required: gen4_image, gen4_image_turbo, gpt_image_2 …), promptText, ratio (required, a pixel size such as 1920:1080 or 1024:1024), seed, referenceImages[{uri}] (required for gen4_image_turbo)} -> {id}; poll with get_job."
+   },
+   "generate_video": {
+    "method": "POST",
+    "path": "/v1/text_to_video",
+    "body": {
+     "model": "model",
+     "promptText": "prompt",
+     "ratio": "aspect_ratio",
+     "duration": "int:duration_seconds"
+    },
+    "result": {
+     "fields": {
+      "job_id": "id",
+      "estimated_credits": "estimatedCost.credits",
+      "status": "=PENDING"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Start-generating/paths/~1v1~1text_to_video/post",
+    "note": "POST /v1/text_to_video {model (required: gen4.5, veo3.1, veo3.1_fast …), promptText, ratio (required, e.g. 1280:720 or 720:1280), duration (2–10 s for gen4.5)} -> {id}; poll with get_job. image_url is not sent (image-to-video is POST /v1/image_to_video)."
+   },
+   "get_job": {
+    "method": "GET",
+    "path": "/v1/tasks/{job_id}",
+    "result": {
+     "fields": {
+      "job_id": "id",
+      "status": "status",
+      "output_urls": "output",
+      "error": "failure",
+      "progress": "progress"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Task-management/paths/~1v1~1tasks~1%7Bid%7D/get",
+    "note": "GET /v1/tasks/{id}: status PENDING|THROTTLED|RUNNING|SUCCEEDED|FAILED|CANCELLED; output is the array of result URLs (expire in 24–48 h), failure/failureCode on error."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/v1/documents",
+    "params": {
+     "limit": "limit",
+     "cursor": "cursor"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "next_cursor": "nextCursor",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "updated_at": "updatedAt",
+      "type": "type"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Documents/paths/~1v1~1documents/get",
+    "note": "GET /v1/documents?limit&cursor: knowledge documents used by Runway Characters (items are documents). Cursor-paginated: pass next_cursor back as cursor."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/v1/documents/{item_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "content": "content",
+      "updated_at": "updatedAt"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Documents/paths/~1v1~1documents~1%7Bid%7D/get",
+    "note": "GET /v1/documents/{id}: one knowledge document with its content."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/v1/documents",
+    "body": {
+     "name": "title",
+     "content": "content"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "status": "=created"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Documents/paths/~1v1~1documents/post",
+    "note": "POST /v1/documents {name, content (markdown or plain text)}: creates a knowledge document (title -> name)."
+   },
+   "update_item": {
+    "method": "PATCH",
+    "path": "/v1/documents/{item_id}",
+    "body": {
+     "name": "title",
+     "content": "content"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Documents/paths/~1v1~1documents~1%7Bid%7D/patch",
+    "note": "PATCH /v1/documents/{id} {name, content}: renames and/or replaces the content."
+   },
+   "delete_item": {
+    "method": "DELETE",
+    "path": "/v1/documents/{item_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.dev.runwayml.com/api/#tag/Documents/paths/~1v1~1documents~1%7Bid%7D/delete",
+    "note": "DELETE /v1/documents/{id} (204): deletes a knowledge document."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.dev.runwayml.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 9/9 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 9/9 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

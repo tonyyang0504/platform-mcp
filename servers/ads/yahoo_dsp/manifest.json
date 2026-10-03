@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "yahoo_dsp-mcp",
+ "display_name": "Yahoo DSP MCP",
+ "version": "0.1.0",
+ "description": "Yahoo DSP (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps to a documented en",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "yahoo_dsp"
+   ],
+   "env": {
+    "PLATFORM_MCP_YAHOO_DSP_CLIENT_ID": "${user_config.platform_mcp_yahoo_dsp_client_id}",
+    "PLATFORM_MCP_YAHOO_DSP_CLIENT_SECRET": "${user_config.platform_mcp_yahoo_dsp_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_yahoo_dsp_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_DSP_CLIENT_ID",
+   "description": "DSP API client ID (DSP UI → your name → My Account → Activate; shown once). The JWT issuer is built as idb2b.dsp.dspapi.<client_id>, so enter the ID without that prefix.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yahoo_dsp_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YAHOO_DSP_CLIENT_SECRET",
+   "description": "DSP API client secret shown with the client ID; it signs the HS256 client assertion.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /traffic/seats: the seats the API user can access; verifies the JWT client assertion and the X-Auth-Token."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /traffic/advertisers?page&limit (max 100): advertisers on the seat; the id is the accountId used for campaigns."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /traffic/campaigns?accountId&page&limit (max 100). budget/daily_budget come from the first budget schedule (all schedules are in raw.budgetSchedules). `status` is not applied."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /traffic/campaigns/{id} {status: PAUSED | ACTIVE} (partial update)."
+  }
+ ]
+}

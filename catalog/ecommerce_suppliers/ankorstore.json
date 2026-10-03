@@ -1,0 +1,240 @@
+{
+ "id": "ankorstore",
+ "category": "ecommerce_suppliers",
+ "label": "Ankorstore",
+ "lane": "manual",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.ankorstore.com/landings/integrations-api",
+ "url": "https://www.ankorstore.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "not published (brand-side public API; credentials via the brand account / stock@ankorstore.com)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "orders",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint ref",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Brand-side API for Ankorstore sellers; retailers order in the marketplace UI (wholesale MOQ / first-order terms in the retailer agreement, not read); no automation clause read.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.ankorstore.com/",
+   "https://r.jina.ai/https://www.ankorstore.com/",
+   "https://r.jina.ai/https://www.ankorstore.com/landings/integrations-api",
+   "https://developers.ankorstore.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.ankorstore.com",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://www.ankorstore.com/oauth/token",
+   "client_auth": "body",
+   "scope": "*",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "client_id of an application created under Account > Integrations (https://ankorstore.com/account/integrations) of an Ankorstore BRAND account; exchanged at POST https://www.ankorstore.com/oauth/token (grant_type=client_credentials, scope=*) for a 1-hour bearer token that is renewed automatically."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "client_secret of that application (sent in the form body of the token request)."
+    }
+   ]
+  },
+  "headers": {
+   "Accept": "application/vnd.api+json"
+  },
+  "rate_per_second": 1,
+  "terms": "Ankorstore's public API is the BRAND (seller) API: it reads the brand's own catalogue and the wholesale orders retailers placed with it. There is no retailer-side sourcing or purchasing API.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v1/me/config",
+    "docs": "https://ankorstore.github.io/api-docs/#tag/Ankorstore_Getting-Started",
+    "note": "GET /api/v1/me/config is the documented connection check ({data{type: user-configs, id, attributes{currency, country}}})."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/api/v1/products",
+    "params": {
+     "page[limit]": "limit"
+    },
+    "default_limit": 15,
+    "max_limit": 50,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "attributes.name",
+      "wholesale_price_cents": "attributes.wholesalePrice",
+      "retail_price_cents": "attributes.retailPrice",
+      "active": "attributes.active",
+      "out_of_stock": "attributes.outOfStock"
+     }
+    },
+    "docs": "https://ankorstore.github.io/api-docs/#tag/Ankorstore_Catalog/operation/list-products--Ankorstore",
+    "note": "The brand's OWN products (JSON:API data[{id, attributes{name, description, wholesalePrice, retailPrice (minor units, e.g. 426 = 4.26 in the brand currency), active, outOfStock, archived}}]). `query` and `category` are not accepted by the endpoint. Pagination is cursor-based (page[after] = last id of the previous page), which the vocabulary's page number cannot express: only the first page (up to 50) is returned and `page` is ignored."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/api/v1/products/{id}",
+    "fixed_params": {
+     "include": "productVariant"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "attributes.name",
+      "description": "attributes.description",
+      "wholesale_price_cents": "attributes.wholesalePrice",
+      "retail_price_cents": "attributes.retailPrice",
+      "out_of_stock": "attributes.outOfStock"
+     }
+    },
+    "docs": "https://ankorstore.github.io/api-docs/#tag/Ankorstore_Catalog/operation/get-product--Ankorstore",
+    "note": "One of the brand's products by uuid; prices are minor units in the brand currency. The product variants (sku, stock) are requested with include=productVariant and sit in the response's top-level `included`, which is not part of `raw`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/api/v1/orders/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "status": "attributes.status",
+      "currency": "attributes.brandCurrency",
+      "total_cents": "attributes.brandTotalAmountWithVat",
+      "created_at": "attributes.createdAt",
+      "tracking_number": "attributes.shippingOverview.parcels.0.trackedPackage.trackingNumber",
+      "reference": "attributes.reference",
+      "master_order_id": "attributes.masterOrderId"
+     }
+    },
+    "docs": "https://ankorstore.github.io/api-docs/#tag/Ankorstore_Ordering/operation/get-internal-order--Ankorstore",
+    "note": "A retailer's wholesale order placed WITH the brand (uuid). Amounts are minor units (brandTotalAmountWithVat 23405 = 234.05 in brandCurrency), hence `total_cents` instead of `total`; status is one of the Ankorstore order states (ankorstore_confirmed, brand_confirmed, shipped, received, invoiced, ...)."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/api/v1/orders/{order_id}",
+    "result": {
+     "items": "data.attributes.shippingOverview.parcels",
+     "key": "events",
+     "fields": {
+      "tracking_number": "trackedPackage.trackingNumber",
+      "tracking_url": "trackedPackage.trackingLink",
+      "status": "trackedPackage.currentStatus.status",
+      "details": "trackedPackage.currentStatus.statusDetails",
+      "date": "trackedPackage.currentStatus.updatedAt"
+     }
+    },
+    "docs": "https://ankorstore.github.io/api-docs/#tag/Ankorstore_Ordering/operation/get-internal-order--Ankorstore",
+    "note": "The parcels of the order's shippingOverview (one event per parcel with its latest carrier status); empty until the order is shipped with Ankorstore shipping."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /api/v1/orders/{order}/shipping-quotes quotes a label for an existing retailer order from parcel dimensions; there is no product/country shipping estimate.",
+   "create_order": "The brand API cannot buy: retailers place wholesale orders in the Ankorstore marketplace UI. (Order-pay orders and POST /api/testing/orders/create are brand-invoicing and sandbox tools, not purchases from a supplier.)"
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host www.ankorstore.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token www.ankorstore.com/oauth/token: 401 invalid_client",
+   "spec https://ankorstore.github.io/api-docs/: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

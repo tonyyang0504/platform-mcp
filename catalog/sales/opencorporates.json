@@ -1,0 +1,118 @@
+{
+ "id": "opencorporates",
+ "category": "sales",
+ "label": "OpenCorporates",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.opencorporates.com/documentation/API-Reference",
+ "url": "https://opencorporates.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "opencorporates.com answers 403 to fetches (no robots.txt served); the REST API 0.4 needs an API token (free for open-data / public-benefit use, paid commercial); data is share-alike licensed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.opencorporates.com/v0.4",
+  "auth": {
+   "type": "query",
+   "param": "api_token",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "OpenCorporates API token ('available from your account page on OpenCorporates'), sent as the api_token query parameter on every request."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "No per-second figure on the page; the quota is per account ('By default you're allowed up to 200 requests per month, and 50 requests per day', more on paid plans).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/account_status",
+    "docs": "https://api.opencorporates.com/documentation/API-Reference",
+    "note": "GET /account_status returns the plan, expiry and calls_remaining (today / this_month) for the token."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/companies/search",
+    "params": {
+     "q": "query",
+     "country_code": "country",
+     "per_page": "limit",
+     "page": "page"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "results.companies",
+     "key": "companies",
+     "total": "results.total_count",
+     "fields": {
+      "id": "company.company_number",
+      "name": "company.name",
+      "country": "company.jurisdiction_code",
+      "address": "company.registered_address_in_full",
+      "founded": "company.incorporation_date",
+      "url": "company.opencorporates_url"
+     }
+    },
+    "docs": "https://api.opencorporates.com/documentation/API-Reference",
+    "note": "Name search ('companies whose name matches the given search term'); `country` maps to country_code. `country` in the result is the OpenCorporates jurisdiction_code (ISO alpha-2, or alpha-2 plus subdivision such as us_de). Company numbers are only unique per jurisdiction: pass `<jurisdiction_code>/<company_number>` (raw.company.jurisdiction_code + raw.company.company_number) to get_company. per_page max 100, page ≤ 100. industry_codes[] is documented but its inner shape is not, so `industry` stays in raw."
+   },
+   "get_company": {
+    "method": "GET",
+    "path": "/companies/{id}",
+    "result": {
+     "root": "results.company",
+     "fields": {
+      "id": "company_number",
+      "name": "name",
+      "country": "jurisdiction_code",
+      "address": "registered_address_in_full",
+      "founded": "incorporation_date",
+      "url": "opencorporates_url"
+     }
+    },
+    "docs": "https://api.opencorporates.com/documentation/API-Reference",
+    "note": "GET /companies/:jurisdiction_code/:company_number — `id` must be `<jurisdiction_code>/<company_number>`, e.g. gb/00102498."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.opencorporates.com: DNS ok, TLSv1.3 (GoDaddy.com)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

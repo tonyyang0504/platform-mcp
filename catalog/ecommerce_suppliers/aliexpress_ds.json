@@ -1,0 +1,354 @@
+{
+ "id": "aliexpress_ds",
+ "category": "ecommerce_suppliers",
+ "label": "AliExpress Dropshipping (DS) API / AliExpress Open Platform",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://openservice.aliexpress.com/doc/doc.htm#/?docId=1646",
+ "url": "https://ds.aliexpress.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "UNCONFIRMED (Open Platform agreement not read)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (app key + secret; oauth code from the app callback (3-minute validity) → GET/POST /auth/token/create → access_token + refresh_token; /auth/token/refresh)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "Official SDKs advertised on the portal ('Rich API endpoints for all eCommerce domains'); language list not readable"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (AE-Dropshipper API group).",
+  "base_urls": [],
+  "auth": [
+   "1. Register the platform's app on the Open Platform (category + review)",
+   "2. Tenant (AliExpress buyer / dropshipper) authorises the app → callback returns an oauth `code` (valid 3 minutes)",
+   "3. Exchange it: GET/POST `/auth/token/create` → `access_token`, `refresh_token`, `expires_in`",
+   "4. Renew with `/auth/token/refresh`; sign every call with app key + secret"
+  ],
+  "endpoints": [
+   {
+    "call": "AE-Dropshipper group (aliexpress.ds.*)",
+    "purpose": "product detail, freight query, order create, order tracking, feed / recommendations",
+    "notes": "group visible in the index; method pages JS-rendered"
+   },
+   {
+    "call": "AE-物流 / AE-Logistics",
+    "purpose": "logistics tracking",
+    "notes": ""
+   },
+   {
+    "call": "AE-交易",
+    "purpose": "trade / order read",
+    "notes": ""
+   },
+   {
+    "call": "/auth/token/create · /auth/token/refresh",
+    "purpose": "OAuth tokens",
+    "notes": "documented"
+   }
+  ],
+  "limits": " Not readable (quota policy lives in the App Console). - Open Platform app review + dropshipper authorization per tenant - Service-market apps: '授权策略为订购者授权，需让商家首先购买服务市场服务后再进行授权调用' - Developer agreement not readable from this host",
+  "mcp_sdk": [
+   "Official SDKs advertised on the portal ('Rich API endpoints for all eCommerce domains'); language list not readable"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://openservice.aliexpress.com/",
+   "https://r.jina.ai/https://open.aliexpress.com/doc/api.htm",
+   "https://r.jina.ai/https://openservice.aliexpress.com/doc/api.htm",
+   "https://r.jina.ai/https://openservice.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api-sg.aliexpress.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "ship_to_country",
+    "required": true,
+    "help": "Two-letter destination country used for DS prices, stock and search (countryCode / ship_to_country), e.g. US."
+   },
+   {
+    "name": "currency",
+    "required": true,
+    "help": "Currency for search and product prices (currency / target_currency), e.g. USD."
+   },
+   {
+    "name": "language",
+    "required": true,
+    "help": "Locale for search, product text and tracking (local / target_language / language), e.g. en_US."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key",
+    "access_token": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "App Key of your AliExpress Open Platform Dropshipping app (Console > App Management; https://openservice.aliexpress.com/doc/doc.htm#/?docId=1589)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app; signs every call (uppercase hex HMAC-SHA256 over the parameters sorted by name as name+value, docId=1386). Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Buyer (dropshipper) access_token from the authorization-code exchange /auth/token/create (docId=1592). Production tokens last 30 days (expires_in 2592000); renew with /auth/token/refresh (docId=1593) and update this value — the runtime does not refresh it."
+    }
+   ],
+   "sign": {
+    "payload": "{sorted_params}",
+    "key_field": "app_secret",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "case": "upper",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "params": {
+     "sign_method": "sha256"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.ds.member.benefit.get"
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.member.benefit.get&methodType=GET/POST",
+    "note": "aliexpress.ds.member.benefit.get: the connected dropshipper's DS benefits ({aliexpress_ds_member_benefit_get_response: {result: [{code: 'auto-pay', title, canApply, canBenefit}]}}); an IllegalAccessToken error means the access_token expired."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.ds.text.search"
+    },
+    "params": {
+     "keyWord": "query",
+     "categoryId": "category",
+     "pageIndex": "page",
+     "pageSize": "limit",
+     "countryCode": "@ship_to_country",
+     "currency": "@currency",
+     "local": "@language"
+    },
+    "max_limit": 50,
+    "result": {
+     "items": "aliexpress_ds_text_search_response.data.products",
+     "key": "products",
+     "total": "aliexpress_ds_text_search_response.data.totalCount",
+     "fields": {
+      "id": "itemId",
+      "title": "title",
+      "price": "targetSalePrice",
+      "currency": "targetOriginalPriceCurrency",
+      "url": "itemUrl",
+      "image_url": "itemMainPic",
+      "original_price": "targetOriginalPrice",
+      "category_id": "cateId",
+      "orders": "orders",
+      "score": "evaluateRate"
+     }
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.text.search&methodType=GET/POST",
+    "note": "aliexpress.ds.text.search (docId=1698): keyword search of the AliExpress DS catalogue for the configured country/currency/locale; `category` is an AliExpress categoryId (aliexpress.ds.category.get). Prices are strings in the configured currency; `id` is the product_id for get_product."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.ds.product.get"
+    },
+    "params": {
+     "product_id": "id",
+     "ship_to_country": "@ship_to_country",
+     "target_currency": "@currency",
+     "target_language": "@language"
+    },
+    "result": {
+     "root": "aliexpress_ds_product_get_response.result",
+     "fields": {
+      "id": "ae_item_base_info_dto.product_id",
+      "title": "ae_item_base_info_dto.subject",
+      "price": "ae_item_sku_info_dtos.0.offer_sale_price",
+      "currency": "ae_item_sku_info_dtos.0.currency_code",
+      "sku": "ae_item_sku_info_dtos.0.sku_attr",
+      "stock": "ae_item_sku_info_dtos.0.sku_available_stock",
+      "status": "ae_item_base_info_dto.product_status_type"
+     }
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.product.get&methodType=GET/POST",
+    "note": "aliexpress.ds.product.get (docId=1790): full DS product — ae_item_base_info_dto (subject, detail HTML), ae_item_sku_info_dtos[] (sku_id, sku_attr, sku_price, offer_sale_price, sku_available_stock, currency_code), ae_multimedia_info_dto.image_urls (';'-separated), package_info_dto, logistics_info_dto, ae_store_info in `raw`. The mapped price/sku/stock are the FIRST SKU's; `sku_attr` is what create_order's items take."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.ds.order.create"
+    },
+    "params": {
+     "param_place_order_request4_open_api_d_t_o": "jsonstr:{\"logistics_address\": {shipping_address}, \"product_items\": {items}}"
+    },
+    "result": {
+     "root": "aliexpress_ds_order_create_response.result",
+     "fields": {
+      "id": "order_list.0",
+      "status": "is_success",
+      "error_code": "error_code",
+      "error_msg": "error_msg"
+     }
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.order.create&methodType=GET/POST",
+    "note": "aliexpress.ds.order.create (docId=1617) places an unpaid DS order (pay it in AliExpress or with API Pay, docId=1640). Pass `items` in AliExpress form: [{product_id, product_count, sku_attr (from get_product), logistics_service_name (a delivery option code), order_memo}] and `shipping_address` as the logistics_address object: {address, address2, city, province, country, zip, full_name, contact_person, mobile_no, phone_country, locale, cpf/tax_number where required}. Both are sent verbatim inside param_place_order_request4_open_api_d_t_o. Check `status` (is_success) and error_code (e.g. B_DROPSHIPPER_DELIVERY_ADDRESS_VALIDATE_FAIL, DELIVERY_METHOD_NOT_EXIST); `id` is the first AliExpress order id."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.trade.ds.order.get"
+    },
+    "params": {
+     "single_order_query": "jsonstr:{\"order_id\": {int:id}}"
+    },
+    "result": {
+     "root": "aliexpress_trade_ds_order_get_response.result",
+     "fields": {
+      "status": "order_status",
+      "total": "order_amount.amount",
+      "currency": "order_amount.currency_code",
+      "created_at": "gmt_create",
+      "tracking_number": "logistics_info_list.0.logistics_no",
+      "logistics_status": "logistics_status",
+      "carrier": "logistics_info_list.0.logistics_service"
+     }
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.trade.ds.order.get&methodType=GET/POST",
+    "note": "aliexpress.trade.ds.order.get (docId=1595): order_status (PLACE_ORDER_SUCCESS, IN_CANCEL, WAIT_SELLER_SEND_GOODS, SELLER_PART_SEND_GOODS, WAIT_BUYER_ACCEPT_GOODS, FUND_PROCESSING, FINISH, ...), logistics_status, amounts, child_order_list and logistics_info_list in `raw`. The response carries no order id, so `id` is not returned."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/sync",
+    "fixed_params": {
+     "method": "aliexpress.ds.order.tracking.get"
+    },
+    "params": {
+     "ae_order_id": "order_id",
+     "language": "@language"
+    },
+    "result": {
+     "items": "aliexpress_ds_order_tracking_get_response.result.data.tracking_detail_line_list",
+     "key": "events",
+     "fields": {
+      "tracking_number": "mail_no",
+      "carrier": "carrier_name",
+      "carrier_partner": "cp_name",
+      "carrier_url": "cp_website_url",
+      "eta": "eta_time_stamps",
+      "latest": "detail_node_list.0.tracking_detail_desc",
+      "latest_at": "detail_node_list.0.time_stamp",
+      "nodes": "detail_node_list"
+     }
+    },
+    "docs": "https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.order.tracking.get&methodType=GET/POST",
+    "note": "aliexpress.ds.order.tracking.get (docId=1660): one row per parcel {mail_no, carrier_name, cp_name, eta_time_stamps (ms), detail_node_list[{tracking_name, tracking_detail_desc, time_stamp (ms)}], package_item_list}. 'TRACKING DATA NOT FOUND' until the seller ships."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "aliexpress.ds.freight.query (https://openservice.aliexpress.com/doc/doc.htm#/?docId=1597) requires queryDeliveryReq.selectedSkuId ('Selected sku (From aliexpres.product.get)', Required: Yes) besides productId, shipToCountry and quantity; the vocabulary's quote_shipping has no SKU input, so a valid request cannot be built."
+  },
+  "terms": "AliExpress Open Platform: business interfaces are called at https://api-sg.aliexpress.com/sync?method={api_path}&{query} and signed over every parameter sorted by name (docId=1385, 1386)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, ship_to_country, currency, language; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

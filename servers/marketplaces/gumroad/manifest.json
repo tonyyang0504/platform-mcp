@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "gumroad-mcp",
+ "display_name": "Gumroad MCP",
+ "version": "0.1.0",
+ "description": "Gumroad (marketplaces): me, list_products, get_product, create_product, update_price, list_sales, re",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gumroad"
+   ],
+   "env": {
+    "PLATFORM_MCP_GUMROAD_ACCESS_TOKEN": "${user_config.platform_mcp_gumroad_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_gumroad_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GUMROAD_ACCESS_TOKEN",
+   "description": "Gumroad access token (Settings > Advanced > Applications > Create application > Generate access token; scopes view_profile, edit_products, view_sales, edit_sales) sent as Authorization: Bearer. The API page's curl examples pass the same token as the access_token parameter instead.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /user (view_profile) returns {success, user{bio, name, twitter_handle, user_id, email (view_sales scope), url, profile_picture_url}}."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /products returns ALL of the account's products unpaged: {success, products[{id, name, description, price (INTEGER in the smallest currency unit, e.g. 100 = $1.00), currency (lowercase, e.g. usd), published, deleted, short_url, thumbnail_url, sales_count, ...}]}. `page`/`limit`/`status` are not sent (ignore next_page); published/deleted are booleans in raw, so `status` is null; created/updated timestamps are not returned."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /products/:id returns {success, product{...}} with the same fields as list_products; `price` is an integer in the smallest currency unit and `status` is null (see raw.published / raw.deleted)."
+  },
+  {
+   "name": "create_product",
+   "description": "POST /products {name, description (HTML), price (required; INTEGER in the smallest currency unit — pass 1000 for $10.00), price_currency_type (ISO code, defaults to the account currency), draft: true} (edit_products scope) saves an UNPUBLISHED DRAFT digital product; publish it with PUT /products/:id/enable (not mapped). `url` is not accepted (custom_permalink is a slug, files/covers are separate uploads)."
+  },
+  {
+   "name": "update_price",
+   "description": "PUT /products/:id {price (INTEGER in the smallest currency unit, e.g. 1000 for $10.00), price_currency_type} sends only those fields (edit_products scope). Not allowed for tiered memberships (tier prices are variants). Returns the updated product."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /sales?after=since (DATE in the form YYYY-MM-DD; a datetime is not documented)&product_id (view_sales scope) lists successful sales, newest first: {success, next_page_key, sales[{id, email, product_id, product_name, price (INTEGER, smallest currency unit), currency, created_at, order_id, refunded, partially_refunded, chargedback, disputed, paid, license_key, ...}]}. Paging is by page_key/next_page_key, which page/limit cannot carry: `page` and `limit` are not sent and only the first page (raw next_page_key for the rest) is returned; `status` is null."
+  },
+  {
+   "name": "refund",
+   "description": "DESTRUCTIVE: PUT /sales/:id/refund {amount_cents} (edit_sales scope) refunds the sale in FULL when `amount` is omitted, or partially by `amount` — which is sent as amount_cents, i.e. an INTEGER in the minor units of the sale's `currency` (200 = 2.00 USD/EUR/...; JPY has no minor unit, so 200 = ¥200). Multiple partial refunds are allowed until fully refunded. `reason` is not accepted. Returns {success, sale{... refunded, partially_refunded}}; `amount` is the sale price, `status` is null."
+  }
+ ]
+}

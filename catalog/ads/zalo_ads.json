@@ -1,0 +1,123 @@
+{
+ "id": "zalo_ads",
+ "category": "ads",
+ "label": "Zalo Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "sea",
+  "vn"
+ ],
+ "docs_url": "https://developers.zalo.me/docs/official-account/quan-ly/quan-ly-form-zalo-ads/lay-noi-dung-form-zalo-ads",
+ "url": "https://ads.zalo.me/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Zalo Official Account (OA) + Zalo Developers app; OA access token; lead-form endpoint documented under Official Account › Quản lý › Quản lý form Zalo Ads. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Zalo Official Account access token)",
+  "access": "signup",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (lead-form retrieval via the Official Account API only) Confidence: **medium**.",
+  "base_urls": [
+   "https://openapi.zalo.me/v2.0/oa/…"
+  ],
+  "auth": [
+   "1. Create a Zalo Developers app and link the Official Account; obtain the OA access token (OAuth).",
+   "2. Call the 'Lấy nội dung form Zalo Ads' endpoint to pull lead submissions from Zalo Ads forms.",
+   "3. Campaigns are managed in ads.zalo.me (UI)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET …/oa/… form Zalo Ads",
+    "purpose": "lead-form content (leads)",
+    "notes": "form id, submission fields"
+   },
+   {
+    "call": "campaigns · budgets · creatives · reports",
+    "purpose": "not in API",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Zalo OA API quotas; free; Zalo Developer terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.zalo.me/docs/official-account/quan-ly/quan-ly-form-zalo-ads/lay-noi-dung-form-zalo-ads",
+   "https://ads.zalo.me/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: the only Zalo Ads page in Zalo for Developers (https://developers.zalo.me/docs/official-account/quan-ly/quan-ly-form-zalo-ads/lay-noi-dung-form-zalo-ads, under Zalo Official Account > Quản lý) reads lead-form submissions with an Official Account token; the API nav lists Zalo Official Account, ZBS Template Message and Zalo Social only. There is no Zalo Ads campaign, budget or report API to map."
+}

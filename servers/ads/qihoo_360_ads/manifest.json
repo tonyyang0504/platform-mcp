@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "qihoo_360_ads-mcp",
+ "display_name": "360 点睛营销平台 360 Ads MCP",
+ "version": "0.1.0",
+ "description": "360 点睛营销平台 360 Ads (ads): me, get_report, update_budget, pause_resume. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "qihoo_360_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_QIHOO_360_ADS_API_KEY": "${user_config.platform_mcp_qihoo_360_ads_api_key}",
+    "PLATFORM_MCP_QIHOO_360_ADS_USERNAME": "${user_config.platform_mcp_qihoo_360_ads_username}",
+    "PLATFORM_MCP_QIHOO_360_ADS_ENCRYPTED_PASSWORD": "${user_config.platform_mcp_qihoo_360_ads_encrypted_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_qihoo_360_ads_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_QIHOO_360_ADS_API_KEY",
+   "description": "ApiKey e-mailed after the open.e.360.cn developer application is approved; sent as the `apiKey` HTTP header on every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_qihoo_360_ads_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_QIHOO_360_ADS_USERNAME",
+   "description": "360 点睛 account login name (clientLogin `username`).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_qihoo_360_ads_encrypted_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_QIHOO_360_ADS_ENCRYPTED_PASSWORD",
+   "description": "clientLogin `passwd`: AES-CBC(MD5(password)) with key = first 16 characters of the ApiSecret and IV = last 16, as 64 lowercase hex characters (身份认证: '秘钥是apiSecret 的前16位，向量是后16位'). It is a fixed value, so compute it once with 360's official 'openAPI登录接口AES调试工具' or its code samples; the password itself is never needed. Five wrong logins lock the account until the next day.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "POST uc/account/getInfo (headers apiKey + accessToken) → uid, userName, balance, budget … of the logged-in account."
+  },
+  {
+   "name": "get_report",
+   "description": "POST dianjing/report/campaign (form startDate, endDate, type=all, page) — settled campaign report, at most 90 days and up to yesterday (ready after ~08:30 Beijing time; error 70109 before that), 1000 rows per page. The account is the logged-in one (`account_id` is not sent) and `campaign_id` is not a documented filter. spend is totalCost in CNY."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST dianjing/campaign/update (form id, budget): budget is the campaign's daily budget in whole CNY (0 = unlimited; a fractional amount is rejected before sending). This changes spend. `currency` is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST dianjing/campaign/update (form id, status=pause|enable). Resuming restarts spend."
+  }
+ ]
+}

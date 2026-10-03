@@ -1,0 +1,35 @@
+{
+ "id": "carview",
+ "category": "automotive",
+ "label": "Ucar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://ucar.carview.yahoo.co.jp",
+ "domain": "ucar.carview.yahoo.co.jp",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No carview/Yahoo! Auto used-car API in Yahoo! Developer Network.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.yahoo.co.jp/changelog/auctions.html"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

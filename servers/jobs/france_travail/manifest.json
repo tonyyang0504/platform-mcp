@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "france_travail-mcp",
+ "display_name": "France Travail MCP",
+ "version": "0.1.0",
+ "description": "France Travail (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "france_travail"
+   ],
+   "env": {
+    "PLATFORM_MCP_FRANCE_TRAVAIL_CLIENT_ID": "${user_config.platform_mcp_france_travail_client_id}",
+    "PLATFORM_MCP_FRANCE_TRAVAIL_CLIENT_SECRET": "${user_config.platform_mcp_france_travail_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_france_travail_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FRANCE_TRAVAIL_CLIENT_ID",
+   "description": "Identifiant client of a francetravail.io application subscribed to the 'Offres d'emploi' API (create it at https://francetravail.io/inscription, then add the API to the application).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_france_travail_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FRANCE_TRAVAIL_CLIENT_SECRET",
+   "description": "Clé secrète of the same francetravail.io application.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET /v2/offres/search ('Rechercher par critères'). motsCles is the keyword filter (each keyword at least 2 characters, several separated by commas). The place filters take INSEE codes (commune, departement, region), so location/country are not sent. Paging is the `range` parameter 'p-d' (first-last index, at most 150 per call); the runtime cannot compute the end index, so `range` is not sent and the platform's default window (the first 150 offers) is returned — `page` and `limit` are ignored. The total is only in the Content-Range header, so total is null. HTTP 206 (partial list) is a success; an empty search answers 204 (no postings). Salary is a label (salaire.libelle, in raw), not numbers."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v2/offres/{offerId} ('Consulter une offre', offerId is the 7-character offer id, e.g. 048KLTP). origineOffre.urlOrigine is the offer's page on francetravail.fr; e-mail contacts are masked by the platform (apply through that page). salaire.libelle, typeContrat and the rest stay in raw."
+  }
+ ]
+}

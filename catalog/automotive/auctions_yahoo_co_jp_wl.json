@@ -1,0 +1,36 @@
+{
+ "id": "auctions_yahoo_co_jp_wl",
+ "category": "automotive",
+ "label": "Yahoo Auctions Japan (automobiles)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://auctions.yahoo.co.jp",
+ "domain": "auctions.yahoo.co.jp",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). Yahoo! Auctions Web API was discontinued (2020); a contract-only listing API was never publicly documented.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.yahoo.co.jp/changelog/auctions.html",
+   "https://techblog.yahoo.co.jp/web/auctions/submit-api/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

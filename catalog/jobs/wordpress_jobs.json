@@ -1,0 +1,134 @@
+{
+ "id": "wordpress_jobs",
+ "category": "jobs",
+ "label": "WordPress.net Jobs",
+ "lane": "human",
+ "kind": "tech",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobs.wordpress.net/feed/",
+ "url": "https://jobs.wordpress.net/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Community board; posts give a contact — a person applies.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml (site + per-category feeds)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the RSS feeds (site-wide and per job_category) are usable public feeds",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Community board run by WordPress.org (WP Job Manager); public RSS, no API, robots.txt one rule; no terms page for the board.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jobs.wordpress.net/",
+   "https://jobs.wordpress.net/robots.txt",
+   "https://jobs.wordpress.net/feed/",
+   "https://jobs.wordpress.net/job_category/development/feed/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobs.wordpress.net",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/feed/",
+    "params": {
+     "s": "query",
+     "paged": "page"
+    },
+    "default_limit": 10,
+    "max_limit": 10,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "encoded"
+     }
+    },
+    "docs": "https://jobs.wordpress.net/feed/",
+    "note": "jobs.wordpress.net WordPress RSS 2.0 feed (10 latest job posts). s is WordPress's feed search (https://wordpress.org/documentation/article/wordpress-feeds/; checked 2026-09-25: ?s=developer narrows the feed) and paged selects older posts (a page past the end answers 404 -> invalid_input). location and limit are not sent. description is the full post (content:encoded, HTML); the excerpt is raw.description and the post id raw['post-id']. id is the job permalink."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

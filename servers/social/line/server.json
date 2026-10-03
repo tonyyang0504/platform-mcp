@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/line-social-mcp",
+ "description": "LINE (social): me, publish_text, publish_image, analytics_post. Every tool maps to a documented endp",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.line.biz/en/docs/messaging-api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/line"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LINE_CHANNEL_ACCESS_TOKEN",
+     "description": "Channel access token of the LINE Official Account's Messaging API channel (long-lived token from the LINE Developers Console, or a v2.1 token), sent as 'Authorization: Bearer {channel access token}' (securitySchemes Bearer in https://github.com/line/line-openapi/blob/main/messaging-api.yml).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

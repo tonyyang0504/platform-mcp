@@ -1,0 +1,148 @@
+{
+ "id": "unreal_forums_jobs",
+ "category": "jobs",
+ "label": "Unreal Engine forums: Job Offerings",
+ "lane": "human",
+ "kind": "gaming",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss",
+ "url": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76",
+ "verified_at": "2026-09-25",
+ "terms_note": "Forum posts; contact by DM/e-mail — human lane.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss",
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml (Discourse category RSS)",
+   "job_search (Discourse category JSON)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the Discourse category RSS (application/rss+xml) and .json (public Discourse API) can be read as a feed at a gentle cadence, noting robots.txt disallows /c/*.rss for crawlers",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Epic Developer Community Forums (Discourse): category .rss and .json answer publicly; the ToS page returned 403 to the audit host so the automation clauses were not read; robots.txt has 28 rules incl. Disallow: / for unlisted agents.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76",
+   "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss",
+   "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.json",
+   "https://forums.unrealengine.com/robots.txt",
+   "https://forums.unrealengine.com/tos"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://forums.unrealengine.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/search.json",
+    "params": {
+     "q": "fmt:{query} #got-skills-looking-for-talent:job-offerings order:latest",
+     "page": "page"
+    },
+    "default_limit": 50,
+    "result": {
+     "items": "topics",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "posted_at": "created_at",
+      "description": "excerpt"
+     }
+    },
+    "docs": "https://docs.discourse.org/#tag/Search/operation/search",
+    "note": "The forum runs Discourse, whose public API (https://docs.discourse.org) serves GET /search.json?q=… without a key for public categories. The query is scoped to the Job Offerings category with Discourse's '#<category>' option ('#got-skills-looking-for-talent:job-offerings', category id 76) and ordered newest first ('order:latest'); page pages the results (Discourse returns up to 50 per page and sets grouped_search_result.more_full_page_results when there are more). Postings are community forum topics (paid, royalty and unpaid offers mixed; the title usually carries a [PAID]/[UNPAID] tag), id is the topic id (use it with get_posting), and the topic URL is https://forums.unrealengine.com/t/{slug}/{id}. Matching posts' blurbs and authors are in the response's posts[] (not mapped). Keep polling gentle; this is a community forum."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/t/{id}.json",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "posted_at": "created_at",
+      "description": "post_stream.posts.0.cooked"
+     }
+    },
+    "docs": "https://docs.discourse.org/#tag/Topics/operation/getTopic",
+    "note": "GET /t/{id}.json 'Get a single topic'; description is the opening post's HTML (post_stream.posts[0].cooked, where the poster describes the role and how to contact them); slug, category_id, tags and the reply posts are in raw."
+   }
+  },
+  "not_offered": {
+   "me": "Public, keyless reads; there is no account to verify without a Discourse user API key.",
+   "apply": "The job offers are forum topics; candidates reply or contact the poster by forum message or the e-mail given in the post — there is no application endpoint.",
+   "list_messages": "Reading private messages needs a Discourse user API key for a forums.unrealengine.com account (Epic account sign-in), which this keyless adapter does not use."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "one 429 in the full run after deals/unreal_forums_jobs hit the same Discourse host; clean on rerun; all read tools answered, schema-valid, pagination advances"
+ }
+}

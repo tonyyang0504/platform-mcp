@@ -1,0 +1,48 @@
+{
+ "id": "quikrcars",
+ "category": "automotive",
+ "label": "Quikr",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.quikr.com",
+ "domain": "quikr.com",
+ "country": "India",
+ "official_api": true,
+ "docs_url": "https://developer.quikr.com/index.php/documentation",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "App ID + HMAC-SHA1 signed daily access token",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). Quikr Developer Platform documents ads-by-location/category, post/edit ad and image APIs with app-id/HMAC tokens; portal looks legacy but token endpoint still responds.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.quikr.com/",
+   "https://developer.quikr.com/index.php/documentation"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/quikr",
+   "https://providers.apievangelist.com/providers/quikr/",
+   "https://github.com/api-evangelist/quikr/tree/main/kin"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "needs_runtime",
+ "reason": "Quikr Developer Platform (https://developer.quikr.com/index.php/documentation, rendered 2026-09-25) documents Ads by Location/Category and ad posting, but every call carries X-Quikr-Signature-v2 = HMAC-SHA1 keyed with the daily minted token over appId+email+yyyy-MM-dd, and the token request itself is signed with HMAC-SHA1(app_secret, email+appId+yyyy-MM-dd). The runtime signs only with a credential field as key and has no yyyy-MM-dd date placeholder in token signatures, so neither step can be expressed."
+}

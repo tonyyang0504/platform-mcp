@@ -1,0 +1,18 @@
+{
+ "id": "intl_equities_collector",
+ "category": "market_data",
+ "label": "International equities (Yahoo Finance)",
+ "provider": "Yahoo Finance",
+ "lane": "api",
+ "base_urls": [
+  "https://query1.finance.yahoo.com",
+  "https://query2.finance.yahoo.com"
+ ],
+ "data_kinds": [
+  "candles (daily/1h/1m equities)",
+  "dividends/splits/adjclose",
+  "global benchmark series (index/FX/commodity/rate)"
+ ],
+ "auth": "none (browser-ish User-Agent required)",
+ "docs_url": null
+}

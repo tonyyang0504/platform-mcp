@@ -1,0 +1,142 @@
+{
+ "id": "arbeitnow",
+ "category": "jobs",
+ "label": "Arbeitnow",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "de",
+  "eu",
+  "global"
+ ],
+ "docs_url": "https://documenter.getpostman.com/view/18545278/UVJbJdKh",
+ "url": "https://www.arbeitnow.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Public job-board API (Germany/EU remote + visa jobs); external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://documenter.getpostman.com/view/18545278/UVJbJdKh (Postman collection, JS-rendered)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — free, keyless GET https://www.arbeitnow.com/api/job-board-api?page=N returns {data:[{slug, company_name, title, description (HTML), remote, url, tags[], job_types[], location, created",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " no key, no published rate limit, robots.txt has a single rule. Terms: the API is provided 'as is' and 'as available' without warranties and 'We may revoke the permission to use API at any time'; no key, no published rate limit, robots.txt has a single rule. Job posting is the paid side; applying is on the employer's site.",
+  "mcp_sdk": [
+   "https://documenter.getpostman.com/view/18545278/UVJbJdKh (Postman collection, JS-rendered)"
+  ],
+  "sources": [
+   "https://www.arbeitnow.com/",
+   "https://www.arbeitnow.com/robots.txt",
+   "https://www.arbeitnow.com/api/job-board-api",
+   "https://www.arbeitnow.com/api/job-board-api?page=1",
+   "https://www.arbeitnow.com/terms",
+   "https://documenter.getpostman.com/view/18545278/UVJbJdKh"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.arbeitnow.com/api",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/job-board-api",
+    "params": {
+     "page": "page"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "company": "company_name",
+      "location": "location",
+      "url": "url",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.arbeitnow.com/api/job-board-api",
+    "note": "Keyless feed whose only documented parameter is page, so query and location are not sent — filter the returned postings client-side; the page size is fixed by the platform (do not pass limit). description is HTML; remote, tags[], job_types[] and created_at (type not documented on the page) are in raw. Terms: the API is provided 'as is' and 'We may revoke the permission to use API at any time'; no published rate limit."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "Only the paginated feed is documented; re-read the record (id = slug) from the search hit.",
+   "apply": "Page: 'apply stays assist (postings link to the employer)'; 'applying is on the employer's site'.",
+   "list_messages": "No messaging API; the page documents the job feed only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

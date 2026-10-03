@@ -1,0 +1,297 @@
+{
+ "id": "criteo",
+ "category": "ads",
+ "label": "Criteo (Commerce Growth / Criteo GO)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.criteo.com/",
+ "url": "https://www.criteo.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "API requires a Criteo partner account, app and OAuth client credentials; production tier is \"Fully supported for 12 months with no breaking changes\".",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 client credentials or authorization code (POST https://api.criteo.com/oauth2/token, 15-minute bearer)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "budgets_bids",
+   "creatives_upload",
+   "audiences",
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://pypi.org/project/criteo-api-marketingsolutions-sdk/ (Python, official)",
+   "https://github.com/criteo/criteo-api-java-sdk (Java, official)",
+   "https://packagist.org/packages/criteo/criteo-api-marketingsolutions-sdk (PHP, official)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Criteo Marketing Solutions API + sibling Retail Media API).",
+  "base_urls": [
+   "https://api.criteo.com/"
+  ],
+  "auth": [
+   "1. Create a **Partner (developer) account** at https://partners.criteo.com/, then an Organization and an **API Application**, choosing the authorization domains (Marketing Solutions and/or Retail Media; read / manage).",
+   "2. My Apps → application → **Create new key** → a text file with `API Key` (client_id) and `API Secret` downloads (\"The API Secret is only available in the downloaded file\"; up to five keys per app).",
+   "3. Advertisers grant the app access through a **consent URL** / authorization request (\"different permission levels available such as read-only or manage access\"; revocable in the consent dashboard).",
+   "4. `POST https://api.criteo.com/oauth2/token` with `client_id`, `client_secret`, `grant_type=client_credentials` (or `authorization_code` + PKCE for per-advertiser apps) → `{access_token, token_type: Bearer, expires_in: 900}`; regenerate on 401."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /{ver}/advertisers/me",
+    "purpose": "advertisers the app may access (consented)",
+    "notes": "`id, advertiserName`"
+   },
+   {
+    "call": "GET /{ver}/marketing-solutions/campaigns` · `POST …/campaigns/search` · `PATCH …/campaigns",
+    "purpose": "campaigns (spend limits, goals)",
+    "notes": "`name, advertiserId, objective, spendLimit{spendLimitType, spendLimitRenewal, spendLimitAmount}`"
+   },
+   {
+    "call": "POST /{ver}/marketing-solutions/ad-sets/search` · `PATCH …/ad-sets` · `POST …/ad-sets/start` · `/stop",
+    "purpose": "ad sets = budgets + bids + schedule + targeting (\"Retrieve and update ad sets\")",
+    "notes": "`name, budget{budgetStrategy, budgetRenewal, budgetAmount}, bidding{bidAmount, bidStrategy, costController}, schedule{startDate,endDate}, targeting{}`"
+   },
+   {
+    "call": "GET /{ver}/marketing-solutions/advertisers/{id}/creatives` · `POST /creatives` · `POST /ads",
+    "purpose": "creatives + ads (image / HTML tag / dynamic templates)",
+    "notes": "`name, format, imageAttributes / htmlTagAttributes`, `ads{name, creativeId, adSetId, inventoryType}`"
+   },
+   {
+    "call": "POST /{ver}/marketing-solutions/audiences` · `PATCH …/audiences/{id}/contactlist` (add / remove hashed emails, mobile ids)",
+    "purpose": "audiences (\"create and manage audience segments … from CRM/CDP sources\")",
+    "notes": "`identifierType email / madid / gum, identifiers[]`"
+   },
+   {
+    "call": "POST /{ver}/statistics/report` (JSON or CSV) · `POST /{ver}/marketing-solutions/reports/…",
+    "purpose": "reports, 100+ metrics",
+    "notes": "`advertiserIds, startDate, endDate, dimensions[], metrics[], currency, format`"
+   },
+   {
+    "call": "GET /{ver}/marketing-solutions/catalogs` · product feeds",
+    "purpose": "catalog products for dynamic ads",
+    "notes": "feed URL / status"
+   },
+   {
+    "call": "conversions upload",
+    "purpose": "not a Marketing Solutions endpoint (Criteo OneTag / server-side events are separate)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits (criteo-apis/docs/rate-limits): client-credentials apps **250 calls/min** (application level), **40 calls/min** on reporting endpoints; authorization-code apps **10 calls/min per consented account** (auto-scaling); 429 with `x-ratelimit-limit / -remaining / -reset`. - Criteo API Terms and Conditions v2.0 (March 2025) — `criteo-apis/docs/criteo-api-terms-and-conditions`. Free API. - Target users per Criteo: \"advertisers managing large, complex, or many accounts\".",
+  "mcp_sdk": [
+   "Official SDKs: Python `criteo-api-marketingsolutions-sdk` (PyPI, github.com/criteo/criteo-api-python-sdk), Java (github.com/criteo/criteo-api-java-sdk), PHP (Packagist). Community Node client for Retail Media (joepikowski/criteo-api-nodejs-client). No MCP server on the docs."
+  ],
+  "sources": [
+   "https://developers.criteo.com/marketing-solutions/docs/welcome-to-criteo",
+   "https://developers.criteo.com/llms.txt",
+   "https://developers.criteo.com/criteo-apis/docs/authentication.md",
+   "https://developers.criteo.com/criteo-apis/docs/get-credentials.md",
+   "https://developers.criteo.com/criteo-apis/docs/rate-limits.md",
+   "https://developers.criteo.com/criteo-apis/docs/api-client-libraries.md"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.criteo.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.criteo.com/oauth2/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of a Criteo Marketing Solutions app (Developer portal > app > Create new key), sent in the form body of POST https://api.criteo.com/oauth2/token (grant_type=client_credentials)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app key's secret. Tokens last 900 seconds and are re-requested automatically; the advertisers must have approved the app's consent."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": true,
+    "help": "ISO 4217 currency for get_report (the statistics endpoint requires `currency`), e.g. EUR or USD."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/2026-07/advertisers/me",
+    "docs": "https://developers.criteo.com/marketing-solutions/v2026.07/reference/advertiser/2026-07advertisersme",
+    "note": "GET /2026-07/advertisers/me: the advertiser portfolio the app may access ({data: [{type: advertiser, id, attributes {advertiserName}}]})."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/2026-07/advertisers/me",
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "attributes.advertiserName"
+     }
+    },
+    "docs": "https://developers.criteo.com/marketing-solutions/v2026.07/reference/advertiser/2026-07advertisersme",
+    "note": "Advertisers in the app's portfolio; no currency on this record."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/2026-07/marketing-solutions/campaigns/search",
+    "body": {
+     "filters.advertiserIds.0": "account_id"
+    },
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "attributes.name",
+      "budget": "attributes.spendLimit.spendLimitAmount.value"
+     }
+    },
+    "docs": "https://developers.criteo.com/marketing-solutions/v2026.07/reference/campaign/2026-07marketing-solutionscampaignssearch",
+    "note": "POST /2026-07/marketing-solutions/campaigns/search {filters: {advertiserIds: [account_id]}}. `budget` is spendLimit.spendLimitAmount.value (renewal daily|monthly|lifetime and capped|uncapped in raw.attributes.spendLimit). Criteo campaigns have no status (delivery is started/stopped per ad set); `status` and `page` are not sent."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/2026-07/statistics/report",
+    "body": {
+     "advertiserIds": "account_id",
+     "startDate": "date_from",
+     "endDate": "date_to",
+     "format": "=json",
+     "currency": "@currency",
+     "dimensions": "json:[\"CampaignId\",\"Campaign\",\"Day\"]",
+     "metrics": "json:[\"Displays\",\"Clicks\",\"AdvertiserCost\"]"
+    },
+    "result": {
+     "items": "Rows",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "CampaignId",
+      "date": "Day",
+      "impressions": "Displays",
+      "clicks": "Clicks",
+      "spend": "AdvertiserCost"
+     }
+    },
+    "docs": "https://developers.criteo.com/marketing-solutions/v2026.07/reference/analytics/2026-07statisticsreport",
+    "note": "POST /2026-07/statistics/report (synchronous; up to two years back) with advertiserIds (comma-separated string), startDate/endDate, format=json, currency (config), dimensions CampaignId, Campaign, Day and metrics Displays, Clicks, AdvertiserCost. `campaign_id` is not applied (the endpoint filters by ad set only). The JSON rows are read from `Rows`."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/2026-07/marketing-solutions/campaigns",
+    "body": {
+     "data.0.id": "campaign_id",
+     "data.0.type": "=Campaign",
+     "data.0.attributes.spendLimit.spendLimitAmount.value": "daily_budget",
+     "data.0.attributes.spendLimit.spendLimitRenewal": "=daily",
+     "data.0.attributes.spendLimit.spendLimitType": "=capped"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.criteo.com/marketing-solutions/v2026.07/reference/campaign/2026-07marketing-solutionscampaigns-1",
+    "note": "PATCH /2026-07/marketing-solutions/campaigns {data: [{id, type: Campaign, attributes: {spendLimit: {spendLimitAmount: {value}, spendLimitRenewal: daily, spendLimitType: capped}}}]}: sets a capped daily spend limit in the advertiser currency (`currency` is ignored). A rejected patch comes back in `errors` with no data and is reported as invalid_input."
+   }
+  },
+  "not_offered": {
+   "pause_resume": "Criteo campaigns have no status: delivery is started and stopped per ad set (POST /2026-07/marketing-solutions/ad-sets/start and /ad-sets/stop with {data: [{id, type: AdSet}]}, https://developers.criteo.com/marketing-solutions/v2026.07/reference/campaign/2026-07marketing-solutionsad-setsstop), and PatchCampaign has only spendLimit/budgetAutomation/scheduledSpendLimit attributes; there is no campaign-level call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.criteo.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.criteo.com/oauth2/token: 401 invalid_client",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

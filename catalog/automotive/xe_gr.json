@@ -1,0 +1,44 @@
+{
+ "id": "xe_gr",
+ "category": "automotive",
+ "label": "Xe",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.xe.gr",
+ "domain": "xe.gr",
+ "country": "Greece",
+ "official_api": true,
+ "docs_url": "https://developers.xe.gr/automoto.html",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "per SDK docs (issued credentials)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Xrysi Efkairia developers portal publishes XE.API AutoMoto bulk-listing API (SDK/docs download) for professionals; ad-viewing API marked 'coming soon'.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.xe.gr/",
+   "https://developers.xe.gr/automoto.html",
+   "https://support.xe.gr/el/article/pws-mporw-na-diaxeiristw-mazika-tis-aggelies-aytokinhtwn-mesw-api-9oymiv/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developers.xe.gr/automoto.html): Xrysi Efkairia developers portal publishes XE.API AutoMoto bulk-listing API (SDK/docs download) for professionals; ad-viewing API marked 'coming soon'. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

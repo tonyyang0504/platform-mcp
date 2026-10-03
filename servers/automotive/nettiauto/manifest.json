@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "nettiauto-mcp",
+ "display_name": "Nettiauto MCP",
+ "version": "0.1.0",
+ "description": "Nettiauto (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "nettiauto"
+   ],
+   "env": {
+    "PLATFORM_MCP_NETTIAUTO_CLIENT_ID": "${user_config.platform_mcp_nettiauto_client_id}",
+    "PLATFORM_MCP_NETTIAUTO_CLIENT_SECRET": "${user_config.platform_mcp_nettiauto_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_nettiauto_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NETTIAUTO_CLIENT_ID",
+   "description": "Nettix API client id (Alma Media grants API access to business customers on application); used with grant_type=client_credentials at https://auth.nettix.fi/oauth2/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_nettiauto_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NETTIAUTO_CLIENT_SECRET",
+   "description": "The client's secret. The 24-hour JWT it mints is sent as the X-Access-Token header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET https://api.nettix.fi/rest/car/search (OpenAPI https://api.nettix.fi/docs/car/swagger.yaml): an array of ads for sale. make and model are Nettix option ids (integers from /options/make and /options/model, e.g. make=4), not names; query is free text (searchText); location/condition are not mapped (region/town take option ids). rows ≤ 100."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET https://api.nettix.fi/rest/car/ad/{id}: the full car ad (options as {id, fi, en}, images, equipment, seller info in raw)."
+  }
+ ]
+}

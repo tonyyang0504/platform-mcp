@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/impact_com-mcp",
+ "description": "impact.com (ads): me, list_campaigns, get_report. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://integrations.impact.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "impact_com"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_IMPACT_COM_ACCOUNT_SID",
+     "description": "Account SID of a Brand API access token (impact.com > user profile > Settings > Technical > API > Create Access Token); the HTTP Basic username and the {AccountSID} in every path.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_IMPACT_COM_AUTH_TOKEN",
+     "description": "The token's Auth Token, the HTTP Basic password. Needs read scope for programs and reports.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_IMPACT_COM_REPORT_ID",
+     "description": "Report handle for get_report, taken from GET /Advertisers/{AccountSID}/Reports (Id of a report with ApiAccessible=true, e.g. a performance-by-day report); its columns are listed by /Reports/{ReportId}/MetaData.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

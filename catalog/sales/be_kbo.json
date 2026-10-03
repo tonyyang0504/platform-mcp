@@ -1,0 +1,36 @@
+{
+ "id": "be_kbo",
+ "category": "sales",
+ "label": "KBO / BCE Public Search",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "be"
+ ],
+ "docs_url": null,
+ "url": "https://kbopub.economie.fgov.be/kbopub/zoeknaamfonetischform.html",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free public search (name, address, activities); KBO Open Data files also downloadable with a free account; no robots.txt on the path.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,133 @@
+{
+ "id": "quora",
+ "category": "ads",
+ "label": "Quora Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://business.quora.com/api-partners",
+ "url": "https://business.quora.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "No public management API: only the Conversion API is self-serve; the management / reporting API is a closed partner beta (join-API-beta form). The ToS / acceptable-use pages returned 403 on 2026-09-23, so no browser automation",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "token (Conversion API uses a pixel-scoped token; reporting API is issued to approved partners)",
+  "access": "partner_only",
+  "capabilities": [
+   "conversions_upload",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**. Quora exposes (a) a **Conversion API** for advertisers with a Quora Pixel and (b) a **reporting",
+  "base_urls": [
+   "https://www.quora.com/ads/conversion_api_doc",
+   "https://www.quora.com/ads/api…"
+  ],
+  "auth": [
+   "1. Advertiser account in Quora Ads Manager (business.quora.com → \"Get started\").",
+   "2. Conversion API: a pixel-scoped access token generated in Ads Manager (TODO(verify) exact location) sent with each server-side event.",
+   "3. Reporting API: available only to Quora API partners; a tenant connects an approved partner tool (e.g. Supermetrics / TapClicks) to pull performance data."
+  ],
+  "endpoints": [
+   {
+    "call": "Conversion API `POST` (host / path TODO(verify))",
+    "purpose": "server-side conversion events",
+    "notes": "pixel id, event name (Generic / Purchase / Add to Cart …), hashed email, click id, value, currency"
+   },
+   {
+    "call": "campaigns / ad sets / ads / budgets / bids / creatives",
+    "purpose": "**not in API** — Ads Manager UI only",
+    "notes": "—"
+   },
+   {
+    "call": "reports",
+    "purpose": "partner reporting API only (Supermetrics, TapClicks, Improvado, Funnel, Coupler.io connectors)",
+    "notes": "campaign / ad set / ad performance by day"
+   }
+  ],
+  "limits": " - No published rate limits reachable this pass. Free; Quora Ads terms and Advertising Policies apply. - Access: reporting API is partner-only — the \"API Partners\" page lists reporting, mobile-measurement (Adjust, AppsFlyer, Branch, Kochava, Singular, Apptrove) and brand-safety partners with no self-serve application link.",
+  "mcp_sdk": [
+   "None official. Third-party reporting connectors (Supermetrics, Improvado, Coupler.io, Windsor) prove the reporting API exists behind the partner gate."
+  ],
+  "sources": [
+   "https://business.quora.com/api-partners",
+   "https://www.quora.com/business/api",
+   "https://www.quora.com/ads/conversion_api_doc",
+   "https://www.quora.com/ads/api9169a6d6e9b42452d500a61717d87d15d5fa49ec5b53030741178130",
+   "https://quoraadsupport.zendesk.com/hc/en-us/articles/360029102032-Third-Party-Reporting-Partners"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: Quora publishes no Ads API reference; https://business.quora.com/api-partners lists third-party partners (Campaign Manager 360, Kochava, Apptrove, Adjust, Branch, reporting tools …) that integrate under partner agreements, and no developer documentation, endpoint, auth scheme or response shape is linked."
+}

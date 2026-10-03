@@ -1,0 +1,241 @@
+{
+ "id": "zbj",
+ "category": "deals",
+ "label": "Zhubajie",
+ "lane": "assist",
+ "kind": "freelance",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.zbj.com/",
+ "url": "https://www.zbj.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer registration + shop authorisation on the open platform; Chinese business entity typically required; no bidding API seen on the landing page.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "oauth (猪八戒账号授权 via the open platform)",
+  "access": "apply",
+  "capabilities": [
+   "orders",
+   "messages",
+   "profile_sync"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (猪八戒开放平台 — service-provider order / after-sales / CRM APIs). Lane `human` → **keep**; order sync possible for ZBJ 服务商 tenants. Confidence high (open-platform landing opened; API docs behind login).",
+  "base_urls": [
+   "https://open.zbj.com/"
+  ],
+  "auth": [
+   "1. Register as a developer on open.zbj.com → create an app → 服务商 authorises the app (猪八戒账号授权)."
+  ],
+  "endpoints": [
+   {
+    "call": "订单管理 APIs",
+    "purpose": "orders",
+    "notes": "order list / status"
+   },
+   {
+    "call": "售后管理 · 客户关系管理",
+    "purpose": "messages / CRM",
+    "notes": "—"
+   },
+   {
+    "call": "营销 APIs (关联营销 / 活动促销 / 优惠券)",
+    "purpose": "promotions",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Open-platform agreement; Chinese entity; docs behind login.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://open.zbj.com/",
+   "https://www.zbj.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://openapi.zbj.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "openid",
+    "required": true,
+    "help": "Your 猪八戒 openid (the user identifier returned by the ZOP OAuth2.0 authorisation), used by zbj.user.getUserBaseInfo."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "appKey": "app_key",
+    "accessToken": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + sorted name/value pairs + secret. Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 account."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "algorithm": "sha1",
+    "encoding": "hex",
+    "case": "upper",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "signature_param": "sign"
+   }
+  },
+  "terms": "猪八戒开放平台 (ZOP) router API: every call is GET https://openapi.zbj.com/router with appKey, accessToken, method, v=1.0, format=json, a 13-digit timestamp and sign (SHA1 over secret + params sorted by name + secret, 签名算法). Failures answer {errorToken, code, message, solution}. Applications are subject to platform approval (应用运营规则).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.user.getUserBaseInfo",
+     "v": "1.0",
+     "format": "json"
+    },
+    "params": {
+     "openid": "@openid"
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=6&groupId=3",
+    "note": "zbj.user.getUserBaseInfo (openid): nickname, userName, avatarPath, openid of the authorised account."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/router",
+    "fixed_params": {
+     "method": "zbj.task.getDetailById",
+     "v": "1.0",
+     "format": "json"
+    },
+    "params": {
+     "taskId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "taskId",
+      "title": "title",
+      "buyer": "nickname",
+      "budget_max": "amount",
+      "currency": "=CNY",
+      "description": "content"
+     }
+    },
+    "docs": "https://open.zbj.com/api/apiDetailIndex?methodId=93&groupId=12",
+    "note": "zbj.task.getDetailById (taskId): the 需求 with title, content, mode (1 比稿, 2 招标, 3 众包), employer nickname, amount (budget, CNY), hostedAmount, createTime (epoch seconds), remainTime (seconds), worksAvailableNum, category ids, milestones and attachments (in raw)."
+   }
+  },
+  "not_offered": {
+   "search_postings": "The 需求API group has a single method, zbj.task.getDetailById ('通过需求ID查询需求详情', https://open.zbj.com/api/apiIndex); there is no call that searches or lists open demands.",
+   "submit_bid": "No bid/proposal call is documented: the 交易API methods cover work already joined (queryParticipatedPieceWorks, bidWork = '提交悬赏/众包稿件' manuscript upload, contracts, acceptance), not quoting an amount on a demand (https://open.zbj.com/api/apiIndex).",
+   "withdraw_bid": "zbj.trade.sellerGiveUp ('服务商投标后放弃需求', https://open.zbj.com/api/apiDetailIndex?methodId=95&groupId=4) takes openid + taskId + a required optionId from zbj.trade.giveUpReasonOps; there is no bid id and the vocabulary has no reason option.",
+   "bid_status": "No bid ids are issued; outcomes are split across zbj.trade.getSigningOutcome / getWorkInfo per trade type (https://open.zbj.com/api/apiIndex).",
+   "list_messages": "The IM group only has zbj.msg.getLastInstant ('获取最近即时消息信息', https://open.zbj.com/api/apiIndex); there is no thread message list.",
+   "send_message": "No message-sending method is documented in the IM group (https://open.zbj.com/api/apiIndex).",
+   "credits": "No balance or bid-credit method is documented (https://open.zbj.com/api/apiIndex)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, openid; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

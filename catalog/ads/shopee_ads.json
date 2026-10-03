@@ -1,0 +1,341 @@
+{
+ "id": "shopee_ads",
+ "category": "ads",
+ "label": "Shopee Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "sea",
+  "sg",
+  "my",
+  "id",
+  "th",
+  "vn",
+  "ph",
+  "tw"
+ ],
+ "docs_url": "https://open.shopee.com/documents/v2/v2.ads.get_total_balance?module=127&type=1",
+ "url": "https://seller.shopee.sg/edu/article/7069/about-shopee-ads",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "Shopee Open Platform developer account (partner_id / partner_key, HMAC-SHA256 signed calls, shop authorization → access_token) plus an Ads permission granted by Shopee Partner Support; region availability varies. Rate limits per Open Platform policy (not read). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "hmac (Shopee Open Platform partner_id + partner_key signature + shop access_token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "recommendations"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/congminh1254/shopee-sdk (community TypeScript SDK with an ads manager)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Shopee Open API v2 — Ads module, permissioned).",
+  "base_urls": [
+   "https://partner.shopeemobile.com/api/v2/ads/…"
+  ],
+  "auth": [
+   "1. Register on open.shopee.com as a developer; create an app → `partner_id` + `partner_key`; the seller authorizes the shop → `access_token` (+ refresh).",
+   "2. Ask Shopee Partner Support to enable the Ads permission for the app (region-dependent).",
+   "3. Sign every call: `sign = HMAC-SHA256(partner_key, partner_id + path + timestamp + access_token + shop_id)`; JSON bodies; dates `DD-MM-YYYY`; unique `reference_id` on create/edit."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v2/ads/get_total_balance` · `get_shop_toggle_info",
+    "purpose": "ads credit balance, shop toggles",
+    "notes": "shop_id"
+   },
+   {
+    "call": "GET /api/v2/ads/get_product_level_campaign_id_list` · `get_product_level_campaign_setting_info",
+    "purpose": "campaigns (product-level)",
+    "notes": "ad_type all/auto/manual, offset, limit; campaign_id_list"
+   },
+   {
+    "call": "POST /api/v2/ads/create_manual_product_ads` · `edit_manual_product_ads` · (deprecated `create_auto_product_ads`)",
+    "purpose": "create / edit ads with budget, bidding, ROAS",
+    "notes": "reference_id, item_id, budget, start_date, end_date, bidding_method, roas_target, keywords[]"
+   },
+   {
+    "call": "edit_manual_product_ad_keywords` · `get_recommended_keyword_list",
+    "purpose": "keywords + bids",
+    "notes": "keyword, match_type, bid_price"
+   },
+   {
+    "call": "get_product_level_campaign_daily_performance` · `…_hourly_performance",
+    "purpose": "reports",
+    "notes": "campaign_id_list, start_date, end_date"
+   },
+   {
+    "call": "get_recommended_item_list` · `get_product_recommended_roi_target` · `get_create_product_ad_budget_suggestion",
+    "purpose": "recommendations",
+    "notes": "item_id"
+   },
+   {
+    "call": "audiences · creative upload · conversions",
+    "purpose": "not in the Ads module",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Open Platform rate limits per partner (TODO(verify)); Ads permission by application; regional availability; free.",
+  "mcp_sdk": [
+   "Community: congminh1254/shopee-sdk (TypeScript). Official docs module=105 on open.shopee.com."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/congminh1254/shopee-sdk/main/docs/managers/ads.md",
+   "https://open.shopee.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://partner.shopeemobile.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error",
+   "ok_value": "",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "partner_id",
+    "required": true,
+    "help": "partner_id of your Shopee Open Platform app (Console > App)."
+   },
+   {
+    "name": "shop_id",
+    "required": true,
+    "help": "shop_id of the authorised shop (returned in the authorisation redirect)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://partner.shopeemobile.com/api/v2/auth/access_token/get",
+   "token_body": "json",
+   "client_auth": "body",
+   "client_id_field": "partner_id",
+   "token_fields": {
+    "client_id": null,
+    "client_secret": null,
+    "grant_type": null
+   },
+   "expires_path": "expire_in",
+   "state_key": "shopee_ads",
+   "header": "",
+   "token_param": "access_token",
+   "token_sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "partner_key",
+    "payload": "{@partner_id}{path}{timestamp_s}"
+   },
+   "token_query": {
+    "partner_id": "{@partner_id}",
+    "timestamp": "{timestamp_s}",
+    "sign": "{signature}"
+   },
+   "token_body_extra": {
+    "partner_id": "int:{@partner_id}",
+    "shop_id": "int:{@shop_id}"
+   },
+   "fields": [
+    {
+     "name": "partner_key",
+     "required": true,
+     "help": "partner_key (live key) of the Shopee Open Platform app with the Ads (AMS/Ads) API permission; signs the token refresh and every shop call (HMAC-SHA256). Never sent on the wire."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from GetAccessToken (/api/v2/auth/token/get) after the shop authorised the app (https://open.shopee.com/developer-guide/20). Valid 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the newest one survives restarts."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "partner_key",
+    "payload": "{@partner_id}{path}{timestamp_s}{access_token}{@shop_id}",
+    "params": {
+     "partner_id": "{@partner_id}",
+     "shop_id": "{@shop_id}",
+     "timestamp": "{timestamp_s}"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "terms": "Shopee Open Platform v2 Ads API (https://open.shopee.com/documents/v2/v2.ads.get_total_balance?module=127&type=1): shop-level calls to https://partner.shopeemobile.com/api/v2/ads/… carry partner_id, shop_id, timestamp, access_token and sign = HMAC-SHA256(partner_key, partner_id + api path + timestamp + access_token + shop_id); the 4-hour access_token is renewed with the signed v2.public.refresh_access_token (POST /api/v2/auth/access_token/get), which rotates the refresh token. Answers {error ('' = success), message, warning, request_id, response}. Needs an app with Ads permission authorised by the shop.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v2/ads/get_total_balance",
+    "docs": "https://open.shopee.com/documents/v2/v2.ads.get_total_balance?module=127&type=1",
+    "note": "v2.ads.get_total_balance: the shop's real-time ads credit (response.total_balance, paid plus free credits, and data_timestamp)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/v2/ads/get_product_level_campaign_id_list",
+    "params": {
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "ad_type": "all"
+    },
+    "default_limit": 50,
+    "max_limit": 5000,
+    "result": {
+     "items": "response.campaign_list",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaign_id",
+      "name": "ad_type"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.ads.get_product_level_campaign_id_list?module=127&type=1",
+    "note": "v2.ads.get_product_level_campaign_id_list (ad_type all, offset/limit; response.has_next_page): the shop's product campaign ids with ad_type auto|manual only — `name` carries that ad_type because the list returns no names. Names, campaign_status (ongoing, scheduled, ended, paused, deleted, closed), campaign_budget and duration come from v2.ads.get_product_level_campaign_setting_info (https://open.shopee.com/documents/v2/v2.ads.get_product_level_campaign_setting_info?module=127&type=1, up to 100 ids). account_id and status are not sent (the shop_id selects the shop)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/api/v2/ads/get_all_cpc_ads_daily_performance",
+    "params": {
+     "start_date": "datefmt:%d-%m-%Y:date_from",
+     "end_date": "datefmt:%d-%m-%Y:date_to"
+    },
+    "result": {
+     "items": "response",
+     "key": "rows",
+     "fields": {
+      "date": "date",
+      "impressions": "impression",
+      "clicks": "clicks",
+      "spend": "expense",
+      "orders": "broad_order",
+      "gmv": "broad_gmv",
+      "roas": "direct_roas"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.ads.get_all_cpc_ads_daily_performance?module=127&type=1",
+    "note": "v2.ads.get_all_cpc_ads_daily_performance (start_date/end_date as DD-MM-YYYY): shop-level CPC ads performance per day — impression, clicks, ctr, expense, direct/broad orders, conversions, items sold and GMV, cost_per_conversion, direct_roas (all in raw). campaign_id is not applied: per-campaign days come from v2.ads.get_product_campaign_daily_performance (https://open.shopee.com/documents/v2/v2.ads.get_product_campaign_daily_performance?module=127&type=1)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/api/v2/ads/edit_manual_product_ads",
+    "body": {
+     "reference_id": "uuid",
+     "campaign_id": "int:campaign_id",
+     "edit_action": "=change_budget",
+     "budget": "daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.ads.edit_manual_product_ads?module=127&type=1",
+    "note": "v2.ads.edit_manual_product_ads with edit_action change_budget sets the campaign budget (campaign_budget in the shop currency; 0 = unlimited) of a manual-selection product campaign; auto product ads use v2.ads.edit_auto_product_ads, which is 'coming offline soon'. This spends money. currency is ignored (the shop's currency applies)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/api/v2/ads/edit_manual_product_ads",
+    "body": {
+     "reference_id": "uuid",
+     "campaign_id": "int:campaign_id",
+     "edit_action": "map:action:pause=pause,resume=resume"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.shopee.com/documents/v2/v2.ads.edit_manual_product_ads?module=127&type=1",
+    "note": "v2.ads.edit_manual_product_ads with edit_action pause | resume (other actions: start, stop, delete, change_budget, change_duration, …) for a manual-selection product campaign. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The Ads API is shop-scoped: every call carries one shop_id and the Ads module has no account listing (v2.ads.* list: get_total_balance, get_shop_toggle_info, performance, product campaign and GMS calls; https://open.shopee.com/documents/v2/v2.ads.get_total_balance?module=127&type=1)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host partner.shopeemobile.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token partner.shopeemobile.com/api/v2/auth/access_token/get: 403 invalid_partner_id",
+   "HTML docs spot-check (render-doc): 3/5 tool paths found verbatim on their docs pages; names not found on the page: pause_resume:campaign_id, pause_resume:edit_action, pause_resume:reference_id, update_budget:budget, update_budget:campaign_id, update_budget:edit_action, update_budget:reference_id"
+  ],
+  "notes": "-"
+ }
+}

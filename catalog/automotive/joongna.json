@@ -1,0 +1,39 @@
+{
+ "id": "joongna",
+ "category": "automotive",
+ "label": "Joongna",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.joongna.com",
+ "domain": "joongna.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (South Korea); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://joongna.com/"
+  ],
+  "unofficial": [
+   "https://apify.com/kdatafactory/joongna-scraper/api/javascript",
+   "https://apify.com/kdatafactory/joongna-scraper/api",
+   "https://apify.com/kdatafactory/joongna-scraper/api/cli"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,36 @@
+{
+ "id": "us_delaware_dos",
+ "category": "sales",
+ "label": "Delaware Division of Corporations entity search",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://icis.corp.delaware.gov/ecorp/entitysearch/namesearch.aspx",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free name search (status + registered agent; detailed reports paid); no robots.txt served; per-query form, rate-limit the fetcher.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

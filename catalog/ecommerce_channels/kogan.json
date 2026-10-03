@@ -1,0 +1,267 @@
+{
+ "id": "kogan",
+ "category": "ecommerce_channels",
+ "label": "Kogan Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "au",
+  "nz"
+ ],
+ "docs_url": "https://developers.kogan.com/docs",
+ "url": "https://www.kogan.com/au/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Seller applies through the Kogan.com Marketplace Application Form; approved sellers get API keys from their account manager (not self-serve); UAT shopfront + API for testing (basic auth kogan / blank, test card 4444 3333 2222 1111); products must be re-listed in production (no data migration); rate limits not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (SellerId + SellerToken headers issued by the Kogan account manager after the marketplace application)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.seller_id",
+  "token",
+  "config.uat"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official onboarding page and docs index were opened; the product and order guide pages",
+  "base_urls": [
+   "https://nimda.kogan.com/api/marketplace/v2/",
+   "https://nimda-marketplace.aws.kgn.io/api/marketplace/v2/"
+  ],
+  "auth": [
+   "1. Submit the Kogan.com Marketplace Application Form; on approval the account manager issues SellerId + SellerToken (UAT first, then production credentials).",
+   "2. Send both as request headers on every call."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /api/marketplace/v2/products/",
+    "purpose": "create / update products (async — response gives a pending task URL to poll)",
+    "notes": "sku, title, category, offer data (price, stock) per country"
+   },
+   {
+    "call": "POST /api/marketplace/v2/products/status/",
+    "purpose": "enable / disable products",
+    "notes": "guide confirmed"
+   },
+   {
+    "call": "GET /api/marketplace/v2/orders/ (Orders API V2)",
+    "purpose": "orders",
+    "notes": "changelog confirmed; dispatch / cancel endpoints not read"
+   }
+  ],
+  "limits": " Not read. - Application-gated marketplace (AU / NZ). - UAT data is not migrated to production.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developers.kogan.com/docs",
+   "https://nimda-marketplace.aws.kgn.io/api/marketplace/v2/,",
+   "https://nimda.kogan.com/api/marketplace/v2/;",
+   "https://developers.kogan.com/llms.txt",
+   "https://developers.kogan.com/docs/products"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}/api/marketplace/v2",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "SellerToken": "seller_token",
+    "SellerID": "seller_id"
+   },
+   "fields": [
+    {
+     "name": "seller_token",
+     "required": true,
+     "help": "SellerToken (API key) issued by your Kogan Marketplace account manager after the marketplace application is approved (UAT and production keys differ); sent as the SellerToken header."
+    },
+    {
+     "name": "seller_id",
+     "required": true,
+     "help": "SellerID (your Kogan marketplace account name) issued with the token; sent as the SellerID header."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "nimda.kogan.com for production, or nimda-marketplace.aws.kgn.io for the UAT test environment; calls go to https://<api_host>/api/marketplace/v2/..."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Kogan.com Marketplace API v2 (AU/NZ). Product writes are asynchronous: the response carries status (AsyncResponsePending|Complete|CompleteWithErrors|Failed) and a pending_url to poll (GET /task/{task_id}/).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/products/",
+    "fixed_params": {
+     "size": 1
+    },
+    "docs": "https://nimda.kogan.com/api/marketplace/v2/#operation/products_get",
+    "note": "No account endpoint; the probe lists one of your products ({status, body: {next, previous, results[]}}) to verify SellerToken/SellerID."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/products/",
+    "body": {
+     "0.product_sku": "listing_id",
+     "0.product_title": "title",
+     "0.product_description": "description",
+     "0.stock": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://nimda.kogan.com/api/marketplace/v2/#operation/products_update",
+    "note": "PATCH /products/ [{product_sku, product_title, product_description, stock}] updates only the keys sent ('only send the keys that have changed'); `listing_id` is your product SKU. The change is LIVE on kogan.com once processed. Asynchronous: status is AsyncResponsePending/Complete/CompleteWithErrors/Failed and raw.pending_url gives the result. `price` is NOT applied: prices live in offer_data keyed by store currency (AUD/NZD) and each entry also requires handling_days."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/products/stockprice/",
+    "body": {
+     "0.product_sku": "sku",
+     "0.stock": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://nimda.kogan.com/api/marketplace/v2/#operation/products_stock_price_update",
+    "note": "POST /products/stockprice/ [{product_sku, stock}] sets the stock of one product by SKU (`sku` is required; listing_id is not used). Stock 0 marks the listing sold out (removed automatically after 7 days). Asynchronous; see raw.pending_url."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/products/status/",
+    "body": {
+     "product_sku": "listing_id",
+     "enabled": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://nimda.kogan.com/api/marketplace/v2/#operation/products_enabled_update",
+    "note": "POST /products/status/ {product_sku, enabled: false} disables the product and removes the listing from the website immediately (reversible with enabled: true). `listing_id` is your product SKU. Kogan must grant this API to your account first (marketplace-support@kogan.com.au); otherwise 403."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders/",
+    "params": {
+     "status": "status",
+     "startDateUTC": "since",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 500,
+    "result": {
+     "items": "body",
+     "key": "orders",
+     "fields": {
+      "id": "ID",
+      "status": "OrderStatus",
+      "total": "TotalPrice",
+      "currency": "Currency",
+      "created_at": "OrderDateUtc"
+     }
+    },
+    "docs": "https://nimda.kogan.com/api/marketplace/v2/#operation/orders_list",
+    "note": "GET /orders/?status&startDateUTC&limit. `status` is REQUIRED by Kogan: ReleasedForShipment (paid, awaiting dispatch), Pending, AcknowledgedBySeller, PartiallyShipped, Shipped or Canceled; for Shipped/PartiallyShipped/Canceled the date range is at most 15 days. The endpoint has no offset/cursor, so there is no second page (raise `limit` instead). Items, addresses and dispatched items are in raw."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /products/ requires product_sku, title, description, brand, category, product_gtin, images, product_condition and per-currency offer_data {price, handling_days}; the vocabulary has no category, brand, GTIN or handling time.",
+   "mark_shipped": "POST /orders/fulfill/ takes dispatch lines per order ITEM: [{ID, Items: [{OrderItemID, SellerSku, Quantity, ShippedDateUtc, TrackingNumber, ShippingCarrier}]}]; item ids, SKUs and quantities are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host nimda.kogan.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/wayfair-mcp",
+ "description": "Wayfair (supplier) (ecommerce channels): me, list_orders, set_inventory, end_listing. Every tool map",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.wayfair.io/posts/introduction",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "wayfair"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WAYFAIR_CLIENT_ID",
+     "description": "Production Client ID of your application (Wayfair Developer Portal > Application Management; needs the 'API' role in Partner Home and a completed sandbox test).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WAYFAIR_CLIENT_SECRET",
+     "description": "Production Client Secret of the same application; exchanged at https://sso.auth.wayfair.com/oauth/token for a 24-hour bearer token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WAYFAIR_SUPPLIER_ID",
+     "description": "Numeric Wayfair supplier ID used in inventory feeds: your warehouse ID for a child-level feed, or the supplier account ID for a parent-level feed (Partner Home > Warehouse Management).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

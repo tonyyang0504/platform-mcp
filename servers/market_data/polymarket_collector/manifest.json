@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "polymarket_collector-mcp",
+ "display_name": "Polymarket Gamma + CLOB MCP",
+ "version": "0.1.0",
+ "description": "Polymarket Gamma + CLOB (market data): me, search_symbols, get_series. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "polymarket_collector"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "No credentials: the probe lists one market (GET /markets?limit=1); Gamma answers a bare array, so `account` is empty."
+  },
+  {
+   "name": "search_symbols",
+   "description": "Gamma `GET /markets` (OpenAPI listMarkets: limit, offset, order, ascending, closed (default false), tag_id, slug[], condition_ids[] …) has no free-text parameter, so `query` is not sent and the offset-paged list of open markets is returned (filter by `name` client-side; /public-search?q= exists but returns events/tags/profiles). `symbol` is the market slug (also accepted by GET /markets/slug/{slug}); conditionId, clobTokenIds (the token ids get_series needs), outcomes, outcomePrices, volume, liquidity, endDate stay in `raw`. No max limit is documented; capped at 100."
+  },
+  {
+   "name": "get_series",
+   "description": "Price history of one outcome token from the Data API (different host, same keyless access): `series_id` is the CLOB token_id (from a market's raw.clobTokenIds). The endpoint requires exactly one time specification — `start` and `end` here, as Unix epoch SECONDS (max 15-day span); it also accepts interval (1m…max) and as_of, which the vocabulary cannot carry, so a call without start/end is refused by the platform. Points are `data[].timestamp` (Unix seconds) / `price` (implied probability), oldest first; bucket_seconds and cursor paging are not exposed. `time` is returned as a string (the vocabulary types it so; the API sends Unix seconds as a number — live check 2026-09-26). An unknown token_id answers an empty data list."
+  }
+ ]
+}

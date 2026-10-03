@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "uk_find_a_tender-mcp",
+ "display_name": "Find a Tender MCP",
+ "version": "0.1.0",
+ "description": "Find a Tender (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "uk_find_a_tender"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "OCDS release package API: documented parameters are limit (default and max 100), cursor, updatedFrom, updatedTo (YYYY-MM-DDTHH:MM:SS) and stages (planning, tender, award). `stages=tender` is fixed; there is no keyword parameter, so `query`, `category` and `min_budget` are not sent (filter client-side). Paging is by cursor, which page/limit cannot carry: `page` is ignored and only the first `limit` releases are returned. `id` is the OCDS ocid (ocds-h6vhtk-…) accepted by get_posting."
+  },
+  {
+   "name": "get_posting",
+   "description": "`id` is the procurement ocid ('ocds-h6vhtk-hhhhhh', e.g. /api/1.0/ocdsRecordPackages/ocds-h6vhtk-000cb9); the record package's compiledRelease is mapped (tender{title, description, value, tenderPeriod}, buyer{name}). 404 when the procurement is not found."
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "arbeitnow-deals-mcp",
+ "display_name": "Arbeitnow MCP",
+ "version": "0.1.0",
+ "description": "Arbeitnow (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/arbeitnow"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Keyless feed whose only documented parameter is page, so query and location are not sent — filter the returned postings client-side; the page size is fixed by the platform (do not pass limit). description is HTML; remote, tags[], job_types[] and created_at (type not documented on the page) are in raw. Terms: the API is provided 'as is' and 'We may revoke the permission to use API at any time'; no published rate limit. Mirrors the jobs/arbeitnow search: these are employment listings; buyer is the employer, and apply happens on the posting's url."
+  }
+ ]
+}

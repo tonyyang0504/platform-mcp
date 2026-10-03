@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/faire-mcp",
+ "description": "Faire (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders, mark_shippe",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.faire.com/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "faire"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FAIRE_ACCESS_TOKEN",
+     "description": "Faire OAuth access token for the brand (Authorization Code Grant: POST https://www.faire.com/api/external-api-oauth2/token), sent as X-FAIRE-OAUTH-ACCESS-TOKEN. Scopes: READ_BRAND, READ_PRODUCTS, WRITE_PRODUCTS, READ_ORDERS, WRITE_ORDERS, WRITE_INVENTORIES.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FAIRE_APP_CREDENTIALS",
+     "description": "Base64 of applicationId:applicationSecret from the Faire Developer Portal, sent as X-FAIRE-APP-CREDENTIALS (required together with the OAuth access token).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

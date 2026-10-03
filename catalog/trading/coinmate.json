@@ -1,0 +1,93 @@
+{
+ "id": "coinmate",
+ "category": "trading",
+ "label": "Coinmate",
+ "lane": "api",
+ "country": "CZ",
+ "docs_url": "https://coinmate.docs.apiary.io/",
+ "url": "https://coinmate.io",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public operations only ('available without any user authentication'). Docs: an Apiary-hosted API Blueprint (the page is a JavaScript app; the forge reads Apiary's parsed blueprint). The docs: 'Please not make more than 100 request per minute or we will ban your IP address.' Every answer is HTTP 200 {error, errorMessage, data}; live 2026-10-01 an unknown pair answers {\"error\":true,\"errorMessage\":\"Currency pair NOPE_EUR not found.\"}. No OHLC endpoint is documented.",
+ "adapter": {
+  "base_url": "https://coinmate.io/api",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "envelope": {
+   "fail_when": {
+    "error": true
+   },
+   "error_field": "errorMessage"
+  },
+  "error_kinds": [
+   {
+    "status": 200,
+    "match": "not found",
+    "kind": "not_found"
+   }
+  ],
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/tradingPairs",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "name",
+      "base": "firstCurrency",
+      "quote": "secondCurrency"
+     }
+    },
+    "docs": "https://coinmate.docs.apiary.io/#reference/trading-pairs/get-trading-pairs/get"
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/ticker",
+    "params": {
+     "currencyPair": "symbol"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "symbol": "arg:symbol",
+      "last": "last",
+      "bid": "bid",
+      "ask": "ask",
+      "volume": "amount"
+     }
+    },
+    "docs": "https://coinmate.docs.apiary.io/#reference/ticker/get-ticker/get",
+    "note": "symbol is a pair such as BTC_EUR or BTC_CZK; volume is the 24h amount in the base currency."
+   }
+  },
+  "not_offered": {
+   "me": "Private operations are signed (HMAC-SHA256 over nonce + clientId + publicKey); public-data entry only.",
+   "get_candles": "No OHLC endpoint is documented (only transactions and the order book).",
+   "get_balances": "POST /balances is a signed private operation; public-data entry only.",
+   "list_orders": "POST /openOrders is a signed private operation; public-data entry only.",
+   "place_order": "POST /buyLimit and /sellLimit are signed and spend money; not mapped.",
+   "cancel_order": "POST /cancelOrder is signed; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

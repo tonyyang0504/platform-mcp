@@ -1,0 +1,339 @@
+{
+ "id": "linkedin",
+ "category": "social",
+ "label": "LinkedIn",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
+ "url": "https://www.linkedin.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "LinkedIn API Terms of Use §3.1 prohibits automating posting outside the approved Community Management API; §4.1 forbids storing member Content beyond the permitted window — publish only from an approved app, keep no copies of other members’ posts.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "reply",
+   "read_comments",
+   "analytics",
+   "delete",
+   "edit",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 3000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.linkedin.com/rest/posts",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST rest/images?action=initializeUpload → PUT uploadUrl → POST rest/posts with the image URN",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/images-api"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.linkedin.com/rest/videos?action=initializeUpload → PUT part(s) → POST rest/videos?action=finalizeUpload → POST rest/posts",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/videos-api"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET rest/socialActions/{postUrn}/comments (start/count)",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/comments-api"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST rest/socialActions/{postUrn}/comments {actor, object, message.text}",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/comments-api"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET rest/organizationalEntityNotifications?q=criteria&actions=List(COMMENT,SHARE_MENTION)&organizationalEntity={urn}",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/organization-social-action-notifications"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no public messaging API; Messages API is limited to specific partner programs)",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/community-management-overview"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/community-management-overview"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE https://api.linkedin.com/rest/posts/{encoded post URN}",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET rest/organizationalEntityShareStatistics?q=organizationalEntity&shares=List({urn}) · GET rest/socialMetadata/{urn}",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/share-statistics"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET rest/organizationPageStatistics?q=organization · GET rest/organizationalEntityFollowerStatistics",
+   "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/page-statistics"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (gated).",
+  "base_urls": [
+   "https://api.linkedin.com/rest/"
+  ],
+  "auth": [
+   "1. Developer Portal app → apply for the **Community Management API** (open to all approved developers). Every app",
+   "2. 3-legged OAuth 2.0 authorization code; scopes `w_member_social` (member posts), `w_organization_social` (Page posts;",
+   "3. Access tokens live 60 days; refresh tokens (programmatic refresh) for approved partners."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/posts",
+    "purpose": "`author urn:li:organization:{id}",
+    "notes": "urn:li:person:{id}`, `commentary`, `visibility=PUBLIC`, `distribution.feedDistribution=MAIN_FEED`, `lifecycleState=PUBLISHED`, `content.media{id}` / `content.article{source,title,description,thumbnail}` / multiImage / poll → header `x-restli-id`"
+   },
+   {
+    "call": "Images API `POST /rest/images?action=initializeUpload` → PUT bytes; Videos API, Documents API",
+    "purpose": "URNs `urn:li:image:…`",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/posts/{urn}` with `X-RestLi-Method: PARTIAL_UPDATE",
+    "purpose": "commentary, CTA",
+    "notes": ""
+   },
+   {
+    "call": "DELETE /rest/posts/{urn}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /rest/posts?author={urn}&q=author&count=100",
+    "purpose": "`r_organization_social`",
+    "notes": ""
+   },
+   {
+    "call": "Social Actions API `GET/POST /rest/socialActions/{urn}/comments",
+    "purpose": "reply, like",
+    "notes": ""
+   },
+   {
+    "call": "GET /rest/organizationalEntityShareStatistics?q=organizationalEntity&organizationalEntity={urn}",
+    "purpose": "Page + post stats (`rw_organization_admin`)",
+    "notes": ""
+   },
+   {
+    "call": "@[Name](urn:li:organization:…)` in commentary; hashtags `#tag",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Development-tier caps above; 429 TOO_MANY_REQUESTS otherwise unpublished. - Organic carousels unsupported; article posts need explicit title / description / thumbnail (no URL scraping). - No scheduling parameter. Scraping or automating member sessions outside the API violates the User Agreement — LinkedIn is API-only or human (never browser automation).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
+   "https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.linkedin.com",
+  "rate_per_second": 2,
+  "headers": {
+   "Linkedin-Version": "202609",
+   "X-Restli-Protocol-Version": "2.0.0"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://www.linkedin.com/oauth/v2/accessToken",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id of a LinkedIn app with the Community Management API product (scopes w_organization_social, r_organization_social, plus openid profile for me)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's client secret (form body of the refresh_token grant at https://www.linkedin.com/oauth/v2/accessToken)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Programmatic refresh token from the 3-legged flow (approved Marketing/Community Management partners; valid about one year). The runtime mints 60-day access tokens from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "author_urn",
+    "required": true,
+    "help": "Organization URN the member administers and acts as, e.g. urn:li:organization:5515715 (comment actor and the organizationalEntity of read_mentions)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/userinfo",
+    "docs": "https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2",
+    "note": "OpenID Connect userinfo (sub, name, email) of the member behind the token; needs the openid and profile scopes."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/rest/socialActions/{post_id}/comments",
+    "params": {
+     "start": "offset",
+     "count": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "elements",
+     "key": "comments",
+     "total": "paging.total",
+     "fields": {
+      "id": "commentUrn",
+      "author": "actor",
+      "text": "message.text",
+      "created_at": "created.time"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/comments-api",
+    "note": "`post_id` is the share/ugcPost URN (urn:li:share:… or urn:li:ugcPost:…). id is the commentUrn to pass to reply_comment; created_at is epoch milliseconds."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/rest/socialActions/{comment_id}/comments",
+    "body": {
+     "actor": "@author_urn",
+     "message.text": "text",
+     "parentComment": "comment_id"
+    },
+    "result": {
+     "fields": {
+      "id": "commentUrn",
+      "created_at": "created.time"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/comments-api",
+    "note": "Nested comment: `comment_id` is the parent commentUrn urn:li:comment:(urn:li:activity:…,…); the reply is authored by config author_urn. The docs' nested sample also sends `object` (the post URN), which this call cannot derive from the comment id."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/rest/organizationalEntityNotifications?q=criteria&actions=List(SHARE_MENTION)",
+    "params": {
+     "organizationalEntity": "@author_urn",
+     "start": "offset",
+     "count": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "elements",
+     "key": "mentions",
+     "fields": {
+      "id": "notificationId",
+      "created_at": "lastModifiedAt"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/organization-social-action-notifications",
+    "note": "Mentions of the organization (config author_urn) in posts; raw.generatedActivity is the mentioning share URN and raw.sourcePost the activity. No text or author is returned; `since` is not sent."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/rest/posts/{post_id}",
+    "headers": {
+     "X-RestLi-Method": "DELETE"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
+    "note": "`post_id` must be the URL-ENCODED share/ugcPost URN (urn%3Ali%3Ashare%3A123), as in 'DELETE https://api.linkedin.com/rest/posts/{encoded ugcPostUrn|shareUrn}'. 'Post deletions are idempotent' (204)."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/rest/socialMetadata/{post_id}",
+    "result": {
+     "fields": {
+      "post_id": "entity",
+      "metrics": "$"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/social-metadata-api",
+    "note": "Social metadata of a share/ugcPost/comment URN: metrics carries reactionSummaries (per reaction type counts), commentSummary {count, topLevelCount} and commentsState."
+   }
+  },
+  "not_offered": {
+   "publish_text": "POST /rest/posts answers 201 with the Post id only in a header: 'the response header x-restli-id contains the Post ID' (https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api); the runtime maps response bodies only, so the required `id` could not be returned.",
+   "publish_image": "An image post first needs 'uploading an image asset to obtain an Image URN (urn:li:image:{id})' via the Images API (initializeUpload, then PUT the bytes) before POST /rest/posts (https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/images-api) — not a single call."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.linkedin.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token www.linkedin.com/oauth/v2/accessToken: 400 invalid_grant",
+   "authorize https://www.linkedin.com/oauth/v2/authorization: 200",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

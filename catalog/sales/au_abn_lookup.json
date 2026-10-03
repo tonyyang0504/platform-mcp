@@ -1,0 +1,36 @@
+{
+ "id": "au_abn_lookup",
+ "category": "sales",
+ "label": "ABN Lookup web services",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "au"
+ ],
+ "docs_url": "https://abr.business.gov.au/Tools/WebServices",
+ "url": "https://abr.business.gov.au/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free web services with a registered GUID → platform-key; no robots.txt served.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

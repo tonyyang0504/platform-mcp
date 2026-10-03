@@ -1,0 +1,166 @@
+{
+ "id": "wordpress_jobs",
+ "category": "deals",
+ "label": "WordPress Jobs",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobs.wordpress.net/feed/",
+ "url": "https://jobs.wordpress.net/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public WordPress RSS; no key.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://jobs.wordpress.net/feed/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://jobs.wordpress.net/feed/",
+   "docs": "https://jobs.wordpress.net/feed/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://jobs.wordpress.net/feed/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (RSS) Confidence high.",
+  "base_urls": [
+   "https://jobs.wordpress.net/feed/"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /feed/",
+    "purpose": "search",
+    "notes": "title, link, description, pubDate"
+   }
+  ],
+  "limits": " - Public RSS.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://jobs.wordpress.net/feed/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobs.wordpress.net",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "jobs.wordpress.net public WordPress feed. Contact details are on each job page.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/feed/",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "encoded"
+     }
+    },
+    "docs": "https://jobs.wordpress.net/feed/",
+    "note": "The feed answers its whole current list in one response (WordPress RSS 2.0, the latest 10 job posts); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). id is the job's permalink; description is the full post (content:encoded, HTML); the short excerpt is raw.description and the WordPress post id raw['post-id']."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Each post lists how to apply (e-mail or link); the site has no application API and its REST index exposes no job type.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

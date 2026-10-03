@@ -1,0 +1,385 @@
+{
+ "id": "amazon",
+ "category": "ecommerce_channels",
+ "label": "Amazon",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "eu",
+  "gb",
+  "us",
+  "ca",
+  "mx",
+  "br",
+  "de",
+  "fr",
+  "it",
+  "es",
+  "nl",
+  "se",
+  "pl",
+  "be",
+  "tr",
+  "ae",
+  "sa",
+  "jp",
+  "au",
+  "sg"
+ ],
+ "docs_url": "https://developer-docs.amazon.com/sp-api",
+ "url": "https://www.amazon.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "SP-API Developer Agreement; private apps may only serve the developer's own organisation; public apps must list in the Selling Partner Appstore. Connecting guide lists host, x-amz-access-token, x-amz-date and user-agent request headers (no request signing); the runtime sends x-amz-access-token and its own user-agent but no x-amz-date.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "oauth2 (Login with Amazon refresh token per selling partner; private app self-authorisation in Developer Central or public app via the Selling Partner Appstore)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox",
+   "advertising"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Amazon-generated SDKs with built-in LWA auth (SP-API docs)",
+   "Data Kiosk API for sales + traffic analytics"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "refresh",
+  "config.seller_id",
+  "config.market"
+ ],
+ "rate_limits": "per-operation token bucket: Listings put/get 5 rps burst 10, patch/delete/search 5/5; Catalog 2/2; getOrders 0.0167/20, getOrder 0.5/30; createFeed 0.0083/15; createReport 0.0167/15; getOrderMetrics 0.5/15 (higher for high-volume sellers)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://sellingpartnerapi-na.amazon.com",
+   "https://api.amazon.com/auth/o2/token"
+  ],
+  "auth": [
+   "1. Tenant (Professional seller) registers a developer profile + private app in Developer Central; self-authorises → LWA refresh token; stores client id / secret / refresh token in our channel vault.",
+   "2. Client exchanges the refresh token for a 1-hour access token (`refresh_access_token`) and calls SP-API with it.",
+   "3. Public-app path (one platform app for all tenants) needs Appstore listing + Amazon review."
+  ],
+  "endpoints": [
+   {
+    "call": "PUT/PATCH/DELETE /listings/2021-08-01/items/{sellerId}/{sku}",
+    "purpose": "create / update / delete listing (productType + attributes payload)",
+    "notes": "used by the client"
+   },
+   {
+    "call": "GET /catalog/2022-04-01/items",
+    "purpose": "catalogue match (ASIN)",
+    "notes": ""
+   },
+   {
+    "call": "POST /feeds/2021-06-30/feeds",
+    "purpose": "bulk feeds (price / inventory)",
+    "notes": "unused"
+   },
+   {
+    "call": "GET /orders/v0/orders · /orders/{id}/orderItems",
+    "purpose": "orders",
+    "notes": "used"
+   },
+   {
+    "call": "POST /orders/v0/orders/{id}/shipmentConfirmation",
+    "purpose": "shipment confirmation with carrier + tracking",
+    "notes": "used"
+   },
+   {
+    "call": "GET /fba/inventory/v1/summaries",
+    "purpose": "FBA stock",
+    "notes": "unused"
+   },
+   {
+    "call": "POST /reports/2021-06-30/reports · Data Kiosk",
+    "purpose": "sales & traffic reports",
+    "notes": "unused"
+   },
+   {
+    "call": "POST /notifications/v1/subscriptions",
+    "purpose": "push notifications (SQS / EventBridge)",
+    "notes": "unused"
+   }
+  ],
+  "limits": " Token bucket per operation and seller-app pair (rate + burst); standard plans documented per operation, dynamic plans auto-adjust per seller; `x-amzn-RateLimit-Limit` header; 429 QuotaExceeded is retryable (client maps to RateLimited, retry 60 s). - SP-API Developer Agreement + Data Protection Policy; private apps serve only the developer's organisation; public apps reviewed and listed in the Appstore. - Professional plan required.",
+  "mcp_sdk": [
+   "SDK: Amazon-generated SDKs with built-in LWA auth (SP-API docs)",
+   "SDK: Data Kiosk API for sales + traffic analytics"
+  ],
+  "sources": [
+   "https://developer-docs.amazon.com/sp-api/docs/connecting-to-the-selling-partner-api",
+   "https://developer-docs.amazon.com/sp-api/docs/manage-purchasable-offer",
+   "https://developer-docs.amazon.com/sp-api/docs/merge-a-listing",
+   "https://developer-docs.amazon.com/sp-api/docs/orders-api-migration-guide",
+   "https://developer-docs.amazon.com/sp-api/docs/sp-api-endpoints",
+   "https://developer-docs.amazon.com/sp-api/reference/confirmshipment",
+   "https://developer-docs.amazon.com/sp-api/reference/deletelistingsitem",
+   "https://developer-docs.amazon.com/sp-api/reference/getmarketplaceparticipations",
+   "https://developer-docs.amazon.com/sp-api/reference/getorders",
+   "https://developer-docs.amazon.com/sp-api/reference/patchlistingsitem",
+   "https://developer-docs.amazon.com/sp-api/reference/putlistingsitem",
+   "https://r.jina.ai/https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits",
+   "https://r.jina.ai/https://developer-docs.amazon.com/sp-api/docs/what-is-the-selling-partner-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://sellingpartnerapi-{region}.amazon.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://sandbox.sellingpartnerapi-{region}.amazon.com",
+    "docs": "https://developer-docs.amazon.com/sp-api/docs/the-selling-partner-api-sandbox",
+    "verified_at": "2026-09-27",
+    "notes": "SP-API hosted sandbox: https://sandbox.sellingpartnerapi-na.amazon.com, -eu and -fe (the region config field fills {region}). The LWA token endpoint is the production one (api.amazon.com/auth/o2/token, unchanged) with the app's normal credentials. The static sandbox answers only requests that match the examples in each API model exactly (other arguments return an error); operations with dynamic-sandbox support return realistic responses. Sandbox rate limit: 5 requests/second, burst 15; restricted operations need a production Restricted Data Token."
+   }
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.amazon.com/auth/o2/token",
+   "client_auth": "body",
+   "header": "x-amz-access-token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "LWA client identifier of your SP-API application (Developer Central / Solution Provider Portal > app > LWA credentials)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "LWA client secret of the same application."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "LWA refresh token (Atzr|...) from self-authorising the app for your seller account (or from the seller's OAuth authorization); exchanged at https://api.amazon.com/auth/o2/token for 1-hour access tokens sent as x-amz-access-token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "region",
+    "required": true,
+    "help": "SP-API endpoint region: na (Canada, US, Mexico, Brazil), eu (Europe, UK, India, Middle East, Turkey, South Africa) or fe (Japan, Australia, Singapore); calls go to https://sellingpartnerapi-<region>.amazon.com."
+   },
+   {
+    "name": "seller_id",
+    "required": true,
+    "help": "Selling partner (merchant token) id used in the Listings Items path /listings/2021-08-01/items/{sellerId}/{sku} (Seller Central > Settings > Account Info > Merchant Token)."
+   },
+   {
+    "name": "marketplace_id",
+    "required": true,
+    "help": "Marketplace id the tools act on, e.g. ATVPDKIKX0DER (US) or A1F83G8C2ARO7P (UK); see the SP-API Marketplace IDs page."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency of the marketplace's offers (e.g. USD, GBP, EUR); needed only when update_listing changes the price (purchasable_offer selector)."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sellers/v1/marketplaceParticipations",
+    "docs": "https://developer-docs.amazon.com/sp-api/reference/getmarketplaceparticipations",
+    "note": "GET /sellers/v1/marketplaceParticipations returns {payload: [{marketplace{id, countryCode, name, defaultCurrencyCode}, participation{isParticipating, hasSuspendedListings}}]} — the marketplaces the seller can sell in."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/listings/2021-08-01/items/{seller_id}/{listing_id}",
+    "path_params": {
+     "seller_id": "@seller_id"
+    },
+    "params": {
+     "marketplaceIds": "@marketplace_id"
+    },
+    "body": {
+     "productType": "=PRODUCT",
+     "patches.0.op": "=merge",
+     "patches.0.path": "=/attributes/purchasable_offer",
+     "patches.0.value.0.marketplace_id": "@marketplace_id",
+     "patches.0.value.0.currency": "@currency",
+     "patches.0.value.0.audience": "=ALL",
+     "patches.0.value.0.our_price.0.schedule.0.value_with_tax": "price",
+     "patches.1.op": "=merge",
+     "patches.1.path": "=/attributes/fulfillment_availability",
+     "patches.1.value.0.fulfillment_channel_code": "=DEFAULT",
+     "patches.1.value.0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developer-docs.amazon.com/sp-api/reference/patchlistingsitem",
+    "note": "PATCH /listings/2021-08-01/items/{sellerId}/{sku}?marketplaceIds (listing_id = your SKU) with productType PRODUCT and two JSON-Patch `merge` operations as in the Manage purchasable offer / Merge a listing guides: /attributes/purchasable_offer [{marketplace_id, currency, audience: ALL, our_price[{schedule[{value_with_tax: price}]}]}] and /attributes/fulfillment_availability [{fulfillment_channel_code: DEFAULT, quantity}]; a merge leaves omitted sub-attributes unchanged. `currency` comes from the config field. `title`/`description` (item_name / product_description need language_tag per marketplace) are not changed. Returns {sku, status ACCEPTED|INVALID|VALID, submissionId, issues[]}; processing is asynchronous."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/listings/2021-08-01/items/{seller_id}/{listing_id}",
+    "path_params": {
+     "seller_id": "@seller_id"
+    },
+    "params": {
+     "marketplaceIds": "@marketplace_id"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developer-docs.amazon.com/sp-api/reference/deletelistingsitem",
+    "note": "DELETE /listings/2021-08-01/items/{sellerId}/{sku}?marketplaceIds deletes the listings item for that marketplace (irreversible; listing_id = your SKU). Returns {sku, status ACCEPTED|INVALID, submissionId, issues[]}."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/listings/2021-08-01/items/{seller_id}/{sku}",
+    "path_params": {
+     "seller_id": "@seller_id",
+     "sku": "listing_id"
+    },
+    "params": {
+     "marketplaceIds": "@marketplace_id"
+    },
+    "body": {
+     "productType": "=PRODUCT",
+     "patches.0.op": "=merge",
+     "patches.0.path": "=/attributes/fulfillment_availability",
+     "patches.0.value.0.fulfillment_channel_code": "=DEFAULT",
+     "patches.0.value.0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developer-docs.amazon.com/sp-api/reference/patchlistingsitem",
+    "note": "PATCH /listings/2021-08-01/items/{sellerId}/{sku} with a `merge` on /attributes/fulfillment_availability [{fulfillment_channel_code: DEFAULT, quantity}] (Merge a listing guide) sets seller-fulfilled (MFN) quantity without touching restock_date / lead time. `sku` (or listing_id, which is the SKU on Amazon) addresses the listing. FBA stock is Amazon's and cannot be set."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders/v0/orders",
+    "params": {
+     "MarketplaceIds": "@marketplace_id",
+     "CreatedAfter": "since",
+     "OrderStatuses": "status",
+     "MaxResultsPerPage": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "payload.Orders",
+     "key": "orders",
+     "fields": {
+      "id": "AmazonOrderId",
+      "status": "OrderStatus",
+      "total": "OrderTotal.Amount",
+      "currency": "OrderTotal.CurrencyCode",
+      "created_at": "PurchaseDate"
+     }
+    },
+    "docs": "https://developer-docs.amazon.com/sp-api/reference/getorders",
+    "note": "GET /orders/v0/orders?MarketplaceIds&CreatedAfter(ISO-8601)&OrderStatuses(Pending|Unshipped|PartiallyShipped|Shipped|Canceled|Unfulfillable|...)&MaxResultsPerPage(1-100). `since` is REQUIRED in practice (Amazon: either CreatedAfter or LastUpdatedAfter must be set). Only the first page is returned: Amazon paginates with NextToken (raw payload.NextToken), not page numbers, so `page` > 1 repeats page 1. Rate 0.0167 req/s, burst 20. OrderTotal.Amount is a decimal string. Orders v0 getOrders is marked deprecated in favour of Orders v2026-01-01 searchOrders."
+   }
+  },
+  "not_offered": {
+   "create_listing": "putListingsItem (PUT /listings/2021-08-01/items/{sellerId}/{sku}) requires {productType, requirements, attributes{...}} where attributes are product-type-specific arrays defined by the Product Type Definitions API (item_name[{value, language_tag, marketplace_id}], condition_type, purchasable_offer, externally_assigned_product_identifier, ...); the vocabulary has no product type and the attribute schema changes per type.",
+   "mark_shipped": "confirmShipment (POST /orders/v0/orders/{orderId}/shipmentConfirmation) requires {marketplaceId, packageDetail{packageReferenceId, carrierCode, trackingNumber, shipDate, orderItems[{orderItemId, quantity}]}} — the orderItemIds come from getOrderItems (GET /orders/v0/orders/{orderId}/orderItems) first, two calls.",
+   "listing_metrics": "Per-listing sales and traffic are only available through asynchronous Reports (createReport, poll getReport, download the document) or Data Kiosk queries — no synchronous metrics call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host sellingpartnerapi-na.amazon.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.amazon.com/auth/o2/token: 401 Client authentication failed",
+   "authorize https://www.amazon.com/ap/oa: 400",
+   "spec https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json, https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/orders-api-model/ordersV0.json, : 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

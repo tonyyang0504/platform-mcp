@@ -1,0 +1,35 @@
+{
+ "id": "youcar",
+ "category": "automotive",
+ "label": "Youcar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.youcar.be",
+ "domain": "youcar.be",
+ "country": "Belgium",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). Pros manage stock via FeedVO extranet (login-only); no documented API. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.feedvo.com"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

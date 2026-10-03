@@ -1,0 +1,92 @@
+{
+ "id": "work24",
+ "category": "jobs",
+ "label": "고용24",
+ "lane": "assist",
+ "kind": "government",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://www.work24.go.kr/cm/openApi/main.do",
+ "url": "https://www.work24.go.kr/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Korean government employment portal (ex-WorkNet) with an open API; member apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "open_data"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep assist today — the 고용24 (Work24, ex-WorkNet) Open API exists (service pages under /cm/openApi/call/wk/…, every call answers 'authKey는 필수 입니다' = authKey required) but the registry docs_url (/cm/op",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " terms of use / rate limits not readable headless. Korean government employment portal (Ministry of Employment and Labor). Open API access requires registration and an authKey; terms of use / rate limits not readable headless. Applications require Work24 membership (member apply).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.work24.go.kr/",
+   "https://www.work24.go.kr/robots.txt",
+   "https://www.work24.go.kr/cm/openApi/main.do",
+   "https://www.work24.go.kr/cm/openApi/call/wk/callOpenApiSvcInfo210L01.do"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "The Work24 (고용24) Open API intro (https://www.work24.go.kr/cm/e/a/0110/selectOpenApiIntro.do, opened 2026-09-25) lists 채용정보 among 13 APIs and says results come as XML - which the runtime now parses - but 'OPEN-API는 고용 24 기업회원 전용 서비스입니다' (corporate members only) and the request URL, parameters and XML layout are only in the per-API 개발명세서 issued with the authKey after application; no public page documents the job-postings request. Missing: a publicly documented request format (endpoint path and parameters) for the job-postings API."
+}

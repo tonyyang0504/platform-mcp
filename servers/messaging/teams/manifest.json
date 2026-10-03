@@ -1,0 +1,101 @@
+{
+ "manifest_version": "0.2",
+ "name": "teams-mcp",
+ "display_name": "Microsoft Teams MCP",
+ "version": "0.1.0",
+ "description": "Microsoft Teams (messaging): me, send, list_inbound, get_thread, reply, mark_read. Every tool maps t",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "teams"
+   ],
+   "env": {
+    "PLATFORM_MCP_TEAMS_CLIENT_ID": "${user_config.platform_mcp_teams_client_id}",
+    "PLATFORM_MCP_TEAMS_CLIENT_SECRET": "${user_config.platform_mcp_teams_client_secret}",
+    "PLATFORM_MCP_TEAMS_REFRESH_TOKEN": "${user_config.platform_mcp_teams_refresh_token}",
+    "PLATFORM_MCP_TEAMS_TEAM_ID": "${user_config.platform_mcp_teams_team_id}",
+    "PLATFORM_MCP_TEAMS_USER_ID": "${user_config.platform_mcp_teams_user_id}",
+    "PLATFORM_MCP_TEAMS_TENANT_ID": "${user_config.platform_mcp_teams_tenant_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_teams_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_CLIENT_ID",
+   "description": "Application (client) ID of the Microsoft Entra app registration.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_teams_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_CLIENT_SECRET",
+   "description": "Client secret of the app registration ('Only required for web apps'); leave empty for a public client. Sent in the form body of POST https://login.microsoftonline.com/common/oauth2/v2.0/token.",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_teams_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent including offline_access and the delegated scopes User.Read Chat.ReadWrite ChatMessage.Send ChannelMessage.Send ChannelMessage.Read.All (work or school accounts only; personal accounts are 'Not supported'). Microsoft may return a new refresh token on every refresh; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/<platform>.json (mode 0600).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_teams_team_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_TEAM_ID",
+   "description": "Team id whose channel threads get_thread and reply use (GET /me/joinedTeams).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_teams_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_USER_ID",
+   "description": "Entra object id of the signed-in user (GET /me → id); required by mark_read.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_teams_tenant_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEAMS_TENANT_ID",
+   "description": "Tenant id of the signed-in user; required by mark_read.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me of the signed-in user."
+  },
+  {
+   "name": "send",
+   "description": "`to` is a chat id (19:…@thread.v2 or 19:…@unq.gbl.spaces; GET /me/chats). Delegated ChatMessage.Send; 'Application' permission is migration-only."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Messages of ONE chat (`channel` = chat id, required), newest first; 'Maximum allowed $top value is 50'. `page` is ignored (nextLink paging); `since` is not sent. text is body.content (HTML for most messages)."
+  },
+  {
+   "name": "get_thread",
+   "description": "Replies to a channel message: `channel` is the channel id, `thread_id` the root message id, and the team comes from config team_id."
+  },
+  {
+   "name": "reply",
+   "description": "Reply in a channel thread (`channel` = channel id, `thread_id` = root message id, team from config team_id). 'Only the body property is mandatory'."
+  },
+  {
+   "name": "mark_read",
+   "description": "Marks the chat `channel` read for the signed-in user (config user_id and tenant_id); 204."
+  }
+ ]
+}

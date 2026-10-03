@@ -1,0 +1,46 @@
+{
+ "id": "autocosmos_cl",
+ "category": "automotive",
+ "label": "Autocosmos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autocosmos.cl",
+ "domain": "autocosmos.cl",
+ "country": "Chile",
+ "official_api": true,
+ "docs_url": "https://api.autocosmos.cl/DocsV3",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "per DocsV3/Auth (credentials issued by Autocosmos)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Autocosmos Chile API V3 with public docs (same platform as .com.ar/.com.mx) for dealer listing management; credentials on request.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.autocosmos.cl/DocsV3",
+   "https://api.autocosmos.cl/DocsV3/Endpoints",
+   "https://api.autocosmos.cl/DocsV3/Auth"
+  ],
+  "unofficial": [
+   "https://apify.com/scraperschile/autocosmos-cl/api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://api.autocosmos.cl/DocsV3): Autocosmos Chile API V3 with public docs (same platform as .com.ar/.com.mx) for dealer listing management; credentials on request. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

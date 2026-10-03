@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/facebook-mcp",
+ "description": "Facebook (social): me, publish_text, publish_image, read_comments, reply_comment, read_mentions, del",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/pages-api/posts",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "facebook"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FACEBOOK_PAGE_ACCESS_TOKEN",
+     "description": "Page access token of the Facebook Page (Facebook Login for Business: a person who can perform the CREATE_CONTENT, MANAGE and MODERATE tasks on the Page grants pages_manage_posts, pages_manage_engagement, pages_read_engagement, pages_read_user_engagement and, for read_mentions, pages_read_user_content + pages_show_list; exchange for a long-lived token, then GET /me/accounts for the Page token). 'you will need to implement Facebook Login to ask for the following permissions and receive a Page access token' (https://developers.facebook.com/docs/pages-api/posts); sent as `Authorization: Bearer`.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FACEBOOK_PAGE_ID",
+     "description": "Numeric id of the Facebook Page that posts (the Page the token belongs to); publish_text, publish_image, read_mentions and me call /<page_id>/... Env: PLATFORM_MCP_FACEBOOK_PAGE_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

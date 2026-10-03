@@ -1,0 +1,36 @@
+{
+ "id": "jp_gbiz_info",
+ "category": "sales",
+ "label": "gBizINFO",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://info.gbiz.go.jp/",
+ "url": "https://info.gbiz.go.jp/",
+ "verified_at": "2026-09-05",
+ "terms_note": "REST API with a free token (application on the site) → platform-key; the two documentation paths tried answered 404 (docs moved) — the portal itself opened.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

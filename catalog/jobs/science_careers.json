@@ -1,0 +1,134 @@
+{
+ "id": "science_careers",
+ "category": "jobs",
+ "label": "Science Careers",
+ "lane": "assist",
+ "kind": "academic",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobs.sciencecareers.org/jobsrss/",
+ "url": "https://jobs.sciencecareers.org/",
+ "verified_at": "2026-09-25",
+ "terms_note": "AAAS Science jobs; apply via institution.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist for apply; the Madgex RSS (text/xml) is a usable public feed",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Madgex board (AAAS Science); public /jobsrss/ feed, no developer API; robots.txt disallows /apply-profile/. The science.org terms of service answered 403 to the audit host — not read.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jobs.sciencecareers.org/",
+   "https://jobs.sciencecareers.org/robots.txt",
+   "https://jobs.sciencecareers.org/jobsrss/",
+   "https://www.science.org/content/page/terms-service"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobs.sciencecareers.org",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobsrss/",
+    "params": {
+     "keywords": "query",
+     "page": "page"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://jobs.sciencecareers.org/jobsrss/",
+    "note": "Science Careers job-board RSS (Madgex, RSS 2.0, 20 postings per page). keywords is the board's own search-box parameter (the feed of any search is the search URL under /jobsrss/) and page selects further pages of 20 (checked 2026-09-25: keywords narrows the feed; page=2 returns the next 20, an exhausted page returns an empty channel). location, remote and limit are not sent (location filtering on these boards uses internal location ids). title is 'Employer: Job title' and description begins with the salary line, so company and salary are not split out. id is the posting link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

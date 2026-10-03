@@ -1,0 +1,382 @@
+{
+ "id": "binance_spot",
+ "category": "trading",
+ "label": "Binance Spot",
+ "lane": "api",
+ "kind": "cex",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api",
+ "url": "https://www.binance.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Signed REST API (HMAC-SHA256 over the query string, X-MBX-APIKEY header); IP request-weight limit 6000/minute. Market-data verbs are sent unsigned (tool `sign: false`) because Binance rejects extra timestamp/signature parameters there (-1104). place_order and cancel_order move real funds.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "HMAC-SHA256 signed query (api_key + api_secret)",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "candles",
+   "account",
+   "balances",
+   "orders",
+   "trading"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "rate_limits": "REQUEST_WEIGHT 6000 per MINUTE per IP; ping 1, exchangeInfo 20, ticker/24hr 2 (one symbol), klines 2",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_markets",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_ticker",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_candles",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_balances",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "place_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "cancel_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://api.binance.com",
+   "https://api-gcp.binance.com",
+   "https://api1.binance.com … https://api4.binance.com",
+   "https://data-api.binance.vision (market data only)"
+  ],
+  "auth": [
+   "1. Market-data endpoints are security type NONE and reject unknown parameters (-1104/-1101, checked live 2026-09-24): those tools set `sign: false`.",
+   "2. TRADE/USER_DATA endpoints: X-MBX-APIKEY header plus `timestamp` and an HMAC-SHA256 hex `signature` of the full query string (docs: 'SIGNED endpoints require an additional parameter, signature, to be sent in the query string or request body')."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v3/ping",
+    "purpose": "test connectivity",
+    "notes": "weight 1, no parameters, empty object"
+   },
+   {
+    "call": "GET /api/v3/exchangeInfo",
+    "purpose": "symbols and trading rules",
+    "notes": "weight 20; params symbol, symbols, permissions, showPermissionSets, symbolStatus; response timezone, serverTime, rateLimits[], exchangeFilters[], symbols[{symbol, status, baseAsset, quoteAsset, ...}]"
+   },
+   {
+    "call": "GET /api/v3/ticker/24hr",
+    "purpose": "24h rolling ticker",
+    "notes": "weight 2 for one symbol (80 when omitted); params symbol | symbols, type FULL|MINI; response symbol, priceChange, priceChangePercent, lastPrice, bidPrice, askPrice, volume, quoteVolume, openTime, closeTime, count"
+   },
+   {
+    "call": "GET /api/v3/klines",
+    "purpose": "candles",
+    "notes": "weight 2; params symbol, interval (1s,1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M), startTime, endTime, timeZone, limit (default 500, max 1000); response = array of positional arrays [openTime, open, high, low, close, volume, closeTime, quoteVolume, trades, takerBuyBase, takerBuyQuote, ignore]"
+   },
+   {
+    "call": "GET /api/v3/account",
+    "purpose": "balances",
+    "notes": "USER_DATA, weight 20; omitZeroBalances; response balances[{asset, free, locked}], canTrade, canWithdraw, permissions"
+   },
+   {
+    "call": "GET /api/v3/openOrders",
+    "purpose": "open orders",
+    "notes": "USER_DATA, weight 6 with symbol, 80 without; response array of orders {symbol, orderId, clientOrderId, price, origQty, executedQty, status, timeInForce, type, side, time}"
+   },
+   {
+    "call": "POST /api/v3/order",
+    "purpose": "new order",
+    "notes": "TRADE, weight 1; LIMIT needs timeInForce, quantity, price; MARKET needs quantity or quoteOrderQty"
+   },
+   {
+    "call": "DELETE /api/v3/order",
+    "purpose": "cancel order",
+    "notes": "TRADE, weight 1; symbol plus orderId or origClientOrderId"
+   }
+  ],
+  "limits": "REQUEST_WEIGHT 6000/minute per IP (429 then 418 ban on abuse); RAW_REQUESTS and ORDERS limits also published in exchangeInfo.rateLimits.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints",
+   "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints",
+   "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints",
+   "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints",
+   "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-api-information"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.binance.com",
+  "auth": {
+   "type": "header",
+   "header": "X-MBX-APIKEY",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Binance API key (sent as X-MBX-APIKEY). Create it under API Management with withdrawals OFF; restrict it to your IP. For the spot testnet create a separate key at https://testnet.binance.vision and point adapter.base_url at https://testnet.binance.vision (the testnet key does not work on api.binance.com and vice versa)."
+    },
+    {
+     "name": "api_secret",
+     "required": true,
+     "help": "The key's HMAC secret: signs every request (HMAC-SHA256 hex over the exact query string, appended as `signature` after `timestamp`). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{query}",
+    "key_field": "api_secret",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "timestamp_param": "timestamp",
+    "signature_param": "signature"
+   }
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v3/account",
+    "fixed_params": {
+     "omitZeroBalances": "true"
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints",
+    "note": "Signed GET /api/v3/account (weight 20): returns canTrade, canWithdraw, permissions and non-zero balances. The key should show canWithdraw only if withdrawals were left enabled, which you should not do."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/api/v3/exchangeInfo",
+    "sign": false,
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "symbols",
+     "key": "markets",
+     "fields": {
+      "symbol": "symbol",
+      "base": "baseAsset",
+      "quote": "quoteAsset",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints",
+    "note": "Public, sent unsigned (Binance rejects extra timestamp/signature parameters on market data with -1104). Weight 20; every spot symbol in one response (no pagination; `query` is not sent)."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/api/v3/ticker/24hr",
+    "sign": false,
+    "params": {
+     "symbol": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "symbol",
+      "last": "lastPrice",
+      "bid": "bidPrice",
+      "ask": "askPrice",
+      "volume": "volume",
+      "quote_volume": "quoteVolume",
+      "change_percent": "priceChangePercent",
+      "high": "highPrice",
+      "low": "lowPrice"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints",
+    "note": "Public, sent unsigned. Weight 2 for one symbol; decimal strings passed through."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/api/v3/klines",
+    "sign": false,
+    "params": {
+     "symbol": "symbol",
+     "interval": "interval",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "str:0",
+      "open": "num:1",
+      "high": "num:2",
+      "low": "num:3",
+      "close": "num:4",
+      "volume": "num:5"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints",
+    "note": "Public, sent unsigned. Weight 2. Intervals 1s,1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M; positional rows oldest first, `time` = open time in ms, prices as decimal strings. Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+   },
+   "get_balances": {
+    "method": "GET",
+    "path": "/api/v3/account",
+    "fixed_params": {
+     "omitZeroBalances": "true"
+    },
+    "result": {
+     "items": "balances",
+     "key": "balances",
+     "fields": {
+      "asset": "asset",
+      "free": "free",
+      "locked": "locked"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints",
+    "note": "Weight 20. Zero balances are omitted; amounts are decimal strings."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/api/v3/openOrders",
+    "params": {
+     "symbol": "symbol"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "clientOrderId",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "status": "status",
+      "price": "price",
+      "quantity": "origQty",
+      "filled": "executedQty",
+      "time": "time"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints",
+    "note": "Open orders only (weight 6 with a symbol, 80 without). `status` is not sent: closed orders need GET /api/v3/allOrders, which is not mapped."
+   },
+   "place_order": {
+    "method": "POST",
+    "path": "/api/v3/order",
+    "params": {
+     "symbol": "symbol",
+     "side": "map:side:buy=BUY,sell=SELL",
+     "type": "map:type:market=MARKET,limit=LIMIT",
+     "timeInForce": "map:type:limit=GTC,market=",
+     "quantity": "str:quantity",
+     "price": "str:price"
+    },
+    "result": {
+     "fields": {
+      "order_id": "orderId",
+      "client_order_id": "clientOrderId",
+      "status": "status",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "price": "price",
+      "quantity": "origQty",
+      "filled": "executedQty"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints",
+    "note": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the spot testnet https://testnet.binance.vision first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. Market orders spend `quantity` of the base asset; limit orders are sent with timeInForce=GTC and need `price` (omit `price` for market orders). quantity and price are sent as decimal strings and must respect the symbol's LOT_SIZE/PRICE_FILTER."
+   },
+   "cancel_order": {
+    "method": "DELETE",
+    "path": "/api/v3/order",
+    "params": {
+     "symbol": "symbol",
+     "orderId": "order_id"
+    },
+    "result": {
+     "fields": {
+      "order_id": "orderId",
+      "status": "status",
+      "symbol": "symbol"
+     }
+    },
+    "docs": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints",
+    "note": "Binance requires `symbol` together with the order id."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://api.binance.com",
+  "ws": "wss://stream.binance.com:9443/ws",
+  "demo": "https://demo-api.binance.com",
+  "legacy_testnet": "https://testnet.binance.vision",
+  "legacy_testnet_ws": "wss://testnet.binance.vision/ws"
+ },
+ "notes": "Binance is asked what the key may do (apiRestrictions): withdrawals must be OFF and spot trading ON. Spot testnet: https://testnet.binance.vision (separate keys).",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host api.binance.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "spec https://raw.githubusercontent.com/binance/binance-api-swagger/master/spot_api.yaml: 8/8 tools match (path, method, parameters, body keys, response paths)",
+   "live read without credentials: list_markets returned data that validates against the vocabulary"
+  ],
+  "notes": "place_order sends `price` whenever it is given; Binance rejects a MARKET order that carries one (-1104 'Not all sent parameters were read'), so callers must omit price for market orders. me: spec says \"query parameter 'omitZeroBalances' is not defined by the spec\"; waived: documented for GET /api/v3/account in binance/binance-spot-api-docs rest-api.md; the swagger repository lags the docs get_balances: spec says \"query parameter 'omitZeroBalances' is not defined by the spec\"; waived: documented for GET /api/v3/account in binance/binance-spot-api-docs rest-api.md; the swagger repository lags the docs"
+ }
+}

@@ -1,0 +1,274 @@
+{
+ "id": "supabase",
+ "category": "builder_tools",
+ "label": "Supabase",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://supabase.com/docs",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": "Free plan allows commercial use (2 projects, pause after 7 idle days, 402 on fair-use overage); Management API 120 req/min per user+project (X-RateLimit-* headers; analytics 30/min, database context 10/min); PAT or OAuth2 app scopes; MCP hosted, OAuth/DCR or PAT; no partner gate",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "mcp",
+   "sdk",
+   "cli",
+   "webhooks"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "create_project",
+   "list_projects",
+   "run_sql",
+   "deploy_edge_function",
+   "manage_secrets",
+   "read_api_keys",
+   "postgrest_crud",
+   "storage",
+   "auth",
+   "realtime",
+   "branching",
+   "typegen",
+   "logs_advisors"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/supabase/supabase-js",
+   "https://github.com/supabase/supabase-py",
+   "https://github.com/supabase/cli"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.supabase.com/mcp",
+  "https://github.com/supabase-community/supabase-mcp"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [
+   "https://api.supabase.com/v1/...",
+   "https://<ref>.supabase.co/rest/v1/<table>",
+   "https://mcp.supabase.com/mcp",
+   "http://localhost:54321/mcp"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /v1/projects",
+    "purpose": "provision a database for a dynamic_node / ai_agent build",
+    "notes": "body `name`, `organization_slug`, `db_pass` (req), `region_selection`, `desired_instance_size`, `template_url`, `high_availability` → `{id, ref, status: INACTIVE→ACTIVE_HEALTHY, region}`; scope `projects:write`"
+   },
+   {
+    "call": "GET /v1/projects` · `GET /v1/projects/{ref}",
+    "purpose": "list / poll status until `ACTIVE_HEALTHY`",
+    "notes": "—"
+   },
+   {
+    "call": "POST /v1/projects/{ref}/database/query",
+    "purpose": "run migrations / seed / ad-hoc SQL",
+    "notes": "body `query` (req), `parameters[]`, `read_only`; scope `database:write` (or `database_read` with read_only)"
+   },
+   {
+    "call": "POST /v1/projects/{ref}/functions/deploy?slug=",
+    "purpose": "ship server logic as an Edge Function",
+    "notes": "multipart `file[]` + `metadata {name, entrypoint_path, verify_jwt, import_map_path}` → `{id, slug, status, version}`; scope `edge_functions:write`"
+   },
+   {
+    "call": "GET /v1/projects/{ref}/api-keys?reveal=true",
+    "purpose": "fetch the publishable / secret keys to bake into the build's env",
+    "notes": "→ `[{name, api_key, type legacy"
+   },
+   {
+    "call": "POST /v1/projects/{ref}/secrets",
+    "purpose": "env vars for edge functions",
+    "notes": "`[{name, value}]`"
+   },
+   {
+    "call": "GET/POST/PATCH/DELETE https://<ref>.supabase.co/rest/v1/<table>",
+    "purpose": "app data CRUD from the build (what the row grants today)",
+    "notes": "headers `apikey`, `Authorization: Bearer <user jwt or secret key>`, `Prefer: return=representation`; filters as query (`?id=eq.1&select=*`)"
+   },
+   {
+    "call": "POST https://<ref>.supabase.co/auth/v1/signup` etc.",
+    "purpose": "end-user auth for dynamic apps",
+    "notes": "GoTrue endpoints"
+   },
+   {
+    "call": "POST https://<ref>.supabase.co/storage/v1/object/<bucket>/<path>",
+    "purpose": "file uploads",
+    "notes": "—"
+   },
+   {
+    "call": "GET /v1/projects/{ref}/types/typescript` · MCP `generate_typescript_types",
+    "purpose": "typed client for framework builds",
+    "notes": "—"
+   }
+  ],
+  "limits": " Management API: **120 req/min** per user per project/org, headers `X-RateLimit-Limit / -Remaining / -Reset`; analytics endpoints 30/min, database-context 10/min (1/s burst); 429 on breach. Data API: no fixed request cap on any plan; Auth endpoints have their own per-IP limits (configurable). Free plan: 2 active projects, 500 MB DB, 5 GB egress, pauses after 7 idle days, **402 on fair-use overage**. Commercial use allowed on every plan incl. Free. No partner gate for the Management API / MCP. ToS forbids sublicensing / competing-service use; provisioning projects *on behalf of a tenant under t",
+  "mcp_sdk": [
+   "Official hosted MCP `https://mcp.supabase.com/mcp` (docs https://supabase.com/docs/guides/getting-started/mcp); source + local",
+   "SDKs: `@supabase/supabase-js`, `supabase-py`, Supabase CLI (`supabase db push`, `supabase functions deploy`, `supabase gen types`)."
+  ],
+  "sources": [
+   "https://supabase.com/docs/reference/api/introduction",
+   "https://supabase.com/docs/reference/api/v1-create-a-project",
+   "https://supabase.com/docs/reference/api/v1-run-a-query",
+   "https://supabase.com/docs/reference/api/v1-deploy-a-function",
+   "https://supabase.com/docs/reference/api/v1-get-project-api-keys",
+   "https://supabase.com/docs/guides/getting-started/mcp",
+   "https://github.com/supabase-community/supabase-mcp",
+   "https://supabase.com/docs/guides/api",
+   "https://supabase.com/docs/guides/api/api-keys",
+   "https://supabase.com/docs/guides/database/connecting-to-postgres",
+   "https://supabase.com/docs/guides/platform/network-restrictions",
+   "https://supabase.com/docs/guides/integrations/build-a-supabase-oauth-integration/oauth-scopes",
+   "https://supabase.com/terms"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{project_ref}.supabase.co/rest/v1",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "header",
+   "header": "apikey",
+   "field": "secret_key",
+   "fields": [
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "Project secret key (sb_secret_…, Project Settings > API Keys), sent in the apikey header as Supabase documents for publishable/secret keys. It bypasses Row Level Security: keep it server-side."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "project_ref",
+    "required": true,
+    "help": "Project reference (the subdomain of https://<ref>.supabase.co)."
+   }
+  ],
+  "tools": {
+   "list_items": {
+    "method": "GET",
+    "path": "/{collection}",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "select": "*"
+    },
+    "default_limit": 25,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://supabase.com/docs/guides/api",
+    "note": "GET /rest/v1/{table}?select=*&limit&offset: rows of the table named by collection (required). Each row is in raw; id/title/updated_at are read from columns of those names when present. query is not sent (PostgREST filters are column-specific)."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/{collection}",
+    "params": {
+     "id": "fmt:eq.{item_id}"
+    },
+    "fixed_params": {
+     "select": "*"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.postgrest.org/en/v12/references/api/tables_views.html#horizontal-filtering",
+    "note": "GET /rest/v1/{table}?id=eq.{item_id}&select=*: the row whose id column equals item_id (the table needs an `id` column)."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/{collection}",
+    "headers": {
+     "Prefer": "return=representation"
+    },
+    "body": {
+     "0": "fields"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "id",
+      "status": "=created"
+     }
+    },
+    "docs": "https://docs.postgrest.org/en/v12/references/api/tables_views.html#insertions",
+    "note": "POST /rest/v1/{table} [fields] with Prefer: return=representation: inserts one row whose columns are the keys of fields; title/content are not columns and are not sent."
+   },
+   "update_item": {
+    "method": "POST",
+    "path": "/{collection}",
+    "headers": {
+     "Prefer": "resolution=merge-duplicates,return=representation"
+    },
+    "body": {
+     "0": "fields",
+     "0.id": "item_id"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://docs.postgrest.org/en/v12/references/api/tables_views.html#upsert",
+    "note": "Upsert: POST /rest/v1/{table} [{id: item_id, …fields}] with Prefer: resolution=merge-duplicates: updates the given columns of the row whose primary key `id` equals item_id (inserts it when missing)."
+   },
+   "delete_item": {
+    "method": "DELETE",
+    "path": "/{collection}",
+    "params": {
+     "id": "fmt:eq.{item_id}"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://docs.postgrest.org/en/v12/references/api/tables_views.html#deletions",
+    "note": "DELETE /rest/v1/{table}?id=eq.{item_id}: deletes the row(s) whose id equals item_id."
+   }
+  },
+  "not_offered": {
+   "me": "The Data API (PostgREST) has no identity endpoint for a secret key; the Management API (GET https://api.supabase.com/v1/projects/{ref}) needs a separate personal access token.",
+   "generate_image": "Supabase has no generation endpoints.",
+   "generate_video": "Supabase has no generation endpoints.",
+   "get_job": "Supabase has no generation jobs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host authaudit-nonexistent.supabase.co: DNS failure",
+   "probe: 0/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> None (timeout), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Per-project host (<project_ref>.supabase.co): no public project exists to probe and unknown refs do not resolve, so only the PostgREST path shape (/rest/v1/<table>) could be checked, against Supabase's docs. no answer (timeout/connection) for list_items, get_item, create_item, update_item, delete_item"
+ }
+}

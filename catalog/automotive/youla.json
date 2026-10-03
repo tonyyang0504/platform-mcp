@@ -1,0 +1,38 @@
+{
+ "id": "youla",
+ "category": "automotive",
+ "label": "Youla",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://youla.ru",
+ "domain": "youla.ru",
+ "country": "Russia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Youla (VK) has only private app endpoints (api.youla.io); no public or partner API documented.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://youla.ru/"
+  ],
+  "unofficial": [
+   "https://rest-app.net/api-youla",
+   "https://cdn.jsdelivr.net/npm/youla-private-api/"
+  ]
+ },
+ "official_mcp": []
+}

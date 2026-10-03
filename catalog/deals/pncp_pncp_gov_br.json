@@ -1,0 +1,192 @@
+{
+ "id": "pncp_pncp_gov_br",
+ "category": "deals",
+ "label": "Portal Nacional de Contratações Públicas",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "br"
+ ],
+ "docs_url": "https://pncp.gov.br/api/consulta/swagger-ui/index.html",
+ "url": "https://pncp.gov.br/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Brazilian open data (Lei 14.133); anonymous; no rate limit in the spec read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public consulta API — search + details). Lane `assist` → **api for search**. Confidence high.",
+  "base_urls": [
+   "https://pncp.gov.br/api/consulta/v1/"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/contratacoes/proposta?dataFinal=&codigoModalidadeContratacao=&pagina=",
+    "purpose": "search — contratações with open proposal period",
+    "notes": "objetoCompra, valorTotalEstimado, dataAberturaProposta, dataEncerramentoProposta, orgaoEntidade, unidadeOrgao, linkSistemaOrigem"
+   },
+   {
+    "call": "GET /v1/contratacoes/publicacao?dataInicial=&dataFinal=&codigoModalidadeContratacao=&pagina=",
+    "purpose": "search by publication date",
+    "notes": "—"
+   },
+   {
+    "call": "GET /v1/orgaos/{cnpj}/compras/{ano}/{sequencial}",
+    "purpose": "details",
+    "notes": "one contratação"
+   }
+  ],
+  "limits": " - Open data; proposals in the origin system (linkSistemaOrigem).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://pncp.gov.br/api/consulta/swagger-ui/index.html",
+   "https://pncp.gov.br/api/consulta/v3/api-docs"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://pncp.gov.br/api/consulta",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "The consultation API is keyless and publishes no rate limit in its OpenAPI (https://pncp.gov.br/api/consulta/v3/api-docs). Two requests per second.",
+  "terms": "Brazilian public open data (Lei 14.133/2021 PNCP). Proposals are submitted on the buyer's electronic procurement system (linkSistemaOrigem, e.g. Compras.gov.br), not through PNCP.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/v1/contratacoes/proposta",
+    "params": {
+     "codigoModalidadeContratacao": "int:category",
+     "pagina": "page",
+     "tamanhoPagina": "limit"
+    },
+    "fixed_params": {
+     "dataFinal": "20991231"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "total": "totalRegistros",
+     "fields": {
+      "id": "numeroControlePNCP",
+      "title": "objetoCompra",
+      "buyer": "orgaoEntidade.razaoSocial",
+      "budget_max": "valorTotalEstimado",
+      "url": "linkSistemaOrigem",
+      "posted_at": "dataPublicacaoPncp",
+      "deadline": "dataEncerramentoProposta",
+      "description": "informacaoComplementar"
+     }
+    },
+    "docs": "https://pncp.gov.br/api/consulta/swagger-ui/index.html#/Contrata%C3%A7%C3%A3o/consultarContratacaoPeriodoRecebimentoPropostas",
+    "note": "GET /v1/contratacoes/proposta ('Consultar Contratações com Recebimento de Propostas Aberto'): procurements whose proposal period is open now. dataFinal (required, AAAAMMDD) is fixed to 20991231 so every open procurement is included; pagina = page, tamanhoPagina = limit and must be 10–50 (a smaller limit is refused with 400 'must be greater than or equal to 10'). The API has no keyword filter, so `query` and min_budget are not sent; `category` is the numeric codigoModalidadeContratacao (e.g. 6 = Pregão Eletrônico, 8 = Dispensa). budget_max = valorTotalEstimado (BRL), url = linkSistemaOrigem (the buyer's system where proposals are submitted), deadline = dataEncerramentoProposta; uf/município are in raw.unidadeOrgao. A page past the end answers 204 (empty list)."
+   }
+  },
+  "not_offered": {
+   "me": "Keyless consultation API; no account endpoint.",
+   "get_posting": "The per-procurement call is GET /v1/orgaos/{cnpj}/compras/{ano}/{sequencial}, which needs the three parts of numeroControlePNCP separately; the vocabulary's single id cannot be split, so re-read the record from the search hit.",
+   "submit_bid": "PNCP only publishes procurements; proposals are submitted in the buyer's own system (linkSistemaOrigem).",
+   "withdraw_bid": "No proposal API (see submit_bid).",
+   "bid_status": "No proposal API; results appear later as atas/contratos in the consultation API.",
+   "list_messages": "No messaging API in the consultation API.",
+   "send_message": "No messaging API in the consultation API.",
+   "credits": "No account or credit endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

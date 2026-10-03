@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "bcb_sgs-mcp",
+ "display_name": "Banco Central do Brasil - SGS (séries temporais) MCP",
+ "version": "0.1.0",
+ "description": "Banco Central do Brasil - SGS (séries temporais) (market data): get_series. Every tool maps to a doc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bcb_sgs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "get_series",
+   "description": "series_id is the SGS code: 433 (IPCA, monthly %), 1 (USD/BRL PTAX selling, daily), 11 (Selic, daily %), 432 (Selic target). Daily series REQUIRE start, and start..end may span at most 10 years. start/end are YYYY-MM-DD."
+  }
+ ]
+}

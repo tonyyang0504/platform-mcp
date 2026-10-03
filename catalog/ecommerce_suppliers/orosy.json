@@ -1,0 +1,290 @@
+{
+ "id": "orosy",
+ "category": "ecommerce_suppliers",
+ "label": "orosy (wholesale marketplace) + orosy Buyer API",
+ "lane": "api",
+ "kind": "regional",
+ "regions": [
+  "japan"
+ ],
+ "docs_url": "https://wholesale-portal.orosy.com/",
+ "url": "https://orosy.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "利用規約 (/terms) on portal; AI ordering pauses for human confirmation before committing",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "sandbox"
+  ],
+  "auth": "Bearer API key (`Authorization: Bearer $KEY`; 'OAuth 不要'); demo key without billing; production after 事業者確認 (business verification)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "order_create",
+   "orders",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "orosy MCP server for ChatGPT / Claude (AI ordering pauses for human confirmation before committing)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by",
+  "base_urls": [
+   "https://wholesale-api.orosy.com/v1/…"
+  ],
+  "auth": [
+   "1. Register (e-mail) → demo key + test mode immediately",
+   "2. Business verification (事業者確認) → production key",
+   "3. `Authorization: Bearer <key>` on every call"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/products",
+    "purpose": "search the ~200k-item wholesale catalogue (stock, price, units)",
+    "notes": ""
+   },
+   {
+    "call": "cart → order",
+    "purpose": "build a cart across suppliers, place the order",
+    "notes": "one invoice"
+   },
+   {
+    "call": "invoices",
+    "purpose": "invoice retrieval",
+    "notes": ""
+   },
+   {
+    "call": "MCP server",
+    "purpose": "same actions for AI agents (confirmation before commit)",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Wholesale units + minimums per supplier - Live orders only after verification - Claims within 5 days of receipt",
+  "mcp_sdk": [
+   "orosy MCP server for ChatGPT / Claude (AI ordering pauses for human confirmation before committing)"
+  ],
+  "sources": [
+   "https://wholesale-portal.orosy.com/",
+   "https://wholesale-api.orosy.com/v1/products"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://wholesale-api.orosy.com",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "orosy Buyer API key (orosy_live_…) issued in the portal after the business review (事業者確認), sent as `Authorization: Bearer` ('OAuth 不要'). Before approval the account works in test mode on demo data."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/me",
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "GET /v1/me: {email, company_name, approved (review state), country, default_ship_to_country, buyer_registered}."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/v1/products",
+    "params": {
+     "q": "query",
+     "category": "category",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "products",
+     "total": "total",
+     "fields": {
+      "id": "product_id",
+      "title": "title",
+      "brand": "brand",
+      "price": "min_buyer_price",
+      "max_price": "max_buyer_price",
+      "retail_price": "min_retail_price",
+      "image_url": "images.0",
+      "category_path": "category",
+      "delivery_group": "delivery_group",
+      "orderable": "orderable",
+      "variation_count": "variation_count"
+     }
+    },
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "GET /v1/products: keyword search over product name, brand, model number, category and variation names (space-separated words are ANDed; 8-13 digits search JAN codes). Product data is Japanese, so search with Japanese keywords. `price` is the lowest variation's wholesale price (税抜, yen); `category` must be a category UUID (from product details or GET /v1/delivery-groups/{group_code}/categories); orderable=false rows are display-only."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/v1/products/{product_id}",
+    "path_params": {
+     "product_id": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "product_id",
+      "title": "title",
+      "brand": "brand",
+      "sku": "product_number",
+      "price": "variations.0.buyer_price",
+      "currency": "variations.0.currency",
+      "image_url": "images.0.url",
+      "stock": "variations.0.stock_qty",
+      "order_unit": "variations.0.order_unit",
+      "min_order_amount": "delivery_group.min_order_amount",
+      "orderable": "orderable"
+     }
+    },
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "GET /v1/products/{product_id} (UUID): variations[{variation_id, jan, variant_label, buyer_price (wholesale, tax-excluded yen), retail_price, order_unit (order in multiples), stock_level, stock_qty}] plus the delivery group's fee, free-shipping threshold and minimum order amount. The mapped price/stock/currency are those of the first variation; see raw.variations for the rest."
+   },
+   "quote_shipping": {
+    "method": "GET",
+    "path": "/v1/cross-border/eligibility",
+    "params": {
+     "dest": "country",
+     "product_ids": "product_id"
+    },
+    "result": {
+     "items": "items",
+     "key": "options",
+     "fields": {
+      "product_id": "product_id",
+      "status": "shipping.status",
+      "amount": "shipping.amount",
+      "currency": "shipping.currency",
+      "basis": "shipping.basis",
+      "logistics_status": "logistics.status",
+      "compliance_status": "compliance.status",
+      "not_found": "not_found"
+     }
+    },
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "GET /v1/cross-border/eligibility?dest=&product_ids=: per product, whether it can ship to that country (logistics / compliance status) and a REFERENCE international shipping fee (shipping.status quoted | quote_required | unavailable; amount in yen, tax-excluded). The fee is only an estimate (the actual cost is billed later); `quantity` is not used by this endpoint (GET /v1/cross-border/cart-estimate prices the cart). Domestic (JP) delivery fees come from the product's delivery group."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v1/orders/{order_id}",
+    "path_params": {
+     "order_id": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "order_id",
+      "status": "status",
+      "total": "breakdown.total",
+      "currency": "breakdown.currency",
+      "created_at": "created_at",
+      "tracking_number": "groups.0.shipments.0.trackings.0.tracking_no",
+      "payment_status": "payment.status",
+      "shipping_fee": "breakdown.shipping_fee"
+     }
+    },
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "GET /v1/orders/{order_id}: status (fulfilment axis, e.g. pending_confirmation, confirmed, partially_confirmed, cancelled, payment_action_required), breakdown.total (tax-included amount billed), payment.status, and per delivery group groups[].shipments[].trackings[] (tracking_number is the first one). 'There is no dedicated shipment API' — tracking lives in this order detail."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/v1/orders/{order_id}",
+    "result": {
+     "items": "groups.0.shipments",
+     "key": "events",
+     "fields": {
+      "status": "status",
+      "tracking_number": "trackings.0.tracking_no",
+      "carrier": "trackings.0.carrier",
+      "shipped_at": "shipped_at",
+      "delivered_at": "delivered_at",
+      "shipment_id": "shipment_id"
+     }
+    },
+    "docs": "https://wholesale-api.orosy.com/docs",
+    "note": "The shipments of the order's FIRST delivery group (groups[0].shipments[]: status preparing | shipped | delivered | returned, trackings[{tracking_no, carrier}], shipped_at, delivered_at). Orders spanning several delivery groups have more shipments under groups[1..] — read them with get_order (raw.groups)."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /v1/orders 'カート全件で注文を作成します' (creates the order from the whole server-side cart): items must first be added one variation at a time with PUT /v1/cart/items (and the destination set with PUT /v1/cart/ship-to), and the AI flow is meant to stop at the total for a human to confirm. A single call cannot build the cart from the vocabulary's items array; orosy's official MCP endpoint https://wholesale-api.orosy.com/mcp covers cart and ordering."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host wholesale-api.orosy.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; names not found on the page: list_products:category, list_products:page, list_products:per_page, list_products:q, quote_shipping:dest, quote_shipping:product_ids"
+  ],
+  "notes": "-"
+ }
+}

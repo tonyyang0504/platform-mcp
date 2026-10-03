@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "evalai-mcp",
+ "display_name": "EvalAI MCP",
+ "version": "0.1.0",
+ "description": "EvalAI (competitions): me, discover, get_competition, standings, enter. Every tool maps to a documen",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "evalai"
+   ],
+   "env": {
+    "PLATFORM_MCP_EVALAI_AUTH_TOKEN": "${user_config.platform_mcp_evalai_auth_token}",
+    "PLATFORM_MCP_EVALAI_PARTICIPANT_TEAM_ID": "${user_config.platform_mcp_evalai_participant_team_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_evalai_auth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EVALAI_AUTH_TOKEN",
+   "description": "EvalAI auth token from https://eval.ai/web/profile ('Get your Auth Token'; the token the evalai CLI uses). Sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_evalai_participant_team_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_EVALAI_PARTICIPANT_TEAM_ID",
+   "description": "Numeric id of your EvalAI participant team (from GET /api/participants/participant_team or the Participant Teams page); needed only by `enter`.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/auth/user/: pk, username, email, first_name, last_name."
+  },
+  {
+   "name": "discover",
+   "description": "GET /api/challenges/challenge/{challenge_time}/{approved}/{published} with present/approved/public fixed: ongoing public challenges. The server pages (`page`, fixed size); `limit` is not sent and there is no text filter, so `query`, `kind` and `status` are not sent. short_description, is_registration_open and has_prize stay in `raw`."
+  },
+  {
+   "name": "get_competition",
+   "description": "GET /api/challenges/challenge/{id}/. `description` and `submission_format` (submission_guidelines) are HTML; terms_and_conditions, evaluation_details and is_registration_open stay in `raw`. Phase splits (the leaderboard ids) are at GET /api/challenges/{challenge_pk}/challenge_phase_split (not mapped)."
+  },
+  {
+   "name": "standings",
+   "description": "Leaderboards are per challenge-phase split: pass the phase-split id (from /api/challenges/{challenge_pk}/challenge_phase_split) as `competition_id`, not the challenge id. Rows come in leaderboard order; `score` is the default-order metric (filtering_score) and the full metric vector is `raw.result` with labels in `raw.leaderboard__schema`."
+  },
+  {
+   "name": "enter",
+   "description": "POST /api/challenges/challenge/{challenge_pk}/participant_team/{participant_team_pk}: registers your team (config `participant_team_id`) for the challenge; answers 201 with no body. Closed registration, email-domain rules and team-size limits come back as 406 errors."
+  }
+ ]
+}

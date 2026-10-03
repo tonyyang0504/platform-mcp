@@ -1,0 +1,328 @@
+{
+ "id": "weibo",
+ "category": "social",
+ "label": "Weibo",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://open.weibo.com/wiki/",
+ "url": "https://weibo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free after app review on open.weibo.com (普通接口 level; higher-level 高级接口 need application); statuses/share text ≤ 140 Chinese characters, may not contain #话题# and MUST contain at least one URL under the app's registered 安全域名; pic ≤ 5 MB JPEG/GIF/PNG; rate limits: 100 API calls per authorized user per app per DAY, 30 posts per user per HOUR, 15,000 calls per IP per hour; OAuth2 access tokens expire (test apps 1 day, approved apps 30 days).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post(share with link)",
+   "upload_media",
+   "reply",
+   "read_comments",
+   "delete"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 140,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.weibo.com/2/statuses/share.json (status, rip)",
+   "docs": "https://open.weibo.com/wiki/2/statuses/share"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same endpoint, multipart with `pic` (JPEG/GIF/PNG < 5 MB, one image)",
+   "docs": "https://open.weibo.com/wiki/2/statuses/share"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no video endpoint on the v2 index; `statuses/share` takes one image)",
+   "docs": "https://open.weibo.com/wiki/2/statuses/share"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/comments/show.json?id=&count=&page= (since_id / max_id paging)",
+   "docs": "https://open.weibo.com/wiki/2/comments/show"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /2/comments/create.json (id, comment ≤ 140 汉字, pic_ids?, comment_ori?, rip)",
+   "docs": "https://open.weibo.com/wiki/2/comments/create"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/statuses/mentions.json (count ≤ 200, page, since_id/max_id)",
+   "docs": "https://open.weibo.com/wiki/2/statuses/mentions"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no DM endpoints on the current v2 index)",
+   "docs": "https://open.weibo.com/wiki/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://open.weibo.com/wiki/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST /2/statuses/destroy.json (id) — “只能删除自己发布的微博”",
+   "docs": "https://open.weibo.com/wiki/2/statuses/destroy"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (counts on the status object: reposts_count / comments_count / attitudes_count)",
+   "docs": "https://open.weibo.com/wiki/2/statuses/user_timeline"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (followers_count on users/show)",
+   "docs": "https://open.weibo.com/wiki/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (restricted \"share\" posting).",
+  "base_urls": [
+   "https://api.weibo.com/2/…json",
+   "https://api.weibo.com/oauth2/authorize"
+  ],
+  "auth": [
+   "1. Register an app at open.weibo.com (developer identity review), set the **安全域名** (safe domain) — every shared",
+   "2. OAuth 2.0 authorization code → `access_token` (+ `uid`, `expires_in`; approved apps get 30-day tokens, test apps 1 day).",
+   "3. Interface levels: 普通接口 (default) vs 高级接口 (apply); statuses/share and comments/* are 普通."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST statuses/share.json",
+    "purpose": "`status` (URL-encoded, ≤ 140 Chinese chars, no `#话题#`, MUST include a safe-domain URL), optional `pic` (multipart JPEG/GIF/PNG < 5 MB)",
+    "notes": ""
+   },
+   {
+    "call": "POST statuses/destroy.json",
+    "purpose": "`id`",
+    "notes": ""
+   },
+   {
+    "call": "GET statuses/user_timeline.json",
+    "purpose": "`uid`, `count`, `page`",
+    "notes": ""
+   },
+   {
+    "call": "GET comments/show.json?id=`, `GET comments/to_me.json`, `GET comments/mentions.json",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST comments/create.json` {id, comment}, `POST comments/reply.json` {id, cid, comment}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET statuses/mentions.json",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET users/show.json`, `GET account/get_uid.json",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - 100 API calls per authorized user per app per **day**; posting 30 per user per **hour**; 15,000 calls per IP per hour (errors 10022 / 10023 / 10024); Weibo says limits are HTTP-polling oriented, not real time. - No third-party analytics endpoint (counts on status objects only). - 微博开放平台开发者协议 + content rules; the safe-domain URL requirement makes every API post a link post.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://open.weibo.com/wiki/2/statuses/share",
+   "https://open.weibo.com/wiki/Rate-limiting",
+   "https://open.weibo.com/wiki/2/comments/create"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.weibo.com/2",
+  "auth": {
+   "type": "query",
+   "params": {
+    "access_token": "access_token"
+   },
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Weibo OAuth2 access_token, sent as the access_token parameter ('采用OAuth授权方式为必填参数'). For your own account use the developer authorization of your app (开发者授权, valid 5 years); ordinary user authorizations last 1 or 30 days depending on the app's level and cannot be refreshed server-side (refresh tokens exist only for the official mobile SDK) (https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "user_ip",
+    "required": true,
+    "help": "Real public IP of the operating user, sent as rip on statuses/share ('开发者上报的操作用户真实IP，形如：211.156.0.1')."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Per-app and per-user rate limits (error 10022 / 10023 / 10024, https://open.weibo.com/wiki/Rate-limiting); third-party shares must link to the app's registered safe domain.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/account/get_uid.json",
+    "docs": "https://open.weibo.com/wiki/2/account/get_uid",
+    "note": "account/get_uid returns {uid} of the authorized user (not counted against the rate limit)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/statuses/share.json",
+    "body_format": "form",
+    "body": {
+     "status": "text",
+     "rip": "@user_ip"
+    },
+    "result": {
+     "fields": {
+      "id": "idstr",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://open.weibo.com/wiki/2/statuses/share",
+    "note": "PUBLISHES a public Weibo through statuses/share ('第三方分享一条链接到微博'): `text` must be at most 140 Chinese characters, may not contain #话题词#, and MUST contain at least one URL on the app's registered safe domain (我的应用 > 应用信息 > 安全域名), otherwise Weibo rejects it. rip is config user_ip. No picture is sent (pic is a multipart upload). `id` is idstr; `reply_to` is ignored."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/comments/show.json",
+    "params": {
+     "id": "post_id",
+     "page": "page",
+     "count": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 200,
+    "result": {
+     "items": "comments",
+     "key": "comments",
+     "total": "total_number",
+     "fields": {
+      "id": "idstr",
+      "author": "user.screen_name",
+      "text": "text",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://open.weibo.com/wiki/2/comments/show",
+    "note": "comments/show?id={weibo id}&page&count returns {comments[{id, idstr, text, created_at ('Wed Jun 01 00:50:25 +0800 2011'), user{screen_name}, status}], total_number}."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/statuses/mentions.json",
+    "params": {
+     "since_id": "since",
+     "page": "page",
+     "count": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 200,
+    "result": {
+     "items": "statuses",
+     "key": "mentions",
+     "total": "total_number",
+     "fields": {
+      "id": "idstr",
+      "author": "user.screen_name",
+      "text": "text",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://open.weibo.com/wiki/2/statuses/mentions",
+    "note": "statuses/mentions (@我的微博): `since` is a Weibo id (since_id), not a date. Weibo returns only posts by users who have also authorized this app ('只返回授权用户的微博'), so the list is partial."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "/statuses/destroy.json",
+    "body_format": "form",
+    "body": {
+     "id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://open.weibo.com/wiki/2/statuses/destroy",
+    "note": "DESTRUCTIVE: statuses/destroy deletes one of the account's own Weibo posts ('只能删除自己发布的微博') and returns the deleted status."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/statuses/count.json",
+    "params": {
+     "ids": "post_id"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "post_id": "id",
+      "comments": "comments",
+      "reposts": "reposts"
+     }
+    },
+    "docs": "https://open.weibo.com/wiki/2/statuses/count",
+    "note": "statuses/count?ids= returns [{id, comments, reposts}] (counts as strings) for the one post id sent; likes and views are not part of this endpoint."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Pictures must be uploaded as the binary pic part of a multipart/form-data statuses/share request ('上传图片时...需要采用multipart/form-data编码方式', https://open.weibo.com/wiki/2/statuses/share); the runtime has no multipart upload and URLs are not accepted.",
+   "reply_comment": "comments/reply needs both cid (the comment) and id (the Weibo post) (https://open.weibo.com/wiki/2/comments/reply); the reply input carries only comment_id."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.weibo.com: DNS ok, TLSv1.3 (DigiCert, Inc.)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

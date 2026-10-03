@@ -1,0 +1,343 @@
+{
+ "id": "microsoft_graph",
+ "category": "messaging",
+ "label": "Outlook / Microsoft 365",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview",
+ "url": "https://outlook.office.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed with delegated (user-consented Mail.Read / Mail.ReadWrite / Mail.Send) or application permissions (admin consent, tenant-wide unless scoped by an application access policy). Personal (outlook.com) and organisation accounts. Outlook service throttling per app-id + mailbox: 10,000 requests per 10 minutes, 4 concurrent requests, 150 MB upload per 5 minutes. Change-notification subscriptions on message resources expire after at most 10,080 minutes (< 7 days); rich notifications with resource data 1,440 minutes; any expiry under 45 minutes is bumped to 45. In-place archive mailboxes are not accessible.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "drafts",
+   "folders",
+   "rules",
+   "webhooks",
+   "media",
+   "delta_sync",
+   "mime"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Microsoft Graph SDKs (msgraph-sdk-python, msgraph-sdk-javascript, .NET, Java, Go) — learn.microsoft.com/graph"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /me/mailFolders/inbox/messages/delta (then @odata.deltaLink)",
+   "docs": "https://learn.microsoft.com/en-us/graph/api/message-delta?view=graph-rest-1.0"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /me/sendMail",
+   "docs": "https://learn.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "PATCH /me/messages/{id} {isRead:true}",
+   "docs": "https://learn.microsoft.com/en-us/graph/api/message-update?view=graph-rest-1.0"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.microsoft.com/v1.0"
+  ],
+  "auth": [
+   "1. Microsoft Entra app registration (multi-tenant or single) → authorization-code flow (MSAL) → refresh token.",
+   "2. Delegated permissions: `Mail.Read`, `Mail.ReadWrite`, `Mail.Send` (user consent). Application permissions exist",
+   "3. `Authorization: Bearer <token>`; prefer `Prefer: IdType=\"ImmutableId\"` — plain ids change on move / copy."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /me/sendMail` `{message{subject, body{contentType, content}, toRecipients[…]}, saveToSentItems}",
+    "purpose": "send (also MIME: base64 body with `Content-Type: text/plain`)",
+    "notes": ""
+   },
+   {
+    "call": "POST /me/messages/{id}/reply` · `/replyAll` · `/forward` `{comment",
+    "purpose": "message}`",
+    "notes": "reply in thread (server builds headers)"
+   },
+   {
+    "call": "POST /me/messages` (draft) → `POST /me/messages/{id}/send",
+    "purpose": "propose → approve",
+    "notes": ""
+   },
+   {
+    "call": "GET /me/mailFolders/inbox/messages?$select=…&$filter=…` · `GET /me/messages/{id}",
+    "purpose": "read inbox; `conversationId` groups threads; `internetMessageHeaders` on demand",
+    "notes": ""
+   },
+   {
+    "call": "GET /me/mailFolders/{id}/messages/delta` → `@odata.deltaLink",
+    "purpose": "incremental sync cursor",
+    "notes": ""
+   },
+   {
+    "call": "POST /subscriptions` `{changeType: \"created,updated\", notificationUrl, resource: \"me/mailFolders('inbox')/messages\", expirationDateTime, clientState, lifecycleNotificationUrl}` · `PATCH /subscriptions",
+    "purpose": "change notifications (webhook)",
+    "notes": ""
+   },
+   {
+    "call": "GET /me/messages/{id}/attachments` · `POST …/attachments` (fileAttachment)",
+    "purpose": "media",
+    "notes": ""
+   },
+   {
+    "call": "PATCH /me/messages/{id}` `{isRead}` · `POST …/move",
+    "purpose": "state / folders",
+    "notes": ""
+   },
+   {
+    "call": "mailFolders`, `messageRules`, `mailSearchFolder`, `mailboxSettings` (automatic replies)",
+    "purpose": "management",
+    "notes": ""
+   }
+  ],
+  "limits": " - Outlook service limits per **app id + mailbox**: **10,000 requests / 10 minutes**, **4 concurrent requests**, **150 MB upload / 5 minutes** (learn.microsoft.com/graph/throttling-limits). JSON batch: up to 4 requests in parallel. - Subscriptions on `message`: max **10,080 minutes (< 7 days)**; with resource data 1,440 minutes; requests under 45 minutes are bumped to 45; renew before expiry, handle `reauthorizationRequired` / `missed` lifecycle events; `clientState` ≤ 128 chars; notification latency < 1 min avg, 3 min max. - Exchange Online recipient / rate caps are tenant policy (registry no",
+  "mcp_sdk": [],
+  "sources": [
+   "https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview",
+   "https://learn.microsoft.com/en-us/graph/api/resources/subscription",
+   "https://learn.microsoft.com/en-us/graph/throttling-limits"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://graph.microsoft.com/v1.0",
+  "rate_per_second": 4,
+  "rate_note": "Outlook service limit: 10,000 requests per 10 minutes per app per mailbox, 4 concurrent requests; HTTP 429 + Retry-After (https://learn.microsoft.com/en-us/graph/throttling-limits).",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Application (client) ID of the Microsoft Entra app registration."
+    },
+    {
+     "name": "client_secret",
+     "required": false,
+     "help": "Client secret of the app registration ('Only required for web apps'); leave empty for a public client. Sent in the form body of POST https://login.microsoftonline.com/common/oauth2/v2.0/token."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent including offline_access and the delegated scopes User.Read Mail.ReadWrite Mail.Send. Microsoft may return a new refresh token on every refresh; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/<platform>.json (mode 0600)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0",
+    "note": "GET /me: displayName, mail, userPrincipalName, id."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/me/mailFolders/inbox/messages",
+    "params": {
+     "$top": "limit"
+    },
+    "fixed_params": {
+     "$orderby": "receivedDateTime desc"
+    },
+    "query_safe": "$",
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "value",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "conversationId",
+      "from": "from.emailAddress.address",
+      "to": "toRecipients.0.emailAddress.address",
+      "text": "bodyPreview",
+      "sent_at": "receivedDateTime"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/user-list-messages?view=graph-rest-1.0",
+    "note": "Inbox, newest first. Graph pages through @odata.nextLink and says 'Don't try to extract the $skip value', so `page` is ignored; `since` is not sent. text is bodyPreview ('The first 255 characters of the message body'); thread_id is conversationId."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/me/messages",
+    "params": {
+     "$filter": "fmt:conversationId eq '{thread_id}'",
+     "$top": "limit"
+    },
+    "query_safe": "$",
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "value",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "conversationId",
+      "from": "from.emailAddress.address",
+      "to": "toRecipients.0.emailAddress.address",
+      "text": "bodyPreview",
+      "sent_at": "receivedDateTime"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/user-list-messages?view=graph-rest-1.0",
+    "note": "All messages of a conversation (`thread_id` = conversationId from list_inbound) via an OData $filter; `page` is ignored."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/me/sendMail",
+    "body": {
+     "message.subject": "subject",
+     "message.body.contentType": "=Text",
+     "message.body.content": "text",
+     "message.toRecipients.0.emailAddress.address": "to"
+    },
+    "result": {
+     "fields": {
+      "status": "=sent"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0",
+    "note": "sendMail in JSON (plain-text body, one recipient `to`); answers 202 with no body, so no message id: 'A 202 Accepted response code indicates that the request has been accepted; however, it doesn't indicate that the request processing has completed'."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/me/messages/{thread_id}/reply",
+    "body": {
+     "comment": "text"
+    },
+    "result": {
+     "fields": {
+      "status": "=sent"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/message-reply?view=graph-rest-1.0",
+    "note": "`thread_id` is the MESSAGE id to reply to (a message `id`, not conversationId); the reply goes to its sender with `text` as the comment. 202, no body."
+   },
+   "mark_read": {
+    "method": "PATCH",
+    "path": "/me/messages/{message_id}",
+    "body": {
+     "isRead": "json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=read"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/message-update?view=graph-rest-1.0",
+    "note": "PATCH isRead=true on one message (`message_id` required)."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host graph.microsoft.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token login.microsoftonline.com/common/oauth2/v2.0/token: 400 invalid_grant",
+   "authorize https://login.microsoftonline.com/common/oauth2/v2.0/authorize: 200",
+   "spec https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "send: spec says \"body field 'message.subject' is not in the request schema\"; waived: the OpenAPI (generated from CSDL) names the action parameter `Message`; Microsoft's sendMail reference sample uses `message`, which Graph accepts send: spec says \"body field 'message.body.contentType' is not in the request schema\"; waived: the OpenAPI (generated from CSDL) names the action parameter `Message`; Microsoft's sendMail reference sample uses `message`, which Graph accepts send: spec says \"body field 'message.body.content' is not in the request schema\"; waived: the OpenAPI (generated from CSDL) names the action parameter `Message`; Microsoft's sendMail reference sample uses `message`, which Graph accepts send: spec says \"body field 'message.toRecipients.0.emailAddress.address' is not in the request schema\"; waived: the OpenAPI (generated from CSDL) names the action parameter `Message`; Microsoft's sendMail reference sample uses `message`, which Graph accepts reply: spec says \"body field 'comment' is not in the request schema\"; waived: the OpenAPI names it `Comment`; the reply reference sample uses `comment` mark_read: spec says \"spec requires body field '@odata.type', adapter does not send it\"; waived: the generated OpenAPI marks @odata.type required on every entity body; PATCH /me/messages/{id} with {isRead} is the documented update"
+ }
+}

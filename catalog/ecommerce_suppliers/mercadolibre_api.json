@@ -1,0 +1,112 @@
+{
+ "id": "mercadolibre_api",
+ "category": "ecommerce_suppliers",
+ "label": "Mercado Libre (sales channel) + Mercado Libre Developers API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "latam"
+ ],
+ "docs_url": "https://developers.mercadolibre.com.ar/es_ar/api-docs-es",
+ "url": "https://developers.mercadolibre.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "security + application-management docs; Términos y condiciones; Developer Partner Program",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks"
+  ],
+  "auth": "oauth2 authorization code (app registered in the developer centre; see the sales-channel audit `mercado_libre`)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Developer app + OAuth per seller; Términos y condiciones; Developer Partner Program.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://developers.mercadolibre.com.ar/es_ar/api-docs-es"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Mercado Libre Developers \"Items & Searches\" (https://developers.mercadolibre.com.ar/en_us/items-and-searches, opened 2026-09-25) documents only seller-scoped listing reads (/users/{user_id}/items/search, /items?ids=, the public /sites/{site}/search?seller_id|nickname marked for replacement by the private resource), with public available_quantity reduced to reference ranges; no keyword catalogue search and no purchase/checkout API exist, so this category's list_products/create_order (buying from a supplier) cannot be mapped. The seller side is already served as ecommerce_channels/mercado_libre."
+}

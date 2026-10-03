@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/customcat-mcp",
+ "description": "CustomCat (ecommerce suppliers): me, list_products, create_order, get_order, track. Every tool maps ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://help.customcat.com/getting-started-with-customcat-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "customcat"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CUSTOMCAT_API_KEY",
+     "description": "CustomCat API key (generated per 'API Custom Integrations' store; Settings in the app shows a read-only and a read-write key — create_order needs the read-write one), sent as the `api_key` parameter.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CUSTOMCAT_SANDBOX",
+     "description": "Set to 1 to send `sandbox: 1` with create_order and get_order (CustomCat's sandbox flag); left out when unset, so orders are real and charged.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

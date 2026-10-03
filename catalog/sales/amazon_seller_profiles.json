@@ -1,0 +1,40 @@
+{
+ "id": "amazon_seller_profiles",
+ "category": "sales",
+ "label": "Amazon seller profile pages",
+ "lane": "human",
+ "kind": "marketplace",
+ "regions": [
+  "us",
+  "gb",
+  "de",
+  "jp",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.amazon.com/sp?seller=A2R2RITDJNW1Q6",
+ "verified_at": "2026-09-05",
+ "terms_note": "Amazon Conditions of Use forbid 'any data mining, robots, or similar data gathering and extraction tools' (read in the Ecommerce pass); the sample profile URL was redirected to a help page this pass. Research only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

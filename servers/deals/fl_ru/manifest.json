@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "fl_ru-mcp",
+ "display_name": "FL MCP",
+ "version": "0.1.0",
+ "description": "FL (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "fl_ru"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "The feed answers its whole current list in one response ('Заказы на FL.ru', RSS 2.0, the latest ~60 projects); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). Titles/descriptions are Russian; the description is truncated by the feed ('…'); the category ('Раздел / Подраздел') is in raw.category; budgets are not in the feed."
+  }
+ ]
+}

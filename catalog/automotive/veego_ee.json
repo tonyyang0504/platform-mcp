@@ -1,0 +1,39 @@
+{
+ "id": "veego_ee",
+ "category": "automotive",
+ "label": "Veego",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://veego.ee",
+ "domain": "veego.ee",
+ "country": "Estonia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Estonia); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://veego.ee/"
+  ],
+  "unofficial": [
+   "https://github.com/veego/api-platform",
+   "https://github.com/RohanSuri29/VeeGo",
+   "https://github.com/playfairs/veego"
+  ]
+ },
+ "official_mcp": []
+}

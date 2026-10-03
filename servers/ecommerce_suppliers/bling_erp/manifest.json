@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "bling_erp-mcp",
+ "display_name": "Bling ERP (BR integration hub — not a supplier) MCP",
+ "version": "0.1.0",
+ "description": "Bling ERP (BR integration hub — not a supplier) (ecommerce suppliers): me, list_products, get_produc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bling_erp"
+   ],
+   "env": {
+    "PLATFORM_MCP_BLING_ERP_CLIENT_ID": "${user_config.platform_mcp_bling_erp_client_id}",
+    "PLATFORM_MCP_BLING_ERP_CLIENT_SECRET": "${user_config.platform_mcp_bling_erp_client_secret}",
+    "PLATFORM_MCP_BLING_ERP_REFRESH_TOKEN": "${user_config.platform_mcp_bling_erp_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bling_erp_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLING_ERP_CLIENT_ID",
+   "description": "Client ID of your Bling app (Central de Extensões > Área do Integrador); sent with the client secret as HTTP Basic on the token request ('não é permitida a inserção destes parâmetros no body').",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bling_erp_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLING_ERP_CLIENT_SECRET",
+   "description": "Client Secret of the same Bling app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bling_erp_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BLING_ERP_REFRESH_TOKEN",
+   "description": "refresh_token from a one-time authorization-code exchange (the code expires in 1 minute); valid 30 days. Access tokens last 6 hours (expires_in 21600) and are re-minted from it; a new refresh_token returned by Bling replaces the old one in memory, and with PLATFORM_MCP_STATE_DIR set it is also saved and preferred on the next start.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /empresas/me/dados-basicos: {data: {id, nome, cnpj, email, dataContrato}} of the connected Bling company."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /produtos: the products registered in YOUR Bling ERP (Bling is an ERP/integration hub, not a supplier) [{id, nome, codigo (SKU), preco, precoCusto, estoque.saldoVirtualTotal, tipo, situacao (A active / I inactive), imagemURL}]; `query` filters by nome, `category` is idCategoria. Prices are BRL. stock_balance is estoque.saldoVirtualTotal (a decimal)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /produtos/{idProduto}: full product with stock (estoque), default supplier (fornecedor {id, codigo, precoCusto, precoCompra}), dimensions and tax data."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /pedidos/compras/{idPedidoCompra}: a purchase order recorded in Bling (pedido de compra to a supplier) {id, numero, data, dataPrevista, total, fornecedor{id}, situacao{id, valor}, transporte, itens[], parcelas[]}. status_code is situacao.valor (0 em aberto, 1 atendido, 2 cancelado, 3 em andamento); `status` is left null because Bling returns a numeric code."
+  }
+ ]
+}

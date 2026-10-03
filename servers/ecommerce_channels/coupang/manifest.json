@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "coupang-mcp",
+ "display_name": "Coupang MCP",
+ "version": "0.1.0",
+ "description": "Coupang (ecommerce channels): me, update_listing, set_inventory, end_listing. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "coupang"
+   ],
+   "env": {
+    "PLATFORM_MCP_COUPANG_ACCESS_KEY": "${user_config.platform_mcp_coupang_access_key}",
+    "PLATFORM_MCP_COUPANG_SECRET_KEY": "${user_config.platform_mcp_coupang_secret_key}",
+    "PLATFORM_MCP_COUPANG_VENDOR_ID": "${user_config.platform_mcp_coupang_vendor_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_coupang_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_ACCESS_KEY",
+   "description": "Coupang Open API Access Key issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급) after business verification; calls must come from one of the (up to 10) allow-listed IPs, and keys expire and must be re-issued.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_coupang_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_SECRET_KEY",
+   "description": "The matching Secret Key: signs every request (HMAC-SHA256 hex over signed-date + method + path + query, sent as `Authorization: CEA algorithm=HmacSHA256, access-key=..., signed-date=..., signature=...`). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_coupang_vendor_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_VENDOR_ID",
+   "description": "Coupang vendorId (업체코드, e.g. A00012345), shown in WING after login; used by the probe.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one registered product ({code, message, nextToken, data[]}) to verify the HMAC keys, IP allow-list and vendorId."
+  },
+  {
+   "name": "update_listing",
+   "description": "UPDATE_PRODUCT_PRICE_BY_ITEM: PUT /vendor-items/{vendorItemId}/prices/{price}?forceSalePriceUpdate=true changes the SALE PRICE of one option (listing_id = vendorItemId, 옵션ID) — the price goes live on coupang.com. Only `price` is applied (KRW in Korea, whole number in steps of 10 won); forceSalePriceUpdate=true lifts the default -50%/+100% change guard, so double-check the amount. Use set_inventory for stock; title and description are product-level (modify-product) and are not changed here."
+  },
+  {
+   "name": "set_inventory",
+   "description": "UPDATE_PRODUCT_QUANTITY_BY_ITEM: PUT /vendor-items/{vendorItemId}/quantities/{quantity} sets the stock of one option; `listing_id` is the vendorItemId (옵션ID) and is required (Coupang items are not addressed by SKU)."
+  },
+  {
+   "name": "end_listing",
+   "description": "STOP_PRODUCT_SALES_BY_ITEM: PUT /vendor-items/{vendorItemId}/sales/stop suspends sales of one option (reversible with /sales/resume); the product itself is not deleted."
+  }
+ ]
+}

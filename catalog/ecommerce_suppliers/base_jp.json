@@ -1,0 +1,238 @@
+{
+ "id": "base_jp",
+ "category": "ecommerce_suppliers",
+ "label": "BASE (store platform) + BASE Developers API + BASE Apps supplier connectors",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "japan"
+ ],
+ "docs_url": "https://apps.thebase.com/",
+ "url": "https://developers.thebase.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API利用規約 (API terms) — application required",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth"
+  ],
+  "auth": "oauth2 (developer registration at developers.thebase.in → client id/secret; /1/oauth/authorize → /1/oauth/token; `Authorization: Bearer`; refresh tokens; scopes read_users, read_users_mail, read_items, write_items, read_orders, write_orders, read_savings)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "product_import",
+   "orders",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Developer registration + API利用規約 (thebase.in/pages/api_term); OAuth per shop; 5,000 requests / hour and 100,000 / day per app.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://apps.thebase.com/",
+   "https://docs.thebase.in/api/",
+   "https://api.thebase.in/1/…;",
+   "https://thebase.in/pages/api_term)"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.thebase.in",
+  "rate_per_second": 1,
+  "config_fields": [
+   {
+    "name": "redirect_uri",
+    "required": true,
+    "help": "The callback URL registered for your BASE Developers app; BASE requires it in every refresh-token request ('redirect_uri 登録したコールバックURL (必須)', https://docs.thebase.in/api/oauth/refresh_token)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.thebase.in/1/oauth/token",
+   "client_auth": "body",
+   "token_params": {
+    "redirect_uri": "{@redirect_uri}"
+   },
+   "state_key": "base_jp",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your app at https://developers.thebase.in/ (API application required)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same app."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the one-time authorization-code exchange (GET /1/oauth/authorize with scope read_users read_items read_orders → POST /1/oauth/token, https://docs.thebase.in/api/oauth/access_token). Valid about 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/1/users/me",
+    "docs": "https://docs.thebase.in/api/users/me",
+    "note": "The connected shop: {user: {shop_id, shop_name, shop_url, …}} (scope read_users)."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/1/items",
+    "params": {
+     "limit": "limit",
+     "offset": "offset",
+     "category_id": "category"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "products",
+     "fields": {
+      "id": "item_id",
+      "title": "title",
+      "price": "price",
+      "currency": "=JPY",
+      "sku": "identifier",
+      "image_url": "img1_origin",
+      "stock": "stock",
+      "visible": "visible"
+     }
+    },
+    "docs": "https://docs.thebase.in/api/items/",
+    "note": "Items of the CONNECTED BASE SHOP (GET /1/items, scope read_items), in list_order; `category` is a BASE category_id. BASE is a storefront platform, so these are the merchant's own products, not a supplier catalogue; keyword search is not applied (GET /1/items/search needs its own q)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/1/items/detail/{id}",
+    "result": {
+     "root": "item",
+     "fields": {
+      "id": "item_id",
+      "title": "title",
+      "price": "price",
+      "currency": "=JPY",
+      "sku": "identifier",
+      "image_url": "img1_origin",
+      "stock": "stock",
+      "description": "detail"
+     }
+    },
+    "docs": "https://docs.thebase.in/api/items/detail",
+    "note": "One item of the connected shop (GET /1/items/detail/:item_id); variations[{variation_id, variation, variation_stock, variation_identifier}] are in `raw`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/1/orders/detail/{id}",
+    "result": {
+     "root": "order",
+     "fields": {
+      "id": "unique_key",
+      "status": "dispatch_status",
+      "total": "total",
+      "currency": "=JPY",
+      "created_at": "ordered",
+      "tracking_number": "tracking_number"
+     }
+    },
+    "docs": "https://docs.thebase.in/api/orders/detail",
+    "note": "An order received by the connected shop (GET /1/orders/detail/:unique_key, scope read_orders). dispatch_status: unshippable, ordered (未対応), unpaid, shipping, dispatched, cancelled; `created_at` is epoch seconds; order_items and order_receiver are in `raw`."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "BASE is the merchant's own storefront; the API index (https://docs.thebase.in/api/) has Users, Items, Categories, Orders, Savings, Delivery Company and Search endpoints and no shipping-rate calculation.",
+   "create_order": "Orders are placed by shoppers on the storefront; the API offers only 'GET /1/orders', 'GET /1/orders/detail/:unique_key' and 'POST /1/orders/edit_status' (https://docs.thebase.in/api/), no order creation.",
+   "track": "No shipment-tracking endpoint exists (https://docs.thebase.in/api/); the order's tracking_number and dispatch_status are returned by get_order."
+  },
+  "terms": "BASE API (https://docs.thebase.in/api/): application-reviewed developer apps, OAuth2 access tokens valid one hour, refresh tokens about 30 days and rotated on refresh; 5,000 calls per hour and 100,000 per day per user ('APIの利用制限')."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.thebase.in: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.thebase.in/1/oauth/token: 400 unauthorized_client",
+   "authorize https://api.thebase.in/1/oauth/authorize: 400",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

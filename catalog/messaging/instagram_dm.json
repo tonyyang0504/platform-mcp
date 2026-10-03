@@ -1,0 +1,308 @@
+{
+ "id": "instagram_dm",
+ "category": "messaging",
+ "label": "Instagram DM",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message",
+ "url": "https://www.instagram.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Instagram professional (Business / Creator) accounts only. Two flavours: Instagram Login — POST graph.instagram.com/{IG_ID}/messages with an Instagram User token + instagram_business_basic + instagram_business_manage_messages; Facebook Login — POST /{PAGE_ID}/messages or /me/messages with a Page token (MESSAGE task) + instagram_manage_messages, Page linked to the IG account. 24 hours to respond to a user's message; human-agent tag (approval required) extends to 7 days. 'Businesses cannot start conversations; customers must message first'; no group messaging; Requests-folder threads inactive 30 days are not returned. Standard Access only reaches people with a role on the app — Advanced Access (App Review) for other people's accounts. Types: text ≤1,000 chars, links, images PNG/JPEG ≤8 MB (≤10 per message), video ≤25 MB, audio ≤25 MB, PDFs ≤25 MB, stickers, reactions, templates (generic / button / product), owned posts (MEDIA_SHARE), replies to specific messages. One-time Notifications, News Messaging and Sponsored Messages are NOT available on Instagram. Caution (docs read 2026-09-24): 'Apps with Standard Access can only send messages to people that have a role on the app' (https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message) and for Instagram conversations 'Your app must be owned by a verified business' (https://developers.facebook.com/docs/messenger-platform/conversations) - Advanced Access needs Meta App Review plus business verification.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "media",
+   "webhooks",
+   "receipts",
+   "reactions",
+   "templates",
+   "quick_replies"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Meta Graph API — plain HTTPS (graph.instagram.com or graph.facebook.com)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "Webhook `messages` field on the IG account; backfill GET /{ig-user-id}/conversations?platform=instagram",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/instagram"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /{ig-user-id|page-id}/messages with `recipient.id` = IGSID",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/instagram"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST …/messages `{sender_action: 'mark_seen'}`",
+   "docs": "https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.instagram.com/v{N}/{IG_ID}/messages",
+   "https://graph.facebook.com/v{N}/{PAGE_ID}/messages"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /{IG_ID}/messages` `{recipient{id: IGSID}, message{text",
+    "purpose": "attachment{type, payload{url",
+    "notes": "attachment_id}}}}`"
+   },
+   {
+    "call": "same + `tag: HUMAN_AGENT",
+    "purpose": "human reply after the window",
+    "notes": "7-day window, tag needs approval"
+   },
+   {
+    "call": "message{attachment{type: like_heart}}` · reaction `{sender_action: react, payload{message_id, reaction: love}}` · reply to a specific message",
+    "purpose": "stickers / reactions / quoted replies",
+    "notes": ""
+   },
+   {
+    "call": "POST …/messages` `{sender_action: typing_on",
+    "purpose": "mark_seen}` · quick replies · templates (generic, button, product) · ice breakers · persistent menu",
+    "notes": "UX"
+   },
+   {
+    "call": "Webhooks `messages`, `messaging_postbacks`, `messaging_reactions`, `messaging_seen",
+    "purpose": "inbound + receipts",
+    "notes": "Requests-folder threads inactive 30 days are not returned"
+   },
+   {
+    "call": "GET /{IG_ID}/conversations?platform=instagram` · `GET /{conversation_id}?fields=messages",
+    "purpose": "backfill",
+    "notes": ""
+   }
+  ],
+  "limits": " - Types: text ≤ 1,000 chars, links, images PNG / JPEG ≤ 8 MB (≤ 10 per message), video MP4 / OGG / AVI / MOV / WebM ≤ 25 MB, audio AAC / M4A / WAV / MP4 ≤ 25 MB, PDFs ≤ 25 MB, stickers, reactions, MEDIA_SHARE of owned posts. - No group messaging; no business-initiated conversations; One-time Notifications, News Messaging and Sponsored Messages are NOT available on Instagram. Rate limits described as \"standard API rate limiting\" (no numbers on the pages read).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/messaging-api",
+   "https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message",
+   "https://developers.facebook.com/docs/messenger-platform/instagram",
+   "https://developers.facebook.com/docs/messenger-platform/policy/policy-overview"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v26.0",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "page_access_token",
+   "fields": [
+    {
+     "name": "page_access_token",
+     "required": true,
+     "help": "Page access token of the Facebook Page linked to the Instagram professional account, requested by a person who can perform the MESSAGE task on that Page, with instagram_basic, instagram_manage_messages and pages_manage_metadata (Messenger Platform > Instagram Messaging, https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message); sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "page_id",
+    "required": true,
+    "help": "Numeric id of the Facebook Page linked to the Instagram professional account; conversations are listed with /<page_id>/conversations?platform=instagram and messages sent with /<page_id>/messages. Env: PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/{page_id}",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "fixed_params": {
+     "fields": "id,name,instagram_business_account"
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/page/",
+    "note": "GET /{page_id}?fields=id,name,instagram_business_account: the Facebook Page linked to the Instagram professional account and the linked IG account id."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/{page_id}/conversations",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "platform": "instagram",
+     "fields": "id,updated_time,messages.limit(1){id,message,from,to,created_time}"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "require": [
+      "id"
+     ],
+     "fields": {
+      "id": "messages.data.0.id",
+      "thread_id": "id",
+      "from": "messages.data.0.from.username",
+      "from_id": "messages.data.0.from.id",
+      "text": "messages.data.0.message",
+      "sent_at": "messages.data.0.created_time",
+      "updated_at": "updated_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/messenger-platform/conversations",
+    "note": "GET /{page_id}/conversations?platform=instagram with field expansion messages.limit(1){...}: one row per conversation carrying its most recent message (which may be the Page's own outbound message - compare from_id with the Page / account id). thread_id is the conversation id for get_thread; from_id is the Instagram-scoped id (IGSID) for send. 'Conversations that are within the Requests folder that have not been active for 30 days will not be returned'. `since`/`channel` are not sent; cursor paging, so `page` is ignored."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/{thread_id}/messages",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,message,from,to,created_time"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "from": "from.username",
+      "from_id": "from.id",
+      "to": "to.data.0.username",
+      "text": "message",
+      "sent_at": "created_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/conversation/messages/",
+    "note": "GET /{conversation_id}/messages?fields=id,message,from,to,created_time (newest first). 'you can only get details about the 20 most recent messages in the conversation' (https://developers.facebook.com/docs/messenger-platform/conversations), so limit is capped at 20."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/{page_id}/messages",
+    "path_params": {
+     "page_id": "@page_id"
+    },
+    "body": {
+     "recipient.id": "to",
+     "message.text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "message_id",
+      "status": "=sent",
+      "recipient_id": "recipient_id"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message",
+    "note": "POST /{page_id}/messages {recipient: {id: IGSID}, message: {text}} answers {recipient_id, message_id}. `to` must be the Instagram-scoped ID of a person who messaged the account (list_inbound from_id); 'Text message must be less than 1,000 characters'; 'Apps with Standard Access can only send messages to people that have a role on the app'. `subject`/`channel` are ignored."
+   }
+  },
+  "not_offered": {
+   "reply": "Messages are addressed to a person: 'send a POST request to the /PAGE-ID/messages endpoint with the recipient parameter containing the Instagram-scoped ID (IGSID)' (https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message); a conversation id cannot be a recipient. Use send with the IGSID (list_inbound from_id).",
+   "mark_read": "The sender-action guide (https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions) documents mark_seen for Page-scoped IDs; the Instagram messaging pages read do not document a mark-as-read call for IGSIDs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; names not found on the page: get_thread:limit, list_inbound:limit"
+  ],
+  "notes": "-"
+ }
+}

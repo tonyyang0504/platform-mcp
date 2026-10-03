@@ -1,0 +1,35 @@
+{
+ "id": "nellemann_dk",
+ "category": "automotive",
+ "label": "Nellemann",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://nellemann.dk",
+ "domain": "nellemann.dk",
+ "country": "Denmark",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Stock served by vendor AutoIT 'Autobot' widget API (autobot.autoit.dk) — a dealer-website vendor endpoint, undocumented, not a Nellemann API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://nellemann.dk/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

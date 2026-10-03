@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/xiaohongshu_pugongying-mcp",
+ "description": "小红书 聚光 / 蒲公英 Xiaohongshu Ads (ads): me, list_campaigns, get_report, update_budget, pause_resume. Eve",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=4437",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "xiaohongshu_pugongying"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_XIAOHONGSHU_PUGONGYING_CLIENT_ID",
+     "description": "app_id of the 小红书开放平台 聚光 (MAPI) application (应用中心 > 编辑应用).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XIAOHONGSHU_PUGONGYING_CLIENT_SECRET",
+     "description": "secret of that application (应用中心 > 编辑应用); sent as `secret` in the refresh call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XIAOHONGSHU_PUGONGYING_REFRESH_TOKEN",
+     "description": "refresh_token from 获取token (auth_code exchange after the advertiser authorised the app's url). Valid 30 days and replaced on every refresh ('刷新后会生成新的 token，老的 access_token 和 refresh_token 将不可再使用'); set PLATFORM_MCP_STATE_DIR so the newest one survives restarts.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XIAOHONGSHU_PUGONGYING_ADVERTISER_ID",
+     "description": "聚光 广告主ID (advertiser_id; returned as approval_advertisers with the token); used by the probe, update_budget and pause_resume.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

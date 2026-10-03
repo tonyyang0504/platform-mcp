@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "remote_ok-jobs-mcp",
+ "display_name": "Remote OK MCP",
+ "version": "0.1.0",
+ "description": "Remote OK (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/remote_ok"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Single keyless JSON array with no documented query, location, page or limit parameters: nothing is sent and the whole feed (a few hundred rows) is returned; filter client-side. Element 0 of the feed is the legal notice (id null) and is dropped by the runtime. Fields per the feed: slug, id, epoch, date, company, company_logo, position, tags[], description (HTML), location, apply_url, salary_min, salary_max, url; currency is not stated. Attribution: link back (follow) to the Remote OK URL and name Remote OK as the source."
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "idealist-mcp",
+ "display_name": "Idealist MCP",
+ "version": "0.1.0",
+ "description": "Idealist (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "idealist"
+   ],
+   "env": {
+    "PLATFORM_MCP_IDEALIST_API_KEY": "${user_config.platform_mcp_idealist_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_idealist_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_IDEALIST_API_KEY",
+   "description": "Idealist Listings API key; 'API keys are issued manually. Contact support@idealist.org to request a production key.' Sent as the Basic-auth username with an empty password.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the key is verified with a jobs listing request for changes since now ('401 Unauthorized - check your API key')."
+  },
+  {
+   "name": "search",
+   "description": "Incremental feed, not a keyword search: GET /api/v1/listings/jobs 'returns up to 100 jobs, ordered by oldest updated first' and pages with since = the last job's updated value ('since is inclusive, meaning that you should expect to get the last job again'). query, location and page are not sent; pass next_cursor back as cursor to continue (it is set when a full page of 100 came back), and read details with get_posting. hasMore and updated are in raw."
+  },
+  {
+   "name": "get_posting",
+   "description": "Job details: description (rich text HTML), org, address, applyUrl / applyEmail / applyText, salaryMinimum / salaryMaximum (decimal strings, in raw), salaryPeriod, locationType, expires. '404 Not Found - It can mean a job has expired, has been hidden, etc.'"
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "azure_maps_search",
+ "category": "sales",
+ "label": "Azure Maps Search",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/rest/api/maps/search",
+ "url": "https://azure.microsoft.com/en-us/products/azure-maps",
+ "verified_at": "2026-09-05",
+ "terms_note": "The Bing Maps product page redirects to Azure Maps (Bing Maps for Enterprise is being retired); Search REST API on the user's Azure subscription key.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

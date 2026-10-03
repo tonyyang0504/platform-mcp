@@ -1,0 +1,41 @@
+{
+ "id": "carandclassic",
+ "category": "automotive",
+ "label": "Carandclassic",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.carandclassic.com",
+ "domain": "carandclassic.com",
+ "country": "UK",
+ "official_api": false,
+ "docs_url": "https://help.carandclassic.com/can-i-set-up-a-feed-to-import-vehicles-from-my-own-site",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). Car & Classic offers trade users a CSV feed to import stock; no public API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://help.carandclassic.com/can-i-set-up-a-feed-to-import-vehicles-from-my-own-site"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Car & Classic offers trade users a CSV feed to import stock; no public API. No request/response API to serve."
+}

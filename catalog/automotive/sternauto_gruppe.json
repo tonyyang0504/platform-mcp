@@ -1,0 +1,35 @@
+{
+ "id": "sternauto_gruppe",
+ "category": "automotive",
+ "label": "Sternauto",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.sternauto.de",
+ "domain": "sternauto.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on the site (homepage 200, /developers /api /docs /partners probes empty) and no official API in search results.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://sternauto.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

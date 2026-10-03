@@ -1,0 +1,132 @@
+{
+ "id": "crypto_jobs",
+ "category": "jobs",
+ "label": "crypto.jobs",
+ "lane": "assist",
+ "kind": "web3",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://crypto.jobs/feed/rss",
+ "url": "https://crypto.jobs/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Crypto jobs board; external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss",
+   "atom"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml",
+   "job_search (latest jobs RSS/Atom)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the RSS / Atom feeds (application/rss+xml, 'CryptoJobs - Latest Web3 Jobs') are usable public feeds",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Public RSS + Atom feeds of the latest postings; no developer API; /partners is a partner-logo page. robots.txt 7 rules. No terms page linked from the home page.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://crypto.jobs/",
+   "https://crypto.jobs/robots.txt",
+   "https://crypto.jobs/feed/rss",
+   "https://crypto.jobs/feed/atom",
+   "https://crypto.jobs/partners"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://crypto.jobs",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/feed/rss",
+    "default_limit": 50,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://crypto.jobs/feed/rss",
+    "note": "crypto.jobs RSS 2.0 feed (latest 50 jobs). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<Role> at <Company>'; description (HTML) starts with Company / Location lines; category stays in raw. id is the posting link (with utm parameters)."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

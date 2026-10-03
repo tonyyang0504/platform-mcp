@@ -1,0 +1,36 @@
+{
+ "id": "jp_nta_houjin",
+ "category": "sales",
+ "label": "法人番号公表サイト Web-API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://www.houjin-bangou.nta.go.jp/webapi/",
+ "url": "https://www.houjin-bangou.nta.go.jp/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free Web-API with an application ID issued by the NTA → platform-key; name + address only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

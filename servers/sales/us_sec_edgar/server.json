@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/us_sec_edgar-mcp",
+ "description": "SEC EDGAR company search (sales): get_company. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "us_sec_edgar"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_US_SEC_EDGAR_CONTACT",
+     "description": "Company name and e-mail, required by SEC fair-access rules: 'Sample Company Name AdminContact@<sample company domain>.com' is appended to the User-Agent (https://www.sec.gov/os/accessing-edgar-data). Env: PLATFORM_MCP_US_SEC_EDGAR_CONTACT.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

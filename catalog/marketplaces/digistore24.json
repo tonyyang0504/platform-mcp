@@ -1,0 +1,359 @@
+{
+ "id": "digistore24",
+ "category": "marketplaces",
+ "label": "Digistore24",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu",
+  "global"
+ ],
+ "docs_url": "https://dev.digistore24.com",
+ "url": "https://www.digistore24.com",
+ "verified_at": "2026-09-24",
+ "terms_note": "Self-serve API key (Settings > Account access > API keys; readonly / writable / developer; optional IP allowlist); no published numeric rate limit (429 exists); every product must pass Digistore24 approval before it can be sold (approval_status 'pending' requests it); download vault costs EUR 0.25 per started GB per purchase and has no API upload; vendor must be an EU/DE-friendly entity per the normal vendor terms.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "set_price",
+   "create_image_from_url",
+   "buy_url",
+   "request_approval",
+   "orders",
+   "sales_stats",
+   "webhooks",
+   "vouchers",
+   "refunds",
+   "purchase_downloads_read",
+   "api_key_oauth_like_handoff"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/GoSuccess-GmbH/php-ds24-api-wrapper",
+   "official PHP class + JS connector linked from https://dev.digistore24.com/hc/en-us/articles/32479630493585-API-basics"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.digistore24.com/ (official remote MCP, Bearer = API key)",
+  "https://help.digistore24.com/hc/en-us/articles/39566135622929-Digistore24-Model-Context-Protocol-MCP-Server",
+  "https://zapier.com/mcp/digistore24"
+ ],
+ "auth_fields": [
+  "api_key",
+  "delivery_url",
+  "salespage_url?",
+  "cover_url?",
+  "product_type_id?",
+  "language?",
+  "default_price_cents?",
+  "currency?",
+  "sandbox?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high**",
+  "base_urls": [
+   "https://www.digistore24.com/api/call/<FUNCTION>",
+   "https://www.digitest24.de/api/call/<FUNCTION>",
+   "https://digistore24.com/api/docs/index.html",
+   "https://mcp.digistore24.com/"
+  ],
+  "auth": [
+   "1. Tenant: **vendor view → Settings → Account access → tab API keys → New API key**; name it, permission **Full access**",
+   "2. Every call: header `X-DS-API-KEY: <api_key>`, `Accept: application/json`. Response `{api_version, current_time, result:",
+   "3. Optional OAuth-like hand-off for a platform: a **developer** key calls `requestApiKey(permissions=writable, return_url)`"
+  ],
+  "endpoints": [
+   {
+    "call": "createProduct(data)",
+    "purpose": "**Create the product** → `{product_id}`. `data[name_intern]`, `name_en",
+    "notes": "name_de"
+   },
+   {
+    "call": "updateProduct(product_id, data)` · `deleteProduct(product_id)` · `copyProduct` · `getProduct(product_id)` · `listProducts(sort_by)",
+    "purpose": "manage / read products (`listProducts` returns `id`, `name`, `product_group_name`, `approval_status`…).",
+    "notes": ""
+   },
+   {
+    "call": "createPaymentplan(product_id, data)",
+    "purpose": "**Set the price** → `{paymentplan_id, rendered_texts, plan}`. Required `data[first_amount]`, `data[currency]`; `number_of_installments` (`1` = single payment, `0` = subscription, ≥2 = installments), `",
+    "notes": ""
+   },
+   {
+    "call": "createImage(data)",
+    "purpose": "cover: `data[name]` (required), `data[url]` (Digistore24 copies the image), `usage_type` (`product`), `alt_tag` → `{image_id, image_url}`. `listImages`, `deleteImage`.",
+    "notes": ""
+   },
+   {
+    "call": "createBuyUrl(product_id, buyer?, payment_plan?, tracking?, valid_until?, urls?)",
+    "purpose": "**Checkout URL** with optional prefilled buyer (`email`, `first_name`… `readonly_keys`), price override (`payment_plan[first_amount]`, `currency`, `number_of_installments`, `tax_mode`) and tracking (`",
+    "notes": ""
+   },
+   {
+    "call": "listPurchases(from, to, search{role, product_id, email, billing_type, transaction_type, currency, purchase_id…}, sort_by, load_transactions, page_no, page_size)",
+    "purpose": "**Orders** (`from` accepts `\"2014-02-28 23:11:24\"`, `now`, `-3d`, `start`). `getPurchase(purchase_id)`, `listTransactions`, `getPurchaseDownloads(purchase_id)` (download URLs of vault files per produc",
+    "notes": ""
+   },
+   {
+    "call": "statsSales(...)` · `statsSalesSummary()` · `statsDailyAmounts` · `statsExpectedPayouts` · `listPayouts",
+    "purpose": "**Sales stats**: per period `{payout",
+    "notes": "gross"
+   },
+   {
+    "call": "ipnSetup(url, name, product_ids=\"all\"\\",
+    "purpose": "\"1,2\", key, transaction_categories, transaction_types, timing, sha_passphrase=\"random\", newsletter_optin)` · `ipnInfo` · `ipnDelete`",
+    "notes": "**Webhooks**: one IPN POST per transaction (`event` = `on_payment`, `on_refund`, `on_chargeback`, `on_rebill_*`…; fields `order_id`, `product_id`, `transaction_id`, `amount`, `currency`, `email`, `sha_sign`). Verify `sha_sign` = SHA-512 over sorted params + passphrase (receiver sample `https://www.d"
+   },
+   {
+    "call": "createVoucher / updateVoucher / listVouchers / validateCouponCode",
+    "purpose": "discount codes.",
+    "notes": ""
+   },
+   {
+    "call": "createMarketplaceEntry / requestMarketplaceEntryApproval / statsMarketplace",
+    "purpose": "affiliate-marketplace listing of the product. `approveProduct` is community-key only (not for vendors).",
+    "notes": ""
+   }
+  ],
+  "limits": " None published in the developer docs or spec; the API returns `429` under load (third-party clients retry with back-off). Keep to a few requests per second per key. - Automation is the documented purpose of the API (\"your applications … data can be read out … changed as well\"); any vendor can create keys, no partner programme, no API fee. - Every product must be **approved by Digistore24** before sale (`approval_status=pending` requests it; review checks sales page, legal texts, product type). Digistore24 is reseller / merchant of record — vendor terms + product guidelines apply. - Download v",
+  "mcp_sdk": [
+   "**Official** remote MCP: `https://mcp.digistore24.com/` — config `npx mcp-remote https://mcp.digistore24.com/ --header",
+   "Zapier MCP / app: https://zapier.com/mcp/digistore24, https://zapier.com/apps/digistore24/integrations.",
+   "SDKs: official PHP class + JavaScript connector (download links in \"API basics\"); community PHP client"
+  ],
+  "sources": [
+   "https://dev.digistore24.com/",
+   "https://dev.digistore24.com/hc/en-us/sections/32544342993169-API",
+   "https://dev.digistore24.com/hc/en-us/articles/32479630493585-API-basics",
+   "https://digistore24.com/api/docs/index.html",
+   "https://digistore24.com/api/docs/openapi.yaml",
+   "https://help.digistore24.com/hc/en-us/articles/39566135622929-Digistore24-Model-Context-Protocol-MCP-Server",
+   "https://www.digistore24.com/blog/digistore24-mcp-server/",
+   "https://help.digistore24.com/hc/en-us/articles/23658595845009-Create-API-key",
+   "https://github.com/GoSuccess-GmbH/php-ds24-api-wrapper",
+   "https://zapier.com/mcp/digistore24",
+   "https://zapier.com/apps/digistore24/integrations"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.digistore24.com/api/call",
+  "auth": {
+   "type": "header",
+   "header": "X-DS-API-KEY",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Digistore24 API key (vendor view > Settings > Account access > API keys; a writable / Full access key for create_product, update_price and refund, read-only suffices for the rest) sent as the X-DS-API-KEY header. The staging host https://www.digitest24.de/api/call is not switched to."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "result",
+   "ok_value": "success",
+   "error_field": "message"
+  },
+  "rate_per_second": 2,
+  "terms": "Every product must be approved by Digistore24 (approval_status 'pending' requests the review) before it can be sold; responses are wrapped in {api_version, current_time, result: success|error, data|message} and a failed call may come back as HTTP 200 with result=error (then the tool answers an empty list or invalid_input).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/getUserInfo",
+    "docs": "https://digistore24.com/api/docs/paths/getUserInfo.yaml",
+    "note": "GET getUserInfo returns the API-key holder: data{user_id, user_name (Digistore ID), granted_roles, granted_roles_msg}; 401/403 for a bad key."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/listProducts",
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "data.products",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "created_at": "created_at",
+      "updated_at": "modified_at"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/listProducts.yaml",
+    "note": "GET listProducts returns ALL products in one unpaged array data.products[{id, name, note, tag, language, product_group_id, product_group_name, units_left, created_at, modified_at}]; `page`, `limit` and `status` are not sent (the only parameters are sort_by name|group and merchant_id; ignore next_page). Prices are payment plans (see update_price) and approval status is on getProduct, so price/currency/status are null here."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/getProduct",
+    "params": {
+     "product_id": "product_id"
+    },
+    "result": {
+     "root": "data.product",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency",
+      "status": "approval_status",
+      "url": "salespage_url",
+      "created_at": "created_at",
+      "updated_at": "modified_at"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/getProduct.yaml",
+    "note": "GET getProduct?product_id returns data.product, the product record (the spec documents it only as 'Product data record with properties'; the fields mapped here — name, currency, approval_status, salespage_url — are the ones createProduct/updateProduct accept, and stay null when absent). Prices are payment plans (listPaymentPlans, not mapped), so `price` is null."
+   },
+   "create_product": {
+    "method": "POST",
+    "path": "/createProduct",
+    "params": {
+     "data[name_intern]": "name",
+     "data[name_en]": "name",
+     "data[description_en]": "description",
+     "data[currency]": "currency",
+     "data[salespage_url]": "url"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "product_id"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/createProduct.yaml",
+    "note": "POST createProduct with the documented data[...] parameters (name_intern and name_en = name, description_en = description (filtered HTML), currency, salespage_url = url) creates the product as a NEW (unapproved, not yet sellable) product and answers data{product_id}. The price is NOT set here: Digistore24 prices are payment plans — call update_price next (createPaymentplan). Approval must be requested with updateProduct data[approval_status]=pending (not mapped)."
+   },
+   "update_price": {
+    "method": "POST",
+    "path": "/createPaymentplan",
+    "params": {
+     "product_id": "product_id",
+     "data[first_amount]": "price",
+     "data[currency]": "currency",
+     "data[number_of_installments]": "json:1"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "paymentplan_id",
+      "price": "plan.first_amount",
+      "currency": "plan.currency"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/createPaymentplan.yaml",
+    "note": "Digistore24 prices are payment plans, so this CREATES a single-payment plan with POST createPaymentplan?product_id&data[first_amount]=price (decimal major units)&data[currency] (required by Digistore24, 3 letters)&data[number_of_installments]=1; existing plans stay active until updated (updatePaymentplan, not mapped). The result's `id` is the new paymentplan_id (the product id is the input); `price`/`currency` are read from the returned plan object."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/listPurchases",
+    "params": {
+     "from": "since",
+     "search[product_id]": "product_id",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "fixed_params": {
+     "sort_by": "date",
+     "sort_order": "desc"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data.purchase_list",
+     "key": "sales",
+     "fields": {
+      "id": "purchase_id",
+      "product_id": "product_id",
+      "product_name": "product_name",
+      "amount": "amount",
+      "currency": "currency",
+      "status": "payment_status",
+      "customer_email": "buyer_email",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/listPurchases.yaml",
+    "note": "GET listPurchases?from=since ('2014-02-28 23:11:24', ISO 8601, 'now', '-3d' or 'start'; Digistore24 DEFAULTS TO -24h when `since` is omitted)&search[product_id]&page_no&page_size&sort_by=date&sort_order=desc. Rows are data.purchase_list[] whose purchase fields (purchase_id, product_id, product_name, amount, currency, payment_status, buyer_email, created_at) the spec only partly documents; mapped fields stay null when absent. Amounts are decimal major units."
+   },
+   "get_sales_stats": {
+    "method": "GET",
+    "path": "/statsSales",
+    "params": {
+     "from": "since",
+     "to": "until"
+    },
+    "docs": "https://digistore24.com/api/docs/paths/statsSales.yaml",
+    "note": "GET statsSales?from&to (dates) answers data{amounts{<currency>: [{from, to, vendor_share_amount, vendor_brutto_amount, vendor_netto_amount, total_share_amount, total_brutto_amount, total_netto_amount, ...}]}, period} grouped by Digistore24's default period. The amounts are keyed by currency, so revenue/sales/refunds are not flattened: read them from `raw.data.amounts`. There is no product filter, so `product_id` is not sent."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/listTransactions",
+    "params": {
+     "from": "since",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "fixed_params": {
+     "search[transaction_type]": "refund,chargeback",
+     "sort_by": "date",
+     "sort_order": "desc"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data.transaction_list",
+     "key": "refunds",
+     "fields": {
+      "id": "id",
+      "sale_id": "purchase_id",
+      "amount": "amount",
+      "currency": "currency",
+      "status": "transaction_type",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/listTransactions.yaml",
+    "note": "GET listTransactions?search[transaction_type]=refund,chargeback&from=since (DEFAULTS TO -24h when omitted; use 'start' for everything)&page_no&page_size (max 1000)&sort_by=date&sort_order=desc: data.transaction_list[{id, purchase_id, amount, currency, transaction_type, transaction_type_msg, created_at, buyer{email, ...}}]. `status` is the transaction type (refund|chargeback); no reason field exists."
+   },
+   "refund": {
+    "method": "POST",
+    "path": "/refundPurchase",
+    "params": {
+     "purchase_id": "sale_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "=refundPurchase",
+      "status": "=requested"
+     }
+    },
+    "docs": "https://digistore24.com/api/docs/paths/refundPurchase.yaml",
+    "note": "DESTRUCTIVE: POST refundPurchase?purchase_id=sale_id refunds ALL refundable payments of the order, subject to the product's refund policy (force=true, which bypasses the policy, is not sent). `amount` and `reason` are NOT sent: a partial amount needs refundPartially?purchase_id&amount (a different function, not mapped). The spec does not document the response data, so `id`/`status` are fixed markers; the platform's answer (status completed|refused|pending|error, note, pending_reason, action_url as documented for refundTransaction) is in `raw`."
+   }
+  },
+  "not_offered": {}
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.digistore24.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 9/9 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 200 too, so the host authenticates before routing",
+   "spec https://digistore24.com/api/docs/openapi.yaml: 9/9 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "Fixed: error answers ({result: error} with HTTP 200) are now errors (envelope result=success). list_products: spec says \"response path items='data.products' is not in the response schema\"; waived: Digistore24's OpenAPI describes the payload inside the {api_version, result, data} envelope that every live answer (including the audit's error answers) carries get_product: spec says \"response path root='data.product' is not in the response schema\"; waived: Digistore24's OpenAPI describes the payload inside the {api_version, result, data} envelope that every live answer (including the audit's error answers) carries create_product: spec says \"response path root='data' is not in the response schema\"; waived: Digistore24's OpenAPI describes the payload inside the {api_version, result, data} envelope that every live answer (including the audit's error answers) carries update_price: spec says \"response path root='data' is not in the response schema\"; waived: Digistore24's OpenAPI describes the payload inside the {api_version, result, data} envelope that every live answer (including the audit's error answers) carries list_sales: spec says \"response path items='data.purchase_list' is not in the response schema\"; waived: Digistore24's OpenAPI describes the payload inside the {api_version, result, data} envelope that every live answer (including the audit's error answers) carries"
+ }
+}

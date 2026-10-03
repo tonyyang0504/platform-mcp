@@ -1,0 +1,43 @@
+{
+ "id": "autoline_gr",
+ "category": "automotive",
+ "label": "Autoline",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autoline.gr",
+ "domain": "autoline.gr",
+ "country": "Greece",
+ "official_api": false,
+ "docs_url": "https://autoline.gr/partner-api/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed",
+   "rest"
+  ],
+  "auth": "personal key in feed URL for wholesale accounts",
+  "access": "partner_only",
+  "capabilities": [
+   "product_catalog_feed"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Autoline.gr offers XML/CSV/JSON feeds and a product search REST API only to wholesale partners, but it covers its car accessories/parts catalogue, not vehicle listings.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autoline.gr/partner-api/",
+   "https://autoline.gr/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Autoline.gr offers XML/CSV/JSON feeds and a product search REST API only to wholesale partners, but it covers its car accessories/parts catalogue, not vehicle listings."
+}

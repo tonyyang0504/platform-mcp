@@ -1,0 +1,229 @@
+{
+ "id": "wordpress",
+ "category": "builder_tools",
+ "label": "WordPress",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://developer.wordpress.org/rest-api/",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "basic",
+  "access": "open",
+  "capabilities": [
+   "posts_crud",
+   "pages_crud",
+   "media_upload",
+   "categories_tags",
+   "users_me",
+   "comments",
+   "custom_post_types",
+   "woocommerce_via_wc_v3"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/WP-API/node-wpapi"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/Automattic/wordpress-mcp"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/Automattic/wordpress-mcp",
+   "https://github.com/WP-API/node-wpapi"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{site}/wp-json/wp/v2",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "basic",
+   "username_field": "username",
+   "password_field": "application_password",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "WordPress user login name."
+    },
+    {
+     "name": "application_password",
+     "required": true,
+     "help": "Application Password for that user (Users > Profile > Application Passwords, WordPress 5.6+), sent with HTTP Basic auth over HTTPS."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "site",
+    "required": true,
+    "help": "The site's host (and path if WordPress lives in a subdirectory), e.g. example.com or example.com/blog; pretty permalinks must be enabled so /wp-json/ resolves."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "fixed_params": {
+     "context": "edit"
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/users/#retrieve-a-user-2",
+    "note": "GET /wp/v2/users/me?context=edit: the authenticated user with roles and capabilities."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/{collection}",
+    "path_params": {
+     "collection": "=posts"
+    },
+    "params": {
+     "page": "page",
+     "per_page": "limit",
+     "search": "query"
+    },
+    "fixed_params": {
+     "status": "any",
+     "context": "edit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "fields": {
+      "id": "id",
+      "title": "title.raw",
+      "url": "link",
+      "updated_at": "modified_gmt",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#list-posts",
+    "note": "GET /wp/v2/{posts|pages|<custom post type rest_base>}?page&per_page (≤100)&search&status=any&context=edit: collection defaults to posts; includes drafts and private items the user can edit."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/{collection}/{item_id}",
+    "path_params": {
+     "collection": "=posts"
+    },
+    "fixed_params": {
+     "context": "edit"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title.raw",
+      "url": "link",
+      "updated_at": "modified_gmt",
+      "content": "content.raw",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#retrieve-a-post",
+    "note": "GET /wp/v2/{collection}/{id}?context=edit: raw title and content (block markup)."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/{collection}",
+    "path_params": {
+     "collection": "=posts"
+    },
+    "body": {
+     "title": "title",
+     "content": "content",
+     "status": "fields.status",
+     "excerpt": "fields.excerpt",
+     "slug": "fields.slug",
+     "categories": "fields.categories",
+     "tags": "fields.tags",
+     "featured_media": "fields.featured_media"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "url": "link",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#create-a-post",
+    "note": "POST /wp/v2/{collection} {title, content, status, excerpt, slug, categories, tags, featured_media}: creates a post/page (status defaults to draft; pass fields.status = publish to publish)."
+   },
+   "update_item": {
+    "method": "POST",
+    "path": "/{collection}/{item_id}",
+    "path_params": {
+     "collection": "=posts"
+    },
+    "body": {
+     "title": "title",
+     "content": "content",
+     "status": "fields.status",
+     "excerpt": "fields.excerpt",
+     "slug": "fields.slug",
+     "categories": "fields.categories",
+     "tags": "fields.tags",
+     "featured_media": "fields.featured_media"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#update-a-post",
+    "note": "POST /wp/v2/{collection}/{id}: updates only the given properties."
+   },
+   "delete_item": {
+    "method": "DELETE",
+    "path": "/{collection}/{item_id}",
+    "path_params": {
+     "collection": "=posts"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#delete-a-post",
+    "note": "DELETE /wp/v2/{collection}/{id}: moves the item to the trash (status trash); force=true is not sent, so it can be restored."
+   }
+  },
+  "not_offered": {
+   "generate_image": "The WordPress REST API has no generation endpoints.",
+   "generate_video": "The WordPress REST API has no generation endpoints.",
+   "get_job": "No generation jobs in the WordPress REST API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host wordpress.org: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

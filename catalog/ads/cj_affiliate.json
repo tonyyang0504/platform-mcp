@@ -1,0 +1,214 @@
+{
+ "id": "cj_affiliate",
+ "category": "ads",
+ "label": "CJ Affiliate",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global",
+  "us",
+  "gb",
+  "de",
+  "fr",
+  "es"
+ ],
+ "docs_url": "https://developers.cj.com/",
+ "url": "https://www.cj.com/advertiser",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access uses a personal access token issued in the CJ account (developer portal opened, terms not read).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql",
+   "rest"
+  ],
+  "auth": "token (CJ Developer Portal personal access token; GraphQL + REST)",
+  "access": "signup",
+  "capabilities": [
+   "reports",
+   "conversions_upload",
+   "account_management"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (advertiser reporting / commission APIs on the CJ Developer Portal; content unreadable this pass) Confidence: **medium**.",
+  "base_urls": [
+   "https://commissions.cj.com/query",
+   "https://advertiser-lookup.api.cj.com/…"
+  ],
+  "auth": [
+   "1. CJ advertiser account (contract).",
+   "2. Developer Portal → personal access token.",
+   "3. GraphQL queries for commission detail."
+  ],
+  "endpoints": [
+   {
+    "call": "GraphQL `advertiserCommissions",
+    "purpose": "reports",
+    "notes": "since, before, advertiserIds"
+   },
+   {
+    "call": "publisher lookup",
+    "purpose": "partners",
+    "notes": "—"
+   },
+   {
+    "call": "campaigns / bids",
+    "purpose": "not applicable",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Contract-based; API terms on the portal.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.cj.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://commissions.api.cj.com",
+  "rate_per_second": 0.6,
+  "auth": {
+   "type": "bearer",
+   "field": "personal_access_token",
+   "fields": [
+    {
+     "name": "personal_access_token",
+     "required": true,
+     "help": "CJ Developer Portal personal access token (https://developers.cj.com/account/personal-access-tokens), sent as `Authorization: Bearer`; it must belong to a user of the advertiser company (CID) queried."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "company_id",
+    "required": true,
+    "help": "The advertiser's CJ company id (CID); used by the `me` probe (get_report takes it as account_id)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/query",
+    "body": {
+     "query": "=query($advertisers: [String!]!) { advertiserCommissions(forAdvertisers: $advertisers) { count payloadComplete } }",
+     "variables.advertisers.0": "@company_id"
+    },
+    "docs": "https://developers.cj.com/graphql/reference/Commission%20Detail",
+    "note": "There is no account query; the probe is the Commission Detail advertiserCommissions query for the configured CID with no dates (CJ defaults to the last 24 hours by posting date), returning {data: {advertiserCommissions: {count, payloadComplete}}}. GraphQL failures come back as {data: null, errors: [...]}."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/query",
+    "body": {
+     "query": "=query($advertisers: [String!]!, $since: String, $before: String) { advertiserCommissions(forAdvertisers: $advertisers, sincePostingDate: $since, beforePostingDate: $before) { count payloadComplete maxCommissionId records { commissionId orderId postingDate eventDate actionStatus actionType actionTrackerName publisherId publisherName websiteName original saleAmountAdvCurrency advCommissionAmountAdvCurrency cjFeeAdvCurrency pubCommissionAmountUsd } } }",
+     "variables.advertisers.0": "account_id",
+     "variables.since": "fmt:{date:date_from}T00:00:00Z",
+     "variables.before": "fmt:{date:date_to}T00:00:00Z"
+    },
+    "result": {
+     "items": "data.advertiserCommissions.records",
+     "key": "rows",
+     "total": "data.advertiserCommissions.count",
+     "fields": {
+      "commission_id": "commissionId",
+      "order_id": "orderId",
+      "date": "postingDate",
+      "status": "actionStatus",
+      "publisher_id": "publisherId",
+      "publisher": "publisherName",
+      "original": "original",
+      "sales": "saleAmountAdvCurrency",
+      "spend": "advCommissionAmountAdvCurrency",
+      "cj_fee": "cjFeeAdvCurrency"
+     }
+    },
+    "docs": "https://developers.cj.com/graphql/reference/Commission%20Detail",
+    "note": "Commission Detail API (POST https://commissions.api.cj.com/query, GraphQL) advertiserCommissions for account_id (the advertiser CID) posted from date_from 00:00Z up to (excluding) date_to 00:00Z; at most 31 days per call. Rows are individual commission records, not aggregates: `spend` is the advertiser commission and `cj_fee` the CJ fee, both in the advertiser's currency; corrections are separate delta records (original=false) to be summed with the original. At most 10,000 records per call; when payloadComplete is false, more exist (cursor paging by maxCommissionId is not followed). `campaign_id` is not applied (CJ has no campaigns). A GraphQL error answers {data: null, errors} and yields no rows. Limit: 200 calls per 5 minutes."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The token is user-level and no GraphQL or REST API lists the advertiser companies a user can access (Commission Detail takes forAdvertisers CIDs; the Advertiser Lookup REST API is a publisher-side lookup of advertiser programs, https://developers.cj.com/docs/rest-apis/advertiser-lookup).",
+   "list_campaigns": "CJ programs have no campaign objects in the API; the GraphQL APIs are Commission Detail, Item List, Product Feed, Program Terms, Promotional Properties and Tech Partner (https://developers.cj.com/graphql).",
+   "update_budget": "No budget API: CJ is pay-per-action and the developer portal documents no budget endpoint (https://developers.cj.com/graphql).",
+   "pause_resume": "No program or campaign status endpoint in the developer portal's GraphQL or REST APIs (https://developers.cj.com/graphql)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host commissions.api.cj.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; names not found on the page: get_report:variables, me:variables"
+  ],
+  "notes": "-"
+ }
+}

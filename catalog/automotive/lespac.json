@@ -1,0 +1,42 @@
+{
+ "id": "lespac",
+ "category": "automotive",
+ "label": "Lespac",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.lespac.com",
+ "domain": "lespac.com",
+ "country": "Canada",
+ "official_api": true,
+ "docs_url": "https://www.lespac.com/en/public/listing/import/technical-documentation",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "access key generated in advertiser account",
+  "access": "paid",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). LesPAC documents an automatic listing-transfer (import) API available to advertisers on an active monthly plan; no search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://support.lespac.com/hc/fr-ca/articles/115005931326-Qu-est-ce-que-le-transfert-automatique-d-annonce-via-API",
+   "https://www.lespac.com/en/public/listing/import/technical-documentation"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.lespac.com/en/public/listing/import/technical-documentation): LesPAC documents an automatic listing-transfer (import) API available to advertisers on an active monthly plan; no search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

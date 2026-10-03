@@ -1,0 +1,43 @@
+{
+ "id": "subito",
+ "category": "automotive",
+ "label": "Subito",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.subito.it",
+ "domain": "subito.it",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": "https://info.subito.it/gestionali-autorizzati.htm",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Subito only accepts dealer listings via authorized DMS partners (Multigestionale Motori etc.); no public API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://info.subito.it/gestionali-autorizzati.htm",
+   "https://aziende.subito.it/",
+   "https://subito.it/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Subito only accepts dealer listings via authorized DMS partners (Multigestionale Motori etc.); no public API."
+}

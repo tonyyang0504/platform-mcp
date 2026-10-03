@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "ses-mcp",
+ "display_name": "Amazon SES MCP",
+ "version": "0.1.0",
+ "description": "Amazon SES (messaging): me, send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ses"
+   ],
+   "env": {
+    "PLATFORM_MCP_SES_ACCESS_KEY_ID": "${user_config.platform_mcp_ses_access_key_id}",
+    "PLATFORM_MCP_SES_SECRET_ACCESS_KEY": "${user_config.platform_mcp_ses_secret_access_key}",
+    "PLATFORM_MCP_SES_SESSION_TOKEN": "${user_config.platform_mcp_ses_session_token}",
+    "PLATFORM_MCP_SES_REGION": "${user_config.platform_mcp_ses_region}",
+    "PLATFORM_MCP_SES_FROM_ADDRESS": "${user_config.platform_mcp_ses_from_address}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ses_access_key_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SES_ACCESS_KEY_ID",
+   "description": "AWS access key id of an IAM principal allowed ses:SendEmail and ses:GetAccount.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ses_secret_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SES_SECRET_ACCESS_KEY",
+   "description": "The matching AWS secret access key; used only to derive the SigV4 signing key.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ses_session_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SES_SESSION_TOKEN",
+   "description": "Session token when the keys are temporary STS credentials (sent as X-Amz-Security-Token).",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_ses_region": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SES_REGION",
+   "description": "AWS Region of your SES account, e.g. us-east-1, eu-west-1 (the endpoint is email.<region>.amazonaws.com).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_ses_from_address": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SES_FROM_ADDRESS",
+   "description": "Verified sender identity (address or an address on a verified domain) used as FromEmailAddress.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GetAccount (GET /v2/email/account): sending status (SendingEnabled, ProductionAccessEnabled = out of the sandbox), SendQuota {Max24HourSend, MaxSendRate, SentLast24Hours} and enforcement status in this Region."
+  },
+  {
+   "name": "send",
+   "description": "SendEmail (POST /v2/email/outbound-emails) sends a Simple plain-text message from the configured verified sender to one address; always pass `subject`. In the SES sandbox the recipient must be verified too."
+  }
+ ]
+}

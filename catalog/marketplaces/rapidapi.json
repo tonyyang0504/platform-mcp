@@ -1,0 +1,108 @@
+{
+ "id": "rapidapi",
+ "category": "marketplaces",
+ "label": "RapidAPI Hub",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.rapidapi.com",
+ "url": "https://rapidapi.com/studio",
+ "verified_at": "2026-09-25",
+ "terms_note": "Platform API (GraphQL + legacy REST) is for Enterprise Hub customers only ('not available to rapidapi.com users'); public Hub providers use Studio; Rapid takes a flat 25% marketplace fee, PayPal-only payouts the month after consolidation, PayPal fee up to 2%/$20; rate limits not published.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql",
+   "rest",
+   "partner_program"
+  ],
+  "auth": "api_key",
+  "access": "partner_only",
+  "capabilities": [
+   "create_api (createApisFromRapidOas, Enterprise Hub only)",
+   "create_version",
+   "plans (Enterprise)",
+   "subscriptions",
+   "analytics"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/RapidAPI/create_or_update_rapidapi_listing (official GitHub Action, preview; needs the Platform API enabled)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "platform_api_key",
+  "paypal_email"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict**: has_api **partial** — the Platform API exists but is **Enterprise Hub only**; a rapidapi.com (public Hub) provider",
+  "base_urls": [
+   "https://graphql-<enterprise-hub>.p.rapidapi.com/",
+   "https://rapidapi.com/studio"
+  ],
+  "auth": [
+   "1. Enterprise Hub admin enables the GraphQL Platform API for a **team** (Admin Panel › Organizations; personal accounts cannot hold it).",
+   "2. Provider subscribes to the Platform API in the Hub, copies `x-rapidapi-key` + `x-rapidapi-host` from Code Snippets;"
+  ],
+  "endpoints": [
+   {
+    "call": "Operation",
+    "purpose": "Fields from the docs",
+    "notes": ""
+   },
+   {
+    "call": "mutation createApisFromRapidOas` (multipart upload)",
+    "purpose": "returns `apiId`, `trackingId`, `warnings`; needs `ownerId`, team → `x-rapidapi-identity-key`",
+    "notes": ""
+   },
+   {
+    "call": "version mutations (\"Versioning\" example group)",
+    "purpose": "`apiId`, version name, spec",
+    "notes": ""
+   },
+   {
+    "call": "API mutations (name, description, category, visibility, logo)",
+    "purpose": "as in the Hub Listing General tab",
+    "notes": ""
+   },
+   {
+    "call": "Monetize-tab equivalents in PAPI (\"Subscriptions\" examples)",
+    "purpose": "plan name, quota, price",
+    "notes": ""
+   },
+   {
+    "call": "queries on subscriptions, transactions",
+    "purpose": "per API / per user",
+    "notes": ""
+   },
+   {
+    "call": "**none** — Studio › Add API Project › Hub Listing › Monetize › visibility",
+    "purpose": "—",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published for the Platform API; Rapid Runtime plans define consumer limits per plan. - \"The Platform API is for Enterprise Hub customers only. It is not available to rapidapi.com users.\" - 25 % flat marketplace fee; payouts by PayPal only, consolidated monthly and paid the following month; PayPal fee up to 2 % / $20; refunds/chargebacks offset payouts; provider must host the API.",
+  "mcp_sdk": [
+   "No official MCP server. Community servers on GitHub wrap CONSUMING RapidAPI APIs (SecurFi/RapidAPI_mcp, myownipgit/RapidAPI-MCP),",
+   "Official GitHub Action (preview): https://github.com/RapidAPI/create_or_update_rapidapi_listing — inputs `spec_path`,"
+  ],
+  "sources": [
+   "https://docs.rapidapi.com/docs/graphql-platform-api-overview",
+   "https://docs.rapidapi.com/docs/platform-api-overview",
+   "https://docs.rapidapi.com/docs/getting-started-with-the-graphql-platform-api",
+   "https://docs.rapidapi.com/docs/papi-gql-examples-rest-apis",
+   "https://docs.rapidapi.com/docs/hub-listing-overview",
+   "https://docs.rapidapi.com/docs/add-api-getting-started",
+   "https://docs.rapidapi.com/docs/payouts-and-finance",
+   "https://github.com/RapidAPI/create_or_update_rapidapi_listing"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium and via the page's markdown: https://docs.rapidapi.com/docs/platform-api-overview states '📘 Enterprise Hub customers only - The Platform API is for Enterprise Hub customers only' and 'Only teams (not Personal Accounts) can be assigned Enterprise Access to the REST Platform API' (the GraphQL Platform API is recommended for the same enterprise customers). Public rapidapi.com Hub providers manage listings, plans and payouts in Studio with no API, so a provider account cannot call any marketplace verb."
+}

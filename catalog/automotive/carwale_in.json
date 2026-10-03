@@ -1,0 +1,38 @@
+{
+ "id": "carwale_in",
+ "category": "automotive",
+ "label": "Carwale",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.carwale.com",
+ "domain": "carwale.com",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). CarWale (CarTrade Tech) publishes no public developer API; only third-party scrapers/profiles.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://carwale.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/carwale",
+   "https://apify.com/getascraper/carwale-used-cars-scraper/api/openapi"
+  ]
+ },
+ "official_mcp": []
+}

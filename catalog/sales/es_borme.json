@@ -1,0 +1,36 @@
+{
+ "id": "es_borme",
+ "category": "sales",
+ "label": "BORME",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "es"
+ ],
+ "docs_url": null,
+ "url": "https://www.boe.es/diario_borme/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Daily Registro Mercantil bulletin (incorporations, appointments) as open data (XML / PDF, BOE open-data terms); robots.txt (200 Disallow) blocks individual notice permalinks with tracking suffixes only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

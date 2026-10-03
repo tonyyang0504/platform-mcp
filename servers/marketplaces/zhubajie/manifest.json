@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "zhubajie-mcp",
+ "display_name": "Zhubajie (猪八戒) MCP",
+ "version": "0.1.0",
+ "description": "Zhubajie (猪八戒) (marketplaces): me, list_products, list_sales, list_refunds. Every tool maps to a doc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "zhubajie"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZHUBAJIE_APP_KEY": "${user_config.platform_mcp_zhubajie_app_key}",
+    "PLATFORM_MCP_ZHUBAJIE_APP_SECRET": "${user_config.platform_mcp_zhubajie_app_secret}",
+    "PLATFORM_MCP_ZHUBAJIE_ACCESS_TOKEN": "${user_config.platform_mcp_zhubajie_access_token}",
+    "PLATFORM_MCP_ZHUBAJIE_OPENID": "${user_config.platform_mcp_zhubajie_openid}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zhubajie_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZHUBAJIE_APP_KEY",
+   "description": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zhubajie_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZHUBAJIE_APP_SECRET",
+   "description": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + params sorted by name + secret (签名算法). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zhubajie_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZHUBAJIE_ACCESS_TOKEN",
+   "description": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 服务商 account (https://open.zbj.com/wiki/getWikiCategoryAll?wikiId=8): valid 7 days by default (refresh at http://openapi.zbj.com/oauth2/refreshtoken), or for the purchase period for 工具市场 apps.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zhubajie_openid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZHUBAJIE_OPENID",
+   "description": "Your 猪八戒 openid (用户唯一标识, returned with the access token by the ZOP OAuth2.0 authorisation); every service-provider method takes it.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "zbj.user.getServiceUserInfo (openid): nickname, username, mobile, userEmail, brandname (shop name) and openid of the authorised 服务商."
+  },
+  {
+   "name": "list_products",
+   "description": "zbj.service.getServiceList: the 服务商's services (state 1 全部 is always requested; the status filter is not applied). state: 2 出售中, 3 已下架, 4 未通过审核; amount is the web price in CNY (amountApp the app price); sales = successful deals; addtime/lasttime are epoch seconds."
+  },
+  {
+   "name": "list_sales",
+   "description": "zbj.trade.querySoldServices: service orders sold by the 服务商 (taskId, title, taskMode 11 购买服务 / 12 雇佣, taskState 0 草稿 … 4 结束并打款, amount and hostedAmount in CNY, createtime epoch seconds, employer nickname). since maps to startTime (yyyyMMddHHmmss); orders carry no service id, so product_id is not applied."
+  },
+  {
+   "name": "list_refunds",
+   "description": "zbj.trade.getRefundList: refund requests on the 服务商's trades. refundState 1 待确认退款, 2 退款成功, 3 退款关闭, 4 已拒绝, 5 已撤销, 6 退款处理中; refundAmount (requested) and paidAmount in CNY; createTime epoch seconds. The page size is fixed by the platform (limit and since are not applied)."
+  }
+ ]
+}

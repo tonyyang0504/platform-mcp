@@ -1,0 +1,29 @@
+{
+ "id": "booth",
+ "category": "marketplaces",
+ "label": "BOOTH (pixiv)",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://booth.pm",
+ "url": "https://booth.pm",
+ "verified_at": null,
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "signup",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

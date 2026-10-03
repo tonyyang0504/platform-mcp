@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yelp-mcp",
+ "description": "Yelp Ads (ads): me, list_campaigns, pause_resume. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.developer.yelp.com/docs/ads-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yelp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YELP_USERNAME",
+     "description": "Yelp Partner API username (the same Basic-auth credentials as the Data Ingestion API; issued by your Yelp account team, access is disabled by default: https://docs.developer.yelp.com/docs/ads-api).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YELP_PASSWORD",
+     "description": "Yelp Partner API password (Basic HTTP authentication on partner-api.yelp.com).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

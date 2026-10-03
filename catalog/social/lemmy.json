@@ -1,0 +1,403 @@
+{
+ "id": "lemmy",
+ "category": "social",
+ "label": "Lemmy",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "eu"
+ ],
+ "docs_url": "https://github.com/LemmyNet/lemmy-js-client",
+ "url": "https://join-lemmy.org/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Bots must self-flag (bot_account) and need the community's permission; promotional posting is banned on most instances; federated content cannot be recalled from other instances.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "token",
+  "access": "open",
+  "capabilities": [
+   "post",
+   "reply",
+   "read_comments",
+   "search",
+   "edit",
+   "delete",
+   "inbox_dm(private messages)",
+   "upload_media"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "lemmy-js-client (official TypeScript)",
+   "plemmy / pythorhead (community Python)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 10000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (per instance).",
+  "base_urls": [
+   "https://<instance>/api/v4/…"
+  ],
+  "auth": [
+   "1. Account on the user's chosen instance (registration may need an application / captcha); set",
+   "2. `POST /account/auth/login` {username_or_email, password, totp_2fa_token?} → `jwt`; send as"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /post` {name, community_id, body (markdown), url, nsfw, language_id, alt_text}",
+    "purpose": "community_id from `GET /community?name=`",
+    "notes": ""
+   },
+   {
+    "call": "PUT /post` {post_id, …}, `POST /post/delete` {post_id, deleted}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /comment` {content, post_id, parent_id, language_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /post/list?community_id&sort=New&limit`, `GET /post?id=`, `GET /comment/list?post_id&max_depth",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /account/mention` / `GET /account/replies` (v4: `/account/notifications`)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /search?q=&type_=Posts",
+    "purpose": "Comments",
+    "notes": "Communities&sort=`"
+   },
+   {
+    "call": "POST /private_message` {content, recipient_id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /pictrs/image` (multipart) → url",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /community?name=` → `description` / sidebar",
+    "purpose": "read before posting",
+    "notes": ""
+   }
+  ],
+  "limits": " - Rate limits are instance settings (`rate_limit_message`, `_post`, `_comment`, `_search`, `_image`, `_register` with per-second windows) — read them from `GET /site` (`local_site_rate_limit`). - Each instance and community publishes rules; promotional posts are widely banned and bots need explicit permission; content federates (ActivityPub) and cannot be recalled from other instances.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/main/src/http.ts",
+   "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/main/src/types/SaveUserSettings.ts",
+   "https://join-lemmy.org/api/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{instance}",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/api/v3/user/login",
+    "body": {
+     "username_or_email": "@username_or_email",
+     "password": "@password"
+    }
+   },
+   "token_path": "jwt",
+   "token_ttl_seconds": 86400,
+   "fields": [
+    {
+     "name": "username_or_email",
+     "required": true,
+     "help": "Username or e-mail of the account on its instance; sent as `username_or_email` to POST https://<instance>/api/v3/user/login (Login {username_or_email, password, totp_2fa_token?}, https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/Login.ts)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "The account's password. The runtime exchanges it for the LoginResponse `jwt` (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/LoginResponse.ts) and sends 'Authorization: Bearer <jwt>' (lemmy-js-client setHeaders pattern); the token is cached for a day and re-issued on expiry or 401. Accounts with TOTP enabled cannot log in this way (totp_2fa_token is not sent). Mark automated accounts as bot_account in the profile settings."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "instance",
+    "required": true,
+    "help": "Host of the account's Lemmy instance without scheme, e.g. lemmy.ml; every call (including the login) goes to https://<instance>/api/v3/... (the v3 API served by the 0.19.x release line that public instances run; Lemmy 1.0's /api/v4 is not covered)."
+   },
+   {
+    "name": "community_id",
+    "required": true,
+    "help": "Numeric id of the community the account posts to (CreatePost.community_id, an integer: shown by GET https://<instance>/api/v3/community?name=<name> as community_view.community.id); sent as a JSON integer on publish_text / publish_image. Env PLATFORM_MCP_LEMMY_COMMUNITY_ID."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "Rate limits are per instance and configured by its admins (message, post, register, image, comment, search and import buckets in the site's local_site_rate_limit, returned under site_view.local_site_rate_limit by GET /api/v3/site); 429 answers are honoured via Retry-After. One client-side bucket at 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://{instance}/api/v3/site",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/GetSiteResponse.ts",
+    "note": "GET /api/v3/site with the session token returns GetSiteResponse {site_view, admins, version, my_user, all_languages, ...}; the connected account is account.my_user (MyUserInfo: local_user_view.person {id, name, display_name, actor_id, bot_account, ...}, follows, moderates). Wrong credentials fail at the login step (auth_error); the login itself is the credential check, because /site also answers anonymously and silently ignores an invalid token (checked live on lemmy.ml 0.19.20)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "https://{instance}/api/v3/comment/list",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "params": {
+     "post_id": "post_id",
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "comments",
+     "key": "comments",
+     "fields": {
+      "id": "comment.id",
+      "author": "creator.name",
+      "text": "comment.content",
+      "created_at": "comment.published"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/GetComments.ts",
+    "note": "GET /api/v3/comment/list?post_id=&page=&limit= (GetComments: type_, sort, max_depth, page, limit, community_id, community_name, post_id, parent_id, saved_only, liked_only, disliked_only) returns GetCommentsResponse {comments: CommentView[]} where each CommentView carries comment {id, creator_id, post_id, content (markdown), published, updated, deleted, removed, ap_id, path, ...}, creator (Person {id, name, display_name, actor_id, ...}), post, community and counts (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/CommentView.ts). `sort` and `max_depth` are not sent (instance defaults: a flat page of the post's comments). Lemmy's server-side page size is 1..50 (FETCH_LIMIT_MAX = 50, 'Fetch limit is > 50' otherwise; default 10, https://raw.githubusercontent.com/LemmyNet/lemmy/0.19.4/crates/db_schema/src/utils.rs), so `limit` is capped at 50; `page` is 1-based."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "https://{instance}/api/v3/user/mention",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "params": {
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 50,
+    "result": {
+     "items": "mentions",
+     "key": "mentions",
+     "fields": {
+      "id": "comment.id",
+      "author": "creator.name",
+      "text": "comment.content",
+      "created_at": "comment.published"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/GetPersonMentions.ts",
+    "note": "GET /api/v3/user/mention?page=&limit= (GetPersonMentions: sort, page, limit, unread_only; needs the token) returns GetPersonMentionsResponse {mentions: PersonMentionView[]} with person_mention {id, recipient_id, comment_id, read, published}, comment, creator, post, community, recipient, counts (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/PersonMentionView.ts). `id` is the mentioning comment's id (the mention record's own id is raw.person_mention.id); `since` is not a documented parameter and is not sent; `unread_only` is not sent, so read mentions are included. Same 1..50 page size as read_comments."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "https://{instance}/api/v3/post",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "params": {
+     "id": "post_id"
+    },
+    "result": {
+     "root": "post_view.counts",
+     "fields": {
+      "post_id": "post_id",
+      "comments": "comments",
+      "score": "score",
+      "upvotes": "upvotes",
+      "downvotes": "downvotes"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/PostAggregates.ts",
+    "note": "GET /api/v3/post?id=<post id> (GetPost: id or comment_id) returns GetPostResponse {post_view, community_view, moderators, cross_posts}; the counts come from post_view.counts (PostAggregates {post_id, comments, score, upvotes, downvotes, published, newest_comment_time}). The runtime cannot compose a nested `metrics` object, so counts are top-level fields; the post itself is not under raw (raw is the counts object)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "https://{instance}/api/v3/post",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "body": {
+     "name": "text",
+     "body": "text",
+     "community_id": "int:@community_id"
+    },
+    "result": {
+     "root": "post_view.post",
+     "fields": {
+      "id": "id",
+      "url": "ap_id",
+      "created_at": "published"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/CreatePost.ts",
+    "note": "POST /api/v3/post (CreatePost {name, community_id, url?, body?, alt_text?, nsfw?, language_id?, ...}) returns PostResponse {post_view{post{id, name, body, ap_id, published, ...}, creator, community, counts}}. Lemmy posts need a title, so `text` is sent as `name` AND as the markdown `body`; the title must be 3-200 characters without a newline (is_valid_post_title, https://raw.githubusercontent.com/LemmyNet/lemmy/0.19.4/crates/utils/src/utils/validation.rs) or the instance answers 400 invalid_post_title (upstream_error), and the body may be up to 50,000 characters. The post goes to the configured community_id (sent as a JSON integer). `reply_to` is ignored: posts cannot reply (use reply_comment-style comments via POST /comment, not offered). `id` is the post id used by read_comments / analytics_post / delete; `url` is the post's ActivityPub id (its canonical URL on the home instance)."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "https://{instance}/api/v3/post",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "body": {
+     "name": "text",
+     "url": "image_urls.0",
+     "community_id": "int:@community_id"
+    },
+    "result": {
+     "root": "post_view.post",
+     "fields": {
+      "id": "id",
+      "url": "ap_id",
+      "created_at": "published"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/CreatePost.ts",
+    "note": "A Lemmy image post is a link post: CreatePost {name, community_id, url} with `url` = the first image URL (image_urls[0]; Lemmy fetches the link's metadata and thumbnail server-side, and instances render image URLs inline). Only ONE url fits a post, so further image_urls are ignored. `text` is REQUIRED here in practice because it becomes the mandatory `name` (title, 3-200 characters, no newline); without it the instance answers 400. Same response mapping as publish_text."
+   },
+   "delete": {
+    "method": "POST",
+    "path": "https://{instance}/api/v3/post/delete",
+    "path_params": {
+     "instance": "@instance"
+    },
+    "body": {
+     "post_id": "int:post_id",
+     "deleted": "json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/DeletePost.ts",
+    "note": "POST /api/v3/post/delete (DeletePost {post_id: PostId, deleted: boolean}) marks the account's own post deleted and returns PostResponse {post_view} (under raw; the runtime answers {status: 'deleted'}). `post_id` is sent as a JSON integer (a non-numeric id is an invalid_input); deleting someone else's post is refused by the instance with a 400 (upstream_error). Deletion federates best-effort: 'federated content cannot be recalled from other instances'."
+   }
+  },
+  "not_offered": {
+   "reply_comment": "POST /api/v3/comment needs CreateComment {content, post_id: PostId (required), parent_id?: CommentId} (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/CreateComment.ts): a reply must name the POST it belongs to, the vocabulary passes only the comment's id, and the runtime cannot look the post up first (GET /api/v3/comment?id= would be a second call), so the request cannot be composed."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host lemmy.ml: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login lemmy.ml/api/v3/user/login: 401 incorrect_login",
+   "HTML docs spot-check (render-doc): 0/6 tool paths found verbatim on their docs pages; names not found on the page: analytics_post:id",
+   "live read without credentials: analytics_post, read_comments returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

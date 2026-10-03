@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "bookvault-mcp",
+ "display_name": "Bookvault (CopyTECH (UK) Ltd t/a Printondemand-worldwide) MCP",
+ "version": "0.1.0",
+ "description": "Bookvault (CopyTECH (UK) Ltd t/a Printondemand-worldwide) (ecommerce suppliers): me, list_products, ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bookvault"
+   ],
+   "env": {
+    "PLATFORM_MCP_BOOKVAULT_API_KEY": "${user_config.platform_mcp_bookvault_api_key}",
+    "PLATFORM_MCP_BOOKVAULT_PARTNER": "${user_config.platform_mcp_bookvault_partner}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bookvault_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOOKVAULT_API_KEY",
+   "description": "Bookvault API key from the portal's Apps page (Bookvault API > Generate Credentials; shown once), sent as `Authorization: basic <key>`. Supply the key exactly as displayed, starting with bv_.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bookvault_partner": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOOKVAULT_PARTNER",
+   "description": "Print partner for create_order (required by Bookvault): Bookvault_UK, Bookvault_US, Bookvault_AU or Bookvault_CA.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v4/account: {details{firstName, lastName, email, accountRole}, settings{planName}, setup{addedFunds, placedOrder}, ...}. The account payload also carries billing and bank details; treat `account` as sensitive."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v4/titles?titlesPerPage=&pageNumber= lists YOUR library titles (print-on-demand books) with specifications and pricing in `raw`; `query` and `category` are not accepted (POST /v4/titles filters are not mapped). `id` is the 13-digit ISBN."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v4/title/{ISBN}: one library title with publishing progress, specifications (pages, binding, size, stocks), pricing and linked apps in `raw`."
+  },
+  {
+   "name": "create_order",
+   "description": "Places a real print order that Bookvault charges to the account (production + dispatch). `shipping_address` is Bookvault's address {addressee, address1, address2, town, county (2-letter state for US/CA), countryCode (ISO), postCode, email, telNumber}; `items` are orderLines [{lineNumber (1, 2, ...), isbn, quantity}]; `shipping_option` is required and is the service rule Quickest, Cheapest, Tracked, CheapestTracked or NotSpecified. The print partner comes from the `partner` setting; docRef (your reference) is a fresh UUID. Orders shipped outside the partner's country also need a customsDeclaration, which this tool does not send. Validate first with POST /v4/order/validate (not mapped)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v4/order?type=PodRef&value={id} (the podRef create_order returns): identification, metadata{status, dateCreated, partner}, financials.orderCost{productionCost, dispatchCost, tax, grandTotal}, fulfillment{address, service, trackingDetails{trackingNumber, combinedURL, servName}}."
+  }
+ ]
+}

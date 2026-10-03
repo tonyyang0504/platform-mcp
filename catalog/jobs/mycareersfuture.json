@@ -1,0 +1,114 @@
+{
+ "id": "mycareersfuture",
+ "category": "jobs",
+ "label": "MyCareersFuture",
+ "lane": "assist",
+ "kind": "government",
+ "regions": [
+  "sg"
+ ],
+ "docs_url": "https://www.mycareersfuture.gov.sg/",
+ "url": "https://www.mycareersfuture.gov.sg/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Singapore government portal (Singpass login); profile apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "company_info"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (public, key-less JSON API used by the portal itself, but undocumented; apply is",
+  "base_urls": [
+   "https://api.mycareersfuture.gov.sg/v2"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET /v2/jobs?search=<q>&limit=<n>&page=<p>&salary=<min>",
+    "purpose": "job search (full text)",
+    "notes": "`results[]` (job objects, see 2), `total`, `countWithoutFilters`, `_links.next.href` for pagination (`page` is 0-based)"
+   },
+   {
+    "call": "GET /v2/jobs/{uuid}",
+    "purpose": "job details",
+    "notes": "`uuid`, `title`, `description` (HTML), `salary{minimum, maximum, type{salaryType}}`, `employmentTypes[{employmentType}]`, `positionLevels[{position}]`, `skills[]`, `categories[]`, `minimumYearsExperience`, `numberOfVacancies`, `address{block, street, building, postalCode, districts[{location, region"
+   },
+   {
+    "call": "GET /v2/companies/{uen}` (+ `/jobs`, `/addresses`, `/schemes`)",
+    "purpose": "company info + that company's postings",
+    "notes": "linked from `postedCompany._links`"
+   },
+   {
+    "call": "apply / application status / profile / messaging",
+    "purpose": "**not available**",
+    "notes": "web app only, behind Singpass (SG Citizens / PRs)"
+   }
+  ],
+  "limits": " Not published. No `RateLimit-*` / `Retry-After` headers on the responses read. Keep `limit` ≤ 100 and page slowly. - Terms of Use text not readable (JS-only page; relay blocked). robots.txt: `User-agent: * / Disallow:` (empty) with a sitemap index — nothing is disallowed for crawlers. - Official FAQ (static.mycareersfuture.gov.sg/docs/mycareersfuture_sg_user_faqs.pdf): job search is open without login; \"Singpass login is mandatory for applying to jobs, and this feature is only available to Singapore Citizens and Singapore Permanent Residents\". Automated application is therefore impossible for",
+  "mcp_sdk": [
+   "None official. Third-party shape references only: Apify actors (`jungle_synthesizer/mycareersfuture-jobs-scraper`,"
+  ],
+  "sources": [
+   "https://www.mycareersfuture.gov.sg/",
+   "https://www.mycareersfuture.gov.sg/robots.txt",
+   "https://www.mycareersfuture.gov.sg/terms-of-use",
+   "https://api.mycareersfuture.gov.sg/",
+   "https://api.mycareersfuture.gov.sg/docs",
+   "https://static.mycareersfuture.gov.sg/docs/mycareersfuture_sg_user_faqs.pdf",
+   "https://www.tech.gov.sg/products-and-services/for-citizens/employment/mycareersfuture/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Undocumented (re-checked 2026-09-25 with headless Chromium): the portal's own JSON backend https://api.mycareersfuture.gov.sg/v2/jobs answers publicly, but the API host's root returns only 'OK' and /v2, /v2/docs, /api-docs, /v2/swagger.json and /openapi.json all return 404; the rendered https://www.mycareersfuture.gov.sg/ links no developer or API page, and the Terms of Use (https://www.mycareersfuture.gov.sg/terms-of-use) describe only Website access by Visitors and Singpass/Corppass users, with no API licence. Parameters, paging and permitted use cannot be cited from an official source. Applying needs Singpass login in the web app; no apply API."
+}

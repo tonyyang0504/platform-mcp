@@ -1,0 +1,36 @@
+{
+ "id": "tripadvisor_content",
+ "category": "sales",
+ "label": "Tripadvisor Content API",
+ "lane": "api",
+ "kind": "review_site",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://tripadvisor-content-api.readme.io/",
+ "url": "https://www.tripadvisor.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "www.tripadvisor.com answers 403 to bots (robots.txt has no Disallow but the WAF blocks) → never fetched; Content API on the user's key (free tier 5k calls/month, display terms).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

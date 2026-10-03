@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/nextdoor-social-mcp",
+ "description": "Nextdoor (social): me, publish_text, publish_image, delete. Every tool maps to a documented endpoint",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.nextdoor.com/reference/create-post.md",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/nextdoor"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NEXTDOOR_ACCESS_TOKEN",
+     "description": "Publish API user access token: apply for access (Nextdoor Partnerships issue client_id / client_secret), send the user through https://www.nextdoor.com/v3/authorize/ with scopes openid post:write post:read comment:write profile:read, then exchange the code at POST https://auth.nextdoor.com/v2/token (https://developer.nextdoor.com/reference/sharing-get-access-token; expires_in 31536000 s in the documented example). Refresh it before expiry (https://developer.nextdoor.com/reference/sharing-refresh-access-token). Sent as 'Authorization: Bearer <access_token>'.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NEXTDOOR_SECURE_PROFILE_ID",
+     "description": "Optional profile id from GET /me/profiles (https://developer.nextdoor.com/reference/me-copy) to post / delete as a business or other profile of the account instead of the default neighbor profile.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

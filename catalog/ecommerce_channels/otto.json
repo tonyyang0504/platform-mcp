@@ -1,0 +1,293 @@
+{
+ "id": "otto",
+ "category": "ecommerce_channels",
+ "label": "OTTO Market",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "de",
+  "nl",
+  "pl",
+  "fr",
+  "es"
+ ],
+ "docs_url": "https://api.otto.market/docs",
+ "url": "https://www.otto.de/",
+ "verified_at": "2026-09-25",
+ "terms_note": "OTTO Market seller contract (Germany, GmbH/registered business, German-language customer service); API app credentials from the partner portal; sandbox access granted by OTTO; service-partner model with seller consent delegation; rate limits exist (numbers not read).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "sandbox"
+  ],
+  "auth": "oauth2 client credentials (app credentials from the OTTO Market / Partner Connect portal; service partners act with seller consent)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "OpenAPI specifications per interface (API Index)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.sandbox_base"
+ ],
+ "rate_limits": "1,200 requests/min per partner, 20 rps per partner-id, lower per endpoint; 429",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.otto.market/v{n}/…"
+  ],
+  "auth": [
+   "1. Seller (or the platform as Service Partner) obtains app credentials in the OTTO Market partner portal; sandbox access requested there.",
+   "2. POST client_credentials → bearer token; refresh on expiry.",
+   "3. Service partners operate seller accounts only with the seller's consent delegation."
+  ],
+  "endpoints": [
+   {
+    "call": "Products v3",
+    "purpose": "create / update products + variations (SKU, EAN, media, delivery)",
+    "notes": "asynchronous update tasks"
+   },
+   {
+    "call": "Quantities v2",
+    "purpose": "stock per SKU",
+    "notes": ""
+   },
+   {
+    "call": "Prices v3",
+    "purpose": "prices per SKU",
+    "notes": ""
+   },
+   {
+    "call": "Orders v4",
+    "purpose": "orders (partner-fulfilled)",
+    "notes": ""
+   },
+   {
+    "call": "Shipments v1",
+    "purpose": "shipment with carrier + tracking",
+    "notes": ""
+   },
+   {
+    "call": "Returns v1",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "Receipts · Reports / Quality",
+    "purpose": "invoices, performance reports",
+    "notes": ""
+   }
+  ],
+  "limits": " Implemented; thresholds in the full documentation (not read). - Seller contract with OTTO Market; service-partner consent model. - Germany only.",
+  "mcp_sdk": [
+   "SDK: OpenAPI specifications per interface (API Index)"
+  ],
+  "sources": [
+   "https://api.otto.market/docs",
+   "https://api.otto.market/docs/getting-started",
+   "https://r.jina.ai/https://api.otto.market/docs",
+   "https://api.otto.market/docs/03_Products/v3/products-interface.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.otto.market",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.otto.market/v1/token",
+   "client_auth": "body",
+   "scope": "products availability orders shipments",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of a self-app created in OTTO Partner Connect > API access with the Products, Availability, Orders and Shipments interfaces enabled (https://api.otto.market/docs/sellers-integration)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The app's client secret (shown once in Partner Connect). Tokens are minted with the client credentials and the scopes 'products availability orders shipments'."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Price currency for update_listing, EUR for otto.de."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "OTTO Market API (Germany). Product price and active-status updates are asynchronous (202 with a process to poll under /v5/products/update-tasks/{processUuid}).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/availability/quantities",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://api.otto.market/docs/functional-interfaces/availability",
+    "note": "No account endpoint; the probe mints a token and reads one SKU quantity ({resources: {variations[]}}) to verify the credentials and scopes."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/v5/products/prices",
+    "body": {
+     "0.sku": "listing_id",
+     "0.standardPrice.amount": "price",
+     "0.standardPrice.currency": "@currency"
+    },
+    "result": {
+     "fields": {
+      "status": "state"
+     }
+    },
+    "docs": "https://api.otto.market/docs/functional-interfaces/products",
+    "note": "Products-V5 updateProductVariationPrices POST /v5/products/prices [{sku, standardPrice: {amount, currency}}] sets the LIVE standard price of your SKU (listing_id = SKU; currency from the config field, EUR). Only the price is applied (`price` required); stock is set_inventory and product content goes through POST /v5/products. Asynchronous: status pending|done, raw.links point at the process."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/v1/availability/quantities",
+    "body": {
+     "0.sku": "sku",
+     "0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://api.otto.market/docs/functional-interfaces/availability",
+    "note": "Availability-V1 POST /v1/availability/quantities [{sku, quantity}] sets the available quantity of one SKU (`sku` required; any integer >= 0). Answers 207 with per-SKU results/errors in raw."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/v5/products/active-status",
+    "body": {
+     "status.0.sku": "listing_id",
+     "status.0.active": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "state"
+     }
+    },
+    "docs": "https://api.otto.market/docs/functional-interfaces/products",
+    "note": "Products-V5 updateActiveStatus {status: [{sku, active: false}]} takes the SKU offline on otto.de (reversible with active: true). Asynchronous process (state pending|done)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v4/orders",
+    "params": {
+     "fulfillmentStatus": "status",
+     "fromOrderDate": "since",
+     "limit": "limit"
+    },
+    "default_limit": 128,
+    "max_limit": 256,
+    "result": {
+     "items": "resources",
+     "key": "orders",
+     "fields": {
+      "id": "orderNumber",
+      "status": "positionItems.0.fulfillmentStatus",
+      "currency": "positionItems.0.itemValueGrossPrice.currency",
+      "created_at": "orderDate"
+     }
+    },
+    "docs": "https://api.otto.market/docs/functional-interfaces/orders",
+    "note": "Orders-V4 GET /v4/orders?fulfillmentStatus(ANNOUNCED|PROCESSABLE|SENT|RETURNED|CANCELLED_BY_PARTNER|CANCELLED_BY_MARKETPLACE)&fromOrderDate(ISO-8601)&limit(max 256), oldest first. Status is per position item (the first item's is shown); raw.salesOrderId and positionItems[].positionItemId are needed for shipping and cancellations. Paging is by cursor (raw.links next), so only the first page is returned."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /v5/products takes full product variations (productReference, category, brand, attributes, media, delivery, pricing) and requires a shipping profile assignment before the SKU becomes orderable; the vocabulary lacks category, brand and attributes.",
+   "mark_shipped": "POST /v1/shipments requires shipDate, shipFromAddress and, per position item, positionItemId + salesOrderId + a RETURN tracking key; position items and return labels are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.otto.market: DNS ok, TLSv1.2 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token api.otto.market/v1/token: 401 invalid_client",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,307 @@
+{
+ "id": "dv360",
+ "category": "ads",
+ "label": "Google Display & Video 360",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/display-video/api/guides/getting-started/overview",
+ "url": "https://marketingplatform.google.com/about/display-video-360/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API requires an existing DV360 user profile with Admin, Standard or Read-only permissions on the partner/advertiser.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (Google Cloud project, scope https://www.googleapis.com/auth/display-video) — user profile in DV360 with Admin / Standard / Read only permission",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "audiences",
+   "targeting_search",
+   "reports",
+   "bulk"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developers.google.com/display-video/api/samples (Google API client libraries — Samples and libraries section)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Display & Video 360 API v4 + Bid Manager API for reports).",
+  "base_urls": [
+   "https://displayvideo.googleapis.com/v4/",
+   "https://doubleclickbidmanager.googleapis.com/v2/"
+  ],
+  "auth": [
+   "1. A DV360 Admin creates a user profile for the Google account (Admin / Standard / Read only on the partner or advertiser).",
+   "2. Create a Google Cloud project, enable the Display & Video 360 API, create OAuth 2.0 credentials (\"Generate credentials\" step); scope `https://www.googleapis.com/auth/display-video`.",
+   "3. Bearer access token on every call; quotas are per Cloud project."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v4/partners` · `GET /v4/advertisers?partnerId=` · `advertisers.get / patch / audit",
+    "purpose": "accounts",
+    "notes": "advertiserId, displayName, generalConfig{currencyCode}, entityStatus"
+   },
+   {
+    "call": "advertisers.campaigns` create / get / list / patch / delete",
+    "purpose": "campaigns",
+    "notes": "displayName, entityStatus, campaignGoal, campaignFlight{plannedSpendAmountMicros, plannedDates}, frequencyCap"
+   },
+   {
+    "call": "advertisers.insertionOrders` create / list / patch",
+    "purpose": "insertion orders (budget segments, pacing, bid strategy)",
+    "notes": "budget{budgetUnit, budgetSegments[]}, pacing{pacingPeriod, pacingType, dailyMaxMicros}, bidStrategy, kpi"
+   },
+   {
+    "call": "advertisers.lineItems` create / list / patch / bulkUpdate / duplicate · `bulkEditAssignedTargetingOptions",
+    "purpose": "line items: flight, budget, bid, targeting",
+    "notes": "lineItemType, flight, budget{budgetAllocationType, maxAmount}, pacing, bidStrategy{fixedBid{bidAmountMicros} / maximizeSpendAutoBid / performanceGoalAutoBid}, targetingExpansion, creativeIds[]"
+   },
+   {
+    "call": "advertisers.adGroups` · `advertisers.adGroupAds` (YouTube & Partners / Demand Gen)",
+    "purpose": "ad groups + ads",
+    "notes": "displayName, adGroupFormat, bidStrategy, targeting; adGroupAd{displayName, adUrls, videoAd / displayAd}"
+   },
+   {
+    "call": "advertisers.assets.upload` · `advertisers.adAssets` (bulkCreate, upload) · `advertisers.creatives` create / patch",
+    "purpose": "creatives upload",
+    "notes": "media upload (multipart), creativeType, dimensions, assets[{asset{mediaId}, role}], exitEvents[]"
+   },
+   {
+    "call": "advertisers.lineItems.targetingTypes.assignedTargetingOptions` · `targetingTypes.targetingOptions.search",
+    "purpose": "targeting (audiences, geo, keywords, channels)",
+    "notes": "targetingType TARGETING_TYPE_AUDIENCE_GROUP / GEO_REGION / KEYWORD…, details"
+   },
+   {
+    "call": "firstAndThirdPartyAudiences` create / editCustomerMatchMembers",
+    "purpose": "audiences",
+    "notes": "audienceType CUSTOMER_MATCH_CONTACT_INFO, contactInfoList (hashed)"
+   },
+   {
+    "call": "Bid Manager API `queries.create` → `queries.run` → `queries.reports.get",
+    "purpose": "reports",
+    "notes": "metadata{dataRange, format}, params{type, groupBys[], filters[], metrics[]}, schedule"
+   },
+   {
+    "call": "conversions upload",
+    "purpose": "Floodlight / offline conversions live in Campaign Manager 360 API, not DV360",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-project quotas listed on \"API limits and quotas\" (requests per minute per project and per user; TODO(verify) numbers). Free API; DV360 contract + fees through Google / agency.",
+  "mcp_sdk": [
+   "Google API client libraries (Java, Python, PHP, .NET …) via \"Samples and libraries\". No official MCP server."
+  ],
+  "sources": [
+   "https://developers.google.com/display-video/api/guides/getting-started/overview",
+   "https://developers.google.com/display-video/api/reference/rest",
+   "https://developers.google.com/display-video/api/limits"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://displayvideo.googleapis.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id of a Google Cloud project with the Display & Video 360 API enabled."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret (form body of the refresh_token grant)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from Google's consent flow with scope https://www.googleapis.com/auth/display-video, for a user with a DV360 user profile (Admin/Standard for writes)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "partner_id",
+    "required": true,
+    "help": "DV360 partner id whose advertisers list_accounts returns (GET /v4/advertisers requires partnerId)."
+   },
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "DV360 advertiser id used by pause_resume (the campaign PATCH path is /v4/advertisers/{advertiserId}/campaigns/{campaignId})."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v4/partners",
+    "fixed_params": {
+     "pageSize": "1"
+    },
+    "docs": "https://developers.google.com/display-video/api/reference/rest/v4/partners/list",
+    "note": "GET /v4/partners?pageSize=1: confirms the token and DV360 access ({partners: [{partnerId, displayName, entityStatus}]})."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v4/advertisers",
+    "params": {
+     "partnerId": "@partner_id",
+     "pageSize": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 200,
+    "result": {
+     "items": "advertisers",
+     "key": "accounts",
+     "fields": {
+      "id": "advertiserId",
+      "name": "displayName",
+      "currency": "generalConfig.currencyCode"
+     }
+    },
+    "docs": "https://developers.google.com/display-video/api/reference/rest/v4/advertisers/list",
+    "note": "GET /v4/advertisers?partnerId={partner_id config}: the partner's advertisers. Only the first page is returned (pageToken paging)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/v4/advertisers/{account_id}/campaigns",
+    "params": {
+     "pageSize": "limit",
+     "filter": "map:status:active=entityStatus=\"ENTITY_STATUS_ACTIVE\",paused=entityStatus=\"ENTITY_STATUS_PAUSED\",archived=entityStatus=\"ENTITY_STATUS_ARCHIVED\""
+    },
+    "default_limit": 25,
+    "max_limit": 200,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaignId",
+      "name": "displayName",
+      "status": "entityStatus",
+      "start": "campaignFlight.plannedDates.startDate",
+      "end": "campaignFlight.plannedDates.endDate"
+     }
+    },
+    "docs": "https://developers.google.com/display-video/api/reference/rest/v4/advertisers.campaigns/list",
+    "note": "GET /v4/advertisers/{account_id}/campaigns (account_id = advertiser id). `status` is active, paused or archived (archived campaigns are hidden unless asked for). Planned budgets are in raw.campaignBudgets (budgetAmountMicros over a date range); start/end are {year, month, day} objects. First page only."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/v4/advertisers/{advertiser_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "advertiser_id": "@advertiser_id"
+    },
+    "fixed_params": {
+     "updateMask": "entityStatus"
+    },
+    "body": {
+     "entityStatus": "map:action:pause=ENTITY_STATUS_PAUSED,resume=ENTITY_STATUS_ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "entityStatus"
+     }
+    },
+    "docs": "https://developers.google.com/display-video/api/reference/rest/v4/advertisers.campaigns/patch",
+    "note": "PATCH /v4/advertisers/{advertiser_id config}/campaigns/{campaign_id}?updateMask=entityStatus {entityStatus: ENTITY_STATUS_PAUSED|ENTITY_STATUS_ACTIVE}. Resuming lets its insertion orders spend again."
+   }
+  },
+  "not_offered": {
+   "get_report": "DV360 reporting runs through the Bid Manager API as asynchronous queries (create a query, run it, poll the report and download a CSV file; https://developers.google.com/bid-manager/guides/get-started/overview); the runtime has no report polling or CSV download.",
+   "update_budget": "DV360 campaign budgets are planned amounts over a date range (campaignBudgets[].budgetAmountMicros, https://developers.google.com/display-video/api/reference/rest/v4/advertisers.campaigns); spend is paced on insertion orders and line items, and there is no campaign daily budget."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host displayvideo.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://displayvideo.googleapis.com/$discovery/rest?version=v4: 4/4 tools match (path, method, parameters, body keys, response paths)",
+   "scopes display-video: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

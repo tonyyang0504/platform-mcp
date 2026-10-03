@@ -1,0 +1,222 @@
+{
+ "id": "olist_tiny_erp",
+ "category": "ecommerce_suppliers",
+ "label": "Olist Tiny ERP (BR integration hub — not a supplier)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "latam"
+ ],
+ "docs_url": "https://api-docs.erp.olist.com/",
+ "url": "https://tiny.com.br/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Tiny API token (per account; details in the help centre)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "orders",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Olist subscription.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://tiny.com.br/api-docs/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.tiny.com.br/public-api/v3",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of the API v3 app created in your Olist ERP (Tiny) account (Configurações > Aplicativos; https://api-docs.erp.olist.com/)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same app, sent in the token request body."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from the one-time authorization-code exchange (https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/auth ... then /token with grant_type=authorization_code). Access tokens expire after 4 hours and are re-minted from it; the refresh token 'tem duração de 1 dia' and each refresh returns a new one, which replaces it in memory (set PLATFORM_MCP_STATE_DIR to persist it across restarts)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/info",
+    "docs": "https://api-docs.erp.olist.com/api-reference/dados-da-empresa/obter-informações-da-conta-da-empresa",
+    "note": "GET /info: the connected ERP company {razaoSocial, cpfCnpj, fantasia, enderecoEmpresa, fone, email, regimeTributario}."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/produtos",
+    "params": {
+     "nome": "query",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "itens",
+     "key": "products",
+     "total": "paginacao.total",
+     "fields": {
+      "id": "id",
+      "title": "descricao",
+      "sku": "sku",
+      "price": "precos.preco",
+      "cost_price": "precos.precoCusto",
+      "gtin": "gtin",
+      "status": "situacao",
+      "unit": "unidade"
+     }
+    },
+    "docs": "https://api-docs.erp.olist.com/api-reference/produtos/listar-produtos",
+    "note": "GET /produtos: the products registered in YOUR Olist ERP (an ERP/integration hub, not a supplier) [{id, sku, descricao, tipo, situacao (A/I/E), unidade, gtin, precos{preco, precoPromocional, precoCusto, precoCustoMedio}}]; `query` searches the name (nome). Prices are BRL. `category` is not a filter of this endpoint."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/produtos/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "descricao",
+      "sku": "sku",
+      "price": "precos.preco",
+      "stock": "estoque.quantidade",
+      "image_url": "anexos.0.url",
+      "cost_price": "precos.precoCusto",
+      "brand": "marca.nome"
+     }
+    },
+    "docs": "https://api-docs.erp.olist.com/api-reference/produtos/obter-produto",
+    "note": "GET /produtos/{idProduto}: full product with stock (estoque.quantidade), suppliers (fornecedores[{id, nome, codigoProdutoNoFornecedor}]), category, brand, dimensions, variations and attachments in `raw`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/ordem-compra/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "situacao",
+      "total": "totalPedidoCompra",
+      "created_at": "data",
+      "number": "numeroPedido",
+      "supplier": "contato.nome",
+      "expected_date": "dataPrevista"
+     }
+    },
+    "docs": "https://api-docs.erp.olist.com/api-reference/ordem-de-compra/obter-ordem-de-compra",
+    "note": "GET /ordem-compra/{idOrdemCompra}: a purchase order recorded in the ERP (ordem de compra to a supplier) {id, numeroPedido, data, dataPrevista, situacao, totalProdutos, frete, totalPedidoCompra, contato (supplier), itens[{produto, quantidade, preco}]}. Currency BRL."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "Olist ERP is an ERP; the v3 API (https://api.tiny.com.br/public-api/v3/swagger/swagger.json) has no carrier-rate endpoint for a product and destination.",
+   "create_order": "POST /ordem-compra only records a purchase order inside the ERP (contato = supplier contact, itens[{produto{id}, quantidade, valor}]); it is not transmitted to or paid at any supplier, and the vocabulary's shipping_address has no counterpart.",
+   "track": "No tracking endpoint for purchase orders; tracking data belongs to sales orders and invoices and the v3 API only writes it (PUT /pedidos/{idPedido}/despacho, PUT /notas/{idNota}/despacho 'Atualizar informações de rastreamento'), it does not expose it per purchase order."
+  },
+  "terms": "Olist ERP API v3 (OAuth 2 via accounts.tiny.com.br Keycloak realm 'tiny'); API v2 (token query parameter, errors inside HTTP 200 retorno.status) is not used."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.tiny.com.br: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token: 401 invalid_client",
+   "authorize https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/auth: 400",
+   "spec https://api.tiny.com.br/public-api/v3/swagger/swagger.json: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

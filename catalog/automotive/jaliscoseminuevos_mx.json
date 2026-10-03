@@ -1,0 +1,35 @@
+{
+ "id": "jaliscoseminuevos_mx",
+ "category": "automotive",
+ "label": "Jaliscoseminuevos",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://jaliscoseminuevos.com",
+ "domain": "jaliscoseminuevos.com",
+ "country": "Mexico",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). WordPress Vehica theme REST route (/wp-json/vehica/v1/cars) is a theme endpoint, not a documented dealer API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jaliscoseminuevos.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,36 @@
+{
+ "id": "dnb_direct",
+ "category": "sales",
+ "label": "Dun & Bradstreet Direct+",
+ "lane": "api",
+ "kind": "data_vendor",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://directplus.documentation.dnb.com/",
+ "url": "https://www.dnb.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "D&B Direct+ REST API on the user's D&B contract (DUNS lookups); the public business-directory pages are not fetched (robots 48 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

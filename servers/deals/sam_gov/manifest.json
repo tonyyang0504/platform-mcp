@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "sam_gov-mcp",
+ "display_name": "SAM MCP",
+ "version": "0.1.0",
+ "description": "SAM (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "sam_gov"
+   ],
+   "env": {
+    "PLATFORM_MCP_SAM_GOV_API_KEY": "${user_config.platform_mcp_sam_gov_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_sam_gov_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SAM_GOV_API_KEY",
+   "description": "SAM.gov public API key: sign in to SAM.gov → Account Details → generate the public API key (daily request limits depend on the account's role).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Get Opportunities v2: notices posted in the last 364 days (postedFrom/postedTo are mandatory, MM/dd/yyyy, at most one year apart). query = title; category = NAICS code (ncode, up to 6 digits); offset is the page index ('Indicates the page index. Default offset starts with 0'). Award notices are included (type/baseType in raw); solicitationNumber, naicsCode, typeOfSetAside, pointOfContact, placeOfPerformance and the description link (raw.description, a URL needing the api_key) stay in raw. min_budget is not sent (no budget filter)."
+  },
+  {
+   "name": "get_posting",
+   "description": "The same search filtered by noticeid (only notices posted within the last 364 days can be found, since the posted-date window is mandatory)."
+  }
+ ]
+}

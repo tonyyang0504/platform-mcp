@@ -1,0 +1,357 @@
+{
+ "id": "microsoft_advertising",
+ "category": "ads",
+ "label": "Microsoft Advertising (Bing Ads)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/advertising/guides/",
+ "url": "https://ads.microsoft.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Bing Ads API guide read; developer token required, agency / aggregator access via the Microsoft Advertising Partner Program; nothing forbids scripted use",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "soap",
+   "rest",
+   "sdk",
+   "bulk_csv"
+  ],
+  "auth": "oauth2 (Microsoft identity platform) + DeveloperToken header (universal token) + CustomerId / CustomerAccountId",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "recommendations",
+   "bulk",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://learn.microsoft.com/en-us/advertising/guides/client-libraries (official SDKs: C#, Java, PHP, Python)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Bing Ads API v13: Campaign Management, Bulk, Reporting, Ad Insight, Customer Management, Customer",
+  "base_urls": [
+   "https://campaign.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/v13/CampaignManagementService.svc",
+   "https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/v13/BulkService.svc",
+   "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v13/ReportingService.svc",
+   "https://adinsight.api.bingads.microsoft.com/Api/Advertiser/AdInsight/v13/AdInsightService.svc",
+   "https://clientcenter.api.bingads.microsoft.com/Api/CustomerManagement/v13/CustomerManagementService.svc"
+  ],
+  "auth": [
+   "1. Register an application with the Microsoft identity platform; request user consent (\"Request user consent for your application to manage their Microsoft Advertising accounts\"); get access + refresh tokens.",
+   "2. Developer token: \"Sign in with Super Admin credentials at the Microsoft Advertising Developer Portal account tab … Click on the Request Token button.\" One **universal** token serves every user of the application; sandbox = universal token `BBD37VB98` with a separate sandbox account (sandbox.binga",
+   "3. SOAP headers on every call: `AuthenticationToken` (OAuth access token), `DeveloperToken`, `CustomerId`, `CustomerAccountId` (`ApplicationToken` is unused). Discover ids with Customer Management `GetUser` → `SearchAccounts` (predicate `UserId`).",
+   "4. Roles: the token inherits the user's Microsoft Advertising role (Super Admin, Advertiser Campaign Manager…); \"Obtaining a developer token for API access does not grant additional permissions\"."
+  ],
+  "endpoints": [
+   {
+    "call": "Customer Management · `GetUser`, `SearchAccounts`, `GetAccount",
+    "purpose": "accounts, customer ids",
+    "notes": "`UserId`, `Predicates[{Field UserId, Operator Equals}]`, `AdvertiserAccount{Id, Name, CurrencyCode, ParentCustomerId}`"
+   },
+   {
+    "call": "Campaign Management · `GetCampaignsByAccountId`, `AddCampaigns`, `UpdateCampaigns`, `DeleteCampaigns",
+    "purpose": "campaigns, daily budget, status, bidding scheme",
+    "notes": "`Campaign{Name, DailyBudget, BudgetType DailyBudgetStandard, Status, CampaignType, BiddingScheme, TimeZone, Languages}`"
+   },
+   {
+    "call": "Campaign Management · `GetAdGroupsByCampaignId`, `AddAdGroups`, `UpdateAdGroups",
+    "purpose": "ad groups + CpcBid",
+    "notes": "`AdGroup{Name, CpcBid{Amount}, Status, StartDate, EndDate, Network}`"
+   },
+   {
+    "call": "Campaign Management · `AddAds` (ResponsiveSearchAd), `UpdateAds`, `GetAdsByAdGroupId",
+    "purpose": "ads",
+    "notes": "`ResponsiveSearchAd{Headlines[], Descriptions[], FinalUrls[], Path1, Path2}`"
+   },
+   {
+    "call": "Campaign Management · `AddKeywords`, `UpdateKeywords`, `AddNegativeKeywordsToEntities`, `GetKeywordsByAdGroupId",
+    "purpose": "keywords + bids",
+    "notes": "`Keyword{Text, MatchType, Bid{Amount}, Status}`"
+   },
+   {
+    "call": "Campaign Management · `AddMedia` (image media for extensions / audience ads)",
+    "purpose": "creative upload",
+    "notes": "`Media{Type Image, Data base64}`"
+   },
+   {
+    "call": "Campaign Management · `AddAudiences` (CustomerList), `ApplyCustomerListItems`, `AddCampaignCriterions` (AudienceCriterion)",
+    "purpose": "audiences + targeting",
+    "notes": "`CustomerList{Name, Scope}`, `CustomerListItem{…hashed}`"
+   },
+   {
+    "call": "Campaign Management · `AddConversionGoals`, `ApplyOfflineConversions",
+    "purpose": "conversions upload",
+    "notes": "`OfflineConversion{ConversionName, ConversionTime, ConversionValue, MicrosoftClickId}`"
+   },
+   {
+    "call": "Reporting · `SubmitGenerateReport` → `PollGenerateReport` → download",
+    "purpose": "reports (CampaignPerformanceReportRequest, KeywordPerformanceReportRequest…)",
+    "notes": "`Aggregation Daily, Columns[], Scope{AccountIds}, Time{CustomDateRangeStart/End}`"
+   },
+   {
+    "call": "Ad Insight · `GetKeywordIdeas`, `GetBidOpportunities`, `GetBudgetOpportunities",
+    "purpose": "keyword research + recommendations",
+    "notes": "`SearchParameters[]`, `AdGroupId`"
+   },
+   {
+    "call": "Bulk · `DownloadCampaignsByAccountIds`, `GetBulkUploadUrl` → upload CSV → `GetBulkUploadStatus",
+    "purpose": "bulk edits",
+    "notes": "`DownloadEntities[]`, CSV rows"
+   }
+  ],
+  "limits": " - Sandbox and production have separate credentials; the sandbox developer token is public. Free API. Throttling and error handling are documented in \"Handling Service Errors and Exceptions\" (not opened this pass — TODO(verify) numeric limits). - Terms: Microsoft Advertising Terms and Microsoft Advertising API Terms of Use accepted when requesting the developer token.",
+  "mcp_sdk": [
+   "Official SDKs with `AuthorizationData` helpers: C#, Java, PHP, Python (get-started page links Get Started in C# / Java / PHP / Python). No official MCP server."
+  ],
+  "sources": [
+   "https://learn.microsoft.com/en-us/advertising/guides/get-started",
+   "https://learn.microsoft.com/en-us/advertising/guides/web-service-addresses",
+   "https://learn.microsoft.com/en-us/advertising/guides/services-protocol"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://campaign.api.bingads.microsoft.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://campaign.api.sandbox.bingads.microsoft.com",
+    "hosts": {
+     "clientcenter.api.bingads.microsoft.com": "clientcenter.api.sandbox.bingads.microsoft.com"
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/guides/sandbox",
+    "verified_at": "2026-09-27",
+    "notes": "Microsoft Advertising sandbox: REST hosts campaign.api.sandbox.bingads.microsoft.com and clientcenter.api.sandbox.bingads.microsoft.com (the Sandbox URL tab of https://learn.microsoft.com/en-us/advertising/campaign-management-service/getcampaignsbyids and .../customer-management-service/searchaccounts). OAuth stays on login.microsoftonline.com ('Endpoint for OAuth requests' is the same for sandbox and production on the sandbox guide), so token_url and scope are unchanged. Sandbox uses separate credentials: a sandbox customer created at https://sandbox.bingads.microsoft.com with an outlook.com Microsoft account (or Google), your own application (client) ID, and the universal sandbox developer token BBD37VB98 published on the sandbox guide. Ads are never served; single-threaded use only; limited editorial and Ad Insight data."
+   }
+  },
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+   "client_auth": "body",
+   "scope": "https://ads.microsoft.com/msads.manage",
+   "extra_headers": {
+    "DeveloperToken": "developer_token",
+    "CustomerId": "customer_id",
+    "CustomerAccountId": "account_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Application (client) id of the Microsoft Entra app registration used for the Microsoft Advertising consent."
+    },
+    {
+     "name": "client_secret",
+     "required": false,
+     "help": "The app's client secret; required for web apps, omit for native/public clients."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the authorization-code flow with scope https://ads.microsoft.com/msads.manage offline_access; the runtime mints access tokens from it at https://login.microsoftonline.com/common/oauth2/v2.0/token."
+    },
+    {
+     "name": "developer_token",
+     "required": true,
+     "help": "Microsoft Advertising developer token (Developer Portal > Account), sent as the DeveloperToken header."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "customer_id",
+    "required": true,
+    "help": "Manager account (customer) id sent as the CustomerId header; list_accounts searches this customer's accounts."
+   },
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "Ad account id sent as the CustomerAccountId header; it must equal the AccountId in campaign calls, so pass the same id as list_campaigns' account_id."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "https://clientcenter.api.bingads.microsoft.com/CustomerManagement/v13/Accounts/Search",
+    "body": {
+     "Predicates.0.Field": "=AccountId",
+     "Predicates.0.Operator": "=Equals",
+     "Predicates.0.Value": "@account_id",
+     "PageInfo.Index": "json:0",
+     "PageInfo.Size": "json:1"
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/customer-management-service/searchaccounts?view=bingads-13",
+    "note": "REST POST /CustomerManagement/v13/Accounts/Search with the predicate AccountId Equals <configured account_id>: {Accounts: [AdvertiserAccount]} describes the connected ad account (Id, Name, Number, CurrencyCode, AccountLifeCycleStatus, ParentCustomerId)."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "https://clientcenter.api.bingads.microsoft.com/CustomerManagement/v13/Accounts/Search",
+    "body": {
+     "Predicates.0.Field": "=CustomerId",
+     "Predicates.0.Operator": "=Equals",
+     "Predicates.0.Value": "@customer_id",
+     "PageInfo.Index": "json:0",
+     "PageInfo.Size": "json:100"
+    },
+    "result": {
+     "items": "Accounts",
+     "key": "accounts",
+     "fields": {
+      "id": "Id",
+      "name": "Name",
+      "currency": "CurrencyCode"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/customer-management-service/searchaccounts?view=bingads-13",
+    "note": "REST POST /CustomerManagement/v13/Accounts/Search with the predicate CustomerId Equals <configured customer_id> and PageInfo {Index: 0, Size: 100} (list_accounts takes no paging arguments, so the first 100 accounts are returned)."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/CampaignManagement/v13/Campaigns/QueryByAccountId",
+    "body": {
+     "AccountId": "account_id"
+    },
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "Campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "Id",
+      "name": "Name",
+      "status": "Status",
+      "budget": "DailyBudget"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/campaign-management-service/getcampaignsbyaccountid?view=bingads-13",
+    "note": "REST POST /CampaignManagement/v13/Campaigns/QueryByAccountId {AccountId}. account_id must equal the configured account_id (sent as CustomerAccountId). Without CampaignType only Search campaigns are returned; the call is unpaged and `status`/`page` are not sent. `budget` is DailyBudget in the account currency (BudgetType in raw)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/CampaignManagement/v13/Campaigns",
+    "body": {
+     "AccountId": "@account_id",
+     "Campaigns.0.Id": "campaign_id",
+     "Campaigns.0.DailyBudget": "daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated",
+      "partial_errors": "PartialErrors"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/campaign-management-service/updatecampaigns?view=bingads-13",
+    "note": "REST PUT /CampaignManagement/v13/Campaigns {AccountId (config), Campaigns: [{Id, DailyBudget}]}: only the sent elements change. Campaigns using a shared budget must be changed on the budget instead. The service answers 200 with per-item failures in PartialErrors: the update succeeded only when partial_errors is empty. `currency` is ignored (account currency)."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/CampaignManagement/v13/Campaigns",
+    "body": {
+     "AccountId": "@account_id",
+     "Campaigns.0.Id": "campaign_id",
+     "Campaigns.0.Status": "map:action:pause=Paused,resume=Active"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated",
+      "partial_errors": "PartialErrors"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/advertising/campaign-management-service/updatecampaigns?view=bingads-13",
+    "note": "REST PUT /CampaignManagement/v13/Campaigns {AccountId (config), Campaigns: [{Id, Status: Paused|Active}]}; per-item failures come back in PartialErrors (the change applied only when partial_errors is empty)."
+   }
+  },
+  "not_offered": {
+   "get_report": "Reporting is asynchronous: SubmitGenerateReport returns a ReportRequestId, PollGenerateReport is polled until Success and the report is a zipped CSV/TSV/XML file at ReportDownloadUrl; the runtime makes one call per tool."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host campaign.api.bingads.microsoft.com: DNS ok, TLSv1.3 (Microsoft Corporation)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token login.microsoftonline.com/common/oauth2/v2.0/token: 400 invalid_grant",
+   "authorize https://login.microsoftonline.com/common/oauth2/v2.0/authorize: 200",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

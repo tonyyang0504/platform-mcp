@@ -1,0 +1,35 @@
+{
+ "id": "mmcars",
+ "category": "automotive",
+ "label": "Mmcars",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://mmcars.pl",
+ "domain": "mmcars.pl",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dealer site (stock also on OTOMOTO); no own API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mmcars.pl/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

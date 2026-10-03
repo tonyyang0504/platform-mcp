@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "squarespace-mcp",
+ "display_name": "Squarespace Commerce MCP",
+ "version": "0.1.0",
+ "description": "Squarespace Commerce (ecommerce channels): me, end_listing, list_orders. Every tool maps to a docume",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "squarespace"
+   ],
+   "env": {
+    "PLATFORM_MCP_SQUARESPACE_API_KEY": "${user_config.platform_mcp_squarespace_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_squarespace_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SQUARESPACE_API_KEY",
+   "description": "Developer API key (Commerce Advanced plan: Settings > Advanced > Developer API Keys; Orders read, Products read) sent as `Authorization: Bearer`; the docs also require a descriptive User-Agent, which the runtime sends.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/commerce/products (Products read) lists up to 50 products {products[{id, name, type, storePageId, isVisible, url, ...}], pagination}; verifies the key and shows the store's products."
+  },
+  {
+   "name": "end_listing",
+   "description": "POST /v2/commerce/products/{productId} {isVisible: {present: true, value: false}} (the Update product endpoint's ChangeBoolean wrapper) hides the product; reversible with value=true. Returns the updated ProductV2. DELETE /v2/commerce/products/{productId} (204, irreversible) is not used."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /1.0/commerce/orders?fulfillmentStatus(PENDING|FULFILLED|CANCELED) returns up to 50 orders by modification date {result[{id, orderNumber, createdOn, fulfillmentStatus, grandTotal{value, currency}, fulfillments[{trackingNumber, carrierName}]}], pagination{hasNextPage, nextPageCursor}}. Pagination is cursor-based, so `page`/`limit` are not sent (first page only); `since` is not sent because modifiedAfter is only accepted together with modifiedBefore."
+  }
+ ]
+}

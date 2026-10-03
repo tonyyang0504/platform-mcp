@@ -1,0 +1,35 @@
+{
+ "id": "compreauto_mx",
+ "category": "automotive",
+ "label": "Compreauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://compreauto.mx",
+ "domain": "compreauto.mx",
+ "country": "Mexico",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace site; homepage/footer scan and dev-path probes found no developer, API or partner-feed pages.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://compreauto.mx/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

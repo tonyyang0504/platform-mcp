@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "reddit-ads-mcp",
+ "display_name": "Reddit Ads MCP",
+ "version": "0.1.0",
+ "description": "Reddit Ads (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ads/reddit"
+   ],
+   "env": {
+    "PLATFORM_MCP_REDDIT_CLIENT_ID": "${user_config.platform_mcp_reddit_client_id}",
+    "PLATFORM_MCP_REDDIT_CLIENT_SECRET": "${user_config.platform_mcp_reddit_client_secret}",
+    "PLATFORM_MCP_REDDIT_REFRESH_TOKEN": "${user_config.platform_mcp_reddit_refresh_token}",
+    "PLATFORM_MCP_REDDIT_BUSINESS_ID": "${user_config.platform_mcp_reddit_business_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_reddit_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_CLIENT_ID",
+   "description": "App ID of your Reddit Ads developer application (business > developer applications), sent as HTTP Basic user on the token call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reddit_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_CLIENT_SECRET",
+   "description": "The developer application's secret (HTTP Basic password on https://www.reddit.com/api/v1/access_token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reddit_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_REFRESH_TOKEN",
+   "description": "Refresh token from one authorization-code consent with duration=permanent and scope adsread,adsedit (https://ads-api.reddit.com/docs/v3/guides/quick-start/authenticate); access tokens last one hour or one day and are re-minted from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_reddit_business_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_REDDIT_BUSINESS_ID",
+   "description": "Reddit business id whose ad accounts list_accounts returns (GET /me/businesses lists yours).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v3/me: the authenticated actor {data: {id, email, reddit_username, type}}."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /api/v3/businesses/{business_id config}/ad_accounts: the business's ad accounts with currency and time zone. First page only (pagination.next_url)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /api/v3/ad_accounts/{ad_account_id}/campaigns (page.size; first page only). `status` is configured_status (ACTIVE, PAUSED, ARCHIVED; raw.effective_status is the delivery state) and is not a filter. Budgets are microcurrency: raw.goal_value (CBO daily/lifetime goal) and raw.spend_cap."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /api/v3/ad_accounts/{ad_account_id}/reports {data: {starts_at: date_fromT00:00:00Z, ends_at: date_toT23:00:00Z, breakdowns: [CAMPAIGN_ID, DATE], fields: [IMPRESSIONS, CLICKS, SPEND, CTR, CPC]}} (synchronous). spend is microcurrency (1,000,000 = one unit of the account currency). campaign_id is not applied as a filter: filter the rows. First page only."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /api/v3/campaigns/{campaign_id} {data: {configured_status: PAUSED|ACTIVE}}. Resuming restarts spending."
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "id": "autouncle_at",
+ "category": "automotive",
+ "label": "Autouncle",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autouncle.at",
+ "domain": "autouncle.at",
+ "country": "Austria",
+ "official_api": false,
+ "docs_url": "https://b2b.autouncle.com/en-gb/automotive-api",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key",
+  "access": "paid",
+  "capabilities": [
+   "get_valuation",
+   "search_listings"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). AutoUncle sells an enterprise valuation/comparables/search API (API key) via sales contact; no public docs or self-signup.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://b2b.autouncle.com/en-gb/automotive-api",
+   "https://b2b.autouncle.com/en-gb/automotive-api/banks-insurance"
+  ],
+  "unofficial": [
+   "Apify/Carapis AutoUncle scrapers"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): AutoUncle sells an enterprise valuation/comparables/search API (API key) via sales contact; no public docs or self-signup."
+}

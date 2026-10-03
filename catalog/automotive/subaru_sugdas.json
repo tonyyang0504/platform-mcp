@@ -1,0 +1,35 @@
+{
+ "id": "subaru_sugdas",
+ "category": "automotive",
+ "label": "Ucar",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://ucar.subaru.jp",
+ "domain": "ucar.subaru.jp",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Subaru Japan used-car site; no API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ucar.subaru.jp/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

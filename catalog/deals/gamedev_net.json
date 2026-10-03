@@ -1,0 +1,130 @@
+{
+ "id": "gamedev_net",
+ "category": "deals",
+ "label": "GameDev",
+ "lane": "human",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.gamedev.net/developers/mcp/",
+ "url": "https://www.gamedev.net/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Anonymous read-only MCP with published licence terms; posting stays manual.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "mcp"
+  ],
+  "auth": "none (anonymous, read-only)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "mcp"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "https://gamedev.net/mcp/ (official, anonymous, read-only)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (official anonymous read-only MCP over public content). Lane `assist` → **keep**; MCP for discovery. Confidence high.",
+  "base_urls": [
+   "https://gamedev.net/mcp/"
+  ],
+  "auth": [
+   "1. None (anonymous)."
+  ],
+  "endpoints": [
+   {
+    "call": "tool `search_site(query, content_types=[forum_topic, forum_post], order=relevance",
+    "purpose": "date)`",
+    "notes": "search"
+   },
+   {
+    "call": "tool result → topic URL",
+    "purpose": "details",
+    "notes": "fetch public page"
+   }
+  ],
+  "limits": " - Read-only; licence terms at https://www.gamedev.net/license.xml; replies need an account. - Anonymous read-only MCP with published licence terms; posting stays manual.",
+  "mcp_sdk": [
+   "https://r.jina.ai/https://www.gamedev.net/developers/mcp/"
+  ],
+  "sources": [
+   "https://gamedev.net/mcp/"
+  ]
+ },
+ "adapter_status": "official_mcp",
+ "reason": "GameDev.net publishes its own MCP server (https://www.gamedev.net/developers/mcp/, opened 2026-09-25): Streamable HTTP at https://gamedev.net/mcp/, anonymous and read-only (optional 'Authorization: Bearer gdnet_mcp_<key>' for GameDev Pro), with search_site (content_types e.g. forum_topic), get_thread, get_content and list_recent covering the forums incl. help-wanted threads. No separate REST reference exists; use the official MCP endpoint. Bulk retrieval needs a licence; replies need an account on the site."
+}

@@ -1,0 +1,304 @@
+{
+ "id": "temu",
+ "category": "ecommerce_channels",
+ "label": "Temu",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "eu",
+  "us"
+ ],
+ "docs_url": "https://partner-us.temu.com/documentation",
+ "url": "https://www.temu.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Temu seller account (local marketplace sellers on seller.temu.com / seller-eu.temu.com, cross-border on agentseller.temu.com); developer app (app_key / app_secret) on the Partner Platform, reviewed by Temu; seller authorises per store; initial 20 requests / s per app_key; regional gateways; sandbox not confirmed on the pages read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "api_key + seller authorisation (app_key + app_secret; access_token via manual / callback / in-app authorisation in Seller Center; MD5 sign over common params)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "promotions",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "community markdown mirror of the Partner API docs — https://github.com/opastorello/temu-api-docs (unofficial)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.app_key",
+  "secret",
+  "token",
+  "config.region"
+ ],
+ "rate_limits": "documented per endpoint (not readable from here)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the aud",
+  "base_urls": [],
+  "auth": [
+   "1. Register a developer app on the Partner Platform → app_key + app_secret (review).",
+   "2. Seller authorises in Seller Center: manual (copies the token), callback (code → token via the redirect_uri), or in-app (`/open-platform/client-manage/authorization?appKey=…&redirect_uri=…`).",
+   "3. Sign every call with MD5 over the common parameters + app_secret."
+  ],
+  "endpoints": [
+   {
+    "call": "bg.local.goods.add / bg.local.goods.edit (product family, 56 types)",
+    "purpose": "create / edit goods, SKUs, images, attributes",
+    "notes": "unofficial mirror names"
+   },
+   {
+    "call": "bg.local.goods.stock.edit · price types",
+    "purpose": "stock + price",
+    "notes": ""
+   },
+   {
+    "call": "bg.order.list.v2.get · bg.order.detail.v2.get (13 order types)",
+    "purpose": "orders",
+    "notes": ""
+   },
+   {
+    "call": "bg.logistics.shipment.create + tracking types (19 shipping types)",
+    "purpose": "ship with carrier + tracking",
+    "notes": ""
+   },
+   {
+    "call": "after-sales (12 types)",
+    "purpose": "returns / refunds / return labels",
+    "notes": ""
+   },
+   {
+    "call": "promotions (6) · compliance (7) · ads (8)",
+    "purpose": "campaign enrolment, certifications, ads",
+    "notes": ""
+   }
+  ],
+  "limits": " Initial 20 requests per second per app_key (search snippet of the docs); per-type limits in the reference. - Partner Platform terms + data security policy; app review. - Seller authorisation per store; regional gateways must match the seller's region.",
+  "mcp_sdk": [
+   "SDK: community markdown mirror of the Partner API docs — https://github.com/opastorello/temu-api-docs (unofficial)"
+  ],
+  "sources": [
+   "https://partner-us.temu.com/documentation",
+   "https://r.jina.ai/https://partner-us.temu.com/documentation?menu_code=38e79b35d2cb463d85619c1c786dd303",
+   "https://github.com/opastorello/temu-api-docs"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi-b-{region}.temu.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "errorMsg"
+  },
+  "config_fields": [
+   {
+    "name": "region",
+    "required": true,
+    "help": "Gateway of the seller's store: us (United States), eu (Germany, Italy, France, Spain, UK, …) or global (Mexico, Japan, …) → https://openapi-b-{region}.temu.com/openapi/router ('Endpoints and Request Method', Developer Guide)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "app_key of your Temu Partner Platform app (issued after app review)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "app_secret of the same app; signs every call: upper(MD5(app_secret + sorted key+value of all body fields + app_secret)). Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "The store's access_token, issued when the seller authorises your app in Seller Center (manual authorisation copies it; 'can be obtained from Seller Center', Common Parameters). Check its expiry with `me` (result.expiredTime)."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_body}{@app_secret}",
+    "body_field": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.open.accesstoken.info.get",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "data_type": "=JSON",
+     "timestamp": "now_epoch"
+    },
+    "docs": "https://partner-us.temu.com/documentation?menu_code=93de550b56c8417caccb88824be3e614",
+    "note": "bg.open.accesstoken.info.get: the token's mallId, mallType (1 semi-managed, 100 local), expiredTime (epoch seconds) and apiScopeList (the APIs this token may call)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.order.list.v2.get",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "data_type": "=JSON",
+     "timestamp": "now_epoch",
+     "pageNumber": "page",
+     "pageSize": "limit",
+     "parentOrderStatus": "map:status:all=json:0,pending=json:1,unshipped=json:2,canceled=json:3,shipped=json:4,received=json:5",
+     "createAfter": "epoch:since",
+     "createBefore": "epoch:datefmt:2100-01-01:since"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "result.pageItems",
+     "key": "orders",
+     "total": "result.totalItemNum",
+     "fields": {
+      "id": "parentOrderMap.parentOrderSn",
+      "status": "parentOrderMap.parentOrderStatus",
+      "created_at": "parentOrderMap.parentOrderTime",
+      "ship_by": "parentOrderMap.expectShipLatestTime",
+      "region_id": "parentOrderMap.regionId"
+     }
+    },
+    "docs": "https://partner-us.temu.com/documentation?menu_code=554fd46b45ee49269cbdd6d4008a5dc1",
+    "note": "bg.order.list.v2.get: parent orders (PO-…) newest first, each with orderList[] (orderSn, goodsId, skuId, quantity, orderStatus) in `raw`. `status`: pending, unshipped (awaiting shipment), canceled, shipped, received or all. `since` (ISO date/datetime) filters by creation time (createAfter; createBefore is set far in the future because the API needs both). Parent status codes: 1 pending, 2 awaiting shipment, 3 canceled, 4 shipped, 5 received, 41 partially shipped, 51 partially received. `created_at` is epoch seconds; amounts come from bg.order.amount.query (not mapped)."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.local.goods.stock.edit",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "data_type": "=JSON",
+     "timestamp": "now_epoch",
+     "goodsId": "int:listing_id",
+     "skuStockTargetList.0.skuId": "int:sku",
+     "skuStockTargetList.0.stockTarget": "quantity"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "status": "msg",
+      "ok": "operateResult"
+     }
+    },
+    "docs": "https://partner-us.temu.com/documentation?menu_code=429ffa60b265451d9421cd5a2004eeef",
+    "note": "bg.local.goods.stock.edit (local-mall stores): sets SKU `sku` (Temu skuId) of goods `listing_id` (goodsId) to exactly `quantity` (skuStockTargetList). Both ids are required and numeric; per-SKU results are in raw.skuStockEditStatusInfoList."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=temu.local.goods.delete",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "data_type": "=JSON",
+     "timestamp": "now_epoch",
+     "goodsId": "int:listing_id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "status": "=deleted",
+      "deleted": "success",
+      "error": "errorMsg"
+     }
+    },
+    "docs": "https://partner-us.temu.com/documentation?menu_code=97853cce1f5140e0aa302b5e530a8c99",
+    "note": "temu.local.goods.delete: deletes goods `listing_id` (goodsId). Check `deleted` (result.success) and `error`."
+   }
+  },
+  "not_offered": {
+   "create_listing": "bg.local.goods.add / temu.local.goods.v3.add (https://partner-us.temu.com/documentation?menu_code=645953235e964a23a0320b249ba865af) require a leaf category id, category-specific properties, a shipping template and SKU spec ids obtained from bg.local.goods.cats.get / bg.local.goods.spec.id.get; the vocabulary's create_listing has none of these inputs.",
+   "update_listing": "Prices change only through bg.local.goods.priceorder.change.sku.price, which needs per-SKU 'skuId' (required) and 'newSupplierPrice {amount, currency}' and 'Support merchants within the white list' (https://partner-us.temu.com/documentation?menu_code=dbf95d09e514491f8685013824cecc76); update_listing has no SKU or currency input.",
+   "mark_shipped": "bg.logistics.shipment.v2.confirm (https://partner-us.temu.com/documentation?menu_code=70cca1a3690044eaae4a28de6de76bb1) requires, per package, 'selfShippingWarehouseId' (required) and 'orderSendInfoList' with each child 'orderSn' and 'quantity' (required) besides the carrierId and trackingNumber; mark_shipped only has order_id, carrier and tracking_number."
+  },
+  "terms": "Temu Partner Platform: every call is POST https://openapi-b-{us|eu|global}.temu.com/openapi/router with the common parameters (type, app_key, access_token, data_type JSON, timestamp in seconds within ±300 s) and the API's own parameters in one JSON body, signed with sign = upper(MD5(app_secret + sorted key+value + app_secret)) inserted into that body ('Signature Method for API request', https://partner-us.temu.com/documentation?menu_code=4a821c90d06442a09e061b0d4316fbf3)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, region; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

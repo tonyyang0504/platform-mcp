@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "circle-mcp",
+ "display_name": "Circle MCP",
+ "version": "0.1.0",
+ "description": "Circle (marketplaces): me, list_sales, list_refunds, refund. Every tool maps to a documented endpoin",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "circle"
+   ],
+   "env": {
+    "PLATFORM_MCP_CIRCLE_ADMIN_TOKEN": "${user_config.platform_mcp_circle_admin_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_circle_admin_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CIRCLE_ADMIN_TOKEN",
+   "description": "Circle Admin API v2 token (community Settings > Developers > Tokens, type Admin V2; Business plan or above) sent as Authorization: Bearer per the Admin API quick start (the Swagger spec documents the same header as 'Token <token>').",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/admin/v2/community returns the community the token belongs to: {id, name, slug, locale, created_at, is_private, community_setting{...}, ...}."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /api/admin/v2/community_member_charges?page&per_page (max 100)&paywall_ids=product_id&created_at_gte=since (ISO 8601), newest first (default sort created_at desc): {page, per_page, has_next_page, count, page_count, records[{id, processor_id, status (paid|refunded|partial_refunded|...), refundable, amount, amount_refunded, currency, platform, payment_method_type, created_at, paywall_id, paywall_name, paywall_price_type, community_member_id, community_member_name, community_member_email}]}. `amount` is an INTEGER in currency subunits (1000 = 10.00 USD). `refunded` is not a boolean field (see status / raw.amount_refunded)."
+  },
+  {
+   "name": "list_refunds",
+   "description": "Circle has no separate refund object: this lists the charges with status refunded or partial_refunded (GET /api/admin/v2/community_member_charges?status=refunded,partial_refunded&page&per_page&created_at_gte=since, newest first). `id`/`sale_id` are the charge id, `amount` is amount_refunded (INTEGER in currency subunits) and `created_at` is the charge date, not the refund date; no reason is returned."
+  },
+  {
+   "name": "refund",
+   "description": "DESTRUCTIVE: POST /api/admin/v2/community_member_charges/{id}/refund {amount, reason_details} refunds the charge in FULL when `amount` is omitted, or partially by `amount`, which is sent as an INTEGER in currency subunits (200 = 2.00 USD). `reason` is REQUIRED by Circle (reason_details, max 255 chars; missing → 422 upstream_error). Returns the updated charge: `amount` is amount_refunded and `status` becomes refunded or partial_refunded."
+  }
+ ]
+}

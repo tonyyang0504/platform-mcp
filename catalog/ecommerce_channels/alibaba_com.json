@@ -1,0 +1,293 @@
+{
+ "id": "alibaba_com",
+ "category": "ecommerce_channels",
+ "label": "Alibaba.com",
+ "lane": "assist",
+ "kind": "b2b",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://openapi.alibaba.com/doc/doc.htm",
+ "url": "https://www.alibaba.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Seller must be a paid Gold Supplier (GGS) member; the developer registers as a GGS developer and each app is reviewed by Alibaba before API permissions are granted; API use free in beta; no numeric rate limit published — calls are counted per developer account with e-mail warnings before suspension; no sandbox mentioned.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (app key + app secret, seller authorises the app → code → access_token + refresh_token via /auth/token/create)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders",
+   "fulfilment_tracking",
+   "inventory_sync",
+   "price_sync"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "official call examples for Java / PHP / .NET / cURL / Python / C / NodeJS per endpoint (developer.alibaba.com article 118416)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.app_key",
+  "secret",
+  "token",
+  "refresh",
+  "config.seller_id"
+ ],
+ "rate_limits": "\"up to 10 million calls per day\" platform-wide claim (developer.alibaba.com, via search)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — official getting-started + overview pages opened (one through r.jina.ai); the API reference is JS-render",
+  "base_urls": [],
+  "auth": [
+   "1. Register an Alibaba.com account and sign up as a GGS developer (Gold Supplier membership is paid).",
+   "2. Register an application in a category; Alibaba admins review it; the app receives an App Key + App Secret ('the unique identity of your application on the Alibaba.com Open Platform').",
+   "3. Request the API permissions the app needs.",
+   "4. The supplier (seller) authorises the app; exchange the `code` at `/auth/token/create` for `access_token`, `refresh_token`, `expires_in`, `refresh_expires_in`, `seller_id`, `user_id`, `country`.",
+   "5. Every call carries the access token (refresh when `refresh_expires_in` > 0)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET/POST /auth/token/create",
+    "purpose": "GenerateAccessToken",
+    "notes": "`code` → access_token, refresh_token, expires_in, account platform, country, seller_id, user_id"
+   },
+   {
+    "call": "Product Operations (guide)",
+    "purpose": "create / update product listings programmatically",
+    "notes": "documented as a step-by-step guide; individual method names not readable in this pass"
+   },
+   {
+    "call": "Order information sync (overview)",
+    "purpose": "orders for ERP integration",
+    "notes": "'more than 20 endpoints' covering product + order information"
+   }
+  ],
+  "limits": " No numeric limit published; Alibaba counts the total calls of all API keys on the developer account and e-mails before suspending excess usage (developer.alibaba.com overview). - Paid GGS (Gold Supplier) membership is a precondition for both the seller and the developer registration. - Every application is reviewed by Alibaba admins before API permissions are granted (access = apply). - API is free in the beta described by the overview; commercial terms otherwise those of the GGS membership.",
+  "mcp_sdk": [
+   "SDK: official call examples for Java / PHP / .NET / cURL / Python / C / NodeJS per endpoint (developer.alibaba.com article 118416)"
+  ],
+  "sources": [
+   "https://openapi.alibaba.com/doc/doc.htm",
+   "https://r.jina.ai/https://openapi.alibaba.com/doc/api.htm",
+   "https://r.jina.ai/https://openapi.alibaba.com/doc/doc.htm#/?docId=118",
+   "https://developer.alibaba.com/docs/doc.htm?treeId=684&articleId=118416&docType=1"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi-api.alibaba.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key",
+    "access_token": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "App Key of your Alibaba.com Open Platform app (https://openapi.alibaba.com/ App Console; admin-reviewed)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API path without '/rest' (e.g. /alibaba/order/get) + the parameters sorted by name as name+value (docId=61). Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "access_token from the authorisation-code exchange /auth/token/create (https://openapi.alibaba.com/doc/api.htm#/api?cid=4&path=/auth/token/create). It expires after expires_in seconds; renew it with /auth/token/refresh (a signed call) and update this value — the runtime does not refresh it."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "case": "upper",
+    "path_strip": "/rest",
+    "payload": "{path}{sorted_params}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "params": {
+     "sign_method": "sha256"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/rest/alibaba/order/list",
+    "fixed_params": {
+     "role": "seller",
+     "page_size": "1"
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/alibaba/order/list&methodType=GET/POST",
+    "note": "alibaba order list (role=seller, one row): verifies the app signature and the seller's access_token."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/rest/alibaba/order/list",
+    "fixed_params": {
+     "role": "seller"
+    },
+    "params": {
+     "start_page": "page0",
+     "page_size": "limit",
+     "status": "status",
+     "create_date_start": "jsonstr:{\"date_timestamp\": {epoch_ms:since}}"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "value.order_list",
+     "key": "orders",
+     "total": "value.total_count",
+     "fields": {
+      "id": "trade_id",
+      "status": "trade_status",
+      "created_at": "create_date.timestamp",
+      "modified_at": "modify_date.timestamp"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=8&path=/alibaba/order/list&methodType=GET/POST",
+    "note": "alibaba order list with role=seller: the GGS seller's orders (trade_id, trade_status, create/modify timestamps in ms). `status` is an Alibaba trade status (e.g. unpay, undeliver, delivering, completed; list at docId=131); `since` filters by creation time. Amounts and products: /alibaba/order/get (not mapped for channels)."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/rest/icbu/product/edit-inventory",
+    "params": {
+     "product_id": "int:listing_id",
+     "inventory": "int:quantity"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "status": "=updated",
+      "success": "success",
+      "error": "message"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=11&path=/icbu/product/edit-inventory&methodType=GET/POST",
+    "note": "Edit Product Inventory: sets the PRODUCT-level real-time inventory of `listing_id` (product_id). Check `success`/`error` (result.success, result.message); SKU-level stock (sku_inventory) is not mapped."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/rest/icbu/product/edit-price",
+    "params": {
+     "product_id": "int:listing_id",
+     "price": "jsonstr:{\"price_type\": \"TIERED\", \"tiered_price\": [{\"quantity\": 1, \"price\": {str:price}}], \"currency\": \"USD\"}"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "status": "=updated",
+      "success": "success",
+      "error": "message"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=11&path=/icbu/product/edit-price&methodType=GET/POST",
+    "note": "Edit Product Price: sets a single USD tier (from 1 unit) as the product-level price of `listing_id` ('Currency, USD only'). Tiered, range and SKU prices beyond that are not mapped; title/description edits are not mapped."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/rest/alibaba/icbu/product/batch/update/status",
+    "params": {
+     "product_id_list": "jsonstr:[{int:listing_id}]",
+     "action": "=offline"
+    },
+    "result": {
+     "fields": {
+      "status": "=offline",
+      "success": "success",
+      "error": "message"
+     }
+    },
+    "docs": "https://openapi.alibaba.com/doc/api.htm#/api?cid=11&path=/alibaba/icbu/product/batch/update/status&methodType=GET/POST",
+    "note": "Change listing status (action=offline): takes product `listing_id` offline; `success` is false with per-product errors otherwise."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Products are published through /icbu/product/schema/add, which takes the category's JSON schema document ('/alibaba/icbu/product/schema/get' first, https://openapi.alibaba.com/doc/api.htm#/api?cid=1&path=/icbu/product/schema/add&methodType=GET/POST); the vocabulary's title/price/quantity inputs cannot fill a category schema.",
+   "mark_shipped": "Ggs one Order Shipping (/alibaba/v2/order/shipping, https://openapi.alibaba.com/doc/api.htm#/api?cid=12&path=/alibaba/v2/order/shipping&methodType=GET/POST) requires 'logistics_type' (Required, documented only as 'Logistics Type', no values listed) and a 'service_provider' code from alibaba.seller.order.shipping.channels; a valid request cannot be built from order_id/carrier/tracking_number."
+  },
+  "terms": "Alibaba.com Open Platform: https://openapi-api.alibaba.com/rest{api_path}?app_key&timestamp(ms)&sign_method=sha256&access_token&…&sign, where sign = uppercase hex HMAC-SHA256(app_secret, api_path + sorted name+value) and api_path excludes '/rest' ('HTTP request', https://openapi.alibaba.com/doc/doc.htm#/?docId=61). Object and array parameters are sent as JSON strings. Seller APIs are limited to Global Gold Supplier (GGS) sellers."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

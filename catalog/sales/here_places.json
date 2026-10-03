@@ -1,0 +1,36 @@
+{
+ "id": "here_places",
+ "category": "sales",
+ "label": "HERE Geocoding & Search",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.here.com/docs/bundle/geocoding-and-search-api-v7-api-reference/page/index.html",
+ "url": "https://www.here.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Discover / Browse endpoints on the user's HERE API key (freemium).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

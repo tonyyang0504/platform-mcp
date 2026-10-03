@@ -1,0 +1,39 @@
+{
+ "id": "dk_cvr",
+ "category": "sales",
+ "label": "CVR",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "dk"
+ ],
+ "docs_url": "https://datacvr.virk.dk/artikel/system-til-system-adgang-til-cvr-data",
+ "url": "https://datacvr.virk.dk/",
+ "verified_at": "2026-09-25",
+ "terms_note": "The system-to-system Elasticsearch access is free with a signed agreement (would be platform-key), but both the portal and the docs page answered a Cloudflare challenge this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "unconfirmed_reason": "UNCONFIRMED — 'Just a moment' on / and the system-access article (curl + WebFetch)",
+ "adapter_status": "unconfirmed",
+ "reason": "The documentation page https://datacvr.virk.dk/artikel/system-til-system-adgang-til-cvr-data still answers a Cloudflare challenge / HTTP 403 (2026-09-25, direct and through a rendering proxy), so the contract cannot be confirmed. The endpoint named in Erhvervsstyrelsen's guide, POST http://distribution.virk.dk/cvr-permanent/virksomhed/_search (Elasticsearch, HTTP Basic from the signed agreement), answers only over plain HTTP (401 on http://, no TLS listener on https:// on 2026-09-25); served adapters require an https base_url. The nested bool/match query body is now expressible with dotted body keys. Missing: an HTTPS endpoint (or plain-HTTP transport) and an openable documentation page."
+}

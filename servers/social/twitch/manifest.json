@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "twitch-social-mcp",
+ "display_name": "Twitch MCP",
+ "version": "0.1.0",
+ "description": "Twitch (social): me, publish_text, reply_comment, delete. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/twitch"
+   ],
+   "env": {
+    "PLATFORM_MCP_TWITCH_CLIENT_ID": "${user_config.platform_mcp_twitch_client_id}",
+    "PLATFORM_MCP_TWITCH_CLIENT_SECRET": "${user_config.platform_mcp_twitch_client_secret}",
+    "PLATFORM_MCP_TWITCH_REFRESH_TOKEN": "${user_config.platform_mcp_twitch_refresh_token}",
+    "PLATFORM_MCP_TWITCH_BROADCASTER_ID": "${user_config.platform_mcp_twitch_broadcaster_id}",
+    "PLATFORM_MCP_TWITCH_SENDER_ID": "${user_config.platform_mcp_twitch_sender_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_twitch_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_CLIENT_ID",
+   "description": "Twitch app client id (dev.twitch.tv console); also sent as the Client-Id header required on every Helix call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_CLIENT_SECRET",
+   "description": "Twitch app client secret (form body of the refresh request to https://id.twitch.tv/oauth2/token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_REFRESH_TOKEN",
+   "description": "User refresh token from the authorization-code flow with scopes user:write:chat and moderator:manage:chat_messages. 'Because refresh tokens may change, your app should safely store the new refresh token': the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/twitch.json (mode 0600).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twitch_broadcaster_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_BROADCASTER_ID",
+   "description": "User id of the channel whose chat is used (GET /helix/users?login=…).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_twitch_sender_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWITCH_SENDER_ID",
+   "description": "User id of the token's user (GET /helix/users with the token); sender of messages and moderator for delete.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Get Users without ids returns the token's user (account.data[0]: id, login, display_name)."
+  },
+  {
+   "name": "publish_text",
+   "description": "Sends a chat message (max 500 characters) to config broadcaster_id's chat. A message that fails AutoMod or chat settings answers 200 with raw.is_sent=false and raw.drop_reason — check is_sent."
+  },
+  {
+   "name": "reply_comment",
+   "description": "Chat reply: `comment_id` is the chat message id being replied to (reply_parent_message_id). Check raw.is_sent."
+  },
+  {
+   "name": "delete",
+   "description": "Deletes ONE chat message (`post_id` = message id; created within the last 6 hours, not the broadcaster's or another moderator's). message_id is always sent: without it Twitch 'removes all messages in the broadcaster's chat room'."
+  }
+ ]
+}

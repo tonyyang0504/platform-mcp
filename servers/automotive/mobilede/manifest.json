@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "mobilede-mcp",
+ "display_name": "mobile.de MCP",
+ "version": "0.1.0",
+ "description": "mobile.de (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mobilede"
+   ],
+   "env": {
+    "PLATFORM_MCP_MOBILEDE_USERNAME": "${user_config.platform_mcp_mobilede_username}",
+    "PLATFORM_MCP_MOBILEDE_PASSWORD": "${user_config.platform_mcp_mobilede_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mobilede_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MOBILEDE_USERNAME",
+   "description": "Username of a mobile.de API account (Search-API / Ad-Integration access is activated by mobile.de customer support); HTTP Basic.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mobilede_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MOBILEDE_PASSWORD",
+   "description": "Password of that API account (HTTP Basic).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET https://services.mobile.de/search-api/search (Accept: application/vnd.de.mobile.api+json). make is mobile.de's make key (e.g. AUDI, BMW → classification=refdata/classes/Car/makes/<make>); model is matched as modelDescription text; year_min/year_max filter the first registration (YYYY-01 … YYYY-12); location is the seller's ISO-3166 country code (e.g. DE, AT). mobile.de rejects searches carrying only numeric filters, so give make, model, condition or location. At most 2,000 ads are reachable per query (page.size ≤ 100). `query` is not used (no free-text parameter). price.consumerPriceGross (a decimal string, EUR) and firstRegistration (YYYYMM) stay in raw."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET https://services.mobile.de/search-api/ad/{ad-key} (the mobileAdId): the full ad, richer than a search row; price.consumerPriceGross (decimal string, EUR), firstRegistration, seller and images stay in raw. 404 for a wrong ad-key."
+  }
+ ]
+}

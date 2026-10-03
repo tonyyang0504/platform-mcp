@@ -1,0 +1,41 @@
+{
+ "id": "alo",
+ "category": "automotive",
+ "label": "Alo",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.alo.bg",
+ "domain": "alo.bg",
+ "country": "Bulgaria",
+ "official_api": false,
+ "docs_url": "https://www.alo.bg/import_specification.php?menu=home",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "username + api_key (import status API)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). alo.bg publishes a JSON import specification for bulk ad upload plus an import-status endpoint (username+api_key); no public search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.alo.bg/import_specification.php?menu=home"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): alo.bg publishes a JSON import specification for bulk ad upload plus an import-status endpoint (username+api_key); no public search API. No request/response API to serve."
+}

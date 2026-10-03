@@ -1,0 +1,35 @@
+{
+ "id": "autoexpert",
+ "category": "automotive",
+ "label": "Autoexpert",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autoexpert.ca",
+ "domain": "autoexpert.ca",
+ "country": "Canada",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Canada cars_marketplace with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autoexpert.ca/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

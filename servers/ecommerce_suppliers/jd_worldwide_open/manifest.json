@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "jd_worldwide_open-mcp",
+ "display_name": "JD Worldwide (京东全球购) + JD Open Platform (宙斯) MCP",
+ "version": "0.1.0",
+ "description": "JD Worldwide (京东全球购) + JD Open Platform (宙斯) (ecommerce suppliers): me, list_products, get_product, ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jd_worldwide_open"
+   ],
+   "env": {
+    "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_KEY": "${user_config.platform_mcp_jd_worldwide_open_app_key}",
+    "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_SECRET": "${user_config.platform_mcp_jd_worldwide_open_app_secret}",
+    "PLATFORM_MCP_JD_WORLDWIDE_OPEN_ACCESS_TOKEN": "${user_config.platform_mcp_jd_worldwide_open_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_jd_worldwide_open_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_KEY",
+   "description": "app_key of your JD Open Platform (宙斯/JOS) app, https://jos.jd.com/.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_jd_worldwide_open_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_SECRET",
+   "description": "appSecret of the same app; signs every call: upper(MD5(appSecret + sorted name+value of all parameters + appSecret)). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_jd_worldwide_open_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_ACCESS_TOKEN",
+   "description": "The merchant's access_token from the JOS OAuth authorisation (https://jos.jd.com/commondoc?listId=32); renew it before it expires and update this value — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "jingdong.seller.vender.info.get: the authorised merchant's vender_id, shop_id and shop_name."
+  },
+  {
+   "name": "list_products",
+   "description": "jingdong.ware.read.searchWare4Valid: title keyword search over the AUTHORISED MERCHANT's own wares (JD's open platform is seller-side; 'not supported for JD self-operated stores'). `query` is required (the whole parameter set is omitted without it and JD returns its default first page); page size at most 50. `image_url` is a JD image path (prefix https://img10.360buyimg.com/n0/). Wares are SPUs; SKUs come from jingdong.sku.read.searchSkuList (not mapped)."
+  },
+  {
+   "name": "get_product",
+   "description": "jingdong.ware.read.findWareById: one ware of the authorised merchant by wareId."
+  },
+  {
+   "name": "get_order",
+   "description": "jingdong.pop.order.get: an order RECEIVED by the authorised merchant. orderState: NOT_PAY, WAIT_SELLER_STOCK_OUT (等待出库), WAIT_GOODS_RECEIVE_CONFIRM, FINISHED_L, TRADE_CANCELED, …; `total` is orderPayment (amount paid, CNY); times are Beijing time; itemInfoList in `raw`."
+  }
+ ]
+}

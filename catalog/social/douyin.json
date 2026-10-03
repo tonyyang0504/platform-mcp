@@ -1,0 +1,180 @@
+{
+ "id": "douyin",
+ "category": "social",
+ "label": "Douyin",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://developer.open-douyin.com/",
+ "url": "https://www.douyin.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer registration (企业 or 个人) + per-capability application (能力申请) + app review on the Douyin Open Platform; enterprise qualification for several scopes; historic cap of a fixed number of API publishes per user per app per day; automation of personal accounts outside the Open Platform breaks the 抖音 user agreement.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "analytics",
+   "search",
+   "upload_media(image)",
+   "posting_task"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 1000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (Douyin has no text-only post; `text` is the video caption, ≤ 1,000 chars)",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/video-management/douyin/video-create"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST api/douyin/v1/video/create_image_text/ (图文) — existence not verified this pass",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST api/douyin/v1/video/upload_video/ → POST api/douyin/v1/video/create_video/?open_id=",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/video-management/douyin/video-create"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET item/comment/list/ , GET item/comment/reply/list/",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST item/comment/reply/?open_id= {item_id, comment_id?, content}",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no mention feed in the client; @-mentions not modelled)",
+   "docs": "—"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "私信群聊 section of the OpenAPI tree (path unverified)",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "same 私信群聊 section",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "— (no confirmed delete endpoint)",
+   "docs": "—"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET data/external/item/<base|like|comment|play|share>/?item_id=&date_type=",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET data/external/user/<item|fans|like|comment|share|profile>/?date_type=7|15|30",
+   "docs": "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [
+   "https://open.douyin.com/"
+  ],
+  "auth": [
+   "1. Register as a developer (企业 preferred; several capabilities need enterprise qualification), create a 移动/网站",
+   "2. OAuth authorize with approved scopes (`user_info`, `video.data.bind`, `video.list.bind`, `item.comment`,"
+  ],
+  "endpoints": [
+   {
+    "call": "Endpoint",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "/oauth/access_token/`, `/oauth/renew_refresh_token/",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/douyin/v1/video/video_data/` (`video.data.bind`), `/video/video_list/",
+    "purpose": "own videos, counts",
+    "notes": ""
+   },
+   {
+    "call": "创建投稿任务` → `绑定视频` → `核销投稿任务` → `查询视频基础信息",
+    "purpose": "the creator publishes IN the Douyin app; the app binds the resulting video to a campaign task",
+    "notes": ""
+   },
+   {
+    "call": "抖音视频搜索, 抖音图文搜索",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "粉丝列表 / 粉丝数据 / 粉丝来源 / 粉丝喜好 / 粉丝热评",
+    "purpose": "analytics",
+    "notes": ""
+   },
+   {
+    "call": "查询视频分享结果及数据` (share_id from the Share SDK)",
+    "purpose": "share-to-Douyin from an app, user completes in-app",
+    "notes": ""
+   },
+   {
+    "call": "图片上传, 留资卡片, 小程序引导卡片",
+    "purpose": "enterprise",
+    "notes": ""
+   }
+  ],
+  "limits": " - Historic publish cap: a fixed number of API publishes per user per app per day (from the old doc, now 404). - Douyin Open Platform developer agreement; enterprise qualification for anchors / several scopes; personal account automation outside the platform violates the 抖音用户协议.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/list",
+   "https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/video-management/douyin/create-video/video-upload/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the current OpenAPI list (https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/list) still has no server-side publish, comment or delete call - its video entries are 查询视频分享结果及数据 (share_id for the client Share SDK; the result arrives by webhook, https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/video-management/douyin/search-video/video-share-result), 查询视频基础信息, iframe-code helpers, 抖音视频搜索 and mini-program/promotion task calls; posting goes through '调用分享 SDK' after POST https://open.douyin.com/share-id/. Token refresh also needs a client_key form field (https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/account-permission/refresh-access-token). No social verb maps to a server call."
+}

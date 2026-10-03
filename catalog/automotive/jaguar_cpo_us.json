@@ -1,0 +1,35 @@
+{
+ "id": "jaguar_cpo_us",
+ "category": "automotive",
+ "label": "Inventory",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://inventory.jaguarusa.com",
+ "domain": "inventory.jaguarusa.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). NetDirector-hosted JLR approved inventory; host returned 'Site is not configured' in render; no public API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://inventory.jaguarusa.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,222 @@
+{
+ "id": "awin",
+ "category": "ads",
+ "label": "Awin",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global",
+  "gb",
+  "de",
+  "us",
+  "au",
+  "br"
+ ],
+ "docs_url": "https://help.awin.com/developers/apidocs",
+ "url": "https://www.awin.com/us/advertisers",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access is included with Accelerate and Advanced plans; the Access plan is UI-only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (Awin API token from the advertiser / publisher UI)",
+  "access": "signup",
+  "capabilities": [
+   "reports",
+   "conversions_upload",
+   "account_management"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (advertiser APIs for transactions / reports / tracking; affiliate programme, not campaign-bid advertising) Confidence: **medium**.",
+  "base_urls": [
+   "https://api.awin.com/advertisers/{advertiserId}/…"
+  ],
+  "auth": [
+   "1. Awin advertiser account → API credentials in the UI.",
+   "2. Bearer token on `api.awin.com`.",
+   "3. Tracking suite (pixel / S2S) per the tracking overview."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /advertisers/{id}/transactions/",
+    "purpose": "transactions / commissions",
+    "notes": "startDate, endDate, status"
+   },
+   {
+    "call": "GET /advertisers/{id}/reports/…",
+    "purpose": "reports",
+    "notes": "dates, region"
+   },
+   {
+    "call": "S2S conversion tracking",
+    "purpose": "conversions",
+    "notes": "advertiser id, order ref, amount"
+   },
+   {
+    "call": "campaigns / bids / budgets",
+    "purpose": "not applicable (affiliate)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Awin API terms; setup fee + commissions; rate limits not read.",
+  "mcp_sdk": [
+   "Zapier integration (official)."
+  ],
+  "sources": [
+   "https://developer.awin.com/",
+   "https://help.awin.com/developers/apidocs"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.awin.com",
+  "rate_per_second": 0.3,
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Personal Awin API token (https://ui.awin.com/awin-api > 'Show my API token'), sent as `Authorization: Bearer`. It is user-level: it reaches every advertiser account the user has at least viewer access to. Advertiser API access requires an Accelerate or Advanced plan."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/accounts",
+    "docs": "https://help.awin.com/apidocs/returns-information-about-accounts-for-a-given-user",
+    "note": "GET /accounts: the user behind the token and the publisher/advertiser accounts it can access."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/accounts",
+    "fixed_params": {
+     "type": "advertiser"
+    },
+    "result": {
+     "items": "accounts",
+     "key": "accounts",
+     "fields": {
+      "id": "accountId",
+      "name": "accountName"
+     }
+    },
+    "docs": "https://help.awin.com/apidocs/returns-information-about-accounts-for-a-given-user",
+    "note": "GET /accounts?type=advertiser: advertiser programmes the token's user can access (accountId, accountName = programme name, accountType, userRole). `id` is the advertiserId the report takes as account_id. No currency on this record."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/advertisers/{account_id}/reports/publisher",
+    "params": {
+     "startDate": "date:date_from",
+     "endDate": "date:date_to"
+    },
+    "fixed_params": {
+     "timezone": "UTC",
+     "dateType": "transaction"
+    },
+    "result": {
+     "items": "$",
+     "key": "rows",
+     "fields": {
+      "publisher_id": "publisherId",
+      "publisher": "publisherName",
+      "currency": "currency",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "transactions": "totalNo",
+      "sales": "totalValue",
+      "spend": "totalComm"
+     }
+    },
+    "docs": "https://help.awin.com/apidocs/get-publisher-performance-report",
+    "note": "GET /advertisers/{advertiserId}/reports/publisher?startDate&endDate&timezone=UTC&dateType=transaction: impressions, clicks and transactions per publisher over the window (publishers without activity are omitted). `spend` is totalComm (commission of approved + pending + bonus transactions; the Awin override is not included); pending/confirmed/declined splits are in raw. Awin has no campaigns, so `campaign_id` is not applied."
+   }
+  },
+  "not_offered": {
+   "list_campaigns": "Awin programmes have no campaign objects; the only 'campaign' is a free-text click parameter (&campaign=) aggregated by GET /advertisers/{advertiserId}/reports/campaign (https://help.awin.com/apidocs/get-campaign-data-for-advertiser-report), which is a report, not a list of campaigns with ids.",
+   "update_budget": "No budget endpoint: the advertiser API covers transactions, performance reports, publishers, commission groups, offers, product feeds and conversions (https://help.awin.com/apidocs/for-advertisers); Awin is pay-per-commission.",
+   "pause_resume": "No programme or campaign status endpoint in the advertiser API (https://help.awin.com/apidocs/for-advertisers)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.awin.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "id": "carspot",
+ "category": "automotive",
+ "label": "Car Spot",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://car-spot.io",
+ "domain": "car-spot.io",
+ "country": "Malaysia",
+ "official_api": true,
+ "docs_url": "https://car-spot.io/mcp",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "mcp",
+   "rest"
+  ],
+  "auth": "OAuth 2.1 + PKCE (dynamic client registration) or in-conversation email code",
+  "access": "open",
+  "capabilities": [
+   "create_listing_draft",
+   "decode_registration",
+   "vehicle_specs"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). Car Spot publishes an official remote MCP server (streamable HTTP at api.car-spot.io/mcp) for creating verified private-seller listing drafts; market/registration/vehicle lookups work unauthenticated; no listing search tool.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://api.car-spot.io/mcp"
+  ],
+  "sources": [
+   "https://car-spot.io/mcp",
+   "https://car-spot.io/mcp.md",
+   "https://car-spot.io/us/guides/next-generation-vehicle-data-api"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [
+  {
+   "name": "Car Spot Listings MCP",
+   "url": "https://api.car-spot.io/mcp",
+   "transport": "http",
+   "note": "Official remote MCP (streamable HTTP; OAuth 2.1 + PKCE with dynamic client registration, or an in-conversation email code); creates verified private-seller listing drafts; market/registration/vehicle lookups work unauthenticated; docs https://car-spot.io/mcp"
+  }
+ ],
+ "adapter_status": "official_mcp",
+ "reason": "Car Spot's own remote MCP server (https://api.car-spot.io/mcp, docs https://car-spot.io/mcp, read 2026-09-25): listing drafts for private sellers plus market/registration/vehicle lookups; no listing search and no separate public REST reference. Pointer entry, no generated server.",
+ "official_mcp_url": "https://api.car-spot.io/mcp"
+}

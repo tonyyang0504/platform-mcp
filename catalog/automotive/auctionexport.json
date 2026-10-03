@@ -1,0 +1,36 @@
+{
+ "id": "auctionexport",
+ "category": "automotive",
+ "label": "Auctionexport",
+ "vertical": "auction",
+ "lane": "scrape",
+ "url": "https://www.auctionexport.com",
+ "domain": "auctionexport.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). docs.auctionexport.com returns 403; no public API documentation. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.auctionexport.com",
+   "https://www.auctionexport.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

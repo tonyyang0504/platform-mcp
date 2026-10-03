@@ -1,0 +1,122 @@
+{
+ "id": "tenders_ge",
+ "category": "deals",
+ "label": "Tenders",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "ge"
+ ],
+ "docs_url": "https://api.tenders.ge/",
+ "url": "https://tenders.ge/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Georgian tender aggregator (subscription); API undocumented publicly.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api (Tenders.ge API v3.2 — access process not published)",
+  "access": "apply",
+  "capabilities": [
+   "search"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (API v3.2 root live, docs not public). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [
+   "https://api.tenders.ge/"
+  ],
+  "auth": [
+   "1. Contact Tenders.ge for API access."
+  ],
+  "endpoints": [
+   {
+    "call": "(TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Subscription service. - Georgian tender aggregator (subscription); API undocumented publicly.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://api.tenders.ge/",
+   "https://tenders.ge/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://api.tenders.ge/ answers only {\"name\":\"Tenders.ge API\",\"version\":\"3.2\",\"timezone\":\"Asia/Tbilisi\",…}; /docs, /swagger, /tenders and /v3/tenders answer 404 'Resource not found', and the rendered https://tenders.ge/ (tender listing, registration, contact) links no API documentation, key or access process."
+}

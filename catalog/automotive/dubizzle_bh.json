@@ -1,0 +1,36 @@
+{
+ "id": "dubizzle_bh",
+ "category": "automotive",
+ "label": "Dubizzle",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.dubizzle.com.bh",
+ "domain": "dubizzle.com.bh",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dubizzle Group publishes no public listings API; dealer tools are account-based only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "Apify dubizzle scraper",
+   "Albato connector"
+  ]
+ },
+ "official_mcp": []
+}

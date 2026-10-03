@@ -1,0 +1,46 @@
+{
+ "id": "drom_ru",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://auto.drom.ru",
+ "domain": "auto.drom.ru",
+ "country": "Russia",
+ "official_api": false,
+ "docs_url": "https://baza.drom.ru/help/API",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "on application (business account)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Drom (Farpost) offers price-list upload and an on-application online-update API for business accounts (documented mainly for parts price lists); no public car search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://baza.drom.ru/help/API",
+   "https://www.drom.ru/commerce/"
+  ],
+  "unofficial": [
+   "github.com/Kolsha/Drom-API",
+   "rest-app.net/api-drom-ru"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Drom (Farpost) offers price-list upload and an on-application online-update API for business accounts (documented mainly for parts price lists); no public car search API."
+}

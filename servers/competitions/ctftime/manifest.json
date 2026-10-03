@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "ctftime-mcp",
+ "display_name": "CTFtime (capture-the-flag events) MCP",
+ "version": "0.1.0",
+ "description": "CTFtime (capture-the-flag events) (competitions): discover, get_competition, standings. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ctftime"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "discover",
+   "description": "Upcoming CTF events, soonest first (status is always 'upcoming'; past events are under standings). kind is the format: Jeopardy, Attack-Defense, Hack quest. query matches title or description."
+  },
+  {
+   "name": "get_competition",
+   "description": "One event by CTFtime id; rules_url is the organisers' site."
+  },
+  {
+   "name": "standings",
+   "description": "Final scoreboard of an event that finished THIS calendar year (CTFtime publishes results per year); team is the CTFtime team id. An event without published results gives an empty list."
+  }
+ ]
+}

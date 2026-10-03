@@ -1,0 +1,36 @@
+{
+ "id": "spinny_in",
+ "category": "automotive",
+ "label": "Spinny",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.spinny.com",
+ "domain": "spinny.com",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Spinny Partners is a dealer auction app, not an API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.spinny.com/partners/",
+   "https://spinny.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

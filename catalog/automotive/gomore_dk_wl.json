@@ -1,0 +1,35 @@
+{
+ "id": "gomore_dk_wl",
+ "category": "automotive",
+ "label": "GoMore — Leasing af brugte biler",
+ "vertical": "rental",
+ "lane": "waitlist",
+ "url": "https://gomore.dk",
+ "domain": "gomore.dk",
+ "country": "Denmark",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No public developer API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://gomore.dk/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

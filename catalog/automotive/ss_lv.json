@@ -1,0 +1,41 @@
+{
+ "id": "ss_lv",
+ "category": "automotive",
+ "label": "Ss",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.ss.lv",
+ "domain": "ss.lv",
+ "country": "Latvia",
+ "official_api": false,
+ "docs_url": "https://www.ss.lv/lv/api/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "widget"
+  ],
+  "auth": null,
+  "access": "open",
+  "capabilities": [
+   "embed_listings"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). 'API SS.LV' is an embeddable JS widget to show an SS.LV category's ads on your site; not a data API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.ss.lv/lv/api/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): 'API SS.LV' is an embeddable JS widget to show an SS.LV category's ads on your site; not a data API. No request/response API to serve."
+}

@@ -1,0 +1,36 @@
+{
+ "id": "olx_id",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.olx.co.id",
+ "domain": "olx.co.id",
+ "country": "Indonesia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OLX Indonesia offers OLX Dealer app/program but no public API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://help.olx.co.id/hc/id/articles/37612050262809-OLX-Dealer",
+   "https://olx.co.id/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

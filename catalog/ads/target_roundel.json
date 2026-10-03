@@ -1,0 +1,125 @@
+{
+ "id": "target_roundel",
+ "category": "ads",
+ "label": "Roundel (Target)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.roundel.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Every Roundel advertiser can onboard to Roundel Media Studio (open access, no DSP fees); API access via Criteo Retail Media / approved partner platforms (TPA directory); no public Roundel developer terms.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Criteo Retail Media API — Roundel Media Studio is 'powered by Criteo'; partner platforms integrate via API)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "keywords",
+   "budgets_bids",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Roundel Media Studio powered by Criteo; API through the Criteo Retail Media API / partner platforms) Confidence: **medium**.",
+  "base_urls": [
+   "https://api.criteo.com/{ver}/retail-media/…"
+  ],
+  "auth": [
+   "1. Onboard to Roundel Media Studio (every Roundel advertiser eligible).",
+   "2. Criteo developer app + advertiser consent (partners.criteo.com) or an approved TPA partner platform.",
+   "3. Manage campaigns / reports through the Criteo Retail Media endpoints."
+  ],
+  "endpoints": [
+   {
+    "call": "Criteo Retail Media: campaigns · line items · keywords · budgets",
+    "purpose": "campaigns + bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "Criteo Retail Media reports",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - No Roundel-specific API terms; Criteo API limits apply; open access, no DSP fees.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.roundel.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public Roundel API reference. Re-checked 2026-09-25 in headless Chromium: https://roundel.com/ links solutions, Roundel Media Studio, Ad Guide, Our Partners (https://roundel.com/partners/) and a 'Reports Log in' to Target Partners Online (https://www.partnersonline.com/page/home), but no API or developer documentation; Roundel Media Studio is powered by Criteo and partner platforms integrate under Roundel/Criteo agreements. Nothing Roundel-specific can be cited."
+}

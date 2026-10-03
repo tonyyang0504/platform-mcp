@@ -1,0 +1,39 @@
+{
+ "id": "movida_br",
+ "category": "automotive",
+ "label": "Seminovosmovida",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.seminovosmovida.com.br",
+ "domain": "seminovosmovida.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). dealer (Brazil); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://seminovosmovida.com.br/"
+  ],
+  "unofficial": [
+   "https://github.com/DevWellington/rest-api-seminovosbh",
+   "https://github.com/Yoostah/CarCrawlerAPI",
+   "https://github.com/hugoharan/api-seminovos"
+  ]
+ },
+ "official_mcp": []
+}

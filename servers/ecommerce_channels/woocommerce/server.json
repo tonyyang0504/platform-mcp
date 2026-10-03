@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/woocommerce-mcp",
+ "description": "WooCommerce (ecommerce channels): me, create_listing, update_listing, end_listing, set_inventory, li",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.woocommerce.com/docs/apis/rest-api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "woocommerce"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_KEY",
+     "description": "WooCommerce REST API consumer key (WooCommerce > Settings > Advanced > REST API > Add key, Read/Write) sent as the HTTP Basic username over HTTPS.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WOOCOMMERCE_CONSUMER_SECRET",
+     "description": "The consumer secret shown once when the key is created; sent as the HTTP Basic password.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WOOCOMMERCE_STORE_HOST",
+     "description": "Host (and any path prefix) of the merchant's WooCommerce store without scheme, e.g. shop.example.com or example.com/shop; every call goes to https://<store_host>/wp-json/wc/v3/... (HTTPS only: Basic auth with the consumer key/secret is documented for HTTPS; plain-HTTP stores need OAuth 1.0a, not supported).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

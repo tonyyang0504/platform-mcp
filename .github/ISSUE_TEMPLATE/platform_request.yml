@@ -1,0 +1,15 @@
+name: Platform request or API change
+description: Ask for a platform to be served, or report that a platform's API changed
+labels: [catalog]
+body:
+  - type: input
+    id: platform
+    attributes: { label: Platform, placeholder: "name and category (jobs, ads, ecommerce_channels, ...)" }
+    validations: { required: true }
+  - type: input
+    id: docs
+    attributes: { label: Official API documentation URL }
+    validations: { required: true }
+  - type: textarea
+    id: details
+    attributes: { label: Details, description: "Which verbs matter to you; for a change, what the docs say now and since when." }

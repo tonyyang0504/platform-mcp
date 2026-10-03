@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "deribit-mcp",
+ "display_name": "Deribit Options & Futures MCP",
+ "version": "0.1.0",
+ "description": "Deribit Options & Futures (trading): me, list_markets, get_ticker, get_balances, list_orders, place_",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deribit"
+   ],
+   "env": {
+    "PLATFORM_MCP_DERIBIT_CLIENT_ID": "${user_config.platform_mcp_deribit_client_id}",
+    "PLATFORM_MCP_DERIBIT_CLIENT_SECRET": "${user_config.platform_mcp_deribit_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_deribit_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DERIBIT_CLIENT_ID",
+   "description": "Client ID of a Deribit API key (Account > API). Give it trade:read_write and NOT wallet:read_write or account:read_write. A test-environment key comes from https://test.deribit.com and works only against https://test.deribit.com/api/v2 (set adapter.base_url to it).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_deribit_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DERIBIT_CLIENT_SECRET",
+   "description": "The key's Client Secret; sent as HTTP Basic credentials (Authorization: Basic base64(client_id:client_secret)) on each request over TLS.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Extended account summaries: account id, username, type (main/subaccount) and per-currency balances."
+  },
+  {
+   "name": "list_markets",
+   "description": "Every unexpired instrument across currencies (options, futures, perpetuals, spot) in one response; `query` is not sent. Cached by Deribit for about a minute."
+  },
+  {
+   "name": "get_ticker",
+   "description": "`symbol` is a Deribit instrument name such as BTC-PERPETUAL or BTC-27DEC26-100000-C."
+  },
+  {
+   "name": "get_balances",
+   "description": "One row per currency."
+  },
+  {
+   "name": "list_orders",
+   "description": "All open orders across currencies; `symbol` and `status` are not sent (the method has no instrument filter)."
+  },
+  {
+   "name": "place_order",
+   "description": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the Deribit test environment https://test.deribit.com/api/v2 first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. `side` selects private/buy or private/sell. `quantity` is Deribit's `amount`: USD for perpetuals and inverse futures (multiples of the contract size, e.g. 10), the base coin for options and linear futures. Limit orders need `price` (good_til_cancelled); omit it for market orders."
+  },
+  {
+   "name": "cancel_order",
+   "description": "Only the order id is needed."
+  }
+ ]
+}

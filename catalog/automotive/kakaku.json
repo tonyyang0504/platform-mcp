@@ -1,0 +1,35 @@
+{
+ "id": "kakaku",
+ "category": "automotive",
+ "label": "Kakaku",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://kakaku.com",
+ "domain": "kakaku.com",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kakaku.com Web Service API (2006) stopped accepting new registrations in June 2012; no current official car-data API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://corporate.kakaku.com/press/release/20060927a"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

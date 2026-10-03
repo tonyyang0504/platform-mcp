@@ -1,0 +1,37 @@
+{
+ "id": "truck2hand_th",
+ "category": "automotive",
+ "label": "Truck2Hand",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.truck2hand.com",
+ "domain": "truck2hand.com",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Thailand); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://truck2hand.com/"
+  ],
+  "unofficial": [
+   "https://github.com/truck2hand/t2h-keen-slider/blob/main/api-extractor.vue.json"
+  ]
+ },
+ "official_mcp": []
+}

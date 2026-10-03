@@ -1,0 +1,290 @@
+{
+ "id": "mercari_shops_jp",
+ "category": "ecommerce_channels",
+ "label": "Mercari Shops (JP)",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://api.mercari-shops.com/docs/index.html",
+ "url": "https://mercari-shops.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Mercari Shops (B2C shop) account; API credentials only for shops / companies with an API contract — the client name is issued at contract time; up to 10 tokens per shop with one shared budget of 10,000 cost points / hour; caller IPs must be registered; sandbox environment provided.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "sandbox"
+  ],
+  "auth": "token (per-shop Personal API Access Token from the shop admin, `Authorization: Bearer`; `User-Agent: {API_CLIENT_NAME}/{version}` where API_CLIENT_NAME is assigned per company at contract; caller IPs pre-registered)",
+  "access": "partner_only",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "config.shop_id",
+  "config.sandbox"
+ ],
+ "rate_limits": "documented (\"Rate limiting\" section, not read)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.mercari-shops.com/v1/graphql",
+   "https://api.mercari-shops-sandbox.com/v1/graphql"
+  ],
+  "auth": [
+   "1. Company signs the API contract with Mercari Shops → API_CLIENT_NAME assigned.",
+   "2. Shop owner issues a Personal API Access Token in the shop admin (≤ 10 per shop) and registers caller IPs.",
+   "3. Send Bearer token + the User-Agent client name on every GraphQL request; test on the sandbox first."
+  ],
+  "endpoints": [
+   {
+    "call": "mutation createProduct / updateProduct / deleteProduct",
+    "purpose": "products with variants + shipping configuration",
+    "notes": "name, description, price, images, variants"
+   },
+   {
+    "call": "mutation updateProductVariant / updateProductVariants",
+    "purpose": "stock (and variant) updates",
+    "notes": "≤ 20 SKUs per call"
+   },
+   {
+    "call": "query orders / orderTransactions",
+    "purpose": "orders",
+    "notes": "status filters, pagination"
+   },
+   {
+    "call": "mutation createOrderShipment / update tracking code / mark shipment complete",
+    "purpose": "fulfilment + tracking",
+    "notes": "partial fulfilment supported"
+   },
+   {
+    "call": "cancellations",
+    "purpose": "cancel orders",
+    "notes": ""
+   }
+  ],
+  "limits": " Query-cost based: 10,000 points per hour per shop; a query's points = complexity cost ÷ 100 (min 1); all tokens of a shop share the pool. - API contract per company; tokens per shop; IP registration mandatory. - Sandbox available for development.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://api.mercari-shops.com/docs/index.html",
+   "https://api.mercari-shops.com/v1/graphql,",
+   "https://support.mercari-shops.com/hc/ja/categories/15261095776281",
+   "https://r.jina.ai/https://support.mercari-shops.com/hc/ja/articles/16849943532697"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "extra_headers": {
+    "User-Agent": "user_agent"
+   },
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Personal API Access Token issued on your mercari Shops shop administration page; sent as Authorization: Bearer."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "api.mercari-shops.com (production) or api.mercari-shops-sandbox.com (sandbox)."
+   },
+   {
+    "name": "user_agent",
+    "required": true,
+    "help": "User-Agent required by mercari Shops: <API_CLIENT_NAME>/<VERSION>, where API_CLIENT_NAME is the value Mercari assigns to your company at contract (e.g. EXAMPLE_SHOP/1.0.0); requests without the correct User-Agent are restricted."
+   }
+  ],
+  "envelope": {
+   "ok_field": "errors",
+   "ok_value": null,
+   "error_field": "errors"
+  },
+  "rate_per_second": 1,
+  "terms": "mercari Shops Public API is GraphQL (POST /v1/graphql); API use requires a contract with Mercari (API_CLIENT_NAME). Prices are integer yen.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/v1/graphql",
+    "body": {
+     "query": "=query shop { shop { id name shopStatus businessKind enableMultiplePurchase createdAt } }"
+    },
+    "docs": "https://api.mercari-shops.com/docs/index.html#query-shop",
+    "note": "query shop returns the shop you own (data.shop {id, name, shopStatus, businessKind})."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/v1/graphql",
+    "body": {
+     "query": "=mutation updateProduct($input: UpdateProductInput!) { updateProduct(input: $input) { product { id name price status updatedAt } } }",
+     "variables.input.id": "listing_id",
+     "variables.input.name": "title",
+     "variables.input.description": "description",
+     "variables.input.price": "int:price"
+    },
+    "result": {
+     "root": "data.updateProduct.product",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.mercari-shops.com/docs/index.html#mutation-updateProduct",
+    "note": "updateProduct(input: {id, name, description, price}) edits a LIVE product; only the fields sent change. price is an integer in yen between 300 and 9999999; name at most 130 characters, description 3000. Stock is per variant: use set_inventory. `status` is the product visibility (OPENED|UNOPENED)."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/v1/graphql",
+    "body": {
+     "query": "=mutation updateProduct($input: UpdateProductInput!) { updateProduct(input: $input) { product { id status updatedAt } } }",
+     "variables.input.id": "listing_id",
+     "variables.input.status": "=UNOPENED"
+    },
+    "result": {
+     "root": "data.updateProduct.product",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.mercari-shops.com/docs/index.html#mutation-updateProduct",
+    "note": "updateProduct(input: {id, status: UNOPENED}) makes the product private (非公開); reversible with status OPENED. The product is not deleted."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/v1/graphql",
+    "body": {
+     "query": "=mutation updateProductVariant($by: ProductVariantBy!, $input: UpdateProductVariantInput!) { updateProductVariant(by: $by, input: $input) { productVariant { id skuCode stockQuantity } } }",
+     "variables.by.skuCode": "sku",
+     "variables.by.id": "listing_id",
+     "variables.input.stockQuantity": "quantity"
+    },
+    "result": {
+     "root": "data.updateProductVariant.productVariant",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://api.mercari-shops.com/docs/index.html#mutation-updateProductVariant",
+    "note": "updateProductVariant(by: {skuCode} or {id}, input: {stockQuantity}) sets the stock of one VARIANT: pass `sku` (the variant skuCode) or `listing_id` as the variant id — not the product id."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/v1/graphql",
+    "body": {
+     "query": "=query orderTransactions($first: Int, $orderedDateGte: DateTime, $statuses: [OrderTransactionStatusFilter!]) { orderTransactions(first: $first, orderedDateGte: $orderedDateGte, statuses: $statuses) { edges { node { id status totalPrice createdAt paidAt completedAt salesChannel products { productId quantity } } } pageInfo { endCursor hasNextPage } } }",
+     "variables.first": "limit",
+     "variables.orderedDateGte": "since",
+     "variables.statuses.0": "status"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "data.orderTransactions.edges",
+     "key": "orders",
+     "fields": {
+      "id": "node.id",
+      "status": "node.status",
+      "total": "node.totalPrice",
+      "currency": "=JPY",
+      "created_at": "node.createdAt"
+     }
+    },
+    "docs": "https://api.mercari-shops.com/docs/index.html#query-orderTransactions",
+    "note": "orderTransactions(first, orderedDateGte, statuses) — status: WAITING_FOR_PAYMENT|WAITING_FOR_SHIPPING|COMPLETING|COMPLETED|CANCELING|CANCELED; since is an ISO-8601 DateTime. totalPrice is integer yen including sales fee and shipping. Pagination is by cursor (pageInfo.endCursor in raw), so only the first page is reachable here."
+   }
+  },
+  "not_offered": {
+   "create_listing": "createProduct requires categoryId, condition, shippingMethod, shippingPayer, shippingDuration, shippingFromStateId and imageUrls plus variants; the vocabulary has no category, condition or shipping settings.",
+   "mark_shipped": "Shipping is two mutations in the current API — createOrderShipping (products and quantities of the shipment) then completeOrderShipping — with the tracking code set by updateOrderShippingTrackingCode; the one-call completeOrder and updateShippingTrackingCode are deprecated ('Use createOrderShipping and completeOrderShipping instead')."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "blocked",
+  "evidence": [
+   "host api.mercari-shops.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 0/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; names not found on the page: end_listing:variables, list_orders:variables, set_inventory:variables, update_listing:variables"
+  ],
+  "notes": "POST https://api.mercari-shops.com/v1/graphql (the documented endpoint) answers a bare 404 to the audit hosts; Mercari's FAQ says access is only from pre-registered IP addresses, and requests need the contracted '<API_CLIENT_NAME>/<VERSION>' User-Agent. path/method refused: me: POST /v1/graphql -> 404; update_listing: POST /v1/graphql -> 404; end_listing: POST /v1/graphql -> 404; set_inventory: POST /v1/graphql -> 404; list_orders: POST /v1/graphql -> 404"
+ }
+}

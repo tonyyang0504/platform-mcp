@@ -1,0 +1,35 @@
+{
+ "id": "haraj",
+ "category": "automotive",
+ "label": "Haraj",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://haraj.com.sa",
+ "domain": "haraj.com.sa",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official Haraj API; only Apify/unofficial scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://haraj.com.sa/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

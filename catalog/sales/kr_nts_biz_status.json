@@ -1,0 +1,36 @@
+{
+ "id": "kr_nts_biz_status",
+ "category": "sales",
+ "label": "국세청 사업자등록정보 상태조회 API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://www.data.go.kr/data/15081808/openapi.do",
+ "url": "https://www.data.go.kr/data/15081808/openapi.do",
+ "verified_at": "2026-09-05",
+ "terms_note": "Validation-only API (business-number status) with a free data.go.kr key → platform-key; used by the data steward, not for discovery.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,36 @@
+{
+ "id": "nces_school_locator",
+ "category": "sales",
+ "label": "NCES Global Locator",
+ "lane": "public",
+ "kind": "register",
+ "regions": [
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://nces.ed.gov/globallocator/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Public federal directory (CCD / PSS / IPEDS); robots.txt (5 Disallow) does not hit the locator; bulk files also downloadable.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

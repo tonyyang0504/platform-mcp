@@ -1,0 +1,35 @@
+{
+ "id": "kyungdong",
+ "category": "automotive",
+ "label": "Kyungdongautofield",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.kyungdongautofield.com",
+ "domain": "kyungdongautofield.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). dealer site (South Korea); no developer/API/partner-feed pages on the domain and no official API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://kyungdongautofield.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

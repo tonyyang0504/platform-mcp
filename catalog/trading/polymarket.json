@@ -1,0 +1,149 @@
+{
+ "id": "polymarket",
+ "category": "trading",
+ "label": "Polymarket (public markets)",
+ "lane": "api",
+ "kind": "prediction",
+ "docs_url": "https://docs.polymarket.com/",
+ "url": "https://polymarket.com/",
+ "verified_at": "2026-09-24",
+ "auth_fields": null,
+ "sandbox": false,
+ "base_urls": {
+  "clob": "https://clob.polymarket.com",
+  "gamma": "https://gamma-api.polymarket.com"
+ },
+ "notes": "Read-only: order placement needs an EIP-712 signer (py-clob-client) that this runtime does not have.",
+ "regions": [
+  "global"
+ ],
+ "terms_note": "Public Gamma market-discovery API (no credentials). CLOB trading needs EIP-712 signed orders and L2 HMAC headers, not mapped. Polymarket geoblocks trading in some jurisdictions.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (Gamma public); CLOB L1 EIP-712 / L2 HMAC not mapped",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "adapter": {
+  "base_url": "https://gamma-api.polymarket.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/status",
+    "docs": "https://docs.polymarket.com/api-reference/markets/list-markets",
+    "note": "Public API, no credentials: GET /status answers OK."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/markets",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "closed": "false",
+     "active": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "markets",
+     "fields": {
+      "symbol": "slug",
+      "question": "question",
+      "market_id": "id",
+      "condition_id": "conditionId",
+      "outcomes": "outcomes",
+      "outcome_prices": "outcomePrices",
+      "volume": "volume"
+     }
+    },
+    "docs": "https://docs.polymarket.com/api-reference/markets/list-markets",
+    "note": "Open markets, paged with limit/offset; `query` is not sent. `symbol` is the market slug get_ticker takes; outcomes, outcomePrices and clobTokenIds are JSON-encoded strings."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/markets/slug/{symbol}",
+    "result": {
+     "fields": {
+      "symbol": "slug",
+      "last": "lastTradePrice",
+      "bid": "bestBid",
+      "ask": "bestAsk",
+      "volume": "volume24hr",
+      "change": "oneDayPriceChange",
+      "question": "question"
+     }
+    },
+    "docs": "https://docs.polymarket.com/api-reference/markets/get-market-by-slug",
+    "note": "`symbol` is a market slug. Prices are probabilities (0-1) for the market's FIRST outcome (usually Yes); the other outcome trades near 1 - price."
+   }
+  },
+  "not_offered": {
+   "get_candles": "GET /prices-history (CLOB) returns only {t, p} price points per outcome token, not open/high/low/close candles.",
+   "get_balances": "CLOB balance-allowance needs L2 headers whose POLY_SIGNATURE is 'urlsafeBase64WithPadding(HMAC-SHA256(base64Decode(<clob_api_secret>), message))' (docs); the runtime keys HMAC with the secret's raw text and emits standard base64, so the signature cannot be produced.",
+   "list_orders": "GET /data/orders needs the same L2 HMAC headers keyed by the base64-decoded secret with a URL-safe base64 signature, which the runtime's sign block cannot express.",
+   "place_order": "Orders are EIP-712 typed-data structs signed by the wallet's private key (L1) before being posted with L2 HMAC headers (docs: 'Create an L1 Signature … to attest to ownership of the signer'); the runtime has no wallet signer.",
+   "cancel_order": "DELETE /order needs L2 HMAC headers keyed by the base64-decoded API secret with a URL-safe base64 signature, which the runtime's sign block cannot express."
+  }
+ },
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://gamma-api.polymarket.com",
+   "https://clob.polymarket.com"
+  ],
+  "auth": [
+   "Gamma is public.",
+   "CLOB private endpoints: L1 EIP-712 wallet signature to derive L2 credentials, then L2 HMAC headers (POLY_ADDRESS, POLY_SIGNATURE, POLY_TIMESTAMP, POLY_API_KEY, POLY_PASSPHRASE)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /status",
+    "purpose": "health",
+    "notes": "text OK"
+   },
+   {
+    "call": "GET /markets",
+    "purpose": "markets",
+    "notes": "limit, offset, closed (default false), order, ascending; array of Market {id, question, conditionId, slug, outcomes, outcomePrices, volume, active, closed, clobTokenIds, bestBid, bestAsk, lastTradePrice}"
+   },
+   {
+    "call": "GET /markets/slug/{slug}",
+    "purpose": "one market",
+    "notes": "bestBid, bestAsk, lastTradePrice, volume24hr, oneDayPriceChange"
+   }
+  ],
+  "limits": "Cloudflare-throttled per IP (see docs rate-limits page).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.polymarket.com/api-reference/markets/list-markets",
+   "https://docs.polymarket.com/api-reference/markets/get-market-by-slug",
+   "https://docs.polymarket.com/api-reference/market-data/get-order-book",
+   "https://docs.polymarket.com/trading/wallets-auth"
+  ]
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

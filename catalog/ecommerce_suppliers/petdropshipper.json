@@ -1,0 +1,111 @@
+{
+ "id": "petdropshipper",
+ "category": "ecommerce_suppliers",
+ "label": "PetDropshipper (PDS)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://petdropshipper.com/pages/resources",
+ "url": "https://petdropshipper.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "n/s",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed",
+   "app"
+  ],
+  "auth": "wholesale account login (API docs behind login)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "product_import",
+   "store_app_only"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Free wholesale account; no minimums / dropship fees; 300 pet brands (US).",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://petdropshipper.com/",
+   "https://petdropshipper.com/pages/resources"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://petdropshipper.com/pages/resources on 2026-09-25: 'Wholesale content only, please login to show or create an account'; the integration resources (inventory/CSV subscriptions, store app, any API details) are behind the wholesale login, with no public API reference."
+}

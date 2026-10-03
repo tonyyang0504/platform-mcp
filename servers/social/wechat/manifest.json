@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "wechat-mcp",
+ "display_name": "WeChat MCP",
+ "version": "0.1.0",
+ "description": "WeChat (social): me, publish_text, read_comments, delete. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "wechat"
+   ],
+   "env": {
+    "PLATFORM_MCP_WECHAT_APPID": "${user_config.platform_mcp_wechat_appid}",
+    "PLATFORM_MCP_WECHAT_SECRET": "${user_config.platform_mcp_wechat_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_wechat_appid": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WECHAT_APPID",
+   "description": "AppID of the Official Account (服务号 / 公众号), sent with the AppSecret to GET https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential (https://developers.weixin.qq.com/doc/service/api/base/api_getaccesstoken); the calling server's IP must be on the account's API IP whitelist (errcode 40164 otherwise).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_wechat_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WECHAT_SECRET",
+   "description": "AppSecret of the Official Account. The returned access_token (7200 s) travels as the access_token query parameter of every call; fetching a new one invalidates tokens held by other servers of the same account.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "The Official Account API has no 'who am I' call: getApiDomainIp (GET /cgi-bin/get_api_domain_ip) verifies that the AppID / AppSecret mint a working access_token and returns {ip_list} of WeChat API servers."
+  },
+  {
+   "name": "publish_text",
+   "description": "PUBLISHES TO ALL FOLLOWERS: sendAll {filter: {is_to_all: true}, msgtype: 'text', text: {content}} submits a mass-send (群发) job to every follower of the Official Account; it consumes the account's limited mass-send quota (errcode 45028 'has no masssend quota') and, with API 群发保护 on, waits up to 30 minutes for an administrator's confirmation. Success means the job was accepted, not delivered. `id` is msg_id (the send task id). `reply_to` is ignored. No clientmsgid is sent, so WeChat dedupes identical content to the same audience within 24 h by its own digest."
+  },
+  {
+   "name": "read_comments",
+   "description": "listComment {msg_data_id (`post_id`: the numeric msg_data_id returned when an ARTICLE (mpnews) was mass-sent, not the msg_id of a text send), begin, count (<50), type: 0 (ordinary + selected comments)} for the first article of the send. Verified accounts only (88000 'without comment privilege'). created_at is a Unix timestamp; the account's reply sits under raw.reply; author is the commenter's openid (absent for non-WeChat identities)."
+  },
+  {
+   "name": "delete",
+   "description": "DESTRUCTIVE: deleteMassMsg {msg_id, article_idx: 0} invalidates the body of ALL articles of that API mass send ('该字段不填或填0会删除全部内容'); followers keep the message card. Only article (mpnews) and video sends can be deleted - '其他类型的消息一经发送，无法删除', so a text publish_text cannot be withdrawn (errcode 40008 / 40065)."
+  }
+ ]
+}

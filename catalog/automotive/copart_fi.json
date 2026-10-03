@@ -1,0 +1,38 @@
+{
+ "id": "copart_fi",
+ "category": "automotive",
+ "label": "Copart",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.copart.fi",
+ "domain": "copart.fi",
+ "country": "Finland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Copart publishes no public API; third-party auction-data resellers only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.copart.fi/"
+  ],
+  "unofficial": [
+   "https://apibara.tech/en/products/vehicle-auction-data-api",
+   "https://auction-api.app/en/"
+  ]
+ },
+ "official_mcp": []
+}

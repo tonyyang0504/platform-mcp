@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "vinted_pro-mcp",
+ "display_name": "Vinted Pro MCP",
+ "version": "0.1.0",
+ "description": "Vinted Pro (ecommerce channels): me, end_listing, list_orders. Every tool maps to a documented endpo",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "vinted_pro"
+   ],
+   "env": {
+    "PLATFORM_MCP_VINTED_PRO_ACCESS_KEY": "${user_config.platform_mcp_vinted_pro_access_key}",
+    "PLATFORM_MCP_VINTED_PRO_SIGNING_KEY": "${user_config.platform_mcp_vinted_pro_signing_key}",
+    "PLATFORM_MCP_VINTED_PRO_API_HOST": "${user_config.platform_mcp_vinted_pro_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_vinted_pro_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VINTED_PRO_ACCESS_KEY",
+   "description": "Access key: the part BEFORE the comma of the access token generated in the Vinted Pro Integrations Portal (tokens are shown only once; production and dev mode have separate tokens); sent as X-Vpi-Access-Key.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_vinted_pro_signing_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VINTED_PRO_SIGNING_KEY",
+   "description": "Signing key: the part AFTER the comma of the same access token. Signs every request (hex HMAC-SHA256 over '<unix seconds>.<METHOD>.<path+query>.<access key>.<body>', sent as X-Vpi-Hmac-Sha256: t=<ts>,v1=<hash>); never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_vinted_pro_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VINTED_PRO_API_HOST",
+   "description": "pro.svc.vinted.com (production) or pro-public-sandbox.svc.vinted.com (dev mode).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one item created through the integration ({items[]}) to verify the access key and signature."
+  },
+  {
+   "name": "end_listing",
+   "description": "DeleteItems DELETE /api/v1/items {item_ids: [uuid]} DELETES the item from Vinted asynchronously (202); `listing_id` is the VPI item_id (uuid). raw.accepted is false (with a reason) when the item cannot be deleted, e.g. still IN_PROGRESS."
+  },
+  {
+   "name": "list_orders",
+   "description": "GetOrders returns {orders: [{id, status, created_at}]} (status CREATED|READY_TO_BE_SHIPPED|SHIPPED|DELIVERED|LOST|RETURN_*|...). Paging is by the after-id cursor, and there are no status/date filters, so `status`, `since` and page numbers are not applied; amounts and items are in GetOrder."
+  }
+ ]
+}

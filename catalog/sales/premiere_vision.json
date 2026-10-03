@@ -1,0 +1,38 @@
+{
+ "id": "premiere_vision",
+ "category": "sales",
+ "label": "Première Vision exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "fr",
+  "eu",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.premierevision.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt has no Disallow.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

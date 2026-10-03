@@ -1,0 +1,42 @@
+{
+ "id": "craigslist_vancouver",
+ "category": "automotive",
+ "label": "Vancouver",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://vancouver.craigslist.org",
+ "domain": "vancouver.craigslist.org",
+ "country": "Canada",
+ "official_api": false,
+ "docs_url": "https://www.craigslist.org/about/bulk_posting_interface",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss",
+   "feed"
+  ],
+  "auth": "Approved bulk-posting account (paid postings)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence high). Craigslist documents a Bulk Posting Interface (RSS over HTTPS POST) for approved posters; no read/search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.craigslist.org/about/bulk_posting_interface"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Craigslist documents a Bulk Posting Interface (RSS over HTTPS POST) for approved posters; no read/search API."
+}

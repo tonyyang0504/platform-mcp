@@ -1,0 +1,45 @@
+{
+ "id": "leboncoin",
+ "category": "automotive",
+ "label": "Leboncoin",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.leboncoin.fr",
+ "domain": "leboncoin.fr",
+ "country": "France",
+ "official_api": true,
+ "docs_url": "https://developer.leboncoin.auto/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client id/secret after commercial agreement",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "leads"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). leboncoin auto has an official API documentation portal for pro partners/CRM editors; test access only under an annual contract.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.leboncoin.auto/",
+   "https://leboncoinsolutionspro.fr/logiciels-partenaires-api/"
+  ],
+  "unofficial": [
+   "https://github.com/johnulist/leboncoin-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "leboncoin auto developer portal (https://developer.leboncoin.auto/) is for pro partners/CRM editors under an annual contract; upload and leads APIs only, no public search."
+}

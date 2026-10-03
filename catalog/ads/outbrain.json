@@ -1,0 +1,277 @@
+{
+ "id": "outbrain",
+ "category": "ads",
+ "label": "Outbrain Amplify",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.outbrain.com/home-page/amplify-api/documentation/",
+ "url": "https://www.outbrain.com/amplify/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Amplify API is granted to selected partners by request; tokens valid 30 days; documented rate limits (e.g. 30 requests per second per token).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "basic auth on /login → OB-TOKEN-V1 header (30-day token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** — a complete REST API (marketers, budgets, campaigns, promoted links, reporting) that is",
+  "base_urls": [
+   "https://api.outbrain.com/amplify/v0.1/"
+  ],
+  "auth": [
+   "1. Request API access via the Amplify API beta / partner registration page (select partners).",
+   "2. Obtain a token either from the **Amplify API Token page** (after re-entering the password) or `curl -u USERNAME:PASSWORD https://api.outbrain.com/amplify/v0.1/login`.",
+   "3. \"You must include the token in the HTTP Header 'OB-TOKEN-V1' for all subsequent requests.\" Tokens are valid for 30 days; `/login` is limited to 2 requests per hour per user."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /marketers` · `GET /marketers/{id}",
+    "purpose": "advertiser accounts",
+    "notes": "`id, name, enabled, currency`"
+   },
+   {
+    "call": "GET /marketers/{id}/campaigns` · `POST /marketers/{id}/campaigns` · `PUT /campaigns/{id}",
+    "purpose": "campaigns: cpc, budget, targeting, enabled",
+    "notes": "`name, cpc, enabled, budgetId, targeting{platform, locations, …}, suffixTrackingCode`"
+   },
+   {
+    "call": "GET /marketers/{id}/budgets` · `POST …/budgets` · `PUT /budgets/{id}",
+    "purpose": "budgets (daily / monthly / campaign)",
+    "notes": "`name, amount, currency, type DAILY/MONTHLY/CAMPAIGN, pacing, startDate, endDate`"
+   },
+   {
+    "call": "GET /campaigns/{id}/promotedLinks` · `POST …/promotedLinks` · `PUT /promotedLinks/{id}",
+    "purpose": "ads (promoted links: URL + headline + image)",
+    "notes": "`text, url, imageUrl, enabled, sectionName, cta`"
+   },
+   {
+    "call": "GET /reports/marketers/{id}/campaigns/periodic` · `GET /reports/marketers/{id}/periodic` · `…/promotedLinks` · realtime `…/campaigns/realtime",
+    "purpose": "PerformanceBy* reports",
+    "notes": "`from, to, breakdown daily, limit, offset`"
+   },
+   {
+    "call": "Audience targeting on campaign (`targeting.customAudience`) · conversion events",
+    "purpose": "audiences / conversions",
+    "notes": "conversion rules via the Amplify pixel API (TODO(verify) paths on Apiary)"
+   },
+   {
+    "call": "creative binary upload",
+    "purpose": "not in API (promoted links reference an `imageUrl`)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - 30 requests/second per token; performance reporting 10 requests/minute per marketer; realtime reporting 50/minute per marketer; `/login` 2/hour; HTTP 429 with `rate-limit-msec-left`. - Access by request only; support through the Outbrain Amplify API Google group with the `AMPLIFY-REQUEST-ID` header.",
+  "mcp_sdk": [
+   "None official. Community: Google group `outbrain-amplifyapi`; data-connector sources (dltHub, Daton) prove the reporting surface."
+  ],
+  "sources": [
+   "https://www.outbrain.com/help/advertisers/amplify-api/",
+   "https://developer.outbrain.com/home-page/amplify-api/documentation/",
+   "https://amplifyv01.docs.apiary.io/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.outbrain.com/amplify/v0.1",
+  "rate_per_second": 0.5,
+  "auth": {
+   "type": "header",
+   "header": "OB-TOKEN-V1",
+   "field": "ob_token",
+   "fields": [
+    {
+     "name": "ob_token",
+     "required": true,
+     "help": "Amplify API token, sent as the OB-TOKEN-V1 header. Obtain it with `curl -u USER:PASSWORD https://api.outbrain.com/amplify/v0.1/login` (Basic auth; the response is {\"OB-TOKEN-V1\": \"…\"}); tokens last 30 days, so re-issue and replace it monthly. Amplify API access requires Outbrain's approval."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/marketers",
+    "docs": "https://amplifyv01.docs.apiary.io/#reference/marketers",
+    "note": "GET /marketers: the marketers (advertiser accounts) available to the token's user; there is no user endpoint."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/marketers",
+    "result": {
+     "items": "marketers",
+     "key": "accounts",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://amplifyv01.docs.apiary.io/#reference/marketers",
+    "note": "GET /marketers: {marketers: [{id, name, enabled, …}], count}. The marketer currency is on its budgets, not on this record."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/marketers/{account_id}/campaigns",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "onAirReason",
+      "budget": "budget.amount",
+      "currency": "currency",
+      "start": "budget.startDate",
+      "end": "budget.endDate"
+     }
+    },
+    "docs": "https://amplifyv01.docs.apiary.io/#reference/campaigns",
+    "note": "GET /marketers/{account_id}/campaigns?limit (≤50)&offset: the marketer's non-archived campaigns. `status` is onAirReason (e.g. RUNNING, CAMPAIGN_FLY_DATES_PAST); the enabled flag, cpc and amountSpent are in raw. `budget` is the campaign's budget object amount (a budget can be shared by several campaigns; its type DAILY/MONTHLY/CAMPAIGN is in raw.budget). The `status` argument is not sent."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/reports/marketers/{account_id}/periodic",
+    "params": {
+     "from": "date:date_from",
+     "to": "date:date_to",
+     "campaignId": "campaign_id"
+    },
+    "fixed_params": {
+     "breakdown": "daily",
+     "limit": "100"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "total": "totalResults",
+     "fields": {
+      "date": "metadata.fromDate",
+      "impressions": "metrics.impressions",
+      "clicks": "metrics.clicks",
+      "ctr": "metrics.ctr",
+      "spend": "metrics.spend",
+      "conversions": "metrics.totalConversions",
+      "cpc": "metrics.ecpc"
+     }
+    },
+    "docs": "https://amplifyv01.docs.apiary.io/#reference/performance-reporting",
+    "note": "GET /reports/marketers/{account_id}/periodic?from&to&breakdown=daily&limit=100[&campaignId]: one row per day (up to 100 days per call; totalResults gives the full count), for the marketer or, with campaign_id, one campaign. spend is in the marketer currency; today's figures lag 10–30 minutes. Reporting is limited to 30 requests per minute per marketer and 3 years of history."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/campaigns/{campaign_id}",
+    "body": {
+     "enabled": "map:action:pause=json:false,resume=json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated",
+      "campaign_id": "id",
+      "enabled": "enabled"
+     }
+    },
+    "docs": "https://amplifyv01.docs.apiary.io/#reference/campaigns",
+    "note": "PUT /campaigns/{campaign_id} {\"enabled\": false|true} ('Update an Existing Campaign'; enabled is one of the updatable properties). pause sends enabled=false, resume enabled=true; the campaign's onAirReason (in list_campaigns) shows whether it is actually running."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Budgets are separate entities referenced by campaigns (and possibly shared between them): the amount is changed with PUT /budgets/{budgetId} (https://amplifyv01.docs.apiary.io/#reference/budgets), and the Campaign update does not accept a budget amount ('Only the following Campaign properties are updatable: name, enabled, cpc, targeting…'). The vocabulary's campaign_id is not a budget id."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.outbrain.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 0/5 tool paths found verbatim on their docs pages, 3 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

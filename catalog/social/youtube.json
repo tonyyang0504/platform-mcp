@@ -1,0 +1,337 @@
+{
+ "id": "youtube",
+ "category": "social",
+ "label": "YouTube",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/youtube/v3/docs/videos/insert",
+ "url": "https://www.youtube.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free; default project quota = 100 search.list calls + 100 videos.insert calls + 10,000 units/day for everything else (list 1 unit, insert/update/delete 50 units) — extension via the quota request form; videos uploaded by UNVERIFIED API projects created after 2020-07-28 are locked to private until the project passes the YouTube API Services compliance audit; OAuth scopes youtube.upload / youtube / youtube.force-ssl; YouTube API Services Terms apply (no artificial engagement).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "schedule",
+   "reply",
+   "read_comments",
+   "analytics",
+   "search",
+   "delete",
+   "edit"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "google-api-python-client (official discovery client)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 5000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (community posts have no public API)",
+   "docs": "https://developers.google.com/youtube/v3/docs/videos/insert"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://www.googleapis.com/upload/youtube/v3/thumbnails/set (thumbnail only, 50 units)",
+   "docs": "https://developers.google.com/youtube/v3/docs/thumbnails/set"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable (videos.insert)",
+   "docs": "https://developers.google.com/youtube/v3/docs/videos/insert"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET youtube/v3/commentThreads?videoId= (1 unit) · ?allThreadsRelatedToChannelId=",
+   "docs": "https://developers.google.com/youtube/v3/docs/commentThreads/list"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST youtube/v3/comments (parentId) — 50 units · POST youtube/v3/commentThreads (top-level) — 50 units",
+   "docs": "https://developers.google.com/youtube/v3/docs/comments/insert"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no mention feed; `search.list` on the brand name is the only proxy, 1 of 100 daily calls each)",
+   "docs": "https://developers.google.com/youtube/v3/docs/search/list"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no messaging API)",
+   "docs": "https://developers.google.com/youtube/v3/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.google.com/youtube/v3/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE youtube/v3/videos?id= (50 units) · DELETE youtube/v3/comments?id=",
+   "docs": "https://developers.google.com/youtube/v3/docs/videos/delete"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://youtubeanalytics.googleapis.com/v2/reports?ids=channel==MINE&filters=video=={id}&metrics=…",
+   "docs": "https://developers.google.com/youtube/analytics/reference/reports/query"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "same reports endpoint with `ids=channel==MINE` (+ statistics on channels.list)",
+   "docs": "https://developers.google.com/youtube/analytics/reference/reports/query"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://www.googleapis.com/youtube/v3/…",
+   "https://www.googleapis.com/upload/youtube/v3/videos",
+   "https://youtubeanalytics.googleapis.com/v2/reports"
+  ],
+  "auth": [
+   "1. Google Cloud project → enable YouTube Data API v3 (+ Analytics API) → OAuth 2.0 web client.",
+   "2. Scopes: `https://www.googleapis.com/auth/youtube.upload` (upload only), `…/youtube` (manage),",
+   "3. **Compliance audit:** an unverified project created after 2020-07-28 has every `videos.insert` upload forced to"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Quota",
+    "notes": "Notes"
+   },
+   {
+    "call": "POST /upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+    "purpose": "1 of 100 daily insert calls",
+    "notes": "`snippet{title, description, tags, categoryId}`, `status{privacyStatus, publishAt, selfDeclaredMadeForKids}`, ≤ 256 GB"
+   },
+   {
+    "call": "same, `status.privacyStatus=private` + `status.publishAt` (RFC 3339)",
+    "purpose": "",
+    "notes": "YouTube flips to public at `publishAt`"
+   },
+   {
+    "call": "POST /upload/youtube/v3/thumbnails/set?videoId=",
+    "purpose": "50",
+    "notes": ""
+   },
+   {
+    "call": "PUT /videos`, `DELETE /videos",
+    "purpose": "50 each",
+    "notes": ""
+   },
+   {
+    "call": "GET /commentThreads?videoId=&part=snippet,replies`, `POST /commentThreads` (top-level), `POST /comments` (reply, `parentId`)",
+    "purpose": "1 / 50 / 50",
+    "notes": "`youtube.force-ssl`"
+   },
+   {
+    "call": "POST /comments/setModerationStatus`, `DELETE /comments",
+    "purpose": "50",
+    "notes": ""
+   },
+   {
+    "call": "GET /channels?mine=true`, `GET /playlistItems?playlistId=<uploads>",
+    "purpose": "1",
+    "notes": ""
+   },
+   {
+    "call": "GET /search?q=&type=video",
+    "purpose": "1 of 100 daily search calls",
+    "notes": ""
+   },
+   {
+    "call": "GET /videos?part=statistics`; Analytics `GET /v2/reports?ids=channel==MINE&metrics=views,estimatedMinutesWatched…",
+    "purpose": "1",
+    "notes": ""
+   }
+  ],
+  "limits": " - Default quota: 100 `search.list` calls + 100 `videos.insert` calls + 10,000 units/day for everything else (list 1, write 50); more via the quota extension form (needs the compliance audit). - YouTube API Services Terms + Developer Policies: no artificial inflation, keep data ≤ 30 days unless refreshed, show the YouTube ToS to users.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.google.com/youtube/v3/docs/videos/insert",
+   "https://developers.google.com/youtube/v3/getting-started"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.googleapis.com/youtube/v3",
+  "rate_per_second": 2,
+  "rate_note": "Default quota 10,000 units per day: channels.list, commentThreads.list and videos.list cost 1 unit, comments.insert and videos.delete 50 units.",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/youtube.force-ssl. 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/channels",
+    "fixed_params": {
+     "part": "snippet,statistics",
+     "mine": "true"
+    },
+    "docs": "https://developers.google.com/youtube/v3/docs/channels/list",
+    "note": "channels.list?mine=true: account.items[0] is the authenticated user's channel (snippet, statistics)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/commentThreads",
+    "params": {
+     "videoId": "post_id",
+     "maxResults": "limit"
+    },
+    "fixed_params": {
+     "part": "snippet",
+     "textFormat": "plainText"
+    },
+    "max_limit": 100,
+    "default_limit": 20,
+    "result": {
+     "items": "items",
+     "key": "comments",
+     "total": "pageInfo.totalResults",
+     "fields": {
+      "id": "snippet.topLevelComment.id",
+      "author": "snippet.topLevelComment.snippet.authorDisplayName",
+      "text": "snippet.topLevelComment.snippet.textDisplay",
+      "created_at": "snippet.topLevelComment.snippet.publishedAt"
+     }
+    },
+    "docs": "https://developers.google.com/youtube/v3/docs/commentThreads/list",
+    "note": "`post_id` is the video ID; returns top-level comments (1 quota unit). Pagination is by pageToken, so `page` is ignored. `id` is the top-level comment id to pass to reply_comment."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/comments",
+    "fixed_params": {
+     "part": "snippet"
+    },
+    "body": {
+     "snippet.parentId": "comment_id",
+     "snippet.textOriginal": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "created_at": "snippet.publishedAt"
+     }
+    },
+    "docs": "https://developers.google.com/youtube/v3/docs/comments/insert",
+    "note": "comments.insert 'Creates a reply to an existing comment' (50 quota units); `comment_id` is the top-level comment id."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/videos",
+    "params": {
+     "id": "post_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.google.com/youtube/v3/docs/videos/delete",
+    "note": "DESTRUCTIVE: videos.delete 'Deletes a YouTube video' (`post_id` = video ID, 50 quota units); answers 204."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/videos",
+    "params": {
+     "id": "post_id"
+    },
+    "fixed_params": {
+     "part": "statistics"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "post_id": "id",
+      "metrics": "statistics"
+     }
+    },
+    "docs": "https://developers.google.com/youtube/v3/docs/videos/list",
+    "note": "videos.list?part=statistics: metrics carries viewCount, likeCount, favoriteCount, commentCount (strings). An unknown video id is `invalid_input`."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Community posts have no Data API method; the only publish method is videos.insert (https://developers.google.com/youtube/v3/docs/videos/insert).",
+   "publish_image": "Images are only thumbnails: thumbnails.set is a media upload ('POST https://www.googleapis.com/upload/youtube/v3/thumbnails/set', https://developers.google.com/youtube/v3/docs/thumbnails/set) and videos.insert is a multipart/resumable upload; the runtime sends JSON bodies only.",
+   "read_mentions": "No mention feed exists; search.list on a name is only a keyword search (https://developers.google.com/youtube/v3/docs/search/list)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host www.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest: 5/5 tools match (path, method, parameters, body keys, response paths)",
+   "scopes youtube.force-ssl: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

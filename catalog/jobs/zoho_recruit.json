@@ -1,0 +1,72 @@
+{
+ "id": "zoho_recruit",
+ "category": "jobs",
+ "label": "Zoho Recruit",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "global",
+  "in"
+ ],
+ "docs_url": "https://www.zoho.com/recruit/developer-guide/apiv2/",
+ "url": "https://www.zoho.com/recruit/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Career sites *.zohorecruit.com; candidate API is customer-side.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

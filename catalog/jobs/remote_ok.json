@@ -1,0 +1,156 @@
+{
+ "id": "remote_ok",
+ "category": "jobs",
+ "label": "Remote OK",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://remoteok.com/api",
+ "url": "https://remoteok.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public JSON feed (attribution + link-back required per its header); apply buttons go to the employer.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search (full active feed)",
+   "job_details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — GET https://remoteok.com/api returns the full list of active jobs as JSON (element 0 = legal notice, then jobs: id, slug, epoch, date, company, company_logo, position, tags[], logo, d",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "Whole feed per call — poll a few times a day;",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No key, no published rate limit. API Terms of Service embedded in the response: 'Please link back (with follow, and without nofollow!) to the URL on Remote OK and mention Remote OK as a source … If you do not we'll have to suspend API access'; do not use the Remote OK logo without permission. No key, no published rate limit. Site legal page has no bot clause; robots.txt blocks CCBot, ChatGPT-User, Claude-Web, Bytespider … with Disallow: / for unlisted agents (the API is the sanctioned path).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://remoteok.com/",
+   "https://remoteok.com/robots.txt",
+   "https://remoteok.com/api",
+   "https://remoteok.com/legal"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://remoteok.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "rate_note": "No rate limit is published; the feed's in-payload terms only ask for attribution. Kept to one request every two seconds because a single call returns the whole board.",
+  "terms": "Element 0 of the feed carries the API Terms of Service: 'Please link back (with follow, and without nofollow!) to the URL on Remote OK and mention Remote OK as a source, so we get traffic back from your site. If you do not we'll have to suspend API access. Please don't use the Remote OK logo without written permission as it's a registered trademark, please DO use our name Remote OK though.' (https://remoteok.com/api, opened 2026-09-24).",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "require": [
+      "id"
+     ],
+     "fields": {
+      "id": "id",
+      "title": "position",
+      "company": "company",
+      "location": "location",
+      "url": "url",
+      "posted_at": "date",
+      "description": "description",
+      "salary_min": "salary_min",
+      "salary_max": "salary_max"
+     }
+    },
+    "docs": "https://remoteok.com/api",
+    "note": "Single keyless JSON array with no documented query, location, page or limit parameters: nothing is sent and the whole feed (a few hundred rows) is returned; filter client-side. Element 0 of the feed is the legal notice (id null) and is dropped by the runtime. Fields per the feed: slug, id, epoch, date, company, company_logo, position, tags[], description (HTML), location, apply_url, salary_min, salary_max, url; currency is not stated. Attribution: link back (follow) to the Remote OK URL and name Remote OK as the source."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'no proposal / message / contract surface exists on this venue' — applicants use the posting's own application page (apply_url).",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; re-read the record from the search hit (`url` / `apply_url`)."
+  }
+ },
+ "not_offered": {
+  "me": "No credentials to verify ('auth: none') and no account endpoint.",
+  "get_posting": "No per-id endpoint is documented; re-read the record from the search hit (`url` / `apply_url`).",
+  "apply": "No application API; applicants use the posting's own application page (apply_url).",
+  "list_messages": "No messaging API; the page documents the public listing feed only."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

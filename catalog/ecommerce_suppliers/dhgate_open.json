@@ -1,0 +1,306 @@
+{
+ "id": "dhgate_open",
+ "category": "ecommerce_suppliers",
+ "label": "DHgate (敦煌网) + DHgate Open Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://open.dhgate.com/docs/api",
+ "url": "https://www.dhgate.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (app key / secret + seller / buyer authorization per the vendor's notes)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.dhgate.com/",
+   "https://r.jina.ai/https://open.dhgate.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.dhgate.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://secure.dhgate.com/dop/oauth2/access_token",
+   "client_auth": "body",
+   "scope": "basic",
+   "token_param": "access_token",
+   "token_ttl_seconds": 86400,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App Key of your DHgate Open Platform application (https://open.dhgate.com/console); the Dropshipping/buyer APIs must be granted to the app (API authorization level A, no public network access)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "App Secret of the application, sent in the refresh_token grant to https://secure.dhgate.com/dop/oauth2/access_token."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the DHgate BUYER account's authorization-code consent (https://secure.dhgate.com/dop/oauth2/authorize?response_type=code&client_id=…&scope=basic, then grant_type=authorization_code). It is valid 30 days; the runtime mints 1-day access tokens from it and keeps the refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "00000000",
+   "error_field": "message"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/dop/router",
+    "params": {
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.buyer.user.get",
+     "v": "2.0"
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/7b539fd675694fcb8c7931b333f4c0cc",
+    "note": "dh.buyer.user.get v2.0 (GET https://api.dhgate.com/dop/router?method=…&v=2.0&timestamp=<ms>&access_token=…): {status{code '00000000', message}, buyerId, buyerName, email, country, buyerType, userTypeBase}. Router failures such as an unknown app key answer HTTP 200 {code, message} (e.g. 23 'Invalid App Key', 40 expired Access Token), reported as errors."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/dop/router",
+    "params": {
+     "pages": "page",
+     "pageSize": "limit",
+     "itemNameKeyWords": "query",
+     "dispCategoryId": "category",
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.dropshipping.item.list",
+     "v": "1.0"
+    },
+    "default_limit": 20,
+    "max_limit": 60,
+    "result": {
+     "items": "itemList",
+     "key": "products",
+     "fields": {
+      "id": "itemCode",
+      "title": "itemName",
+      "price": "minBuyerPrice",
+      "currency": "=USD",
+      "image_url": "imgUrl"
+     }
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/be9ac51528414982a551a1f0a58ce512",
+    "note": "dh.dropshipping.item.list v1.0: pages (1-based), pageSize (at most 60), itemNameKeyWords, dispCategoryId (display category id from dh.dropshipping.dispcategory.list). Rows {itemCode, itemName, supplierid, minBuyerPrice/maxBuyerPrice (original), dealMinBuyerPrice/dealMaxBuyerPrice (actual sale price), imgUrl (a DHgate image path), cateDispId, isFreeShip (0 = free shipping, 1 = not), confirmQty}. Prices are in USD (the currency parameter is not sent). The response's total/pageTotal are strings and are not returned."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/dop/router",
+    "params": {
+     "itemCode": "id",
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.dropshipping.item.get",
+     "v": "1.0"
+    },
+    "result": {
+     "fields": {
+      "id": "itemCode",
+      "title": "itemName",
+      "price": "itemSkuList.0.minBuyerPrice",
+      "currency": "currency",
+      "url": "dhgateProductUrl",
+      "image_url": "itemImgList.0.imgUrl",
+      "stock": "itemSkuList.0.inventory"
+     }
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/adfcb535f3d74f209b735e5b3025fb8c",
+    "note": "dh.dropshipping.item.get v1.0 (itemCode): itemName, currency, dhgateProductUrl, itemImgList[{imgUrl, mainImg}], itemPackage (grossWeight kg, cm dimensions), itemAttrList, itemSkuList[{skuId, skuMD5, minBuyerPrice, dealMinBuyerPrice, retailPrice, inventory, saleStatus, itemPriceRangeList, itemSkuAttrValueList, itemSkuInventoryList[{inventoryLocation, skuInventoryQty}]}]. price and stock are the FIRST SKU's; every SKU is in raw.itemSkuList (create_order needs the chosen skuMD5). Error 108 means a wrong itemCode."
+   },
+   "quote_shipping": {
+    "method": "GET",
+    "path": "/dop/router",
+    "params": {
+     "itemCode": "product_id",
+     "country": "country",
+     "quantity": "str:quantity",
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.dropshipping.ship.get",
+     "v": "1.0"
+    },
+    "result": {
+     "items": "shipCostAndWayList",
+     "key": "options",
+     "fields": {
+      "id": "expressType",
+      "name": "expressType",
+      "cost": "shipcost",
+      "currency": "currency",
+      "delivery_time": "deliveryTime",
+      "min_days": "shipTimeMin",
+      "max_days": "shipTimeMax",
+      "free_shipping": "isfreeShipping",
+      "stock_country": "stockCountryId"
+     }
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/50cda2405433480dacabefbde31fd780",
+    "note": "dh.dropshipping.ship.get v1.0 (itemCode, country ISO-2 e.g. US/FR, quantity; stocking country CN by default): shipCostAndWayList[{expressType (e.g. ePacket, pass as the item's shipType in create_order), shipcost, currency, deliveryTime ('8-30' days), shipTimeMin/Max, isfreeShipping, stockCountryId}]."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/dop/router",
+    "body_format": "form",
+    "params": {
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.buyer.order.place",
+     "v": "2.0"
+    },
+    "body": {
+     "cartList": "jsonstr:{items}",
+     "contactInfo": "jsonstr:{shipping_address}"
+    },
+    "result": {
+     "root": "orderList.0.orderInfo",
+     "fields": {
+      "id": "id",
+      "total": "orderTotal",
+      "created_at": "createTime"
+     }
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/d57650c0b5424bf981d12a8f08653115",
+    "note": "dh.buyer.order.place v2.0 (POST, form fields cartList and contactInfo as JSON strings). Pass `items` in DHgate's CartInfo shape: [{itemcode, skuMd5 (from get_product raw.itemSkuList), quantity, shipType (expressType from quote_shipping, optional), stockin (optional, default CN)}], and `shipping_address` in BuyerContactInfo shape: {firstname, lastname, country (ISO-2), state, city, addressline1, addressline2, postalcode, tel, email, vatNumber (mandatory for BR)}; both are sent as given. The answer lists one order per seller (orderList[{orderInfo{id (the order No.), orderTotal, shipCost, createTime (epoch ms)}}]); `id` is the FIRST order's number (every order is in raw of that first entry only; see get_order). Placed orders are paid separately (dh.buyer.order.pay, not mapped)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/dop/router",
+    "params": {
+     "orderNo": "id",
+     "timestamp": "now_epoch_ms"
+    },
+    "fixed_params": {
+     "method": "dh.buyer.order.get",
+     "v": "2.0"
+    },
+    "result": {
+     "fields": {
+      "id": "orderNo",
+      "status": "orderStatus",
+      "total": "orderTotalPrice",
+      "created_at": "startedDate",
+      "tracking_number": "orderDeliveryList.0.deliveryNo"
+     }
+    },
+    "docs": "https://open.dhgate.com/docs/api/detail/1231fa83e6094cbab75d3a8d27913776",
+    "note": "dh.buyer.order.get v2.0 (orderNo, the numeric order No., not the hexadecimal order id): orderStatus codes 101003 awaiting payment, 102001 paid awaiting confirmation, 103001 awaiting shipment, 103002 partially shipped, 101009 awaiting receipt confirmation, 102111 completed, 111000 cancelled, 111111 closed, 105xxx/106xxx refund and dispute states. Dates are 'yyyy-MM-dd HH:mm:ss' (Beijing time); amounts are USD (no currency field). tracking_number is the first orderDeliveryList entry's deliveryNo."
+   }
+  },
+  "not_offered": {
+   "track": "No tracking-events call: dh.buyer.trade.order.status.get (https://open.dhgate.com/docs/api/detail/fab4906ab8014172935302925706bea3) and dh.buyer.trade.deliveryno.get return only the order status and deliveryNo, 'Format: [transport mode: shipping No.; ...]. Example: UPS:DY0124,DHL:301245' (one string, no events); the shipping numbers are already in get_order."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.dhgate.com: DNS ok, TLSv1.3 (DigiCert, Inc.)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> None (timeout), so the answers are path-specific",
+   "token secure.dhgate.com/dop/oauth2/access_token: 400 invalid_client",
+   "authorize https://secure.dhgate.com/dop/oauth2/authorize: 403",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "homerun-mcp",
+ "display_name": "Homerun MCP",
+ "version": "0.1.0",
+ "description": "Homerun (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "homerun"
+   ],
+   "env": {
+    "PLATFORM_MCP_HOMERUN_API_KEY": "${user_config.platform_mcp_homerun_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_homerun_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HOMERUN_API_KEY",
+   "description": "Homerun Public API v2 key generated on https://app.homerun.co/settings/integrations with the `vacancies:read` scope; sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Homerun has no account endpoint; the key is verified with a one-item vacancies list (needs the vacancies:read scope)."
+  },
+  {
+   "name": "search",
+   "description": "Employer API: GET /v2/vacancies lists the key owner's OWN vacancies (filter[status]=public; include[]=location, department, salaryIndication), not a cross-company search. There is no keyword or location filter, so query/location are not sent — filter client-side. page (default 1) and perPage ('[1 .. 100]', default 15). salary_indication {currency, salary_value, max_salary_value, time_period} is in raw (amounts are decimal strings such as \"45000.00\"); location_type, type and expires_at too. Rate limit: '60 requests per minute'. Homerun suggests its Job XML Feeds when only listing vacancies."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v2/vacancies/{vacancy_id} (e.g. job_SnhUsAg1QwTRFIRNUfM6) returns {data: Vacancy}; page_content and salary_indication are in raw."
+  }
+ ]
+}

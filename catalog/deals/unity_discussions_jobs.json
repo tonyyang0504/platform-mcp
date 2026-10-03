@@ -1,0 +1,125 @@
+{
+ "id": "unity_discussions_jobs",
+ "category": "deals",
+ "label": "Unity Discussions — Collaboration & Jobs",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.discourse.org/",
+ "url": "https://discussions.unity.com/c/collaboration/46",
+ "verified_at": "2026-09-25",
+ "terms_note": "Discourse forum; Unity community terms not read; the JSON category feed is rate/bot limited (403).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (Discourse public JSON)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_json"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://docs.discourse.org/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://discussions.unity.com/c/community/collaboration-jobs/14.json",
+   "docs": "https://docs.discourse.org/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://docs.discourse.org/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Discourse JSON, bot-walled 403 from this host) Confidence medium (read only via r.jina.ai).",
+  "base_urls": [
+   "https://discussions.unity.com/c/collaboration/46.json"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /c/collaboration/46.json",
+    "purpose": "search",
+    "notes": "topic_list.topics[] (403)"
+   }
+  ],
+  "limits": " - robots.txt blocks /user-api-key and ?api_key URLs; category pages are readable in a browser / r.jina.ai only.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://discussions.unity.com/c/collaboration/46.json",
+   "https://r.jina.ai/https://discussions.unity.com/c/collaboration/46",
+   "https://discussions.unity.com/robots.txt",
+   "https://docs.discourse.org/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Unity Discussions is Discourse (Collaboration & Jobs = category 46; API documented at https://docs.discourse.org/). Re-checked 2026-09-25: https://discussions.unity.com/c/collaboration/46.json and /latest.json answer HTTP 403 'Crawler is not allowed!' to the User-Agents 'platform-mcp/0.1', 'python-httpx', 'curl' and a bare 'Mozilla/5.0', and return JSON only to a full desktop-browser User-Agent. An API client cannot read it without impersonating a browser, which is not done."
+}

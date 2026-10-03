@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "stockx-mcp",
+ "display_name": "StockX MCP",
+ "version": "0.1.0",
+ "description": "StockX (ecommerce channels): me, update_listing, end_listing, list_orders. Every tool maps to a docu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "stockx"
+   ],
+   "env": {
+    "PLATFORM_MCP_STOCKX_API_KEY": "${user_config.platform_mcp_stockx_api_key}",
+    "PLATFORM_MCP_STOCKX_CLIENT_ID": "${user_config.platform_mcp_stockx_client_id}",
+    "PLATFORM_MCP_STOCKX_CLIENT_SECRET": "${user_config.platform_mcp_stockx_client_secret}",
+    "PLATFORM_MCP_STOCKX_REFRESH_TOKEN": "${user_config.platform_mcp_stockx_refresh_token}",
+    "PLATFORM_MCP_STOCKX_CURRENCY": "${user_config.platform_mcp_stockx_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_stockx_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STOCKX_API_KEY",
+   "description": "StockX API key from the Developer Portal Keys page (issued after developer access approval), sent as x-api-key on every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_stockx_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STOCKX_CLIENT_ID",
+   "description": "Client ID of your StockX application (Developer Portal > Applications; one application per StockX account).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_stockx_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STOCKX_CLIENT_SECRET",
+   "description": "Client Secret of the same application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_stockx_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STOCKX_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time Authorization Code consent (https://accounts.stockx.com/authorize with scope 'offline_access openid' and audience gateway.stockx.com, then POST /oauth/token grant_type=authorization_code). The runtime exchanges it for 12-hour access tokens (grant_type=refresh_token, audience=gateway.stockx.com).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_stockx_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_STOCKX_CURRENCY",
+   "description": "Currency code of your asks (AUD, CAD, CHF, EUR, GBP, HKD, JPY, KRW, MXN, NZD, SGD, USD); StockX defaults to USD when omitted.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "There is no account endpoint; the probe reads one listing (GET /selling/listings?pageSize=1) with the minted token and x-api-key."
+  },
+  {
+   "name": "update_listing",
+   "description": "PATCH /selling/listings/{listingId} {amount (string), currencyCode} changes the ask price. Asynchronous: returns {listingId, operationId, operationStatus}. `title`, `description` and `quantity` are ignored (a listing is one ask on a catalogue variant)."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /selling/listings/{listingId}/deactivate removes the ask from the marketplace (asynchronous operation; the listing can be re-activated with PUT …/activate)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /selling/orders/active?pageNumber&pageSize(≤100)&orderStatus: orders from creation until payout. status: CREATED, CCAUTHORIZATIONFAILED, SHIPPED, RECEIVED, AUTHENTICATING, AUTHENTICATED, PAYOUTPENDING, PAYOUTCOMPLETED, SYSTEMFULFILLED, PAYOUTFAILED, SUSPENDED, PENDING, DONOTSHIP. `since` is ignored (only the historical-orders endpoint filters by date). amount is a string; product, variant and payout are in raw."
+  }
+ ]
+}

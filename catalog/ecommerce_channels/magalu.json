@@ -1,0 +1,262 @@
+{
+ "id": "magalu",
+ "category": "ecommerce_channels",
+ "label": "Magalu Marketplace",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "br"
+ ],
+ "docs_url": "https://developers.magalu.com/",
+ "url": "https://www.magazineluiza.com.br/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Magalu Marketplace seller account (Brazil, CNPJ, NF-e invoicing obligations); apps registered with the ID Magalu CLI (Client ID + Secret), OAuth 2 with renewable tokens; rate limits, sandbox and fees not on the pages read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "cli"
+  ],
+  "auth": "oauth2 (Client ID + Client Secret created with the ID Magalu CLI; renewable tokens)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "webhooks",
+   "messages"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "ID Magalu CLI (app registration) — developers.magalu.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.seller_id"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official developer portal home was opened; endpoint re",
+  "base_urls": [],
+  "auth": [
+   "1. Install the ID Magalu CLI, create an application → Client ID + Client Secret.",
+   "2. OAuth 2 authorization by the seller; renewable (refresh) tokens.",
+   "3. Register webhooks for order events."
+  ],
+  "endpoints": [
+   {
+    "call": "Products API",
+    "purpose": "create / update products, inventory, prices",
+    "notes": "'Crie e atualize produtos, inventário e preços'"
+   },
+   {
+    "call": "Orders API",
+    "purpose": "query orders; new-order notifications",
+    "notes": "'Consulte e seja notificado sobre novos pedidos'"
+   },
+   {
+    "call": "Webhooks",
+    "purpose": "event notifications",
+    "notes": ""
+   },
+   {
+    "call": "SAC / Perguntas & Respostas / Chat com o Cliente",
+    "purpose": "customer service, Q&A, chat",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read. - Seller / integrator app registration via ID Magalu; OAuth consent per seller. - Brazilian fiscal obligations (NF-e) apply to every order.",
+  "mcp_sdk": [
+   "SDK: ID Magalu CLI (app registration) — developers.magalu.com"
+  ],
+  "sources": [
+   "https://developers.magalu.com/",
+   "https://r.jina.ai/https://developers.magalu.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.magalu.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://id.magalu.com/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your application created with the ID Magalu CLI (see developers.magalu.com > Primeiros passos > Criar aplicação)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same application."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent of the seller at https://id.magalu.com (scopes such as open:portfolio:read/write, open:order-order:read). If ID Magalu returns a new refresh token on refresh, the runtime keeps it (and saves it with PLATFORM_MCP_STATE_DIR)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "channel_id",
+    "required": true,
+    "help": "Sales channel id the stock applies to (GET /seller/v1/portfolios/me returns channel.id)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Magalu (Magazine Luiza) seller APIs. Portfolio writes are asynchronous (202 with a trace_id). Prices are integers with a normalizer (e.g. 1999 with normalizer 100 = R$ 19,99).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/seller/v1/portfolios/me",
+    "docs": "https://developers.magalu.com/apis/products.openapi.yaml",
+    "note": "portfolios_v1_get_me: {tenant: {id}, channel: {id, name}, seller: {id, name}} of the authenticated seller."
+   },
+   "set_inventory": {
+    "method": "PATCH",
+    "path": "/seller/v1/portfolios/stocks/{sku}",
+    "body": {
+     "channel.id": "@channel_id",
+     "type": "=AVAILABLE",
+     "quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=accepted"
+     }
+    },
+    "docs": "https://developers.magalu.com/apis/products.openapi.yaml",
+    "note": "portfolios_v1_patch_stocks PATCH /seller/v1/portfolios/stocks/{sku} {channel: {id}, type: AVAILABLE, quantity} sets the available stock of your SKU (`sku` required) on the configured channel. Asynchronous (202 + trace_id)."
+   },
+   "end_listing": {
+    "method": "PATCH",
+    "path": "/seller/v1/portfolios/skus/{listing_id}",
+    "body": {
+     "active": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "=deactivation_requested"
+     }
+    },
+    "docs": "https://developers.magalu.com/apis/products.openapi.yaml",
+    "note": "portfolios_v1_patch_skus PATCH /seller/v1/portfolios/skus/{sku} {active: false} deactivates the SKU (partial update; reversible with active: true). `listing_id` is your SKU. Asynchronous (202 + trace_id)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/seller/v1/orders",
+    "params": {
+     "status": "status",
+     "purchased_at__gte": "since",
+     "_offset": "offset",
+     "_limit": "limit"
+    },
+    "fixed_params": {
+     "_sort": "purchased_at:desc"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "orders",
+     "total": "meta.page.count",
+     "fields": {
+      "id": "code",
+      "status": "status",
+      "currency": "amounts.currency",
+      "created_at": "purchased_at"
+     }
+    },
+    "docs": "https://developers.magalu.com/apis/orders.openapi.yaml",
+    "note": "seller_v1_get_order_list ?status(new|approved|...)&purchased_at__gte(ISO-8601 with offset)&_offset&_limit, newest first. `id` is the platform order code. amounts.total is an integer to be divided by amounts.normalizer, so it is left in raw rather than mapped to `total`; deliveries (needed to ship) are in raw."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /seller/v1/portfolios/skus needs category, brand, condition, dimensions, images and fiscal data (ncm, origin), and prices are created separately; the vocabulary lacks category, brand and dimensions.",
+   "update_listing": "Prices (PATCH /seller/v1/portfolios/prices/{sku}) are integers with a normalizer (price 1999 + normalizer 100 = 19.99) plus channel and currency; converting the vocabulary's decimal price needs arithmetic the adapter lacks, and a text-only SKU patch would leave the declared price unchanged.",
+   "mark_shipped": "Shipping is per delivery: POST /seller/v1/deliveries/{id}/shippings after an NF-e is attached (/deliveries/{id}/invoices); the delivery id and invoice are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.magalu.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token id.magalu.com/oauth/token: 400 invalid_grant",
+   "authorize https://id.magalu.com/login: 200",
+   "spec https://developers.magalu.com/apis/orders.openapi.yaml, https://developers.magalu.com/apis/products.openapi.yaml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "elevenlabs-mcp",
+ "display_name": "ElevenLabs MCP",
+ "version": "0.1.0",
+ "description": "ElevenLabs (builder tools): me, list_items, get_item, delete_item. Every tool maps to a documented e",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "elevenlabs"
+   ],
+   "env": {
+    "PLATFORM_MCP_ELEVENLABS_API_KEY": "${user_config.platform_mcp_elevenlabs_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_elevenlabs_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ELEVENLABS_API_KEY",
+   "description": "ElevenLabs API key (Profile > API Keys; scoped keys need voices read/write for these tools), sent as the xi-api-key header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/user: user id, subscription tier, character count/limit."
+  },
+  {
+   "name": "list_items",
+   "description": "GET /v2/voices?page_size (≤100)&next_page_token&search&voice_type: the account's voices (items are voices; collection = voice_type such as personal, community, default, workspace). Cursor-paginated: pass next_cursor back as cursor."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /v1/voices/{voice_id}: one voice with its settings, labels and samples (in raw)."
+  },
+  {
+   "name": "delete_item",
+   "description": "DELETE /v1/voices/{voice_id} -> {status: ok}: permanently deletes a voice the account owns."
+  }
+ ]
+}

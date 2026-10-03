@@ -1,0 +1,350 @@
+{
+ "id": "teams",
+ "category": "messaging",
+ "label": "Microsoft Teams",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/microsoftteams/platform/",
+ "url": "https://teams.microsoft.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed via a registered bot: proactive messages require the app to be INSTALLED for the user (personal scope) or in the team / group chat — otherwise 403 ForbiddenOperationException; a bot cannot create a new group chat or a new channel; blocked / uninstalled → 403 subCode MessageWritesBlocked; proactive by email / UPN not supported (use aadObjectId, personal scope only). Apps can be installed for users via Graph (userTeamwork installedApps) from the org catalog or the Teams Store. Rate limits: HTTP 429 (retry 412 / 502 / 504 too); per bot per thread: send 7 ops/s, 8/2 s, 60/30 s, 1,800/h; create conversation same; get members 14/s … 3,600/h; all bots per thread 14 sends/s; global 50 RPS per app per tenant. Graph chatMessage POST: delegated ChannelMessage.Send / ChatMessage.Send (not for personal Microsoft accounts); application permission only Teamwork.Migrate.All (migration, fees may apply).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks",
+   "graph"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "proactive_dm",
+   "reactions",
+   "media",
+   "webhooks",
+   "update_delete"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Teams SDK / Teams AI Library (C#, TypeScript, Python), Bot Framework SDK, Microsoft Graph SDKs (learn.microsoft.com/microsoftteams/platform)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 28000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://graph.microsoft.com/v1.0"
+  ],
+  "auth": [
+   "1. Azure Bot registration (app id + secret / certificate) → Teams app manifest (bot scopes personal / team / groupChat).",
+   "2. Bot gets a Bot Framework bearer token (client credentials against `login.microsoftonline.com/botframework.com`).",
+   "3. App must be INSTALLED where it messages: personal scope for 1:1, in the team / group chat otherwise; install via Graph",
+   "4. Graph delegated: `ChatMessage.Send`, `ChannelMessage.Send` (not personal Microsoft accounts); application permission"
+  ],
+  "endpoints": [
+   {
+    "call": "Bot messaging endpoint (our HTTPS URL) receives activities `message`, `conversationUpdate` (membersAdded), `installationUpdate",
+    "purpose": "inbound / read inbox (messages to the bot)",
+    "notes": ""
+   },
+   {
+    "call": "POST {serviceUrl}/v3/conversations/{conversationId}/activities",
+    "purpose": "reply in the activity's conversation (thread)",
+    "notes": ""
+   },
+   {
+    "call": "POST {serviceUrl}/v3/conversations` `{bot{id}, members[{id: aadObjectId}], channelData{tenant{id}}}` → `{id}",
+    "purpose": "create 1:1 conversation for proactive messages (personal scope only; 403 ForbiddenOperationException if not installed)",
+    "notes": ""
+   },
+   {
+    "call": "POST …/conversations/{channelId}/activities` (with `channelData.channel.id`) · reply with root message id",
+    "purpose": "new channel thread / proactive in channel",
+    "notes": ""
+   },
+   {
+    "call": "PUT …/activities/{activityId}` · `DELETE",
+    "purpose": "edit / delete own message",
+    "notes": ""
+   },
+   {
+    "call": "GET …/conversations/{id}/members` (paged)",
+    "purpose": "roster",
+    "notes": ""
+   },
+   {
+    "call": "Graph `POST /chats/{id}/messages` · `POST /teams/{t}/channels/{c}/messages/{m}/replies",
+    "purpose": "delegated send when the tenant user signs in",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per bot per thread: send 7 / s, 8 / 2 s, 60 / 30 s, 1,800 / h; create conversation same; get members / conversations 14 / s, 16 / 2 s, 120 / 30 s, 3,600 / h. All bots per thread: 14 sends / s, 16 / 2 s. Global 50 RPS per app per tenant. 429 (also retry 412 / 502 / 504) with exponential back-off + jitter. - Cannot create a group chat or a channel; cannot address by email / UPN; blocked / uninstalled → 403 `MessageWritesBlocked`. - Proactive messages must state why the user receives them and offer opt-out (Microsoft guidance).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/send-proactive-messages",
+   "https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/rate-limit",
+   "https://learn.microsoft.com/en-us/graph/api/chatmessage-post"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://graph.microsoft.com/v1.0",
+  "rate_per_second": 2,
+  "rate_note": "Teams service limits apply per app per tenant; sending messages is limited to a few per second per chat or channel; HTTP 429 + Retry-After (https://learn.microsoft.com/en-us/graph/throttling-limits).",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Application (client) ID of the Microsoft Entra app registration."
+    },
+    {
+     "name": "client_secret",
+     "required": false,
+     "help": "Client secret of the app registration ('Only required for web apps'); leave empty for a public client. Sent in the form body of POST https://login.microsoftonline.com/common/oauth2/v2.0/token."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time authorization-code consent including offline_access and the delegated scopes User.Read Chat.ReadWrite ChatMessage.Send ChannelMessage.Send ChannelMessage.Read.All (work or school accounts only; personal accounts are 'Not supported'). Microsoft may return a new refresh token on every refresh; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/<platform>.json (mode 0600)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "team_id",
+    "required": false,
+    "help": "Team id whose channel threads get_thread and reply use (GET /me/joinedTeams)."
+   },
+   {
+    "name": "user_id",
+    "required": false,
+    "help": "Entra object id of the signed-in user (GET /me → id); required by mark_read."
+   },
+   {
+    "name": "tenant_id",
+    "required": false,
+    "help": "Tenant id of the signed-in user; required by mark_read."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0",
+    "note": "GET /me of the signed-in user."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/chats/{to}/messages",
+    "body": {
+     "body.content": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/chat-post-messages?view=graph-rest-1.0",
+    "note": "`to` is a chat id (19:…@thread.v2 or 19:…@unq.gbl.spaces; GET /me/chats). Delegated ChatMessage.Send; 'Application' permission is migration-only."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/chats/{channel}/messages",
+    "params": {
+     "$top": "limit"
+    },
+    "query_safe": "$",
+    "max_limit": 50,
+    "default_limit": 25,
+    "result": {
+     "items": "value",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "replyToId",
+      "from": "from.user.displayName",
+      "text": "body.content",
+      "sent_at": "createdDateTime"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/chat-list-messages?view=graph-rest-1.0",
+    "note": "Messages of ONE chat (`channel` = chat id, required), newest first; 'Maximum allowed $top value is 50'. `page` is ignored (nextLink paging); `since` is not sent. text is body.content (HTML for most messages)."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/teams/{team_id}/channels/{channel}/messages/{thread_id}/replies",
+    "path_params": {
+     "team_id": "@team_id"
+    },
+    "params": {
+     "$top": "limit"
+    },
+    "query_safe": "$",
+    "max_limit": 50,
+    "default_limit": 25,
+    "result": {
+     "items": "value",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "replyToId",
+      "from": "from.user.displayName",
+      "text": "body.content",
+      "sent_at": "createdDateTime"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/chatmessage-list-replies?view=graph-rest-1.0",
+    "note": "Replies to a channel message: `channel` is the channel id, `thread_id` the root message id, and the team comes from config team_id."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/teams/{team_id}/channels/{channel}/messages/{thread_id}/replies",
+    "path_params": {
+     "team_id": "@team_id"
+    },
+    "body": {
+     "body.content": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/chatmessage-post-replies?view=graph-rest-1.0",
+    "note": "Reply in a channel thread (`channel` = channel id, `thread_id` = root message id, team from config team_id). 'Only the body property is mandatory'."
+   },
+   "mark_read": {
+    "method": "POST",
+    "path": "/chats/{channel}/markChatReadForUser",
+    "body": {
+     "user.id": "@user_id",
+     "user.tenantId": "@tenant_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=read"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/graph/api/chat-markchatreadforuser?view=graph-rest-1.0",
+    "note": "Marks the chat `channel` read for the signed-in user (config user_id and tenant_id); 204."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host graph.microsoft.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token login.microsoftonline.com/common/oauth2/v2.0/token: 400 invalid_grant",
+   "authorize https://login.microsoftonline.com/common/oauth2/v2.0/authorize: 200",
+   "spec https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "send: spec says \"spec requires body field '@odata.type', adapter does not send it\"; waived: the generated OpenAPI marks @odata.type required on every entity body; the chatMessage create samples omit it reply: spec says \"spec requires body field '@odata.type', adapter does not send it\"; waived: the generated OpenAPI marks @odata.type required on every entity body; the chatMessage create samples omit it"
+ }
+}

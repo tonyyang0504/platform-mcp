@@ -1,0 +1,38 @@
+{
+ "id": "moteur",
+ "category": "automotive",
+ "label": "Moteur",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.moteur.ma",
+ "domain": "moteur.ma",
+ "country": "Morocco",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Morocco); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://moteur.ma/"
+  ],
+  "unofficial": [
+   "https://docs.carapis.com/platforms/mena-africa/moteur-ma",
+   "https://github.com/mouhcineToumi/moteur-ma-api"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,87 @@
+{
+ "label": "Frankfurter (exchange rates)",
+ "lane": "api",
+ "kind": "fx_reference_rates",
+ "docs_url": "https://frankfurter.dev/",
+ "url": "https://frankfurter.dev/",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "spec_url": "https://api.frankfurter.dev/v2/openapi.json",
+ "terms_note": "Open-source (MIT) API for current and historical reference exchange rates blended from central banks and public providers; no key, no documented quota.",
+ "adapter": {
+  "base_url": "https://api.frankfurter.dev/v2",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "config_fields": [
+   {
+    "name": "base_currency",
+    "required": false,
+    "help": "ISO 4217 base currency for get_series (the API's `base`, default EUR per the spec)."
+   }
+  ],
+  "tools": {
+   "search_symbols": {
+    "method": "GET",
+    "path": "/currencies",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "key": "results",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "name"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "iso_code",
+      "name": "name",
+      "type": "=currency"
+     }
+    },
+    "docs": "https://api.frankfurter.dev/v2/openapi.json",
+    "note": "Searches the currency list (GET /currencies: every active currency with its name, e.g. 'dollar', 'yen' or 'USD'); the API has no search parameter, so the server filters code and name locally (case-insensitive substring) and pages the matches. `raw` has iso_numeric, the local symbol and start_date/end_date."
+   },
+   "get_series": {
+    "method": "GET",
+    "path": "/rates",
+    "params": {
+     "quotes": "series_id",
+     "base": "@base_currency",
+     "from": "date:start",
+     "to": "date:end"
+    },
+    "result": {
+     "items": "$",
+     "key": "points",
+     "fields": {
+      "time": "date",
+      "value": "rate"
+     }
+    },
+    "docs": "https://api.frankfurter.dev/v2/openapi.json",
+    "note": "series_id is the quote currency (ISO 4217, e.g. USD); values are units of it per 1 base currency (config base_currency, default EUR). start/end are YYYY-MM-DD; without them the API returns the latest rate only. One record per date (daily)."
+   }
+  },
+  "not_offered": {
+   "me": "No accounts or keys: the API is public ('no API key required', https://frankfurter.dev/).",
+   "get_candles": "Reference rates only: one blended rate per currency per date, no OHLC candles (GET /rates returns {date, base, quote, rate}).",
+   "get_news": "The API serves exchange rates only; there is no news endpoint in the spec."
+  }
+ },
+ "id": "frankfurter",
+ "category": "market_data",
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

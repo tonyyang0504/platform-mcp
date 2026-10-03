@@ -1,0 +1,151 @@
+{
+ "id": "devpost",
+ "category": "deals",
+ "label": "Devpost",
+ "lane": "api",
+ "kind": "hackathon",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://devpost.com/api/hackathons",
+ "url": "https://devpost.com/hackathons",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public JSON used by the site (undocumented, anonymous). ToS forbids automated vote manipulation only; registration and submission happen on the hackathon's Devpost site.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://devpost.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No rate limit or API terms published (the endpoint is the site's own JSON; robots.txt answers 403 to non-browser clients, the API answered 200 to a platform-mcp User-Agent on 2026-09-24). One request per second.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/hackathons",
+    "params": {
+     "page": "page"
+    },
+    "fixed_params": {
+     "status[]": "open"
+    },
+    "default_limit": 9,
+    "max_limit": 9,
+    "result": {
+     "items": "hackathons",
+     "key": "postings",
+     "total": "meta.total_count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "buyer": "organization_name",
+      "url": "url",
+      "deadline": "submission_period_dates"
+     }
+    },
+    "docs": "https://devpost.com/api/hackathons",
+    "note": "Undocumented public JSON used by devpost.com/hackathons: `?page=N&status[]=open` (open hackathons only, fixed); the page size is the site's fixed 9 (`meta.per_page`), so `limit` is not sent and `total` is meta.total_count. No keyword parameter: `query`, `category` and `min_budget` are not sent. `deadline` is the display string submission_period_dates (e.g. 'Jul 31 - Oct 01, 2026'), not ISO-8601; prize_amount (HTML), themes[], registrations_count, start_a_submission_url and invite_only stay in `raw`."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'No API for registration or submission — assist card with start_a_submission_url'; ToS forbids automated vote manipulation.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "Details live on each hackathon's own site (HTML, 'not machine-readable'); re-read the record from the search hit."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

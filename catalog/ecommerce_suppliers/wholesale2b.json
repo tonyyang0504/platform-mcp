@@ -1,0 +1,132 @@
+{
+ "id": "wholesale2b",
+ "category": "ecommerce_suppliers",
+ "label": "Wholesale2B",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global",
+  "us_ca"
+ ],
+ "docs_url": "https://www.wholesale2b.com/dropship-api-plan.html",
+ "url": "https://www.wholesale2b.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "feed"
+  ],
+  "auth": "API credentials from the Wholesale2B account (Dropship API plan)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "product_import",
+   "order_create",
+   "orders",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the plan page describes the API's capabilities;",
+  "base_urls": [],
+  "auth": [
+   "1. Subscribe to the Dropship API plan",
+   "2. Select products / categories / suppliers into 'my list'",
+   "3. Use the account API credentials; fund the wallet for orders"
+  ],
+  "endpoints": [
+   {
+    "call": "products (my list)",
+    "purpose": "details, images, pricing, inventory in real time",
+    "notes": ""
+   },
+   {
+    "call": "orders (create / status)",
+    "purpose": "process orders; pay from wallet",
+    "notes": ""
+   },
+   {
+    "call": "inventory",
+    "purpose": "stock status updates",
+    "notes": ""
+   },
+   {
+    "call": "webhooks",
+    "purpose": "tracking codes pushed back",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Paid plan - Wallet balance or manual payment",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.wholesale2b.com/dropship-api-plan.html"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public reference (re-checked 2026-09-25 with headless Chromium): https://www.wholesale2b.com/dropship-api-plan.html renders only marketing copy for the paid API plan ('Set up your API credentials in your store's backend'; support 'provide[s] comprehensive documentation and assistance'), with no link to a reference; https://www.wholesale2b.com/api-documentation.html renders an empty page, /api/ and /api-docs answer 200 with an empty body, docs.wholesale2b.com answers Cloudflare 522, api.wholesale2b.com does not resolve, and there is no official GitHub org. No endpoint, auth or payload can be cited; documentation appears to be handed out to API-plan subscribers only."
+}

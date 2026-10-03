@@ -1,0 +1,39 @@
+{
+ "id": "yelp_fusion",
+ "category": "sales",
+ "label": "Yelp Fusion API",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "us",
+  "ca",
+  "gb",
+  "global"
+ ],
+ "docs_url": "https://docs.developer.yelp.com/",
+ "url": "https://www.yelp.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "www.yelp.com is Disallow: / for every agent and answers 403 → never fetched; Fusion Business Search on a Yelp API key (free tier, daily cap) → platform-key SALES_YELP_API_KEY.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

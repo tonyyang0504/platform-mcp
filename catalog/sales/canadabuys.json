@@ -1,0 +1,38 @@
+{
+ "id": "canadabuys",
+ "category": "sales",
+ "label": "CanadaBuys",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "ca"
+ ],
+ "docs_url": null,
+ "url": "https://canadabuys.canada.ca/",
+ "verified_at": "2026-09-25",
+ "terms_note": "robots.txt is Disallow: / for every agent → no public fetching; the site publishes tender open-data CSVs (not fetched this pass) — until that URL is verified the user's session reads the notices.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter_status": "needs_runtime",
+ "reason": "Remaining gaps: (1) CSV detection for bodies not typed text/csv — the only machine-readable access is the CSV downloads of open.canada.ca dataset 6abd20d4-7a1c-4b38-baa2-9525d0bb2fd2 (https://canadabuys.canada.ca/opendata/pub/openTenderNotice-ouvertAvisAppelOffres.csv, newTenderNotice-nouvelAvisAppelOffres.csv), and re-checked 2026-09-25 they are served as 'content-type: application/octet-stream' from Azure Blob storage, while the runtime's new CSV parsing (2026-09-25 additions) triggers only on a text/csv content type (the TypeScript runtime has no override); (2) client-side filtering/truncation of rows — the open-notice file is 6.6 MB with 924 rows of 67 columns and no query, page or limit parameters, so search_postings would return the whole file on every call. There is no query API; bids go through CanadaBuys / SAP Ariba."
+}

@@ -1,0 +1,114 @@
+{
+ "id": "unity_levelplay",
+ "category": "ads",
+ "label": "Unity LevelPlay / ironSource Ads",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.is.com/ironsource-mobile/air/reporting-api/",
+ "url": "https://unity.com/products/levelplay",
+ "verified_at": "2026-09-25",
+ "terms_note": "Unity Grow account; reporting API key; free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (LevelPlay / ironSource reporting API credentials)",
+  "access": "signup",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** for our purpose (publisher reporting) Confidence: **medium**.",
+  "base_urls": [],
+  "auth": [
+   "1. Unity Grow account.",
+   "2. Reporting API key.",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "mediation revenue reports",
+    "purpose": "publisher reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.is.com/ironsource-mobile/air/reporting-api/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://docs.unity.com/en-us/grow/is-ads/monetization/apis/authentication renders the ironSource Ads 'Monetization > APIs' section (Authentication, Reporting, Impression level revenue, Application, Instances) — publisher-side APIs that report ad revenue per app and configure mediation instances. No advertiser account, campaign, budget or spend-report resource exists there, so none of the ads verbs maps; Unity/ironSource user acquisition is served by the unity_ads entry (Advertising Management API)."
+}

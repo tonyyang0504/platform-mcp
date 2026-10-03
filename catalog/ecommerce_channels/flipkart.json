@@ -1,0 +1,252 @@
+{
+ "id": "flipkart",
+ "category": "ecommerce_channels",
+ "label": "Flipkart",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://seller.flipkart.com/api-docs/FMSAPI.html",
+ "url": "https://www.flipkart.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Flipkart seller account (India, GST); the seller creates a self-access application (id + secret) in the API portal — sharing self-access credentials with third parties gets the account deactivated, so a multi-tenant product must register as a third-party app using the authorization-code flow; tokens 60 d access / 180 d refresh with a '21-day safe window'; HTTPS only; sandbox available; ≤ 10 SKUs per listing request, ≤ 100 shipments per order request; no numeric rate limit published.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2 (self-access client-credentials with application id/secret from the seller API portal; third-party authorization-code for aggregators; access 60 d, refresh 180 d)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official code-generation tools for Python and C# (FMSAPI page)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.app_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.location_id",
+  "config.sandbox_base"
+ ],
+ "rate_limits": "not stated in reference",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official develop",
+  "base_urls": [
+   "https://api.flipkart.net/sellers/…"
+  ],
+  "auth": [
+   "1. Seller registers an application in the seller API portal → application id + secret (self-access) — or the platform registers a third-party app.",
+   "2. Self-access: POST token with Basic(app id:secret) grant_type=client_credentials; third-party: seller authorises → authorization code → token + refresh token.",
+   "3. Access token 60 days, refresh 180 days; renew inside the 21-day safe window; check expiry before calls."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /listings/v3",
+    "purpose": "create listings",
+    "notes": "product_id, price.mrp / selling_price, tax.hsn / tax_code, listing_status, fulfillment_profile, locations[], packages[]; ≤ 10 SKUs"
+   },
+   {
+    "call": "POST /listings/v3/update · /update/price · /update/inventory",
+    "purpose": "update listing, price only, inventory only",
+    "notes": "sku → fields"
+   },
+   {
+    "call": "GET /listings/v3/{skuIds} · POST /listings/v3/search · /product/search · /details",
+    "purpose": "read listings",
+    "notes": "batches of 500 / 20"
+   },
+   {
+    "call": "POST /v3/shipments/filter",
+    "purpose": "orders (shipments) by date / state / SKU",
+    "notes": ""
+   },
+   {
+    "call": "POST /v3/shipments/labels",
+    "purpose": "generate invoice + label (marks packed)",
+    "notes": ""
+   },
+   {
+    "call": "POST /v3/shipments/dispatch · /v3/shipments/selfShip/dispatch · /selfShip/delivery",
+    "purpose": "ready-to-dispatch / self-ship dispatch + delivery (tracking)",
+    "notes": ""
+   },
+   {
+    "call": "GET /v3/shipments/{ids} · GET …/labels · GET …/invoices · POST …/labelOnly/pdf",
+    "purpose": "tracking details, label + invoice download",
+    "notes": "≤ 100 shipments"
+   },
+   {
+    "call": "POST /v3/shipments/cancel",
+    "purpose": "cancel order items",
+    "notes": ""
+   },
+   {
+    "call": "GET /v2/returns · POST /v2/returns/approve · /reject · POST /v3/returns/tasks/shipments",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "Report Management APIs",
+    "purpose": "business reports",
+    "notes": ""
+   }
+  ],
+  "limits": " No numeric rate limit on the pages opened; batch caps (10 SKUs, 100 shipments) apply. - Self-access credentials may not be shared with third parties (account deactivation) — multi-tenant use must be a registered third-party app. - HTTPS only; tokens must not be hard-coded. - GST / HSN data mandatory on listings (India).",
+  "mcp_sdk": [
+   "SDK: official code-generation tools for Python and C# (FMSAPI page)"
+  ],
+  "sources": [
+   "https://seller.flipkart.com/api-docs/FMSAPI.html",
+   "https://seller.flipkart.com/api-docs/listing-api-docs/LMAPIRef.html",
+   "https://seller.flipkart.com/api-docs/order-api-docs/OMAPIRef.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.flipkart.net/sellers",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Seller API access token of your Self Access Application (Seller Dashboard > Manage Profile > Developer Access): obtain it with GET https://api.flipkart.net/oauth-service/oauth/token?grant_type=client_credentials&scope=Seller_Api,Default using HTTP Basic appId:appSecret. It is valid about 60 days; replace it when calls start failing with 401 (the runtime cannot run Flipkart's GET token call itself)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "Flipkart Marketplace Seller APIs (India). Self Access Applications are for the seller's own use only; partners/aggregators must use Third Party Applications.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/v3/shipments/filter/",
+    "body": {
+     "filter.type": "=preDispatch",
+     "filter.states.0": "=APPROVED",
+     "pagination.pageSize": "json:1"
+    },
+    "docs": "https://seller.flipkart.com/api-docs/order-api-docs/OMAPIRef.html",
+    "note": "No account endpoint; the probe searches one APPROVED pre-dispatch shipment ({shipments[], hasMore, nextPageUrl}) to verify the token."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/v3/shipments/filter/",
+    "body": {
+     "filter.type": "map:status:APPROVED=preDispatch,PACKING_IN_PROGRESS=preDispatch,PACKED=preDispatch,FORM_FAILED=preDispatch,READY_TO_DISPATCH=preDispatch,SHIPPED=postDispatch,DELIVERED=postDispatch,PICKUP_COMPLETE=postDispatch",
+     "filter.states.0": "status",
+     "filter.orderDate.from": "since",
+     "pagination.pageSize": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "shipments",
+     "key": "orders",
+     "fields": {
+      "id": "orderItems.0.orderId",
+      "status": "orderItems.0.status",
+      "total": "orderItems.0.priceComponents.totalPrice",
+      "currency": "=INR",
+      "created_at": "orderItems.0.orderDate"
+     }
+    },
+    "docs": "https://seller.flipkart.com/api-docs/order-api-docs/OMAPIRef.html",
+    "note": "Search Shipments POST /v3/shipments/filter/ {filter: {type, states: [status], orderDate: {from: since}}, pagination: {pageSize ≤ 20}}. `status` is REQUIRED and selects the filter type: APPROVED|PACKING_IN_PROGRESS|PACKED|FORM_FAILED|READY_TO_DISPATCH (preDispatch) or SHIPPED|DELIVERED|PICKUP_COMPLETE (postDispatch). One row per SHIPMENT (raw.shipmentId); id/status/total/created_at come from its first order item (INR). Further pages are only reachable through raw.nextPageUrl."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /listings/v3 takes a body keyed by the SKU itself ({\"<sku>\": {product_id, price, tax, listing_status, shipping_fees, fulfillment_profile, packages, locations}}); object keys built from an argument cannot be expressed, and the vocabulary lacks product_id, HSN/tax and package data.",
+   "update_listing": "POST /listings/v3/update/price uses the same SKU-keyed body ({\"<sku>\": {product_id, price: {mrp, selling_price, currency}}}), i.e. an object key taken from the argument, which the declarative body cannot build.",
+   "set_inventory": "POST /listings/v3/update/inventory is keyed by SKU ({\"<sku>\": {product_id, locations: [{id, inventory}]}}) and needs the Flipkart product_id and location id; not expressible with fixed body keys.",
+   "end_listing": "Listing status changes go through POST /listings/v3/update with the same SKU-keyed body (listing_status INACTIVE); not expressible with fixed body keys.",
+   "mark_shipped": "The dispatch calls in the Order Management API reference (POST /v3/shipments/dispatch, POST /v3/shipments/selfShip/dispatch, preceded by /v3/shipments/labels) operate on shipmentIds and the seller's dispatch location rather than an order id plus tracking number; those ids are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.flipkart.net: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

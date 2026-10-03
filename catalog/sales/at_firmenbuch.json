@@ -1,0 +1,36 @@
+{
+ "id": "at_firmenbuch",
+ "category": "sales",
+ "label": "Firmenbuch",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "at"
+ ],
+ "docs_url": null,
+ "url": "https://www.justiz.gv.at/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Register extracts are sold through licensed clearing houses (paid, per extract); the justiz.gv.at portal only describes the service → tenant account on a clearing house. robots.txt has no Disallow.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

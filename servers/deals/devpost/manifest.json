@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "devpost-mcp",
+ "display_name": "Devpost MCP",
+ "version": "0.1.0",
+ "description": "Devpost (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "devpost"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Undocumented public JSON used by devpost.com/hackathons: `?page=N&status[]=open` (open hackathons only, fixed); the page size is the site's fixed 9 (`meta.per_page`), so `limit` is not sent and `total` is meta.total_count. No keyword parameter: `query`, `category` and `min_budget` are not sent. `deadline` is the display string submission_period_dates (e.g. 'Jul 31 - Oct 01, 2026'), not ISO-8601; prize_amount (HTML), themes[], registrations_count, start_a_submission_url and invite_only stay in `raw`."
+  }
+ ]
+}

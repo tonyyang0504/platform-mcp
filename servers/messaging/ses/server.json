@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ses-mcp",
+ "description": "Amazon SES (messaging): me, send. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.aws.amazon.com/ses/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ses"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SES_ACCESS_KEY_ID",
+     "description": "AWS access key id of an IAM principal allowed ses:SendEmail and ses:GetAccount.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SES_SECRET_ACCESS_KEY",
+     "description": "The matching AWS secret access key; used only to derive the SigV4 signing key.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SES_SESSION_TOKEN",
+     "description": "Session token when the keys are temporary STS credentials (sent as X-Amz-Security-Token).",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SES_REGION",
+     "description": "AWS Region of your SES account, e.g. us-east-1, eu-west-1 (the endpoint is email.<region>.amazonaws.com).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SES_FROM_ADDRESS",
+     "description": "Verified sender identity (address or an address on a verified domain) used as FromEmailAddress.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

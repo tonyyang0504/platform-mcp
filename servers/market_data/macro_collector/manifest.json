@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "macro_collector-mcp",
+ "display_name": "FRED macro series (CSV) MCP",
+ "version": "0.1.0",
+ "description": "FRED macro series (CSV) (market data): me, get_series, search_symbols. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "macro_collector"
+   ],
+   "env": {
+    "PLATFORM_MCP_MACRO_COLLECTOR_API_KEY": "${user_config.platform_mcp_macro_collector_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_macro_collector_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MACRO_COLLECTOR_API_KEY",
+   "description": "FRED API key ('32 character alpha-numeric lowercase string') requested at https://fredaccount.stlouisfed.org/apikeys; sent as the api_key query parameter (https://fred.stlouisfed.org/docs/api/api_key.html). Terms: show 'This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.'",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "FRED has no account endpoint: the key is verified by fetching the docs' own example series (GET /fred/series?series_id=GNPCA); account carries realtime_start/end and seriess[]."
+  },
+  {
+   "name": "get_series",
+   "description": "`start`/`end` are observation_start/observation_end (YYYY-MM-DD); the API's own limit (1-100,000, default 100,000) and offset are not exposed, so one call returns the full range. `value` is the documented numeric string ('.' marks a missing observation); units (lin), frequency and aggregation_method keep FRED's defaults. realtime_start/realtime_end stay in `raw`."
+  },
+  {
+   "name": "search_symbols",
+   "description": "Full-text search (search_type=full_text default) ordered by search_rank; limit 1-1000 with offset paging and `count` as the total. `type` is the series frequency (e.g. Monthly); units, seasonal_adjustment, observation_start/end, popularity and last_updated stay in `raw`."
+  }
+ ]
+}

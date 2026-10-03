@@ -1,0 +1,185 @@
+{
+ "id": "unreal_forums_jobs",
+ "category": "deals",
+ "label": "Unreal Engine Forums — Job Offerings",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss",
+ "url": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public Discourse RSS; Epic forum rules not read; no key.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://forums.unrealengine.com/c/community/job-offerings/34.json",
+   "docs": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Discourse RSS) Confidence high (feed live).",
+  "base_urls": [
+   "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET …/76.rss",
+    "purpose": "search",
+    "notes": "topic title, link, description, pubDate"
+   }
+  ],
+  "limits": " - Public RSS; forum reply needs an Epic account.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://forums.unrealengine.com/c/community/got-skills-looking-for-talent/job-offerings/76.rss"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://forums.unrealengine.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "Anonymous Discourse API; the forum applies Discourse's per-IP rate limits (429 with Retry-After). One request per second.",
+  "terms": "Epic Games Unreal Engine forum content; replies need an Epic Games account. Link back to the topic when reusing it.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/search.json",
+    "params": {
+     "q": "fmt:{query} category:76 order:latest",
+     "page": "page"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "topics",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "posted_at": "created_at",
+      "description": "excerpt"
+     }
+    },
+    "docs": "https://docs.discourse.org/#tag/Search/operation/search",
+    "note": "GET /search.json?q=<query> category:76 order:latest&page=<page> (Discourse 'Search for a term'), restricted to the Got Skills? Looking for Talent? › Job Offerings ('Post your open positions here!') category (id 76) and newest first. `query` is REQUIRED in practice: without it no q is sent and Discourse returns no topics. Discourse search takes at least 3 characters and supports its advanced filters inside the query (e.g. tags:scripter, after:2026-09-01). category and min_budget are not sent (no budget field on forum topics). Pages hold up to 50 topics (limit is not sent). title/posted_at are the topic's; description is the search excerpt; the topic URL is https://forums.unrealengine.com/t/<id>. Posters are matched in the response's separate posts[] list (raw is per topic), so buyer is null here — use get_posting."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/t/{id}.json",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "posted_at": "created_at",
+      "buyer": "details.created_by.username",
+      "description": "post_stream.posts.0.cooked"
+     }
+    },
+    "docs": "https://docs.discourse.org/#tag/Topics/operation/getTopic",
+    "note": "GET /t/{id}.json ('Get a single topic'): buyer = the topic creator's username, description = the first post's HTML (post_stream.posts[0].cooked); tags are {id, name, slug} objects on this forum and stay in raw.tags. The topic URL is https://forums.unrealengine.com/t/<id>."
+   }
+  },
+  "not_offered": {
+   "me": "Anonymous read-only access; a user API key would need the forum's user-api-key flow, which is not configured for third-party clients here.",
+   "submit_bid": "Forum recruitment threads have no application object; candidates reply or message the poster on the forum with an account.",
+   "withdraw_bid": "No application object (see submit_bid).",
+   "bid_status": "No application object (see submit_bid).",
+   "list_messages": "Private messages need a logged-in user API key; anonymous access cannot read them.",
+   "send_message": "Posting or messaging needs a logged-in account on the forum; anonymous API access is read-only.",
+   "credits": "No account, credit or balance concept on the forum."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

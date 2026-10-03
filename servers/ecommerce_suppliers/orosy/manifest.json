@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "orosy-mcp",
+ "display_name": "orosy (wholesale marketplace) + orosy Buyer API MCP",
+ "version": "0.1.0",
+ "description": "orosy (wholesale marketplace) + orosy Buyer API (ecommerce suppliers): me, list_products, get_produc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "orosy"
+   ],
+   "env": {
+    "PLATFORM_MCP_OROSY_API_KEY": "${user_config.platform_mcp_orosy_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_orosy_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OROSY_API_KEY",
+   "description": "orosy Buyer API key (orosy_live_…) issued in the portal after the business review (事業者確認), sent as `Authorization: Bearer` ('OAuth 不要'). Before approval the account works in test mode on demo data.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/me: {email, company_name, approved (review state), country, default_ship_to_country, buyer_registered}."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v1/products: keyword search over product name, brand, model number, category and variation names (space-separated words are ANDed; 8-13 digits search JAN codes). Product data is Japanese, so search with Japanese keywords. `price` is the lowest variation's wholesale price (税抜, yen); `category` must be a category UUID (from product details or GET /v1/delivery-groups/{group_code}/categories); orderable=false rows are display-only."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v1/products/{product_id} (UUID): variations[{variation_id, jan, variant_label, buyer_price (wholesale, tax-excluded yen), retail_price, order_unit (order in multiples), stock_level, stock_qty}] plus the delivery group's fee, free-shipping threshold and minimum order amount. The mapped price/stock/currency are those of the first variation; see raw.variations for the rest."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "GET /v1/cross-border/eligibility?dest=&product_ids=: per product, whether it can ship to that country (logistics / compliance status) and a REFERENCE international shipping fee (shipping.status quoted | quote_required | unavailable; amount in yen, tax-excluded). The fee is only an estimate (the actual cost is billed later); `quantity` is not used by this endpoint (GET /v1/cross-border/cart-estimate prices the cart). Domestic (JP) delivery fees come from the product's delivery group."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /v1/orders/{order_id}: status (fulfilment axis, e.g. pending_confirmation, confirmed, partially_confirmed, cancelled, payment_action_required), breakdown.total (tax-included amount billed), payment.status, and per delivery group groups[].shipments[].trackings[] (tracking_number is the first one). 'There is no dedicated shipment API' — tracking lives in this order detail."
+  },
+  {
+   "name": "track",
+   "description": "The shipments of the order's FIRST delivery group (groups[0].shipments[]: status preparing | shipped | delivered | returned, trackings[{tracking_no, carrier}], shipped_at, delivered_at). Orders spanning several delivery groups have more shipments under groups[1..] — read them with get_order (raw.groups)."
+  }
+ ]
+}

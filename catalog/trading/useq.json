@@ -1,0 +1,280 @@
+{
+ "id": "useq",
+ "category": "trading",
+ "label": "US Equities (Alpaca)",
+ "lane": "api",
+ "kind": "equity",
+ "docs_url": "https://docs.alpaca.markets/docs/trading-api",
+ "url": "https://alpaca.markets/",
+ "verified_at": "2026-09-24",
+ "auth_fields": [
+  "api_key",
+  "api_secret"
+ ],
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://api.alpaca.markets",
+  "paper": "https://paper-api.alpaca.markets"
+ },
+ "notes": "Alpaca keys are trade-only by design; the account status must be ACTIVE and not trading-blocked.",
+ "regions": [
+  "us"
+ ],
+ "terms_note": "Alpaca Trading API with key/secret headers. The adapter points at PAPER trading by default; live trading needs live keys and adapter.base_url https://api.alpaca.markets. place_order and cancel_order act on the configured account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "APCA-API-KEY-ID + APCA-API-SECRET-KEY headers",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "balances",
+   "orders",
+   "trading"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "adapter": {
+  "base_url": "https://paper-api.alpaca.markets",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "APCA-API-KEY-ID": "api_key",
+    "APCA-API-SECRET-KEY": "api_secret"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Alpaca API key id (APCA-API-KEY-ID). Paper keys (paper dashboard) work only on https://paper-api.alpaca.markets, the default here; live keys need adapter.base_url https://api.alpaca.markets."
+    },
+    {
+     "name": "api_secret",
+     "required": true,
+     "help": "Alpaca API secret key (APCA-API-SECRET-KEY)."
+    }
+   ]
+  },
+  "rate_per_second": 3,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/account",
+    "docs": "https://docs.alpaca.markets/reference/getaccount-1",
+    "note": "Account status (must be ACTIVE), cash, buying_power, equity, trading_blocked."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/v2/assets",
+    "fixed_params": {
+     "status": "active",
+     "asset_class": "us_equity"
+    },
+    "default_limit": 100000,
+    "max_limit": 100000,
+    "result": {
+     "items": "$",
+     "key": "markets",
+     "fields": {
+      "symbol": "symbol",
+      "name": "name",
+      "type": "class",
+      "exchange": "exchange",
+      "status": "status",
+      "tradable": "tradable",
+      "fractionable": "fractionable"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/get-v2-assets-1",
+    "note": "Every active US equity in one (large) response; `query` is not sent."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "https://data.alpaca.markets/v2/stocks/{symbol}/snapshot",
+    "result": {
+     "fields": {
+      "symbol": "symbol",
+      "last": "latestTrade.p",
+      "bid": "latestQuote.bp",
+      "ask": "latestQuote.ap",
+      "volume": "dailyBar.v",
+      "open": "dailyBar.o",
+      "high": "dailyBar.h",
+      "low": "dailyBar.l",
+      "prev_close": "prevDailyBar.c"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/stocksnapshotsingle",
+    "note": "Market-data snapshot from data.alpaca.markets (same keys); the default feed is IEX unless the account has a SIP subscription."
+   },
+   "get_balances": {
+    "method": "GET",
+    "path": "/v2/positions",
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "balances",
+     "fields": {
+      "asset": "symbol",
+      "quantity": "qty",
+      "side": "side",
+      "market_value": "market_value",
+      "cost_basis": "cost_basis",
+      "unrealized_pl": "unrealized_pl"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/getallopenpositions",
+    "note": "Open positions (holdings per symbol); cash and buying power are in `me`."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v2/orders",
+    "params": {
+     "status": "status",
+     "symbols": "symbol"
+    },
+    "fixed_params": {
+     "limit": "500"
+    },
+    "default_limit": 100000,
+    "max_limit": 100000,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "order_id": "id",
+      "client_order_id": "client_order_id",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "status": "status",
+      "price": "limit_price",
+      "quantity": "qty",
+      "filled": "filled_qty",
+      "time": "submitted_at"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/getallorders-1",
+    "note": "`status` is open (Alpaca's default), closed or all; up to 500 orders."
+   },
+   "place_order": {
+    "method": "POST",
+    "path": "/v2/orders",
+    "body": {
+     "symbol": "symbol",
+     "qty": "str:quantity",
+     "side": "map:side:buy=buy,sell=sell",
+     "type": "map:type:market=market,limit=limit",
+     "time_in_force": "=day",
+     "limit_price": "str:price"
+    },
+    "result": {
+     "fields": {
+      "order_id": "id",
+      "client_order_id": "client_order_id",
+      "status": "status",
+      "symbol": "symbol",
+      "side": "side",
+      "type": "type",
+      "quantity": "qty",
+      "price": "limit_price"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/postorder",
+    "note": "Places an order on the account behind the configured keys and host: paper trading by default (https://paper-api.alpaca.markets); if adapter.base_url is the live host it PLACES A REAL ORDER WITH REAL FUNDS. Keep testing on paper and never place an order the user has not explicitly confirmed. Orders are DAY orders; limit orders need `price`, omit it for market orders. Insufficient buying power is answered with HTTP 403 and surfaces as auth_error."
+   },
+   "cancel_order": {
+    "method": "DELETE",
+    "path": "/v2/orders/{order_id}",
+    "result": {
+     "fields": {
+      "status": "=cancel_requested"
+     }
+    },
+    "docs": "https://docs.alpaca.markets/reference/deleteorderbyorderid-1",
+    "note": "Accepted with HTTP 204; an order that is no longer cancelable is rejected with 422."
+   }
+  },
+  "not_offered": {
+   "get_candles": "Historical bars come from GET /v2/stocks/bars?symbols=, whose response keys bars by symbol ({bars: {AAPL: [...]}}) so the row path depends on the argument, and `start` defaults to the beginning of the current day (the vocabulary carries no time range)."
+  }
+ },
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://paper-api.alpaca.markets (paper)",
+   "https://api.alpaca.markets (live)",
+   "https://data.alpaca.markets (market data)"
+  ],
+  "auth": [
+   "Headers APCA-API-KEY-ID and APCA-API-SECRET-KEY on every request (trading and market data)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/account",
+    "purpose": "account",
+    "notes": "status, cash, buying_power, equity, trading_blocked"
+   },
+   {
+    "call": "GET /v2/assets",
+    "purpose": "assets",
+    "notes": "status, asset_class (default us_equity), exchange, attributes"
+   },
+   {
+    "call": "GET data /v2/stocks/{symbol}/snapshot",
+    "purpose": "snapshot",
+    "notes": "latestTrade.p, latestQuote.bp/ap, minuteBar, dailyBar, prevDailyBar; feed"
+   },
+   {
+    "call": "GET /v2/positions",
+    "purpose": "positions",
+    "notes": "symbol, qty, side, market_value, cost_basis, unrealized_pl, avg_entry_price"
+   },
+   {
+    "call": "GET /v2/orders",
+    "purpose": "orders",
+    "notes": "status open|closed|all (default open), limit (default 50, max 500), symbols"
+   },
+   {
+    "call": "POST /v2/orders",
+    "purpose": "new order",
+    "notes": "symbol, qty (string) or notional, side, type, time_in_force (day, gtc, opg, cls, ioc, fok), limit_price"
+   },
+   {
+    "call": "DELETE /v2/orders/{order_id}",
+    "purpose": "cancel",
+    "notes": "204 accepted, 422 not cancelable"
+   }
+  ],
+  "limits": "200 requests per minute per account (trading API).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.alpaca.markets/reference/getaccount-1",
+   "https://docs.alpaca.markets/reference/get-v2-assets-1",
+   "https://docs.alpaca.markets/reference/stocksnapshotsingle",
+   "https://docs.alpaca.markets/reference/getallopenpositions",
+   "https://docs.alpaca.markets/reference/getallorders-1",
+   "https://docs.alpaca.markets/reference/postorder",
+   "https://docs.alpaca.markets/reference/deleteorderbyorderid-1",
+   "https://docs.alpaca.markets/reference/stockbars"
+  ]
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host paper-api.alpaca.markets: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "spec https://docs.alpaca.markets/openapi/trading-api.json, https://docs.alpaca.markets/openapi/market-data-api.json: 7/7 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

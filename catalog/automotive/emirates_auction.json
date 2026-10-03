@@ -1,0 +1,37 @@
+{
+ "id": "emirates_auction",
+ "category": "automotive",
+ "label": "Emiratesauction",
+ "vertical": "auction",
+ "lane": "api",
+ "url": "https://www.emiratesauction.com",
+ "domain": "emiratesauction.com",
+ "country": "UAE",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Emirates Auction has no official developer API; /api paths are the site's own front-end.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://emiratesauction.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/dhrumil/emirates-auction-scraper/api/openapi"
+  ]
+ },
+ "official_mcp": []
+}

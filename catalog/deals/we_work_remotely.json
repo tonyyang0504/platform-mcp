@@ -1,0 +1,167 @@
+{
+ "id": "we_work_remotely",
+ "category": "deals",
+ "label": "We Work Remotely",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://weworkremotely.com/remote-jobs.rss",
+ "url": "https://weworkremotely.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS feeds per category; no key; no published limit.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://weworkremotely.com/remote-jobs.rss"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://weworkremotely.com/categories/remote-programming-jobs.rss",
+   "docs": "https://weworkremotely.com/remote-jobs.rss"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://weworkremotely.com/remote-jobs.rss"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (category RSS) Confidence high.",
+  "base_urls": [
+   "https://weworkremotely.com/remote-jobs.rss"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /remote-jobs.rss",
+    "purpose": "search",
+    "notes": "title, link, region, category, description, pubDate"
+   }
+  ],
+  "limits": " - Public RSS; terms opened, no feed / robot clause surfaced.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://weworkremotely.com/remote-jobs.rss",
+   "https://weworkremotely.com/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://weworkremotely.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "terms": "We Work Remotely public RSS. Applications go through each listing's page.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/remote-jobs.rss",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://weworkremotely.com/remote-jobs.rss",
+    "note": "The feed answers its whole current list in one response (all current remote jobs, RSS 2.0, ~80 items and ~800 KB); query, category, min_budget, page and limit are not sent (the feed documents no parameters) — filter the returned postings client-side and ignore next_page (page 2 is the same list). These are employment listings: title is '<company>: <job title>'; region, country, skills (comma-separated text), category, type and expires_at stay in raw; description is HTML. Per-category feeds (/categories/<slug>.rss) exist but are not selectable here."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint; each posting's page (url) is HTML only. search_postings returns the whole record.",
+   "submit_bid": "Applications go through the listing page on weworkremotely.com; there is no application API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; only the public feed is machine-readable.",
+   "send_message": "No messaging API; only the public feed is machine-readable.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/noon-mcp",
+ "description": "noon (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Every tool m",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://noon-docs.noonpartners.dev/docs/getting-started/intro",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "noon"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NOON_KEY_ID",
+     "description": "key_id from your noon service-account key file (.json), created in the noon Partner portal.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NOON_PRIVATE_KEY",
+     "description": "private_key (PEM) from the same service-account key file; it signs the RS256 login JWT.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NOON_PROJECT_CODE",
+     "description": "project_code from the key file, sent as default_project_code at login.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_NOON_WAREHOUSE_CODE",
+     "description": "Integration warehouse code for stock updates and FBPI order listing (see ListWarehouses).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_NOON_COUNTRY_CODE",
+     "description": "Marketplace country code for pricing (e.g. ae, sa, eg).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

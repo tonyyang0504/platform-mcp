@@ -1,0 +1,16 @@
+{
+ "id": "liquidation_stream",
+ "category": "market_data",
+ "label": "Binance force-order WebSocket streams",
+ "provider": "Binance",
+ "lane": "api",
+ "base_urls": [
+  "wss://fstream.binance.com/market/ws/",
+  "wss://dstream.binance.com/ws/"
+ ],
+ "data_kinds": [
+  "liquidations (USD-M and COIN-M all-market forceOrder, sampled 1 per symbol per 1s)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

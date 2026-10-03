@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "messenger-mcp",
+ "display_name": "Messenger MCP",
+ "version": "0.1.0",
+ "description": "Messenger (messaging): me, list_inbound, get_thread, send, mark_read. Every tool maps to a documente",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messenger"
+   ],
+   "env": {
+    "PLATFORM_MCP_MESSENGER_PAGE_ACCESS_TOKEN": "${user_config.platform_mcp_messenger_page_access_token}",
+    "PLATFORM_MCP_MESSENGER_PAGE_ID": "${user_config.platform_mcp_messenger_page_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_messenger_page_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MESSENGER_PAGE_ACCESS_TOKEN",
+   "description": "Page access token requested by a person who can perform the MESSAGING (or MODERATE) task on the Page, with pages_messaging, pages_manage_metadata and pages_read_engagement (https://developers.facebook.com/docs/messenger-platform/conversations); sent as `Authorization: Bearer`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_messenger_page_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MESSENGER_PAGE_ID",
+   "description": "Numeric id of the Facebook Page whose Messenger inbox is used; every call goes to /<page_id>/... Env: PLATFORM_MCP_MESSENGER_PAGE_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /{page_id}?fields=id,name,link: the Page that sends and receives Messenger messages."
+  },
+  {
+   "name": "list_inbound",
+   "description": "GET /{page_id}/conversations?platform=messenger with field expansion messages.limit(1){...}: one row per conversation carrying its most recent message (which may be the Page's own outbound message - compare from_id with the Page / account id). thread_id is the conversation id for get_thread; from_id is the PSID for send. 'Conversations that are within the Requests folder that have not been active for 30 days will not be returned'. `since`/`channel` are not sent; cursor paging, so `page` is ignored."
+  },
+  {
+   "name": "get_thread",
+   "description": "GET /{conversation_id}/messages?fields=id,message,from,to,created_time (newest first). 'you can only get details about the 20 most recent messages in the conversation' (https://developers.facebook.com/docs/messenger-platform/conversations), so limit is capped at 20."
+  },
+  {
+   "name": "send",
+   "description": "POST /{page_id}/messages {recipient: {id: PSID}, messaging_type: RESPONSE, message: {text}} answers {recipient_id, message_id}. `to` must be a Page-scoped ID (list_inbound from_id); 'the conversation must be initiated by that person' and RESPONSE messages 'must be sent during the standard messaging window' (24 hours after the person's last message). `subject`/`channel` are ignored."
+  },
+  {
+   "name": "mark_read",
+   "description": "Sender action mark_seen: POST /{page_id}/messages {recipient: {id}, sender_action: mark_seen} answers {recipient_id}. Here `thread_id` must be the person's PSID (list_inbound from_id), NOT the conversation id; `message_id` is not used. 'Requests to display sender action should only include the sender_action parameter and the recipient object.'"
+  }
+ ]
+}

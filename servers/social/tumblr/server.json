@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/tumblr-mcp",
+ "description": "Tumblr (social): me, analytics_post. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.tumblr.com/docs/en/api/v2",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "tumblr"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TUMBLR_API_KEY",
+     "description": "The OAuth Consumer Key of an app registered at https://www.tumblr.com/oauth/apps, sent as the `api_key` query parameter ('API key: Requires an API key. Use your OAuth Consumer Key as your api_key', https://www.tumblr.com/docs/en/api/v2#authentication). It only unlocks the public blog methods; everything at the 'OAuth' level (posting, notes, user info, deletion) needs a signed OAuth 1.0a request or an OAuth2 user token and is listed under not_offered.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TUMBLR_BLOG_IDENTIFIER",
+     "description": "The blog to read, as its blog name (staff), hostname (staff.tumblr.com or a custom domain) or UUID (t:0aY0xL2Fi1OFJg4YxpmegQ) ('blog-identifier', https://www.tumblr.com/docs/en/api/v2#blog-identifiers); env PLATFORM_MCP_TUMBLR_BLOG_IDENTIFIER.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

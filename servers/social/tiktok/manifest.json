@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "tiktok-social-mcp",
+ "display_name": "TikTok MCP",
+ "version": "0.1.0",
+ "description": "TikTok (social): me, publish_image, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/tiktok"
+   ],
+   "env": {
+    "PLATFORM_MCP_TIKTOK_CLIENT_KEY": "${user_config.platform_mcp_tiktok_client_key}",
+    "PLATFORM_MCP_TIKTOK_CLIENT_SECRET": "${user_config.platform_mcp_tiktok_client_secret}",
+    "PLATFORM_MCP_TIKTOK_REFRESH_TOKEN": "${user_config.platform_mcp_tiktok_refresh_token}",
+    "PLATFORM_MCP_TIKTOK_PRIVACY_LEVEL": "${user_config.platform_mcp_tiktok_privacy_level}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tiktok_client_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_CLIENT_KEY",
+   "description": "Client key of your TikTok for Developers app (https://developers.tiktok.com/apps).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_CLIENT_SECRET",
+   "description": "Client secret of the same app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_REFRESH_TOKEN",
+   "description": "The creator's refresh_token from the Login Kit authorization-code exchange (POST /v2/oauth/token/, valid 365 days) with scopes user.info.basic, video.publish, video.list. Access tokens (24 h) are minted from it; a rotated refresh_token replaces it (persisted when PLATFORM_MCP_STATE_DIR is set).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_privacy_level": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_PRIVACY_LEVEL",
+   "description": "privacy_level for direct photo posts: one of the creator's privacy_level_options from /v2/post/publish/creator_info/query/ (PUBLIC_TO_EVERYONE, MUTUAL_FOLLOW_FRIENDS, FOLLOWER_OF_CREATOR, SELF_ONLY). Unaudited apps can only use SELF_ONLY.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/user/info/ (user.info.basic): open_id, union_id, avatar_url, display_name of the authorised creator."
+  },
+  {
+   "name": "publish_image",
+   "description": "POST /v2/post/publish/content/init/ (video.publish) direct-posts up to 35 photos pulled from URLs (the domain or URL prefix must be verified for your app; url_ownership_unverified otherwise), `text` as the description (≤4000). `id` is the publish_id; publishing is asynchronous (poll /v2/post/publish/status/fetch/). Unaudited apps can only post SELF_ONLY; 6 requests/minute per token; the creator must have been shown TikTok's posting UX (creator_info/query) first."
+  },
+  {
+   "name": "analytics_post",
+   "description": "POST /v2/video/query/ (video.list) for one of the creator's own videos: like_count, comment_count, share_count, view_count, title, share_url."
+  }
+ ]
+}

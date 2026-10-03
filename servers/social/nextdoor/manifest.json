@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "nextdoor-social-mcp",
+ "display_name": "Nextdoor MCP",
+ "version": "0.1.0",
+ "description": "Nextdoor (social): me, publish_text, publish_image, delete. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/nextdoor"
+   ],
+   "env": {
+    "PLATFORM_MCP_NEXTDOOR_ACCESS_TOKEN": "${user_config.platform_mcp_nextdoor_access_token}",
+    "PLATFORM_MCP_NEXTDOOR_SECURE_PROFILE_ID": "${user_config.platform_mcp_nextdoor_secure_profile_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_nextdoor_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEXTDOOR_ACCESS_TOKEN",
+   "description": "Publish API user access token: apply for access (Nextdoor Partnerships issue client_id / client_secret), send the user through https://www.nextdoor.com/v3/authorize/ with scopes openid post:write post:read comment:write profile:read, then exchange the code at POST https://auth.nextdoor.com/v2/token (https://developer.nextdoor.com/reference/sharing-get-access-token; expires_in 31536000 s in the documented example). Refresh it before expiry (https://developer.nextdoor.com/reference/sharing-refresh-access-token). Sent as 'Authorization: Bearer <access_token>'.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_nextdoor_secure_profile_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEXTDOOR_SECURE_PROFILE_ID",
+   "description": "Optional profile id from GET /me/profiles (https://developer.nextdoor.com/reference/me-copy) to post / delete as a business or other profile of the account instead of the default neighbor profile.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /external/api/partner/v1/me/ (profile:read) returns {id, first_name, last_name, status, verified, is_business_profile, neighborhood_name, city_name, business_name, ...}."
+  },
+  {
+   "name": "publish_text",
+   "description": "PUBLISHES a post to the user's Nextdoor neighborhood (or to the business / entity page of config secure_profile_id): POST /post/create/ {body_text (max 8,192 characters)} (post:write) answers {result: 'success', share_link: 'https://nextdoor.com/p/{post_share_id}'}. The API returns no separate id, so `id` and `url` are both the share_link (its last path segment is the post_share_id). `reply_to` is ignored."
+  },
+  {
+   "name": "publish_image",
+   "description": "PUBLISHES a post with media_attachments = image_urls ('The limit is 10 attachments'; every URL must be valid and publicly accessible). body_text is REQUIRED by Nextdoor, so pass `text` (a post without it is rejected with 400). `id` / `url` are the returned share_link."
+  },
+  {
+   "name": "delete",
+   "description": "DESTRUCTIVE: DELETE /post/?id= 'Deletes your post on Nextdoor that matches the post id provided' (post:write) and answers {message: 'Post deleted successfully'}. `post_id` is the post id as listed by GET /post/ (Get your posts, https://developer.nextdoor.com/reference/get-your-posts)."
+  }
+ ]
+}

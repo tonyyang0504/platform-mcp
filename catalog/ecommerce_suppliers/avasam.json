@@ -1,0 +1,135 @@
+{
+ "id": "avasam",
+ "category": "ecommerce_suppliers",
+ "label": "Avasam",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "europe",
+  "global"
+ ],
+ "docs_url": "https://help.avasam.com/docs/supplier-api",
+ "url": "https://www.avasam.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "header credentials `Authkey` (supplier code), `SessionToken` (authorisation token) and `AvasamID` (account id) — issued in the Avasam account",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "price_feed",
+   "stock_feed",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official devel",
+  "base_urls": [],
+  "auth": [
+   "1. Tenant opens an Avasam seller account",
+   "2. Account issues `Authkey` (code), `SessionToken` (authorisation token) and `AvasamID`",
+   "3. Send the three as request headers / fields on every call"
+  ],
+  "endpoints": [
+   {
+    "call": "Get Products",
+    "purpose": "catalogue with SKUs, descriptions, pricing, images",
+    "notes": ""
+   },
+   {
+    "call": "Get Price",
+    "purpose": "cost `Price` + `RRP` per SKU",
+    "notes": "price feed"
+   },
+   {
+    "call": "Get Stock",
+    "purpose": "`Qty` per product",
+    "notes": "stock feed"
+   },
+   {
+    "call": "Create Order",
+    "purpose": "customer, shipping address, line items",
+    "notes": "order placement"
+   },
+   {
+    "call": "Get Processed Order",
+    "purpose": "`IsProcess` true/false + tracking numbers",
+    "notes": "tracking"
+   }
+  ],
+  "limits": " Not documented. - Seller account required (UK); API is the documented automation path - No sandbox / webhooks documented",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://help.avasam.com/docs/supplier-api",
+   "https://help.avasam.com/docs",
+   "https://help.avasam.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Seller API reference (https://help.avasam.com/docs/seller-api, re-opened 2026-09-25 in headless Chromium; same content as the static page) documents POST https://app.avasam.com/api/auth/request-token {consumer_key, secret_key} -> {access_token, expires_at} and calls such as POST /apiseeker/Products/GetSellerProductList {Page, Limit} and /apiseeker/Order/CreateSellerOrder, but never states how access_token is presented: each call only says 'with a valid token (Which can be obtained using the Login call)', and CreateSellerOrder instead lists an 'Authkey — Authorization key for the Avasam account' inside the JSON body without saying whether that is the access_token. There is no single-order read (only a date-window order list), and the Supplier API is for suppliers pushing stock. Mapping would mean guessing the token placement."
+}

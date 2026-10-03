@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/aws_partner_network-mcp",
+ "description": "AWS Partner Network (deals): me, search_postings, get_posting, submit_bid, bid_status. Every tool ma",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.aws.amazon.com/partner-central/latest/APIReference/Welcome.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "aws_partner_network"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_AWS_PARTNER_NETWORK_ACCESS_KEY_ID",
+     "description": "Access key id of an IAM user or role session in the AWS Marketplace seller account linked to Partner Central, with a policy such as AWSPartnerCentralOpportunityManagement (https://docs.aws.amazon.com/partner-central/latest/developer-guide/setup-authentication.html).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AWS_PARTNER_NETWORK_SECRET_ACCESS_KEY",
+     "description": "Secret access key of that IAM identity; never sent, used for the SigV4 signature.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_AWS_PARTNER_NETWORK_SESSION_TOKEN",
+     "description": "Session token when the keys are temporary (assumed role / SSO); sent as X-Amz-Security-Token.",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

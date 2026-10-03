@@ -1,0 +1,56 @@
+{
+ "id": "cnb_fx",
+ "category": "market_data",
+ "label": "Česká národní banka - kurzy devizového trhu",
+ "lane": "api",
+ "country": "CZ",
+ "docs_url": "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/",
+ "url": "https://www.cnb.cz",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "CNB publishes the daily CZK exchange-rate fixing as text files (documentation in Czech on the page above, 'Formát denního kurzu' / 'Kurzy za celý rok'). rok.txt?rok=YYYY is text/plain, '|'-separated, header 'Datum|1 AUD|...|100 JPY|...', dates DD.MM.YYYY and decimal commas. Docs vs live 2026-10-01: an out-of-range year (rok=1900) is not an error - it silently answers the current year, so the server sends only the year of `start`. CNB also offers a JSON API (api.cnb.cz) not used here.",
+ "adapter": {
+  "base_url": "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "get_series": {
+    "method": "GET",
+    "path": "/rok.txt",
+    "params": {
+     "rok": "year:start"
+    },
+    "csv": {
+     "delimiter": "|"
+    },
+    "result": {
+     "items": "rows",
+     "key": "points",
+     "require": [
+      "value"
+     ],
+     "fields": {
+      "time": "isodate:%d.%m.%Y:Datum",
+      "value": "num_comma:{series_id}"
+     }
+    },
+    "docs": "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/rok.txt",
+    "note": "CZK per unit(s) of a currency for every fixing day of ONE calendar year: the year of `start` (default: the current year); `end` is not used. series_id is the column exactly as CNB heads it, amount and code: '1 USD', '1 EUR', '100 JPY', '1000 IDR'."
+   }
+  },
+  "not_offered": {
+   "me": "Open data: no accounts.",
+   "get_candles": "Daily fixings only, no OHLC.",
+   "search_symbols": "No series list endpoint; the column headers of rok.txt are the series (see get_series).",
+   "get_news": "No news endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

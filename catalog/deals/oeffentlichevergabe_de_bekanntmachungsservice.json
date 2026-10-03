@@ -1,0 +1,123 @@
+{
+ "id": "oeffentlichevergabe_de_bekanntmachungsservice",
+ "category": "deals",
+ "label": "Bekanntmachungsservice (oeffentlichevergabe.de)",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "de"
+ ],
+ "docs_url": "https://oeffentlichevergabe.de/api/notice-exports?pubDay=2026-09-01",
+ "url": "https://oeffentlichevergabe.de/",
+ "verified_at": "2026-09-25",
+ "terms_note": "German federal notice service; open data; daily ZIP per pubDay.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "export",
+   "search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (daily eForms XML export). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://oeffentlichevergabe.de/api/notice-exports?pubDay=YYYY-MM-DD"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/notice-exports?pubDay=",
+    "purpose": "export",
+    "notes": "ZIP of eForms XML notices"
+   }
+  ],
+  "limits": " - Open data; bids on buyer platforms. - German federal notice service; open data; daily ZIP per pubDay.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://oeffentlichevergabe.de/api/notice-exports?pubDay=2026-09-01",
+   "https://oeffentlichevergabe.de/api/swagger-ui/index.html"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "Remaining gap: ZIP archive decoding with record extraction and client-side filtering. The only open API (Bekanntmachungsservice OpenData API 1.0.0, https://oeffentlichevergabe.de/documentation/api/opendata) is GET /api/notice-exports?pubDay=|pubMonth=&format=eforms.zip|ocds.zip|csv.zip — re-checked 2026-09-25 it answers a ZIP archive ('content-disposition: attachment; filename=notices_2026-09-01_OCDS.zip', bytes 'PK\\x03\\x04') of every notice published that day or month; there is no search or per-notice call. The runtime (including the 2026-09-25 CSV/JSON-part additions) parses JSON, XML and text/csv bodies only and cannot unpack a ZIP or filter the OCDS/eForms records inside it."
+}

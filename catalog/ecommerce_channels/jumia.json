@@ -1,0 +1,259 @@
+{
+ "id": "jumia",
+ "category": "ecommerce_channels",
+ "label": "Jumia",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "ng",
+  "ke",
+  "ma",
+  "ci",
+  "gh",
+  "sn",
+  "ug",
+  "dz"
+ ],
+ "docs_url": "https://vendorcenter.jumia.com/api-docs/",
+ "url": "https://www.jumia.com.ng/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Jumia vendor (Mastershop) account; the vendor registers an application in Vendor Center (type Self Authorization or Web Application — cannot be changed later); OAuth2 Bearer tokens via /login and /token; rate limit 200 requests / minute and 4 requests / second per Mastershop; no sandbox; multi-country (CI, DZ, EG, GH, KE, MA, NG, SN, TN, UG, ZA).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "oauth2 (application registered in Vendor Center › Settings › Applications; Self-Authorization refresh_token grant for unattended ERPs, or Web Application authorization_code; Bearer access token)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "token",
+  "refresh",
+  "config.countries"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://vendor-api.jumia.com/"
+  ],
+  "auth": [
+   "1. Vendor Center › Settings › Applications → register an app; choose Self Authorization (refresh_token grant, unattended) or Web Application (authorization_code).",
+   "2. Obtain tokens via `/login` and `/token`; refresh with the refresh_token grant.",
+   "3. Send `Authorization: Bearer <access_token>` on every request."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /feeds/products/create · /feeds/products/update",
+    "purpose": "create / update products (async feed → feedId)",
+    "notes": "attribute-set fields from /catalog/attribute-sets/{id}"
+   },
+   {
+    "call": "POST /feeds/products/stock · /feeds/products/price · /feeds/products/status",
+    "purpose": "stock, price, status feeds",
+    "notes": "feed statuses PENDING / IN_PROGRESS / COMPLETED / FAILED"
+   },
+   {
+    "call": "GET /catalog/products · /catalog/brands · /catalog/categories",
+    "purpose": "read products (status, QC, visibility filters) + reference data",
+    "notes": ""
+   },
+   {
+    "call": "GET /orders · GET /orders/{id}/items",
+    "purpose": "orders + items (multi-country)",
+    "notes": ""
+   },
+   {
+    "call": "POST /orders/pack (v1/v2) · POST /orders/ready-to-ship · POST /orders/shipping-label",
+    "purpose": "pack with tracking code, ready to ship, label",
+    "notes": "shipment provider from GET /orders/shipment-providers"
+   },
+   {
+    "call": "POST /orders/{id}/cancel",
+    "purpose": "cancel items",
+    "notes": ""
+   },
+   {
+    "call": "GET /payout-statement",
+    "purpose": "payout reconciliation (reports)",
+    "notes": ""
+   },
+   {
+    "call": "POST /consignment-order · GET /consignment-stock",
+    "purpose": "Jumia warehouse (consignment) stock",
+    "notes": ""
+   }
+  ],
+  "limits": " 200 requests / minute with a ceiling of 4 requests / second, per Mastershop. - Vendor agreement per Jumia country; the app type is fixed at creation. - No sandbox — test carefully on live data.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://vendorcenter.jumia.com/api-docs/",
+   "https://r.jina.ai/https://vendorcenter.jumia.com/api-docs/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://vendor-api.jumia.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://vendor-api.jumia.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client Id of a SELF AUTHORIZATION application registered in Vendor Center > Settings > Applications (Web Applications cannot refresh unattended)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from the application's 'Generate Token' action in Vendor Center. Every refresh returns a NEW refresh token; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/jumia.json (0600) so a restart uses the latest one."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "Jumia Vendor API (Africa: NG, EG, KE, MA, CI, GH, SN, TN, UG, DZ, ZA). Product feeds are asynchronous (201 with a feedId; see GET /feeds/{id}). Order roles VC - Order Viewer / Order Manager are required. This adapter targets the live host (vendor-api.jumia.com); the staging host is not selectable because the token URL is fixed.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/shops",
+    "docs": "https://vendorcenter.jumia.com/api-docs/#tag/Shops/operation/get-shops",
+    "note": "get-shops returns the shops of the authenticated user [{id, name, email, businessClients[{code (e.g. jumia-ng), countryCode, status}]}]."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/feeds/products/stock",
+    "body": {
+     "products.0.sellerSku": "sku",
+     "products.0.id": "listing_id",
+     "products.0.stock": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=feed_created"
+     }
+    },
+    "docs": "https://vendorcenter.jumia.com/api-docs/#tag/Products/operation/post-feeds-products-stock",
+    "note": "Update Product Stock feed {products: [{sellerSku, id, stock}]}: BOTH `sku` (your seller SKU) and `listing_id` (the Jumia product SID, a uuid) are required by the endpoint. Asynchronous: raw.feedId, status at GET /feeds/{id}."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "status": "status",
+     "createdAfter": "since",
+     "size": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 200,
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "totalAmountLocal.value",
+      "currency": "totalAmountLocal.currency",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://vendorcenter.jumia.com/api-docs/#tag/Orders/operation/get-orders",
+    "note": "Retrieve Orders ?status(PENDING|READY_TO_SHIP|SHIPPED|DELIVERED|FAILED|CANCELED|RETURNED, comma-separated)&createdAfter(YYYY-MM-DD or 'YYYY-MM-DD hh:mm:ss'; createdBefore defaults to today, max 3-month window)&size. Paging is by the response's next-page token, so only the first page is returned. raw.number is the customer-facing order number; totals are in the local currency."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Product creation goes through the /feeds/products/create feed with category, brand, attribute set and variation data; the vocabulary has no category or brand.",
+   "update_listing": "The price feed POST /feeds/products/price requires id (product SID), sellerSku AND price for every product; update_listing has no SKU input, so the required sellerSku cannot be supplied.",
+   "end_listing": "Status changes use the /feeds/products/status feed, which requires id, sellerSku and per-country businessClients[{businessClientCode, status}]; end_listing carries neither the SKU nor the business client.",
+   "mark_shipped": "Shipping is item-based: POST /orders/pack and /orders/ready-to-ship take orderItemIds (and shipment provider / tracking per package), not an order id."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host vendor-api.jumia.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token vendor-api.jumia.com/token: 400 server_error",
+   "spec https://vendorcenter.jumia.com/api-docs/openapi.yaml: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,323 @@
+{
+ "id": "crisp",
+ "category": "messaging",
+ "label": "Crisp",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "eu"
+ ],
+ "docs_url": "https://docs.crisp.chat/",
+ "url": "https://crisp.chat/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed: base https://api.crisp.chat/v1/, HTTP Basic with identifier:key, X-Crisp-Tier: user | plugin (plugin tokens for marketplace plugins, user tokens for a workspace's own account). Rate limit referenced as 5 requests per second per token with tier-dependent quotas. Endpoints: GET /website/{website_id}/conversations/{page} (filters: inbox, unread, resolved, assigned, dates), GET /website/{website_id}/conversation/{session_id}, POST /website/{website_id}/conversation/{session_id}/message {type text|note|file|animation|audio|picker|field|carousel|event, from user|operator, origin chat|email|urn:*, content}. Inbound via RTM events (message:send, message:received, session state) or web hooks.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "rtm",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "basic_token",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "notes",
+   "media",
+   "webhooks",
+   "assign_resolve"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official Crisp API wrappers (node-crisp-api, python-crisp-api, go-crisp-api, php-crisp-api, ruby-crisp-api) — docs.crisp.chat"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 20000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence:",
+  "base_urls": [
+   "https://api.crisp.chat/v1/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET /website/{website_id}/conversations/{page_number}?filter_unread=&filter_resolved=&filter_assigned=&filter_date_start=",
+    "purpose": "read inbox",
+    "notes": "paged"
+   },
+   {
+    "call": "GET /website/{website_id}/conversation/{session_id}` · `GET …/conversation/{session_id}/messages",
+    "purpose": "thread",
+    "notes": ""
+   },
+   {
+    "call": "POST /website/{website_id}/conversation/{session_id}/message` `{type: text",
+    "purpose": "note",
+    "notes": "file"
+   },
+   {
+    "call": "PATCH …/conversation/{session_id}/state` `{state: pending",
+    "purpose": "unresolved",
+    "notes": "resolved}` · `…/routing` `{assigned{user_id}}`"
+   },
+   {
+    "call": "POST /website/{website_id}/conversation` → `session_id` · `PATCH …/meta` `{email, nickname, segments}",
+    "purpose": "new conversation / contact",
+    "notes": "cold → proposal"
+   },
+   {
+    "call": "RTM events `message:send`, `message:received`, `session:set_state`, `session:set_email` · web hooks (plugin)",
+    "purpose": "inbound push",
+    "notes": ""
+   },
+   {
+    "call": "GET /website/{website_id}/people/profiles` · `/people/profile/{people_id}",
+    "purpose": "contacts",
+    "notes": ""
+   }
+  ],
+  "limits": " - Documented as **5 requests per second per token**, quotas vary by tier; 429 on excess. Errors `{error: true, reason}`. - Plugin-tier tokens are for marketplace plugins; user-tier tokens operate the user's own workspace — no approval needed.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.crisp.chat/references/rest-api/v1/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.crisp.chat/v1",
+  "auth": {
+   "type": "basic",
+   "username_field": "identifier",
+   "password_field": "key",
+   "fields": [
+    {
+     "name": "identifier",
+     "required": true,
+     "help": "Identifier half of the Crisp token keypair (plugin token from the Marketplace, or a website token), sent as the HTTP Basic username — 'Authorization: Basic BASE64(identifier:key)' (https://docs.crisp.chat/guides/rest-api/authentication/plugin-token/, https://docs.crisp.chat/guides/rest-api/authentication/website-token/)."
+    },
+    {
+     "name": "key",
+     "required": true,
+     "help": "Key half of the Crisp token keypair, sent as the HTTP Basic password ('--user \"{identifier}:{key}\"' in the official curl examples)."
+    }
+   ]
+  },
+  "headers": {
+   "X-Crisp-Tier": "plugin"
+  },
+  "headers_note": "Crisp requires X-Crisp-Tier on every call; the static header is pinned to 'plugin' ('X-Crisp-Tier: plugin', the plugin-token guide). Website tokens are documented with 'X-Crisp-Tier: website' instead (https://docs.crisp.chat/guides/rest-api/authentication/website-token/); the runtime's static headers cannot vary per install, so a website-token keypair is UNCONFIRMED with this server — every mapped route lists 'Tiers user website plugin'.",
+  "config_fields": [
+   {
+    "name": "website_id",
+    "required": true,
+    "help": "Crisp website (workspace) identifier that prefixes every route (/website/{website_id}/...). Env: PLATFORM_MCP_CRISP_WEBSITE_ID."
+   }
+  ],
+  "envelope_note": "Every answer is {error: boolean, reason: string, data: object|array}; failures also carry an HTTP 4xx status, which the runtime turns into isError results (the boolean `error` field is inverted relative to the runtime's ok_field envelope and is therefore not declared).",
+  "rate_per_second": 2,
+  "rate_note": "Website tokens are 'Limited to 10,000 requests per day' plus undisclosed 'API Global' and 'API Route' limiters; plugin tokens run on a daily 'Plugin Quota'; excess answers 429 Too Many Requests or 420 Enhance Your Calm (https://docs.crisp.chat/guides/rest-api/rate-limits/, https://docs.crisp.chat/guides/rest-api/authentication/website-token/). Client bucket kept at the runtime default 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/website/{website_id}",
+    "path_params": {
+     "website_id": "@website_id"
+    },
+    "docs": "https://docs.crisp.chat/references/rest-api/v1/#get-a-website",
+    "note": "'Resolves an existing website information' (the official curl example for both token types); account carries the envelope {error, reason, data{website_id, name, domain, logo}}."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/website/{website_id}/conversations/{page_number}",
+    "path_params": {
+     "website_id": "@website_id",
+     "page_number": "page"
+    },
+    "params": {
+     "per_page": "limit",
+     "filter_date_start": "since"
+    },
+    "max_limit": 50,
+    "default_limit": 20,
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "session_id",
+      "thread_id": "session_id",
+      "from": "meta.email",
+      "text": "last_message"
+     }
+    },
+    "docs": "https://docs.crisp.chat/references/rest-api/v1/#list-conversations",
+    "note": "'Lists conversations for website' (scope website:conversation:sessions), one row per conversation: `id` = `thread_id` = session_id, `text` is 'Last message excerpt (from visitor)', `from` the visitor email (meta.email; nickname under raw.meta, unread counters under raw.unread). `page` is the page_number path segment; per_page must be 'between 20 and 50, defaults to 20' — the runtime caps `limit` at 50 but does not raise values below 20 (UNCONFIRMED how Crisp treats them). `since` is sent as filter_date_start ('date, ISO 8601, eg. 2018-03-01T17:00:00.000Z'); `channel` is not sent. updated_at / created_at are Unix ms under raw."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/website/{website_id}/conversation/{thread_id}/messages",
+    "path_params": {
+     "website_id": "@website_id"
+    },
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "fingerprint",
+      "thread_id": "session_id",
+      "from": "user.user_id",
+      "text": "content"
+     }
+    },
+    "docs": "https://docs.crisp.chat/references/rest-api/v1/#get-messages-in-conversation",
+    "note": "'Resolves messages in an existing conversation. Returns the last batch of messages if there are many messages in the conversation' (scope website:conversation:messages): there is no page-size parameter, so `limit` and `page` are ignored (older batches need timestamp_before, not sent) and `channel` is ignored. `thread_id` is the session_id; `id` is the numeric message fingerprint; `from` is the sending user id (user.user_id, 'may be operator user identifier or session identifier'; direction user/operator under raw.from); `text` is `content`, 'string if type is text or note, object if type is file, animation, audio, picker, field, carousel or event' — so non-text rows carry the content object; timestamp is Unix ms under raw."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/website/{website_id}/conversation/{thread_id}/message",
+    "path_params": {
+     "website_id": "@website_id"
+    },
+    "body": {
+     "type": "=text",
+     "from": "=operator",
+     "origin": "=chat",
+     "content": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "data.fingerprint",
+      "status": "reason"
+     }
+    },
+    "docs": "https://docs.crisp.chat/references/rest-api/v1/#send-a-message-in-conversation",
+    "note": "'Sends a message in an existing conversation' as the operator (type text, from operator, origin chat; scope website:conversation:messages): `thread_id` is the session_id, `text` is `content` ('string if type is text'), `channel` is ignored. status is the envelope `reason`; message_id is data.fingerprint, the fingerprint Crisp assigns (UNCONFIRMED: the reference renders the response example dynamically, so the exact response body was not read)."
+   },
+   "mark_read": {
+    "method": "PATCH",
+    "path": "/website/{website_id}/conversation/{thread_id}/read",
+    "path_params": {
+     "website_id": "@website_id"
+    },
+    "body": {
+     "from": "=user",
+     "origin": "=chat"
+    },
+    "result": {
+     "fields": {
+      "status": "reason"
+     }
+    },
+    "docs": "https://docs.crisp.chat/references/rest-api/v1/#mark-messages-as-read-in-conversation",
+    "note": "'Marks messages as read in conversation. Either using given message fingerprints, or all messages' (scope website:conversation:messages): with from=user and origin=chat this marks all visitor chat messages of the conversation as read ('fingerprints ... if not set, this marks all messages as read in conversation'). `thread_id` is the session_id and is required; `message_id` and `channel` are not sent (fingerprints is an array the flat body map cannot express). status is the envelope `reason`."
+   }
+  },
+  "not_offered": {
+   "send": "A new conversation must first be created with POST /website/{website_id}/conversation (returns the session_id) and the recipient attached with PATCH .../conversation/{session_id}/meta before a message can be posted — chained calls the adapter cannot express, and `to` (an email) has no place in the message call (https://docs.crisp.chat/references/rest-api/v1/#create-a-new-conversation, https://docs.crisp.chat/references/rest-api/v1/#send-a-message-in-conversation)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.crisp.chat: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

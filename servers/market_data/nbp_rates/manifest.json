@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "nbp_rates-mcp",
+ "display_name": "Narodowy Bank Polski - kursy walut MCP",
+ "version": "0.1.0",
+ "description": "Narodowy Bank Polski - kursy walut (market data): search_symbols, get_series. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "nbp_rates"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_symbols",
+   "description": "Currencies of table A (average rates), with Polish names (dolar amerykański, euro ...); symbol is 'A/<code>' as get_series takes it. Table B (less common currencies) and C (bid/ask) series also work in get_series ('B/<code>', 'C/<code>')."
+  },
+  {
+   "name": "get_series",
+   "description": "PLN per unit of a currency for every fixing day from start to end (both REQUIRED, YYYY-MM-DD, at most 367 days apart). series_id is '<table>/<code>': A/USD, A/EUR, B/AED; table C gives the ask rate."
+  }
+ ]
+}

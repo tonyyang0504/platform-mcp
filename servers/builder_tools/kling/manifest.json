@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "kling-mcp",
+ "display_name": "Kling AI MCP",
+ "version": "0.1.0",
+ "description": "Kling AI (builder tools): me, generate_image, generate_video, get_job. Every tool maps to a document",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kling"
+   ],
+   "env": {
+    "PLATFORM_MCP_KLING_API_KEY": "${user_config.platform_mcp_kling_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_kling_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KLING_API_KEY",
+   "description": "Kling AI API key (kling.ai/dev console > '+ Create a new API Key'; shown once), sent as Authorization: Bearer. The legacy AccessKey/SecretKey JWT scheme is not needed.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /account/costs?start_time&end_time (ms, the last 30 days): resource packages with remaining quantity; used as the credential check (no user endpoint)."
+  },
+  {
+   "name": "generate_image",
+   "description": "POST /v1/images/generations {model_name (kling-v3 default, kling-v2-1), prompt, negative_prompt (text-to-image only), image (reference URL/base64), aspect_ratio (16:9 default, 9:16, 1:1 …)} -> data {task_id, task_status}; poll with get_job."
+  },
+  {
+   "name": "generate_video",
+   "description": "POST /text-to-video/{model} (default kling-3.0) {prompt, settings: {aspect_ratio 16:9|9:16|1:1, duration 3–15}} -> data {id, status}; poll with get_job. image_url is not sent (image-to-video is a separate endpoint)."
+  },
+  {
+   "name": "get_job",
+   "description": "GET /tasks?task_ids={id} ('Query Task (By task ID)'): status submitted|processing|succeeded|failed, message on failure, outputs[] with url/watermark_url per image/video/audio (all in raw.outputs). URLs expire after 30 days."
+  }
+ ]
+}

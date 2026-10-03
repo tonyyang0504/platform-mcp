@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "falabella-mcp",
+ "display_name": "Falabella Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Falabella Marketplace (ecommerce channels): me, list_orders, update_listing, set_inventory, end_list",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "falabella"
+   ],
+   "env": {
+    "PLATFORM_MCP_FALABELLA_API_KEY": "${user_config.platform_mcp_falabella_api_key}",
+    "PLATFORM_MCP_FALABELLA_USER_ID": "${user_config.platform_mcp_falabella_user_id}",
+    "PLATFORM_MCP_FALABELLA_OPERATOR_CODE": "${user_config.platform_mcp_falabella_operator_code}",
+    "PLATFORM_MCP_FALABELLA_WAREHOUSE_ID": "${user_config.platform_mcp_falabella_warehouse_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_falabella_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FALABELLA_API_KEY",
+   "description": "Seller Center API key (Mi Cuenta > Integraciones / API in Falabella Seller Center). Signs every request (HMAC-SHA256 hex over the name-sorted, RFC 3986-encoded query, sent as the Signature parameter); never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_falabella_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FALABELLA_USER_ID",
+   "description": "Seller Center UserID: the e-mail login the API key belongs to (sent as UserID).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_falabella_operator_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FALABELLA_OPERATOR_CODE",
+   "description": "Business unit to write to: facl (Chile), fape (Peru) or faco (Colombia).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_falabella_warehouse_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FALABELLA_WAREHOUSE_ID",
+   "description": "SellerWarehouseId for set_inventory when the seller has several warehouses (GetWarehouse); leave empty with a single warehouse.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one product (GetProducts, Limit=1) to verify the UserID, API key and signature."
+  },
+  {
+   "name": "list_orders",
+   "description": "GetOrders (XML answer, values are strings; the order's item statuses and the Price total stay under raw.Statuses / raw.Price because an order can carry several item statuses). `since` is sent as CreatedAfter (ISO 8601); `status` is an order status code such as pending, ready_to_ship, shipped, delivered, canceled (comma-separated for several). Parameters are listed in name order because the signature covers the sorted query. Shipping an order (SetStatusToReadyToShip) needs order-item ids from GetOrderItems."
+  },
+  {
+   "name": "update_listing",
+   "description": "ProductUpdate feed keyed by SellerSku (listing_id = your SellerSku) for the configured business unit (facl/fape/faco): only the fields you pass are changed (Name, Description, Price, Stock). Asynchronous: the answer is a feed RequestId; check FeedStatus in Seller Center for rejections."
+  },
+  {
+   "name": "set_inventory",
+   "description": "UpdateStock for one SellerSku (`sku` is required; it is your SellerSku) in the default warehouse, or in the configured SellerWarehouseId. Not for Fulfillment-by-Falabella stock. Asynchronous feed (RequestId)."
+  },
+  {
+   "name": "end_listing",
+   "description": "ProductRemove feed for one SellerSku (listing_id). A removed product can be restored with ProductUpdate and the Status tag (per the docs). Asynchronous feed (RequestId)."
+  }
+ ]
+}

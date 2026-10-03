@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "aws_marketplace-mcp",
+ "display_name": "AWS Marketplace MCP",
+ "version": "0.1.0",
+ "description": "AWS Marketplace (marketplaces): me, list_products, get_product, list_sales, list_refunds. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "aws_marketplace"
+   ],
+   "env": {
+    "PLATFORM_MCP_AWS_MARKETPLACE_ACCESS_KEY_ID": "${user_config.platform_mcp_aws_marketplace_access_key_id}",
+    "PLATFORM_MCP_AWS_MARKETPLACE_SECRET_ACCESS_KEY": "${user_config.platform_mcp_aws_marketplace_secret_access_key}",
+    "PLATFORM_MCP_AWS_MARKETPLACE_SESSION_TOKEN": "${user_config.platform_mcp_aws_marketplace_session_token}",
+    "PLATFORM_MCP_AWS_MARKETPLACE_ENTITY_TYPE": "${user_config.platform_mcp_aws_marketplace_entity_type}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_aws_marketplace_access_key_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AWS_MARKETPLACE_ACCESS_KEY_ID",
+   "description": "AWS access key id of the seller account's IAM principal with aws-marketplace:ListEntities, DescribeEntity and SearchAgreements (e.g. the AWSMarketplaceSellerProductsReadOnly policy plus agreement read access).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_aws_marketplace_secret_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AWS_MARKETPLACE_SECRET_ACCESS_KEY",
+   "description": "The matching AWS secret access key; only used to derive the SigV4 signing key.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_aws_marketplace_session_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AWS_MARKETPLACE_SESSION_TOKEN",
+   "description": "Session token when the keys are temporary STS credentials.",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_aws_marketplace_entity_type": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AWS_MARKETPLACE_ENTITY_TYPE",
+   "description": "Catalog entity type of your listings: SaaSProduct, AmiProduct, ContainerProduct, DataProduct (or Offer).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verifies the keys by listing one of the seller's own entities (the Catalog API has no identity call)."
+  },
+  {
+   "name": "list_products",
+   "description": "ListEntities (Catalog AWSMarketplace, OwnershipType SELF) for the configured entity type; `status` is Visibility (Public, Limited, Restricted, Draft). The `status` input is not applied. Cursor-paginated (NextToken)."
+  },
+  {
+   "name": "get_product",
+   "description": "DescribeEntity (GET /DescribeEntity?catalog=AWSMarketplace&entityId=…): the entity's DetailsDocument (Description, PromotionalResources, Dimensions, SupportInformation, Targeting…) in `raw`; `id` is EntityId@RevisionId. Prices live on Offer entities (describe an offer id for its terms)."
+  },
+  {
+   "name": "list_sales",
+   "description": "Agreement Service SearchAgreements (PartyType Proposer, AgreementType PurchaseAgreement): the purchase agreements buyers accepted on your offers — agreementId, buyer account, offer, product, status (ACTIVE, CANCELLED, EXPIRED, RENEWED, REPLACED, TERMINATED), epoch-second times. Amounts are not part of agreements (see the seller reports / GetAgreementTerms); `product_id` and `since` inputs are not applied."
+  },
+  {
+   "name": "list_refunds",
+   "description": "Agreement Service ListBillingAdjustmentRequests: seller-initiated billing adjustments (refunds) with agreementId (the sale id from list_sales), original invoice, amount, currency, status and epoch-second createdAt; `since` filters createdAfter."
+  }
+ ]
+}

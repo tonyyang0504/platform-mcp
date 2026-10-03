@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yoycol-mcp",
+ "description": "Yoycol (ecommerce suppliers): me, list_products, get_product, quote_shipping. Every tool maps to a d",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.yoycol.com/api/2025/redoc",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yoycol"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YOYCOL_ACCESS_KEY",
+     "description": "accessKey issued by Yoycol for OPEN API V4 (sent as X-API-Access-Key).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YOYCOL_SECRET_KEY",
+     "description": "secretKey issued with it; signs every request (Base64 HMAC-SHA256 over method, path, timestamp, nonce, accessKey, algorithm, version and the sorted query). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

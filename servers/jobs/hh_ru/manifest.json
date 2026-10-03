@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "hh_ru-mcp",
+ "display_name": "hh.ru MCP",
+ "version": "0.1.0",
+ "description": "hh.ru (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hh_ru"
+   ],
+   "env": {
+    "PLATFORM_MCP_HH_RU_CLIENT_ID": "${user_config.platform_mcp_hh_ru_client_id}",
+    "PLATFORM_MCP_HH_RU_CLIENT_SECRET": "${user_config.platform_mcp_hh_ru_client_secret}",
+    "PLATFORM_MCP_HH_RU_USER_AGENT": "${user_config.platform_mcp_hh_ru_user_agent}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_hh_ru_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HH_RU_CLIENT_ID",
+   "description": "client_id of an application registered at https://dev.hh.ru/admin; used to obtain an application token (grant_type=client_credentials at https://api.hh.ru/token).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_hh_ru_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HH_RU_CLIENT_SECRET",
+   "description": "client_secret of the same hh.ru application.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_hh_ru_user_agent": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HH_RU_USER_AGENT",
+   "description": "Your application name and developer contact e-mail, e.g. 'MyApp/1.0 (me@example.com)'. hh.ru requires a User-Agent (or HH-User-Agent) naming the application and the developer's contact address ('Указание в заголовке названия приложения и контактной почты разработчика'); it is appended to the server's User-Agent.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me with the application token answers the application profile (auth_type 'application')."
+  },
+  {
+   "name": "search",
+   "description": "GET /vacancies (Поиск по вакансиям): text supports the hh.ru query language, page is 0-based (sent as page-1), per_page ≤ 100, and page×per_page may not exceed 2000 ('глубина возвращаемых результатов не может быть больше 2000'). The docs warn that without an authorization token a captcha is requested after the first call, so the server sends an application token. Region filters take area ids from /areas, so location/country are not sent. description is the search snippet (responsibility, may contain <highlighttext>); salary is salary.from/to in salary.currency (the gross flag stays in raw)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /vacancies/{vacancy_id} (Просмотр вакансии); description is HTML."
+  }
+ ]
+}

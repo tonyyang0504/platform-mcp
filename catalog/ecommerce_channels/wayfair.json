@@ -1,0 +1,285 @@
+{
+ "id": "wayfair",
+ "category": "ecommerce_channels",
+ "label": "Wayfair (supplier)",
+ "lane": "assist",
+ "kind": "b2b",
+ "regions": [
+  "gb",
+  "us",
+  "ca",
+  "de"
+ ],
+ "docs_url": "https://developer.wayfair.io/posts/introduction",
+ "url": "https://www.wayfair.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Wayfair supplier approval (Partner Home); the supplier registers an application under Developer › Applications; OAuth2 client credentials; sandbox host; rate limits enforced (numbers not on the page); commercial terms are Wayfair's supplier / dropship agreement (Wayfair sets retail prices).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "sandbox"
+  ],
+  "auth": "oauth2 client credentials (client id/secret from Partner Home › Developer › Applications; token from sso.auth.wayfair.com)",
+  "access": "apply",
+  "capabilities": [
+   "orders",
+   "inventory_sync",
+   "fulfilment_tracking",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.sandbox",
+  "config.documents"
+ ],
+ "rate_limits": "open-PO query at most every 3 s (≤25 POs per call, poll every 30 min); accept/ASN 1 request per 3 s; inventory TRUE_UP at least daily, DIFFERENTIAL ideally every 30 min",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official",
+  "base_urls": [
+   "https://api.wayfair.com/v1/graphql",
+   "https://sandbox.api.wayfair.com/v1/graphql",
+   "https://sso.auth.wayfair.com/oauth/token"
+  ],
+  "auth": [
+   "1. Supplier approved by Wayfair; Partner Home › Developer › Applications → client id + secret (sandbox and production apps).",
+   "2. POST client_credentials to sso.auth.wayfair.com → bearer token.",
+   "3. GraphQL queries / mutations against the API host."
+  ],
+  "endpoints": [
+   {
+    "call": "query purchaseOrders",
+    "purpose": "open dropship purchase orders",
+    "notes": "filters by status / date"
+   },
+   {
+    "call": "mutation purchaseOrders.accept",
+    "purpose": "accept PO with ship dates",
+    "notes": ""
+   },
+   {
+    "call": "mutation inventory.save (inventory feed)",
+    "purpose": "stock per supplier part",
+    "notes": ""
+   },
+   {
+    "call": "mutation shipNotice / ASN (shipping + tracking)",
+    "purpose": "ship confirmation with carrier + tracking",
+    "notes": ""
+   },
+   {
+    "call": "mutation invoices",
+    "purpose": "invoice the PO",
+    "notes": ""
+   },
+   {
+    "call": "registrations / shipping labels",
+    "purpose": "Wayfair-generated labels",
+    "notes": ""
+   }
+  ],
+  "limits": " Enforced; thresholds not on the page read. - Supplier / dropship agreement; Wayfair is the retailer of record and sets prices. - Partner Home application per supplier.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developer.wayfair.io/posts/introduction"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.wayfair.com/v1",
+  "headers": {
+   "Content-Type": "application/json"
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://sso.auth.wayfair.com/oauth/token",
+   "token_body": "json",
+   "client_auth": "body",
+   "token_params": {
+    "audience": "https://api.wayfair.com/"
+   },
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "token_ttl_seconds": 43200,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Production Client ID of your application (Wayfair Developer Portal > Application Management; needs the 'API' role in Partner Home and a completed sandbox test)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Production Client Secret of the same application; exchanged at https://sso.auth.wayfair.com/oauth/token for a 24-hour bearer token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "supplier_id",
+    "required": true,
+    "help": "Numeric Wayfair supplier ID used in inventory feeds: your warehouse ID for a child-level feed, or the supplier account ID for a parent-level feed (Partner Home > Warehouse Management)."
+   }
+  ],
+  "rate_per_second": 0.3,
+  "terms": "Wayfair supplier GraphQL API (POST https://api.wayfair.com/v1/graphql) for suppliers already selling on Wayfair with Partner Home access; production permissions are granted after sandbox testing. GraphQL failures come back as {errors: [...]} in a 200 body.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query getDropshipPurchaseOrders($limit: Int32) { getDropshipPurchaseOrders(limit: $limit) { poNumber poDate supplierId } }",
+     "variables.limit": "json:1"
+    },
+    "docs": "https://developer.wayfair.io/posts/dropship-orders-asn",
+    "note": "There is no account query; the probe mints a token and runs getDropshipPurchaseOrders(limit: 1)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query getDropshipPurchaseOrders($limit: Int32, $hasResponse: Boolean, $fromDate: IsoDateTime, $sortOrder: SortOrder) { getDropshipPurchaseOrders(limit: $limit, hasResponse: $hasResponse, fromDate: $fromDate, sortOrder: $sortOrder) { poNumber poDate supplierId products { partNumber quantity price } } }",
+     "variables.limit": "limit",
+     "variables.hasResponse": "map:status:open=json:false,accepted=json:true",
+     "variables.fromDate": "since",
+     "variables.sortOrder": "=ASC"
+    },
+    "max_limit": 25,
+    "default_limit": 10,
+    "result": {
+     "items": "data.getDropshipPurchaseOrders",
+     "key": "orders",
+     "fields": {
+      "id": "poNumber",
+      "created_at": "poDate"
+     }
+    },
+    "docs": "https://developer.wayfair.io/posts/dropship-orders-asn",
+    "note": "getDropshipPurchaseOrders(limit ≤ 25, default 10; hasResponse; fromDate; sortOrder ASC by poDate) for drop-ship POs. status: `open` = POs you have not responded to (hasResponse false), `accepted` = POs already answered; omit for both. since = fromDate (ISO date-time, UTC). There are no pages: advance `since` to the last poDate. Rows carry poNumber, poDate, supplierId and products {partNumber, quantity, price} (in raw)."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation saveInventory($inventory: [inventoryInput]!, $feedKind: inventoryFeedKind) { inventory { save(inventory: $inventory, feedKind: $feedKind) { handle status itemCount errorCount errors { key message } } } }",
+     "variables.inventory.0.supplierId": "int:@supplier_id",
+     "variables.inventory.0.supplierPartNumber": "sku",
+     "variables.inventory.0.quantityOnHand": "quantity",
+     "variables.feedKind": "=DIFFERENTIAL"
+    },
+    "result": {
+     "root": "data.inventory.save",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wayfair.io/posts/dropship-inventory",
+    "note": "inventory.save mutation with feedKind DIFFERENTIAL (a partial feed; production only) and one line {supplierId (config), supplierPartNumber = sku, quantityOnHand = quantity}. `sku` is required; `listing_id` is ignored. Processing is asynchronous: status starts as PROCESSING; per-item validation errors are in raw errors. The daily TRUE_UP full feed is not sent by this tool."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=mutation saveInventory($inventory: [inventoryInput]!, $feedKind: inventoryFeedKind) { inventory { save(inventory: $inventory, feedKind: $feedKind) { handle status itemCount errorCount errors { key message } } } }",
+     "variables.inventory.0.supplierId": "int:@supplier_id",
+     "variables.inventory.0.supplierPartNumber": "listing_id",
+     "variables.inventory.0.quantityOnHand": "json:0",
+     "variables.inventory.0.discontinued": "json:true",
+     "variables.feedKind": "=DIFFERENTIAL"
+    },
+    "result": {
+     "root": "data.inventory.save",
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.wayfair.io/posts/dropship-inventory",
+    "note": "Discontinues a part: inventory.save with {supplierId, supplierPartNumber = listing_id, quantityOnHand 0, discontinued: true} (DIFFERENTIAL). 'To discontinue an item, send discontinued: true once'; it can be reversed within about 90 days. With a child-level feed every warehouse must be discontinued."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Product Addition is an asynchronous orchestrated workflow: discover taxonomyCategoryId and its attribute questions, a manufacturerId from brandAssociations and a marketContext, then submit and poll submissions (https://developer.wayfair.io/posts/catalog-product-addition); the vocabulary has no category, brand or attributes.",
+   "update_listing": "Product Update is asynchronous and split by level: updateMarketSpecificCatalogItems needs a marketContext (country, brand, language, locale) and item-group updates the SKU itemGroupId, with results polled through statusOfUpdateRequest (https://developer.wayfair.io/posts/catalog-product-update); prices are not part of it.",
+   "mark_shipped": "The shipment (ASN) mutation requires supplierId, packageCount, carrierCode (SCAC), shipSpeed, shipDate, sourceAddress and per-package items {partNumber, quantity} matching the PO (https://developer.wayfair.io/posts/dropship-orders-asn); the vocabulary only carries order_id, carrier and tracking_number."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.wayfair.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token sso.auth.wayfair.com/oauth/token: 400 invalid_client",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; names not found on the page: end_listing:query, set_inventory:query"
+  ],
+  "notes": "-"
+ }
+}

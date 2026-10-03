@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "line-messaging-mcp",
+ "display_name": "LINE MCP",
+ "version": "0.1.0",
+ "description": "LINE (messaging): me, send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/line"
+   ],
+   "env": {
+    "PLATFORM_MCP_LINE_CHANNEL_ACCESS_TOKEN": "${user_config.platform_mcp_line_channel_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_line_channel_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LINE_CHANNEL_ACCESS_TOKEN",
+   "description": "Channel access token of the Messaging API channel (long-lived token from the LINE Developers Console, or a short-lived / v2.1 token), sent as 'Authorization: Bearer {channel access token}' (securitySchemes Bearer 'Channel access token' in LINE's official OpenAPI description, https://github.com/line/line-openapi/blob/main/messaging-api.yml; https://developers.line.biz/en/reference/messaging-api/#send-push-message).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "'Get bot info' — account carries userId ('Bot's user ID'), basicId, premiumId, displayName, pictureUrl, chatMode (chat | bot) and markAsReadMode (auto | manual)."
+  },
+  {
+   "name": "send",
+   "description": "'Sends a message to a user, group chat, or multi-person chat at any time': `to` is the userId, groupId or roomId ('ID of the receiver'), `text` becomes messages[0] = {type: 'text', text} ('Max character limit: 5000'); `subject` and `channel` are ignored. Users must have added the LINE Official Account (or share the group / room) and push messages consume the plan's monthly quota. message_id is sentMessages[0].id ('ID of the sent message'); quoteToken sits under raw.sentMessages[0]."
+  }
+ ]
+}

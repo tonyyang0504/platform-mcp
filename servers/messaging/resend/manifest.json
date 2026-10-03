@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "resend-mcp",
+ "display_name": "Resend MCP",
+ "version": "0.1.0",
+ "description": "Resend (messaging): me, send, list_inbound. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "resend"
+   ],
+   "env": {
+    "PLATFORM_MCP_RESEND_API_KEY": "${user_config.platform_mcp_resend_api_key}",
+    "PLATFORM_MCP_RESEND_SENDER": "${user_config.platform_mcp_resend_sender}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_resend_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_RESEND_API_KEY",
+   "description": "Resend team API key (re_…), sent as 'Authorization: Bearer re_xxxxxxxxx' (https://resend.com/docs/api-reference/introduction).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_resend_sender": {
+   "type": "string",
+   "title": "PLATFORM_MCP_RESEND_SENDER",
+   "description": "Verified-domain sender address used as `from` on every send ('Sender email address', 'Name <email@domain>' allowed; https://resend.com/docs/api-reference/emails/send-email). Env: PLATFORM_MCP_RESEND_SENDER.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified by listing one API key (Resend has no account endpoint); account carries the list envelope (object, has_more, data)."
+  },
+  {
+   "name": "send",
+   "description": "`from` comes from the per-install `sender` config field; `to` is one recipient address; `subject` is required by Resend (the API rejects a missing subject → isError); `text` is sent as the plain-text body; `channel` is ignored. message_id is the Resend email id."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Emails received by the team (needs MX on a verified domain). Resend pages by id cursor (`after` / `before`), so `page` is ignored and only the newest `limit` emails are returned; `since` and `channel` are not sent. The list carries no body: `text` is unset (subject is under raw.subject; the body is on GET /emails/receiving/{id}). `to` is the first recipient."
+  }
+ ]
+}

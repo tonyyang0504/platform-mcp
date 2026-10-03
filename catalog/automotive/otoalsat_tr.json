@@ -1,0 +1,35 @@
+{
+ "id": "otoalsat_tr",
+ "category": "automotive",
+ "label": "Otoalsat",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://otoalsat.com",
+ "domain": "otoalsat.com",
+ "country": "Turkey",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No API docs; dev paths return homepage.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://otoalsat.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "eluta-mcp",
+ "display_name": "Eluta.ca MCP",
+ "version": "0.1.0",
+ "description": "Eluta.ca (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "eluta"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Eluta offers its search 'free of charge using either RSS ... or our OpenSearch API': 'You can create an RSS feed for any search on Eluta' (example /rss?fmt=j&q=French&l=Toronto+ON&limit=5; fmt=j is a JavaScript snippet, so it is not sent and the RSS 2.0 form is used). q is the keyword search and l the location (e.g. 'Toronto ON'); the feed returns the first 20 matches and has no page parameter, so page is not sent. employer, location and a highlighted snippet (description, HTML) are per item; id is the posting link. Eluta's policy: 'You may not check each RSS feed more than 2 times per hour'. Past it the feed answers 200 with a channel titled 'Eluta: Too Many Requests' and one notice item; the runtime turns that into a rate_limited error instead of a posting, and the client-side limit is one call per 100 s. Responses come through a squid cache (Cache-Control max-age 3 h, Vary: User-Agent), so a feed can be up to 3 h old (live check 2026-09-26)."
+  }
+ ]
+}

@@ -1,0 +1,205 @@
+{
+ "id": "uk_find_a_tender",
+ "category": "deals",
+ "label": "Find a Tender",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://www.find-tender.service.gov.uk/Developer/Documentation",
+ "url": "https://www.find-tender.service.gov.uk/",
+ "verified_at": "2026-09-24",
+ "terms_note": "OGL v3.0; anonymous; no rate limit on the page.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for discovery (OCDS release/record package APIs). Lane `assist` → **api for search**. Confidence high.",
+  "base_urls": [
+   "https://www.find-tender.service.gov.uk/api/1.0/ocdsReleasePackages"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/1.0/ocdsReleasePackages?updatedFrom=&updatedTo=&stages=tender",
+    "purpose": "search",
+    "notes": "OCDS releases: tender.title, description, value, tenderPeriod.endDate, buyer"
+   },
+   {
+    "call": "GET /api/1.0/ocdsRecordPackages/{ocid}",
+    "purpose": "details",
+    "notes": "record"
+   },
+   {
+    "call": "XML downloads",
+    "purpose": "bulk",
+    "notes": "TED-schema XML"
+   }
+  ],
+  "limits": " - OGL v3.0; bids on buyer portals. - OGL v3.0; anonymous; no rate limit on the page.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.find-tender.service.gov.uk/Developer/Documentation"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.find-tender.service.gov.uk",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No numeric limit published; the API pages document HTTP 429 with Retry-After ('no further requests should be made until after the number of seconds specified in the Retry-After header value') and 503 with the same guidance. Anonymous; data under the Open Government Licence v3.0.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/1.0/ocdsReleasePackages",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "stages": "tender"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "releases",
+     "key": "postings",
+     "fields": {
+      "id": "ocid",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "deadline": "tender.tenderPeriod.endDate",
+      "posted_at": "date"
+     }
+    },
+    "docs": "https://www.find-tender.service.gov.uk/apidocumentation/1.0/GET-ocdsReleasePackages",
+    "note": "OCDS release package API: documented parameters are limit (default and max 100), cursor, updatedFrom, updatedTo (YYYY-MM-DDTHH:MM:SS) and stages (planning, tender, award). `stages=tender` is fixed; there is no keyword parameter, so `query`, `category` and `min_budget` are not sent (filter client-side). Paging is by cursor, which page/limit cannot carry: `page` is ignored and only the first `limit` releases are returned. `id` is the OCDS ocid (ocds-h6vhtk-…) accepted by get_posting."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/1.0/ocdsRecordPackages/{id}",
+    "result": {
+     "root": "records.0.compiledRelease",
+     "fields": {
+      "id": "ocid",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "deadline": "tender.tenderPeriod.endDate",
+      "posted_at": "date"
+     }
+    },
+    "docs": "https://www.find-tender.service.gov.uk/apidocumentation/1.0/GET-ocdsRecordPackages",
+    "note": "`id` is the procurement ocid ('ocds-h6vhtk-hhhhhh', e.g. /api/1.0/ocdsRecordPackages/ocds-h6vhtk-000cb9); the record package's compiledRelease is mapped (tender{title, description, value, tenderPeriod}, buyer{name}). 404 when the procurement is not found."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'bids on buyer portals' — Find a Tender is the notice board; there is no bid, message or account API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

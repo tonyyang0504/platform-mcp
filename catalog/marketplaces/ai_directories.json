@@ -1,0 +1,31 @@
+{
+ "id": "ai_directories",
+ "category": "marketplaces",
+ "label": "AI tool directories (TAAFT · Toolify · Futurepedia)",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.toolify.ai/",
+ "url": "https://www.toolify.ai/",
+ "verified_at": null,
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "paid",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

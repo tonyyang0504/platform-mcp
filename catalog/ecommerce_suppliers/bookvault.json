@@ -1,0 +1,240 @@
+{
+ "id": "bookvault",
+ "category": "ecommerce_suppliers",
+ "label": "Bookvault (CopyTECH (UK) Ltd t/a Printondemand-worldwide)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://help.bookvault.app/api-setup",
+ "url": "https://www.bookvault.app/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (API credentials generated from the portal's Apps page)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "API key generated once on the portal's Apps page, sent as `Authorization: basic bv_<key>`",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "ReDoc reference https://api.bookvault.app/v3/docs (spec file not discoverable from this host)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not r",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Bookvault account (UK/US POD books); key self-issued; no plan gate stated; terms not read.",
+  "mcp_sdk": [
+   "ReDoc reference https://api.bookvault.app/v3/docs (spec file not discoverable from this host)"
+  ],
+  "sources": [
+   "https://help.bookvault.app/api-setup",
+   "https://api.bookvault.app/v3/docs"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bookvault.app",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "basic ",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Bookvault API key from the portal's Apps page (Bookvault API > Generate Credentials; shown once), sent as `Authorization: basic <key>`. Supply the key exactly as displayed, starting with bv_."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "partner",
+    "required": false,
+    "help": "Print partner for create_order (required by Bookvault): Bookvault_UK, Bookvault_US, Bookvault_AU or Bookvault_CA."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v4/account",
+    "docs": "https://api.bookvault.app/docs.html",
+    "note": "GET /v4/account: {details{firstName, lastName, email, accountRole}, settings{planName}, setup{addedFunds, placedOrder}, ...}. The account payload also carries billing and bank details; treat `account` as sensitive."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/v4/titles",
+    "params": {
+     "titlesPerPage": "limit",
+     "pageNumber": "page"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "titles",
+     "key": "products",
+     "total": "pagination.totalTitles",
+     "fields": {
+      "id": "isbn",
+      "title": "title",
+      "sku": "isbn",
+      "status": "status.beautified",
+      "title_type": "titleType"
+     }
+    },
+    "docs": "https://api.bookvault.app/docs.html",
+    "note": "GET /v4/titles?titlesPerPage=&pageNumber= lists YOUR library titles (print-on-demand books) with specifications and pricing in `raw`; `query` and `category` are not accepted (POST /v4/titles filters are not mapped). `id` is the 13-digit ISBN."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/v4/title/{id}",
+    "result": {
+     "fields": {
+      "id": "isbn",
+      "title": "title",
+      "sku": "isbn",
+      "status": "status.beautified",
+      "total_pages": "specifications.totalPages",
+      "binding": "specifications.binding.beautified"
+     }
+    },
+    "docs": "https://api.bookvault.app/docs.html",
+    "note": "GET /v4/title/{ISBN}: one library title with publishing progress, specifications (pages, binding, size, stocks), pricing and linked apps in `raw`."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/v4/order",
+    "body": {
+     "docRef": "uuid",
+     "address": "shipping_address",
+     "orderLines": "items",
+     "dispatchRequest.requestedService": "shipping_option",
+     "partner": "@partner"
+    },
+    "result": {
+     "fields": {
+      "id": "podRef",
+      "message": "message"
+     }
+    },
+    "docs": "https://api.bookvault.app/docs.html",
+    "note": "Places a real print order that Bookvault charges to the account (production + dispatch). `shipping_address` is Bookvault's address {addressee, address1, address2, town, county (2-letter state for US/CA), countryCode (ISO), postCode, email, telNumber}; `items` are orderLines [{lineNumber (1, 2, ...), isbn, quantity}]; `shipping_option` is required and is the service rule Quickest, Cheapest, Tracked, CheapestTracked or NotSpecified. The print partner comes from the `partner` setting; docRef (your reference) is a fresh UUID. Orders shipped outside the partner's country also need a customsDeclaration, which this tool does not send. Validate first with POST /v4/order/validate (not mapped)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v4/order",
+    "params": {
+     "value": "id"
+    },
+    "fixed_params": {
+     "type": "PodRef"
+    },
+    "result": {
+     "fields": {
+      "id": "identification.podRef",
+      "status": "metadata.status",
+      "total": "financials.orderCost.grandTotal",
+      "currency": "metadata.partner.currency",
+      "created_at": "metadata.dateCreated",
+      "tracking_number": "fulfillment.trackingDetails.trackingNumber",
+      "tracking_url": "fulfillment.trackingDetails.combinedURL",
+      "doc_ref": "identification.docRef"
+     }
+    },
+    "docs": "https://api.bookvault.app/docs.html",
+    "note": "GET /v4/order?type=PodRef&value={id} (the podRef create_order returns): identification, metadata{status, dateCreated, partner}, financials.orderCost{productionCost, dispatchCost, tax, grandTotal}, fulfillment{address, service, trackingDetails{trackingNumber, combinedURL, servName}}."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "POST /v4/dispatch requires areaCode (the delivery postcode), shipmentDate, currency and serviceLevel besides orderLines and countryCode, and GET /v4/dispatch needs the parcel weight and partner; the vocabulary's product_id/country/quantity cannot supply the postcode or date.",
+   "track": "No tracking-events endpoint: the order record carries a single fulfillment.trackingDetails {trackingNumber, combinedURL, servName} (see get_order's tracking_number/tracking_url)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bookvault.app: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "shopify-mcp",
+ "display_name": "Shopify MCP",
+ "version": "0.1.0",
+ "description": "Shopify (builder tools): me, list_items, get_item, create_item, update_item, delete_item. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "shopify"
+   ],
+   "env": {
+    "PLATFORM_MCP_SHOPIFY_ACCESS_TOKEN": "${user_config.platform_mcp_shopify_access_token}",
+    "PLATFORM_MCP_SHOPIFY_SHOP": "${user_config.platform_mcp_shopify_shop}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_shopify_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPIFY_ACCESS_TOKEN",
+   "description": "Admin API access token of a custom app installed on the store (Settings > Apps and sales channels > Develop apps), with read_products/write_products scopes; sent as X-Shopify-Access-Token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopify_shop": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPIFY_SHOP",
+   "description": "The store's myshopify subdomain (the part before .myshopify.com).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /shop.json: the store's name, domain, plan, currency."
+  },
+  {
+   "name": "list_items",
+   "description": "GraphQL Admin products(first, after, query) (the REST list paginates with a Link header): items are products; id is the numeric product id used by get/update/delete, query uses Shopify search syntax (e.g. title:shirt status:active). Pass next_cursor back as cursor; on the last page the cursor returns no items (hasNextPage is in raw only on the page)."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /products/{id}.json: one product with variants, options and images in raw."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /products.json {product: {title, body_html, …fields}}: fields may add vendor, product_type, tags, status (active|draft|archived), variants, images … as documented."
+  },
+  {
+   "name": "update_item",
+   "description": "PUT /products/{id}.json {product: {title, body_html, …fields}}: only the given properties change."
+  },
+  {
+   "name": "delete_item",
+   "description": "DELETE /products/{id}.json: deletes the product permanently."
+  }
+ ]
+}

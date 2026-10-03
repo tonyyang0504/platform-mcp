@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "autotrader_uk-mcp",
+ "display_name": "Autotrader UK MCP",
+ "version": "0.1.0",
+ "description": "Autotrader UK (automotive): search_listings, get_listing, decode_vin, get_valuation. Every tool maps",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "autotrader_uk"
+   ],
+   "env": {
+    "PLATFORM_MCP_AUTOTRADER_UK_KEY": "${user_config.platform_mcp_autotrader_uk_key}",
+    "PLATFORM_MCP_AUTOTRADER_UK_SECRET": "${user_config.platform_mcp_autotrader_uk_secret}",
+    "PLATFORM_MCP_AUTOTRADER_UK_ADVERTISER_ID": "${user_config.platform_mcp_autotrader_uk_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_autotrader_uk_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AUTOTRADER_UK_KEY",
+   "description": "Autotrader Connect API key (issued after Autotrader qualifies your integration; production and sandbox keys differ); POSTed form-encoded to https://api.autotrader.co.uk/authenticate.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_autotrader_uk_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AUTOTRADER_UK_SECRET",
+   "description": "The matching API secret. Access tokens last 15 minutes and are re-minted on expiry or 401; unused credentials are removed after 90 days.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_autotrader_uk_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AUTOTRADER_UK_ADVERTISER_ID",
+   "description": "Autotrader advertiser id your credentials are permitted for (sent as advertiserId on every call, as in all documented examples).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET /search (Capability: Search) — filters the stock of your permitted advertisers (advertiserId from config); make/model are Autotrader standard names (standardMake=Ford, standardModel=Focus), location a UK postcode (distance not mapped), prices in GBP, mileage in miles, condition New|Used. pageSize ≤ 200 per the docs. yearOfManufacture (a string), derivative, media and responseMetrics stay in raw."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /search?searchId=<advert searchId>&advertiserId: the documented way to fetch one advert (listing_id = metadata.searchId from search_listings)."
+  },
+  {
+   "name": "decode_vin",
+   "description": "GET /vehicles?vin=&advertiserId (Capability: Vehicle Taxonomy). 'VIN look ups are supported for a selection of OEMs only'; UK registrations (VRM) use ?registration=, which the vocabulary has no input for. engine is the derivative description; yearOfManufacture (string), generation and the technical data stay in raw."
+  },
+  {
+   "name": "get_valuation",
+   "description": "GET /vehicles?vin&valuations=true&odometerReadingMiles (Capability: Current Valuations; mileage in miles is required). low = trade, mid = private, high = retail valuation (GBP); partExchange is in raw. VIN lookups cover selected OEMs only."
+  }
+ ]
+}

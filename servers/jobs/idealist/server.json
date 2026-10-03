@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/idealist-mcp",
+ "description": "Idealist (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api-sandbox.idealist.org/listings-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "idealist"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_IDEALIST_API_KEY",
+     "description": "Idealist Listings API key; 'API keys are issued manually. Contact support@idealist.org to request a production key.' Sent as the Basic-auth username with an empty password.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

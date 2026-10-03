@@ -1,0 +1,35 @@
+{
+ "id": "australia_g1_gumtree",
+ "category": "automotive",
+ "label": "Gumtree",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.gumtree.com.au",
+ "domain": "gumtree.com.au",
+ "country": "UK",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official Gumtree AU developer API found; only scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "https://apify.com/solidcode/gumtree-scraper"
+  ]
+ },
+ "official_mcp": []
+}

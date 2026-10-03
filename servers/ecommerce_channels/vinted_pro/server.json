@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/vinted_pro-mcp",
+ "description": "Vinted Pro (ecommerce channels): me, end_listing, list_orders. Every tool maps to a documented endpo",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://pro-docs.svc.vinted.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "vinted_pro"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_VINTED_PRO_ACCESS_KEY",
+     "description": "Access key: the part BEFORE the comma of the access token generated in the Vinted Pro Integrations Portal (tokens are shown only once; production and dev mode have separate tokens); sent as X-Vpi-Access-Key.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_VINTED_PRO_SIGNING_KEY",
+     "description": "Signing key: the part AFTER the comma of the same access token. Signs every request (hex HMAC-SHA256 over '<unix seconds>.<METHOD>.<path+query>.<access key>.<body>', sent as X-Vpi-Hmac-Sha256: t=<ts>,v1=<hash>); never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_VINTED_PRO_API_HOST",
+     "description": "pro.svc.vinted.com (production) or pro-public-sandbox.svc.vinted.com (dev mode).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

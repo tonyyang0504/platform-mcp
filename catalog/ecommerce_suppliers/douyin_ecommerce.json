@@ -1,0 +1,273 @@
+{
+ "id": "douyin_ecommerce",
+ "category": "ecommerce_suppliers",
+ "label": "Douyin E-commerce — 抖店 (Doudian) seller + 精选联盟 / 巨量百应 + Doudian Open Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://op.jinritemai.com/",
+ "url": "https://www.douyinec.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (JS shells)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (抖店开放平台 app credentials)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://op.jinritemai.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi-fxg.jinritemai.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": [
+    10000
+   ],
+   "error_field": "msg"
+  },
+  "auth": {
+   "type": "query",
+   "params": {
+    "access_token": "access_token"
+   },
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "encoding": "hex",
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+    "timestamp_offset": "+08:00",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_fmt",
+    "params": {
+     "app_key": "{@app_key}",
+     "v": "2",
+     "sign_method": "hmac-sha256"
+    },
+    "exclude": [
+     "access_token",
+     "sign_method"
+    ],
+    "signature_param": "sign"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "Your Doudian app's app_key (抖店开放平台 → 应用管理)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "The app's app_secret; it signs every call (hmac-sha256)."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Shop access_token from /token/create (self-built apps: grant_type authorization_self with your shop_id). It lasts about 7 days; renew it with /token/refresh and update this value — the server does not renew it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/product/listV2",
+    "params": {
+     "method": "=product.listV2",
+     "param_json": "={\"page\":\"1\",\"size\":\"1\"}"
+    },
+    "docs": "https://op.jinritemai.com/docs/api-docs/14/633",
+    "note": "product.listV2 with one product: verifies app_key, signature and the shop access_token."
+   },
+   "list_products": {
+    "path": "/product/listV2",
+    "params": {
+     "method": "=product.listV2",
+     "param_json": "jsonstr:{\"page\":{str:page},\"size\":{str:limit}}"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data.data",
+     "key": "products",
+     "total": "data.total",
+     "fields": {
+      "id": "product_id",
+      "title": "name",
+      "image_url": "img",
+      "status": "status",
+      "check_status": "check_status",
+      "outer_id": "outer_product_id",
+      "created_at": "create_time"
+     }
+    },
+    "docs": "https://op.jinritemai.com/docs/api-docs/14/633",
+    "note": "product.listV2 (seller side: your own shop's products), page from 1, size up to 100. status 0 = online, 1 = offline; check_status 3 = approved. Prices are per SKU (see get_product). `query`/`category` are not applied. product_id values exceed 2^53: the Python server returns them exactly, the TypeScript server may round them — use get_product's product_id_str."
+   },
+   "get_product": {
+    "path": "/product/detail",
+    "params": {
+     "method": "=product.detail",
+     "param_json": "jsonstr:{\"product_id\":{id}}"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "product_id_str",
+      "title": "name",
+      "price": "discount_price",
+      "market_price": "market_price",
+      "image_url": "img",
+      "status": "status",
+      "sku": "outer_product_id",
+      "specs": "spec_prices"
+     }
+    },
+    "docs": "https://op.jinritemai.com/docs/api-docs/14/56",
+    "note": "product.detail by product_id: title, images, price (discount_price, in fen: 1990 = ¥19.90), status and spec_prices (SKU prices and stock)."
+   },
+   "get_order": {
+    "path": "/order/orderDetail",
+    "params": {
+     "method": "=order.orderDetail",
+     "param_json": "jsonstr:{\"shop_order_id\":{id}}"
+    },
+    "result": {
+     "root": "data.shop_order_detail",
+     "fields": {
+      "id": "order_id",
+      "status": "order_status_desc",
+      "status_code": "order_status",
+      "total": "pay_amount",
+      "created_at": "create_time",
+      "tracking_number": "logistics_info.0.tracking_no",
+      "carrier": "logistics_info.0.company_name"
+     }
+    },
+    "docs": "https://op.jinritemai.com/docs/api-docs/15/1343",
+    "note": "order.orderDetail by shop_order_id: status (order_status_desc), pay_amount in fen, create_time (unix seconds), logistics and SKU lines; buyer data is encrypted by the platform."
+   },
+   "track": {
+    "path": "/order/orderDetail",
+    "params": {
+     "method": "=order.orderDetail",
+     "param_json": "jsonstr:{\"shop_order_id\":{order_id}}"
+    },
+    "result": {
+     "root": "data.shop_order_detail",
+     "fields": {
+      "status": "order_status_desc",
+      "tracking_number": "logistics_info.0.tracking_no",
+      "carrier": "logistics_info.0.company_name",
+      "events": "logistics_info"
+     }
+    },
+    "docs": "https://op.jinritemai.com/docs/api-docs/15/1343",
+    "note": "order.orderDetail logistics_info: the parcels (tracking_no, company_name, ship_time) of the order; route events are only available for Douyin e-waybills (logistics.trackNoRouteDetail)."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "The Doudian Open Platform is the seller-side API of your own shop (https://op.jinritemai.com/docs/guide-docs/10/23): freight is configured in freight templates, there is no shipping-quote call for a product and destination.",
+   "create_order": "Orders are placed by buyers on Douyin; the seller API only reads and fulfils them (order.searchList, order.orderDetail, order.logisticsAdd — https://op.jinritemai.com/docs/api-docs/15/1342), so a supplier order cannot be created."
+  },
+  "terms": "抖店开放平台 (https://op.jinritemai.com/docs/guide-docs/10/23): every call carries method, app_key, access_token, param_json (key-sorted compact JSON, all values strings), timestamp (yyyy-MM-dd HH:mm:ss, GMT+8), v=2 and sign = hmac-sha256(app_secret, app_secret + sorted name+value pairs + app_secret), where 'access_token和sign_method不参与加密'. Success is code 10000. The shop access_token (about 7 days) must be renewed outside this server."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host openapi-fxg.jinritemai.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 200 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

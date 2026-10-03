@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/abound-mcp",
+ "description": "Abound (acquired — now Carro) (ecommerce suppliers): me, list_products, get_product, get_order. Ever",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.moderndropship.com/reference/introduction",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "abound"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ABOUND_API_KEY",
+     "description": "Modern Dropship (Carro) API key generated under Settings > Dropshipping > Integrations, sent raw as `Authorization: <key>` (securityScheme ApiKeyAuth, no Bearer prefix). A buyer (retailer) key reaches the Buyer + Shared endpoints used here.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

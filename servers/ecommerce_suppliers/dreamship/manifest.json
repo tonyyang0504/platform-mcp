@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "dreamship-mcp",
+ "display_name": "Dreamship MCP",
+ "version": "0.1.0",
+ "description": "Dreamship (ecommerce suppliers): me, list_products, get_product, create_order, get_order. Every tool",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dreamship"
+   ],
+   "env": {
+    "PLATFORM_MCP_DREAMSHIP_API_KEY": "${user_config.platform_mcp_dreamship_api_key}",
+    "PLATFORM_MCP_DREAMSHIP_TEST_ORDER": "${user_config.platform_mcp_dreamship_test_order}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dreamship_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DREAMSHIP_API_KEY",
+   "description": "Dreamship API key from Settings (https://dreamship.com/app/settings), sent as `Authorization: Bearer <API_KEY>`.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dreamship_test_order": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DREAMSHIP_TEST_ORDER",
+   "description": "Set to true to send `test_order: true` on create_order (test orders are not billed or fulfilled); left out of the body when unset, so orders are real.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Dreamship has no account endpoint; the probe lists the connected shops ({paging{count, next, previous}, data[{id, key, name, channel, shop_url, status}]}). Rate limit 60 calls/minute."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /items/ lists Dreamship's blank catalogue items ({paging{count, next, previous}, data[{id, name, description, colors, sizes, options, print_areas, ship_zones, starting_basic_cost, release_status}]}); `query` and `category` are not accepted here (items of one category come from GET /categories/{id}/items/, not mapped). Costs are decimal strings (starting_basic_cost), so `price` is left empty."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /items/{id}/: the item with item_variants[{id, name, color, size, cost, basic_cost, availability}], print_areas[{key, w, h, dpi}] and ship_zones[{countries, ship_zone_methods[{method, cost, delivery_days_min, delivery_days_max}]}] in `raw`. Order line_items use item_variant ids and print_area keys from here."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /orders/ places a real, billed order unless the test_order setting is true. `shipping_address` is Dreamship's address {first_name, last_name, street1, street2, city, state, zip, country (ISO-2), phone, force_verified_delivery}; `items` are line_items [{item_variant | product_variant, quantity, print_areas[{key, url}]}]; `shipping_option` is shipping_method (economy, express, ground, two_day, ...). Costs are decimal strings (total_cost)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /orders/{id}/: {id, status (draft, submitted, accepted, rejected, partially_fulfilled, fulfilled, cancelled), payment_status, total_cost (decimal string), created_at, line_items, fulfillments[{trackings[{carrier, status, tracking_number, tracking_url}]}]}; `tracking_number` is the first fulfillment's first tracking."
+  }
+ ]
+}

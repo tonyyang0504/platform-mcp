@@ -1,0 +1,19 @@
+{
+ "id": "bybit_proxy",
+ "category": "market_data",
+ "label": "Bybit live market proxy",
+ "provider": "Bybit",
+ "lane": "api",
+ "base_urls": [
+  "https://api.bybit.com",
+  "wss://stream.bybit.com/v5/public"
+ ],
+ "data_kinds": [
+  "candles",
+  "order book",
+  "public trades",
+  "tickers (linear/inverse/spot)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

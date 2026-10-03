@@ -1,0 +1,219 @@
+{
+ "id": "admob",
+ "category": "ads",
+ "label": "Google AdMob",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/admob/api",
+ "url": "https://admob.google.com/home/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Google Cloud project + AdMob account; OAuth2 read-only reporting scopes; free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Google Cloud project; AdMob API scopes admob.readonly / admob.report)",
+  "access": "signup",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** for our purpose — the AdMob API is publisher revenue reporting, not ad buying.Confidence: **high**.",
+  "base_urls": [
+   "https://admob.googleapis.com/v1/accounts/{pub}/networkReport:generate"
+  ],
+  "auth": [
+   "1. Google Cloud project, enable AdMob API.",
+   "2. OAuth2 with `https://www.googleapis.com/auth/admob.report`.",
+   "3. Generate network / mediation reports."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v1/accounts/{pub}/networkReport:generate",
+    "purpose": "publisher revenue report",
+    "notes": "dateRange, dimensions, metrics"
+   },
+   {
+    "call": "campaigns / ads",
+    "purpose": "not applicable (publisher side)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Free; AdMob terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.google.com/admob/api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://admob.googleapis.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console > Credentials) of a project with the AdMob API enabled."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret, sent in the form body of the refresh_token grant."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from Google's consent flow (offline access) with scope https://www.googleapis.com/auth/admob.readonly (or admob.report); the runtime mints hourly access tokens from it."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/accounts",
+    "docs": "https://developers.google.com/admob/api/reference/rest/v1/accounts/list",
+    "note": "GET /v1/accounts: the AdMob publisher accounts the credentials can access ({account: [{name, publisherId, reportingTimeZone, currencyCode}]})."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v1/accounts",
+    "result": {
+     "items": "account",
+     "key": "accounts",
+     "fields": {
+      "id": "publisherId",
+      "name": "name",
+      "currency": "currencyCode"
+     }
+    },
+    "docs": "https://developers.google.com/admob/api/reference/rest/v1/accounts/list",
+    "note": "GET /v1/accounts. `id` is the publisher id (pub-…) used as account_id by get_report; `name` is the resource name accounts/pub-…. Only the first page is returned (pageToken paging)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/v1/accounts/{account_id}/networkReport:generate",
+    "body": {
+     "reportSpec.dateRange.startDate.year": "year:date_from",
+     "reportSpec.dateRange.startDate.month": "month:date_from",
+     "reportSpec.dateRange.startDate.day": "day:date_from",
+     "reportSpec.dateRange.endDate.year": "year:date_to",
+     "reportSpec.dateRange.endDate.month": "month:date_to",
+     "reportSpec.dateRange.endDate.day": "day:date_to",
+     "reportSpec.dimensions": "json:[\"DATE\",\"APP\"]",
+     "reportSpec.metrics": "json:[\"IMPRESSIONS\",\"CLICKS\",\"ESTIMATED_EARNINGS\"]"
+    },
+    "result": {
+     "items": "$",
+     "key": "rows",
+     "require": [
+      "date"
+     ],
+     "fields": {
+      "date": "row.dimensionValues.DATE.value",
+      "app_id": "row.dimensionValues.APP.value",
+      "app": "row.dimensionValues.APP.displayLabel",
+      "impressions": "row.metricValues.IMPRESSIONS.integerValue",
+      "clicks": "row.metricValues.CLICKS.integerValue",
+      "earnings_micros": "row.metricValues.ESTIMATED_EARNINGS.microsValue"
+     }
+    },
+    "docs": "https://developers.google.com/admob/api/reference/rest/v1/accounts.networkReport/generate",
+    "note": "POST /v1/accounts/{account_id}/networkReport:generate with a reportSpec over DATE and APP and metrics IMPRESSIONS, CLICKS, ESTIMATED_EARNINGS (account_id is the publisher id pub-…). AdMob is a publisher (monetisation) platform: earnings are revenue in micros of the account currency (6381903 = 6.38), dates are YYYYMMDD. The header/footer elements of the streamed array are dropped. `campaign_id` is not applicable."
+   }
+  },
+  "not_offered": {
+   "list_campaigns": "AdMob is a publisher monetisation API; its v1 surface is accounts, networkReport and mediationReport only (\"The AdMob API allows publishers to programmatically get information about their AdMob account\", https://developers.google.com/admob/api/reference/rest). There are no advertiser campaigns.",
+   "update_budget": "No campaigns or budgets exist in the AdMob API (https://developers.google.com/admob/api/reference/rest).",
+   "pause_resume": "No campaigns exist in the AdMob API (https://developers.google.com/admob/api/reference/rest)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host admob.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://admob.googleapis.com/$discovery/rest?version=v1: 3/3 tools match (path, method, parameters, body keys, response paths)",
+   "scopes admob.readonly: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

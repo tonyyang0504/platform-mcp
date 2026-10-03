@@ -1,0 +1,262 @@
+{
+ "id": "dreamship",
+ "category": "ecommerce_suppliers",
+ "label": "Dreamship",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.dreamship.com/",
+ "url": "https://www.dreamship.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "api_encouraged (test_order flag never billed/fulfilled; per-order webhook_url)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "openapi"
+  ],
+  "auth": "Bearer API key from Dreamship › Settings (`Authorization: Bearer <key>`)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "llms.txt + OpenAPI index at https://docs.dreamship.com/llms.txt"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Tenant copies the API key from dreamship.com/app/settings",
+   "2. Send `Authorization: Bearer <key>`",
+   "3. Optional: subscribe webhooks under app settings › API"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /items · /items/{id} · /items/{id}/ship-zones · GET /categories",
+    "purpose": "blank catalogue + shipping zones",
+    "notes": ""
+   },
+   {
+    "call": "POST /products · PATCH/PUT /products/{id} · /reprocess",
+    "purpose": "create the user's POD products",
+    "notes": ""
+   },
+   {
+    "call": "POST /orders · GET /orders · /orders/{id} · POST /orders/{id}/cancel · /submit_draft_order/",
+    "purpose": "order lifecycle",
+    "notes": "webhook_url per order"
+   },
+   {
+    "call": "GET/POST /shops",
+    "purpose": "shop records",
+    "notes": ""
+   },
+   {
+    "call": "POST line-item tickets",
+    "purpose": "support / reprint tickets",
+    "notes": ""
+   }
+  ],
+  "limits": " 60 calls per minute → 429 {key: throttled}. - Self-serve - test_order flag for non-billed tests",
+  "mcp_sdk": [
+   "llms.txt + OpenAPI index at https://docs.dreamship.com/llms.txt"
+  ],
+  "sources": [
+   "https://docs.dreamship.com/",
+   "https://docs.dreamship.com/reference/authentication.md",
+   "https://docs.dreamship.com/reference/rate-limits.md",
+   "https://docs.dreamship.com/reference/webhooks.md"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.dreamship.com/v1",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Dreamship API key from Settings (https://dreamship.com/app/settings), sent as `Authorization: Bearer <API_KEY>`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "test_order",
+    "required": false,
+    "help": "Set to true to send `test_order: true` on create_order (test orders are not billed or fulfilled); left out of the body when unset, so orders are real."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/shops/",
+    "docs": "https://docs.dreamship.com/reference/listshops",
+    "note": "Dreamship has no account endpoint; the probe lists the connected shops ({paging{count, next, previous}, data[{id, key, name, channel, shop_url, status}]}). Rate limit 60 calls/minute."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/items/",
+    "params": {
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "total": "paging.count",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "release_status": "release_status",
+      "starting_basic_cost": "starting_basic_cost",
+      "production_days_min": "production_days_min",
+      "production_days_max": "production_days_max"
+     }
+    },
+    "docs": "https://docs.dreamship.com/reference/listitems",
+    "note": "GET /items/ lists Dreamship's blank catalogue items ({paging{count, next, previous}, data[{id, name, description, colors, sizes, options, print_areas, ship_zones, starting_basic_cost, release_status}]}); `query` and `category` are not accepted here (items of one category come from GET /categories/{id}/items/, not mapped). Costs are decimal strings (starting_basic_cost), so `price` is left empty."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/items/{id}/",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "release_status": "release_status",
+      "starting_basic_cost": "starting_basic_cost"
+     }
+    },
+    "docs": "https://docs.dreamship.com/reference/retrieveitem",
+    "note": "GET /items/{id}/: the item with item_variants[{id, name, color, size, cost, basic_cost, availability}], print_areas[{key, w, h, dpi}] and ship_zones[{countries, ship_zone_methods[{method, cost, delivery_days_min, delivery_days_max}]}] in `raw`. Order line_items use item_variant ids and print_area keys from here."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders/",
+    "body": {
+     "address": "shipping_address",
+     "line_items": "items",
+     "shipping_method": "shipping_option",
+     "test_order": "@test_order"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "created_at",
+      "total_cost": "total_cost",
+      "reference_id": "reference_id"
+     }
+    },
+    "docs": "https://docs.dreamship.com/reference/createorder",
+    "note": "POST /orders/ places a real, billed order unless the test_order setting is true. `shipping_address` is Dreamship's address {first_name, last_name, street1, street2, city, state, zip, country (ISO-2), phone, force_verified_delivery}; `items` are line_items [{item_variant | product_variant, quantity, print_areas[{key, url}]}]; `shipping_option` is shipping_method (economy, express, ground, two_day, ...). Costs are decimal strings (total_cost)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{id}/",
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "created_at",
+      "tracking_number": "fulfillments.0.trackings.0.tracking_number",
+      "total_cost": "total_cost",
+      "payment_status": "payment_status",
+      "production_status": "production_status"
+     }
+    },
+    "docs": "https://docs.dreamship.com/reference/retrieveorder",
+    "note": "GET /orders/{id}/: {id, status (draft, submitted, accepted, rejected, partially_fulfilled, fulfilled, cancelled), payment_status, total_cost (decimal string), created_at, line_items, fulfillments[{trackings[{carrier, status, tracking_number, tracking_url}]}]}; `tracking_number` is the first fulfillment's first tracking."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "GET /items/{item_id}/ship-zones/ lists zones ({countries, group, ship_zone_methods[{method, delivery_days_min, delivery_days_max}]}) without prices and takes no country or quantity; costs sit in ship_zones of GET /items/{id}/ (see get_product `raw`), so there is no quote endpoint for the product_id/country/quantity shape.",
+   "track": "No tracking-events endpoint; fulfillments[].trackings[{carrier, status, tracking_number, tracking_url}] are part of GET /orders/{id}/ (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.dreamship.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

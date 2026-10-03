@@ -1,0 +1,358 @@
+{
+ "id": "google",
+ "category": "ads",
+ "label": "Google Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/google-ads/api/docs/start",
+ "url": "https://ads.google.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Google Ads API requires a developer token with access levels (Google Ads API policies page linked from the docs); console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "grpc",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "oauth2 + developer-token header (+ login-customer-id for manager accounts)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "recommendations",
+   "targeting_search",
+   "bulk",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developers.google.com/google-ads/api/docs/client-libs (official client libraries: Java, .NET, PHP, Python, Ruby, Perl)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full account-to-keyword management + GAQL reporting).",
+  "base_urls": [
+   "https://googleads.googleapis.com/v25/"
+  ],
+  "auth": [
+   "1. Tenant (or platform) has a Google Ads **manager** account → API Center → apply for a developer token (starts at Test Account Access).",
+   "2. OAuth 2.0 web flow on the user's Google account with scope `https://www.googleapis.com/auth/adwords` (sensitive → OAuth app verification: verified domain, privacy policy on that domain, demo video).",
+   "3. Every call: `Authorization: Bearer <access_token>`, `developer-token: <token>`, `login-customer-id: <manager id digits>` when acting through a manager; optional `linked-customer-id` for linked accounts.",
+   "4. Access levels (developers.google.com/google-ads/api/docs/access-levels): Test (15,000 ops/day, test accounts only) → Explorer (2,880 ops/day production, automatic in some cases; no account creation / billing / planning) → Basic (15,000 ops/day, 5 business days) → Standard (unlimited, 10 business "
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v25/customers:listAccessibleCustomers",
+    "purpose": "accounts the token can see",
+    "notes": "`resourceNames[]`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/googleAds:searchStream",
+    "purpose": "every read + report",
+    "notes": "`{query: GAQL}` — `FROM campaign / ad_group / ad_group_ad / keyword_view / search_term_view / change_event`, `metrics.*`, `segments.date`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/campaignBudgets:mutate",
+    "purpose": "budget create / amount change",
+    "notes": "`operations[].create{name, amount_micros, delivery_method}` / `update` + `updateMask`, `validateOnly`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/campaigns:mutate",
+    "purpose": "campaign create / status / bidding",
+    "notes": "`create{name, advertising_channel_type, campaign_budget, status, bidding strategy fields, network_settings}` / `update`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/adGroups:mutate",
+    "purpose": "ad groups + cpc_bid_micros",
+    "notes": "`create{name, campaign, status, type, cpc_bid_micros}`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/adGroupAds:mutate",
+    "purpose": "responsive search ads",
+    "notes": "`create{ad_group, status, ad{responsive_search_ad{headlines[], descriptions[]}, final_urls[]}}`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/adGroupCriteria:mutate` · `campaignCriteria:mutate",
+    "purpose": "keywords, negatives, locations, audiences",
+    "notes": "`keyword{text, match_type}`, `negative`, `location{geo_target_constant}`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/assets:mutate",
+    "purpose": "image / text / YouTube assets",
+    "notes": "`image_asset{data}`, `text_asset{text}`, `youtube_video_asset{youtube_video_id}`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/userLists:mutate` → `offlineUserDataJobs:create / :addOperations / :run",
+    "purpose": "customer-match audiences + conversion adjustments",
+    "notes": "hashed `user_identifiers[]`, `job type CUSTOMER_MATCH_USER_LIST`, `STORE_SALES_UPLOAD_FIRST_PARTY`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}:uploadClickConversions",
+    "purpose": "offline conversions",
+    "notes": "`conversions[]{gclid, conversion_action, conversion_date_time, conversion_value}`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}/recommendations:apply` · `:dismiss",
+    "purpose": "recommendations",
+    "notes": "`operations[].resource_name`"
+   },
+   {
+    "call": "POST /v25/customers/{cid}:generateKeywordIdeas",
+    "purpose": "keyword planning (1 QPS)",
+    "notes": "`keyword_seed`, `geo_target_constants`, `page_size`"
+   }
+  ],
+  "limits": " - Quotas per developer token per sliding 24 h (see access levels); `RESOURCE_EXHAUSTED` when exceeded; 10,000 mutate operations per request (`TOO_MANY_MUTATE_OPERATIONS`); fixed 10,000-row pages on `googleAds:search` (no page_size since v19). - Free API; the Google Ads API Terms and Required Minimum Functionality apply to tools that serve third parties (Standard access). - Policy: ads.google.com policies apply to created ads; `validate_only` dry runs required by our rule before any mutate.",
+  "mcp_sdk": [
+   "Official client libraries: Java, .NET, PHP, Python, Ruby, Perl (developers.google.com/google-ads/api/docs/client-libs). No official MCP server found on the docs; community MCP servers exist but were not opened this pass."
+  ],
+  "sources": [
+   "https://developers.google.com/google-ads/api/docs/start",
+   "https://developers.google.com/google-ads/api/docs/access-levels"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://googleads.googleapis.com/v25",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://developers.google.com/google-ads/api/docs/best-practices/test-accounts",
+    "verified_at": "2026-09-27",
+    "notes": "Google Ads API has no sandbox host: test accounts are called on googleads.googleapis.com like production accounts. Create a test manager account (a new hierarchy rooted at a test manager; test and production accounts cannot interact), use its customer ids as customer_id / login_customer_id; a developer token with Test access works only against test accounts (production accounts answer CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION / DEVELOPER_TOKEN_NOT_APPROVED). Test accounts serve no ads, so metrics are empty."
+   }
+  },
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "developer-token": "developer_token",
+    "login-customer-id": "login_customer_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client id (Google Cloud console > Credentials) of the app that the Google Ads user authorised with scope https://www.googleapis.com/auth/adwords."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth client's secret; sent in the form body of the refresh_token grant."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token obtained once through Google's consent flow (offline access, scope https://www.googleapis.com/auth/adwords); the runtime mints hourly access tokens from it."
+    },
+    {
+     "name": "developer_token",
+     "required": true,
+     "help": "Google Ads API developer token (manager account > Admin > API Center), sent as the `developer-token` header on every call; Test-access tokens only work against test accounts."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "customer_id",
+    "required": true,
+    "help": "Google Ads customer id (10 digits, no dashes) of the account being managed: pause_resume mutates campaigns under it, and list_accounts reads its customer_client hierarchy (itself plus direct clients when it is a manager). When the user reaches it through a manager account, also set login_customer_id."
+   },
+   {
+    "name": "login_customer_id",
+    "required": false,
+    "help": "Manager customer id (digits, no dashes) sent as `login-customer-id` when the user reaches client accounts through a manager account; leave unset for direct access."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/customers:listAccessibleCustomers",
+    "docs": "https://developers.google.com/google-ads/api/rest/examples",
+    "note": "GET /v25/customers:listAccessibleCustomers lists the customers directly accessible with the OAuth token as `resourceNames` (customers/{id})."
+   },
+   "list_accounts": {
+    "method": "POST",
+    "path": "/customers/{customer_id}/googleAds:search",
+    "path_params": {
+     "customer_id": "@customer_id"
+    },
+    "body": {
+     "query": "=SELECT customer_client.client_customer, customer_client.level, customer_client.manager, customer_client.descriptive_name, customer_client.currency_code, customer_client.time_zone, customer_client.id FROM customer_client WHERE customer_client.level <= 1"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "results",
+     "key": "accounts",
+     "fields": {
+      "id": "customerClient.id",
+      "name": "customerClient.descriptiveName",
+      "currency": "customerClient.currencyCode"
+     }
+    },
+    "docs": "https://developers.google.com/google-ads/api/docs/account-management/get-account-hierarchy",
+    "note": "googleAds:search on the configured customer_id with the documented account-hierarchy GAQL query (customer_client, level <= 1): the account itself plus its direct clients. Search returns fixed pages of 10,000 rows with a nextPageToken; `page` is not sent."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/customers/{account_id}/googleAds:search",
+    "body": {
+     "query": "=SELECT campaign.id, campaign.name, campaign.status, campaign.start_date_time, campaign.end_date_time, campaign_budget.amount_micros FROM campaign WHERE campaign.status != 'REMOVED' ORDER BY campaign.id"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "results",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaign.id",
+      "name": "campaign.name",
+      "status": "campaign.status",
+      "start": "campaign.startDateTime",
+      "end": "campaign.endDateTime"
+     }
+    },
+    "docs": "https://developers.google.com/google-ads/api/rest/common/search",
+    "note": "POST /v25/customers/{account_id}/googleAds:search with a fixed GAQL query (non-removed campaigns). account_id is the 10-digit customer id without dashes. `status` is not applied (GAQL is a literal; the runtime cannot splice arguments into it); the budget is campaign_budget.amountMicros in raw (micros of the account currency, not mapped to `budget`). One call returns up to 10,000 rows; `page` is not sent."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/customers/{account_id}/googleAds:search",
+    "body": {
+     "query": "fmt:SELECT campaign.id, campaign.name, segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM campaign WHERE segments.date BETWEEN '{date:date_from}' AND '{date:date_to}' ORDER BY segments.date"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "campaign.id",
+      "campaign": "campaign.name",
+      "date": "segments.date",
+      "impressions": "metrics.impressions",
+      "clicks": "metrics.clicks",
+      "cost_micros": "metrics.costMicros",
+      "conversions": "metrics.conversions"
+     }
+    },
+    "docs": "https://developers.google.com/google-ads/api/docs/query/date-ranges",
+    "note": "googleAds:search on customers/{account_id} with GAQL `FROM campaign WHERE segments.date BETWEEN '<date_from>' AND '<date_to>'` (dates YYYY-MM-DD, as in the documented custom-range example): one row per campaign per day. cost_micros is the cost in micros of the account currency (divide by 1,000,000); int64 metrics arrive as strings. `campaign_id` is not applied (filter the rows). Up to 10,000 rows (one page)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/customers/{customer_id}/campaigns:mutate",
+    "path_params": {
+     "customer_id": "@customer_id"
+    },
+    "body": {
+     "operations.0.update.resourceName": "fmt:customers/{@customer_id}/campaigns/{campaign_id}",
+     "operations.0.update.status": "map:action:pause=PAUSED,resume=ENABLED",
+     "operations.0.updateMask": "=status"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "status": "=updated",
+      "resource_name": "resourceName"
+     }
+    },
+    "docs": "https://developers.google.com/google-ads/api/rest/examples",
+    "note": "POST /v25/customers/{customer_id (config)}/campaigns:mutate {operations: [{update: {resourceName: customers/{customer_id}/campaigns/{campaign_id}, status: PAUSED|ENABLED}, updateMask: status}]} (\"All updates require an `updateMask` field\"). The campaign must belong to the configured customer_id; answers {results: [{resourceName}]}."
+   }
+  },
+  "not_offered": {
+   "update_budget": "campaignBudgets:mutate updates the CampaignBudget resource (customers/{cid}/campaignBudgets/{budget_id}), whose id is not the campaign id and needs a prior GAQL lookup, with amountMicros (amount x 1,000,000); two calls, a composed resource name and a scaled amount."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host googleads.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://googleads.googleapis.com/$discovery/rest?version=v25: 5/5 tools match (path, method, parameters, body keys, response paths)",
+   "scopes adwords: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

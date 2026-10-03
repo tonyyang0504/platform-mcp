@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "dropxl_vidaxl-mcp",
+ "display_name": "vidaXL / dropXL (ex-DropshippingXL) MCP",
+ "version": "0.1.0",
+ "description": "vidaXL / dropXL (ex-DropshippingXL) (ecommerce suppliers): me, list_products, get_product, create_or",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dropxl_vidaxl"
+   ],
+   "env": {
+    "PLATFORM_MCP_DROPXL_VIDAXL_EMAIL": "${user_config.platform_mcp_dropxl_vidaxl_email}",
+    "PLATFORM_MCP_DROPXL_VIDAXL_API_TOKEN": "${user_config.platform_mcp_dropxl_vidaxl_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dropxl_vidaxl_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DROPXL_VIDAXL_EMAIL",
+   "description": "The vidaXL B2B customer e-mail (HTTP Basic username).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dropxl_vidaxl_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DROPXL_VIDAXL_API_TOKEN",
+   "description": "API token shown under MY ACCOUNT on b2b.vidaxl.com (HTTP Basic password). Sandbox tokens belong to https://sandbox.b2b.vidaxl.com, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "vidaXL has no account endpoint; the probe reads one product with the Basic credentials, so `account` is empty on success. Limit 1 request/second."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /api_customer/products?limit&offset: the products you may sell [{id, name, code (SKU), category_path, quantity, price, created_at, updated_at}] (up to 500 per request). quantity and price are decimal strings (list_price, quantity). `query` and `category` are not accepted. `id` is the SKU code used in orders."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /api_customer/products?code_eq={SKU}: a one-element array; an unknown SKU is an empty array (invalid_input). Images, descriptions and full prices are in the offer feed, not the API."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /api_customer/orders. 'Order payment is not available via API. All the accepted orders are available in Unsubmitted orders' and must be paid on b2b.vidaxl.com. `shipping_address` is the addressbook {name, address (max 30 chars, with a number), address2, city, province (required for US/AU), postal_code, country (ISO-2), phone, comments}; `items` are order_products [{product_code, quantity}] (an item may carry its own addressbook). customer_order_reference is a fresh UUID. `shipping_option` is not sent."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /api_customer/orders?id_eq={id}: [{order: {id, status_order_id, status_order_name (Temporary, Submitted, Being Prepared, Sent, Cancelled, Refunded, Replaced), submitted_at, gross_total, shipping_tracking, shipping_tracking_url, order_products}}]; tracking number and URL appear at status 5 (Sent). Totals are decimal strings."
+  }
+ ]
+}

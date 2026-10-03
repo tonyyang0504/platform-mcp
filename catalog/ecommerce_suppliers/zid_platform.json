@@ -1,0 +1,119 @@
+{
+ "id": "zid_platform",
+ "category": "ecommerce_suppliers",
+ "label": "Zid (store platform + Merchant APIs)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "mea"
+ ],
+ "docs_url": "https://docs.zid.sa/",
+ "url": "https://zid.sa/en/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Rate Limiting page; API access gated by merchant plan",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks",
+   "mcp",
+   "sdk"
+  ],
+  "auth": "oauth2 (partner apps; Authorization page in the docs)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "returns",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Zid SDKs"
+  ]
+ },
+ "official_mcp": [
+  "Zid custom MCP server (docs.zid.sa › Our custom MCP server; Zid AI Agent Skill)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Partner account; rate limiting page; app approval to publish.",
+  "mcp_sdk": [
+   "Zid custom MCP server (docs.zid.sa › Our custom MCP server; Zid AI Agent Skill)",
+   "Zid SDKs"
+  ],
+  "sources": [
+   "https://docs.zid.sa/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Wrong direction for this category (docs readable, re-opened 2026-09-25 in headless Chromium): Zid Docs (https://docs.zid.sa/) describe partner apps that 'enhance the functionality of online stores' and call the Merchant APIs (Account, Orders, Reverse Orders, Abandoned Carts, Products, Inventories, Shipping, Marketing, Customers, Store Settings) with per-merchant OAuth. Zid is a store platform, so these read and manage a merchant's own store; there is no supplier catalogue to buy from, no shipping quote from a supplier and no create_order that buys from a supplier, which is what this category's verbs describe. Its 'custom MCP server' only answers questions about the documentation. An adapter belongs with the sales channels."
+}

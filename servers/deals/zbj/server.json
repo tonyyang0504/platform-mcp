@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/zbj-mcp",
+ "description": "Zhubajie (deals): me, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.zbj.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "zbj"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ZBJ_APP_KEY",
+     "description": "appKey (应用证书) of your approved ZOP application (open.zbj.com > 控制台).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZBJ_APP_SECRET",
+     "description": "Application secret (应用密钥); signs every call as uppercase hex SHA1 of secret + sorted name/value pairs + secret. Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZBJ_ACCESS_TOKEN",
+     "description": "accessToken (访问令牌) from the ZOP OAuth2.0 authorisation of your 猪八戒 account.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZBJ_OPENID",
+     "description": "Your 猪八戒 openid (the user identifier returned by the ZOP OAuth2.0 authorisation), used by zbj.user.getUserBaseInfo.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,275 @@
+{
+ "id": "avito_ads",
+ "category": "ads",
+ "label": "Avito Advertising (Авито Реклама)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://ads-help.avito.com/external/api",
+ "url": "https://www.avito.ru/business",
+ "verified_at": "2026-09-25",
+ "terms_note": "Create API keys (Client Key / Secret) in the account settings — Admin role required; SDKs for PHP 7.4+, Python 3, Go, TypeScript; points-based rate limits per method, reset weekly (Mondays UTC+0). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "api_key (Client Key / Secret created in account settings by an Admin → token)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "budgets_bids",
+   "reports",
+   "ads"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "PHP 7.4+, Python 3, Go, TypeScript SDKs (ads-help.avito.com/external/api)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (public API for bids, budgets, statistics, accounts; no campaign creation) Confidence: **high** — official help page read.",
+  "base_urls": [
+   "https://api.avito.ru/…"
+  ],
+  "auth": [
+   "1. An Admin creates Client Key / Client Secret in the cabinet settings.",
+   "2. Exchange for a token (`POST /token`, client_credentials — TODO(verify)); `Authorization: Bearer`.",
+   "3. Agencies create nested (дочерние) accounts on the same contract and invite users with roles Администратор / Для просмотра."
+  ],
+  "endpoints": [
+   {
+    "call": "account info · sub-accounts · users (roles)",
+    "purpose": "account_management",
+    "notes": "legal data, manager, users[]"
+   },
+   {
+    "call": "balance (rubles + bonuses) · transfers between parent / child accounts",
+    "purpose": "finances",
+    "notes": "amount"
+   },
+   {
+    "call": "advertisers + contracts (ОРД: initial contract, attachments)",
+    "purpose": "advertisers / contracts",
+    "notes": "INN, role, contract id"
+   },
+   {
+    "call": "list campaigns / groups / creatives with statuses and settings",
+    "purpose": "campaigns / ad_groups / ads (read)",
+    "notes": "campaign_id, group_id, creative_id, status"
+   },
+   {
+    "call": "change bid and budget for a creative group",
+    "purpose": "budgets_bids",
+    "notes": "group_id, bid, budget"
+   },
+   {
+    "call": "statistics per campaign / group / creative, 1–90 days, day / week / month breakdown",
+    "purpose": "reports",
+    "notes": "spend, clicks, impressions, CTR, CPC, CPM, VTR"
+   },
+   {
+    "call": "campaign / group / creative creation · audiences upload · conversions",
+    "purpose": "not in API (cabinet only)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Points-based limits per method, reset weekly (Monday 00:00 UTC); free; Avito Advertising terms; ОРД labelling handled via contracts endpoints.",
+  "mcp_sdk": [
+   "Official SDKs: PHP 7.4+, Python 3, Go, TypeScript."
+  ],
+  "sources": [
+   "https://ads-help.avito.com/external/api",
+   "https://developers.avito.ru/api-catalog/ads/documentation"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.avito.ru/ads",
+  "rate_per_second": 5,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.avito.ru/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client Key created by an Admin in the Avito Advertising cabinet settings (API keys); exchanged at POST https://api.avito.ru/token (grant_type=client_credentials, form body) for a bearer token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The matching Client Secret. Tokens are re-requested automatically on expiry or 401."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "Numeric Avito Advertising account id (every path is /ads/v1/account/{account_id}/…); used by `me`."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/account/{account_id}",
+    "path_params": {
+     "account_id": "@account_id"
+    },
+    "docs": "https://github.com/avito-tech/avito-ads-sdk-python3/blob/HEAD/avito_ads/_core/operations.py",
+    "note": "GET /ads/v1/account/{account_id}: legal details of the configured account (inn, shortName, longName, contact, manager). Endpoint per Avito's official SDK (linked from https://ads-help.avito.com/external/api; the developers.avito.ru reference blocks non-Russian IPs)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v1/account/{account_id}/children",
+    "path_params": {
+     "account_id": "@account_id"
+    },
+    "result": {
+     "items": "children",
+     "key": "accounts",
+     "fields": {
+      "id": "account.id",
+      "name": "account.shortName"
+     }
+    },
+    "docs": "https://github.com/avito-tech/avito-ads-sdk-python3/blob/HEAD/avito_ads/_core/operations.py",
+    "note": "GET /ads/v1/account/{account_id}/children: the child (nested) accounts on the configured account's contract (agencies). The parent account itself is `me`. Balances are in raw only on the /children-with-balances variant, which is not called; currency is RUB."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/v1/account/{account_id}/campaigns",
+    "body": {
+     "filter": "json:{}",
+     "filter.statuses.0": "status",
+     "limit": "limit",
+     "page": "page"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "total",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://github.com/avito-tech/avito-ads-sdk-python3/blob/HEAD/avito_ads/_core/operations.py",
+    "note": "POST /ads/v1/account/{account_id}/campaigns {filter: {statuses: [status]}, limit (1–100), page}. status values: draft, in_moderation, moderation_failed, partial_moderation, active, paused, stopped, finished, archived. `budget` is an integer as returned (RUB). Endpoint and body per Avito's official SDK (the developers.avito.ru reference blocks non-Russian IPs)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/v1/account/{account_id}/campaigns/{campaign_id}/stats",
+    "body": {
+     "dateFrom": "date:date_from",
+     "dateTo": "date:date_to"
+    },
+    "result": {
+     "items": "campaign.data",
+     "key": "rows",
+     "fields": {
+      "date": "timestamp",
+      "impressions": "views",
+      "clicks": "clicks",
+      "ctr": "ctr",
+      "spend": "spend",
+      "spend_bonus": "spendBonus",
+      "cpm": "cpm",
+      "cpc": "cpc"
+     }
+    },
+    "docs": "https://github.com/avito-tech/avito-ads-sdk-python3/blob/HEAD/avito_ads/_core/operations.py",
+    "note": "POST /ads/v1/account/{account_id}/campaigns/{campaign_id}/stats {dateFrom, dateTo} (YYYY-MM-DD; the help page allows 1–90 days): daily points of one campaign (views → impressions, clicks, ctr, spend and spendBonus in RUB, cpm, cpc). campaign_id is REQUIRED (statistics are per campaign; the same response also carries per-group and per-creative breakdowns, left in the platform response and not mapped). Each call costs API points (weekly balance)."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Budgets are set per creative group, not per campaign: POST /ads/v1/account/{account_id}/group/{group_id}/change-budget {budget} (https://github.com/avito-tech/avito-ads-sdk-python3/blob/HEAD/avito_ads/_core/operations.py, change_group_budget); the API has no campaign-budget call.",
+   "pause_resume": "No status-change endpoint: the API lists campaigns/groups/creatives and changes group bids and budgets only ('Изменять ставку и бюджет группы', https://ads-help.avito.com/external/api)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.avito.ru: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.avito.ru/token: 200 unauthorized_client",
+   "HTML docs spot-check (render-doc): 0/4 tool paths found verbatim on their docs pages, 1 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

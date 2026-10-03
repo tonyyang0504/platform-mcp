@@ -1,0 +1,39 @@
+{
+ "id": "opensooq_sy",
+ "category": "automotive",
+ "label": "Sy",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://sy.opensooq.com",
+ "domain": "sy.opensooq.com",
+ "country": "Syria",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OpenSooq publishes no public listings API (api.opensooq.com is the app backend); consistent with other country subdomains.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://sy.opensooq.com/"
+  ],
+  "unofficial": [
+   "https://github.com/OpenSooq",
+   "https://github.com/OpenSooq/WebService",
+   "https://apify.com/zen-studio/opensooq-scraper/api/cli"
+  ]
+ },
+ "official_mcp": []
+}

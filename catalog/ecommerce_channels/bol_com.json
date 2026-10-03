@@ -1,0 +1,310 @@
+{
+ "id": "bol_com",
+ "category": "ecommerce_channels",
+ "label": "bol.com",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "nl",
+  "be"
+ ],
+ "docs_url": "https://api.bol.com/retailer/public/Retailer-API/v10/releasenotes.html",
+ "url": "https://www.bol.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Requires a bol.com retailer (partner) account (NL/BE); credentials self-issued in the Partner Platform, no app review; since Feb 2025 every offer must reference an Economic Operator ID (EU GPSR); rate limits enforced per endpoint and published at api.bol.com/retailer/public/ratelimits with headers in responses; demo environment for testing.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "openapi"
+  ],
+  "auth": "oauth2 client credentials (client id + secret from the Partner Platform → login.bol.com/token; ~5-minute tokens)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI spec + Postman collection + Redoc published by bol.com (api.bol.com/retailer/public/…)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.demo"
+ ],
+ "rate_limits": "per path, published as JSON: offers PUT 50/s, offer price/stock PUT 50/s, GET offer 25/s, orders list 25/min, order GET 25/s, shipments POST 25/s, returns 20/min, offer export 9/h, inventory 20/min",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.bol.com/retailer/...",
+   "https://api.bol.com/retailer-demo/...",
+   "https://login.bol.com/token?grant_type=client_credentials"
+  ],
+  "auth": [
+   "1. Tenant logs in to the bol.com Partner Platform and creates API credentials (client id + client secret).",
+   "2. Exchange them at login.bol.com/token (client_credentials) → bearer token valid ~299 s; cache and refresh.",
+   "3. Call api.bol.com/retailer with `Authorization: Bearer` + the v10 Accept header."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /retailer/offers",
+    "purpose": "create offer (EAN, condition, price, stock, fulfilment FBR/FBB)",
+    "notes": "returns process-status id"
+   },
+   {
+    "call": "PUT /retailer/offers/{offerId}/price · PUT /retailer/offers/{offerId}/stock",
+    "purpose": "price / stock sync",
+    "notes": "bundle prices; stock amount + managedByRetailer"
+   },
+   {
+    "call": "POST /retailer/offers/export → GET /retailer/offers/export/{id}",
+    "purpose": "offer export (CSV)",
+    "notes": ""
+   },
+   {
+    "call": "GET /retailer/orders · GET /retailer/orders/{orderId}",
+    "purpose": "orders",
+    "notes": "fulfilment-method filter, status OPEN/ALL"
+   },
+   {
+    "call": "PUT /retailer/orders/{orderItemId}/shipment (or POST /retailer/shipments)",
+    "purpose": "confirm shipment + push tracking",
+    "notes": "transport.transporterCode + trackAndTrace; quantityShipped"
+   },
+   {
+    "call": "GET /retailer/returns · PUT /retailer/returns/{rmaId}",
+    "purpose": "returns list + handle",
+    "notes": "handlingResult"
+   },
+   {
+    "call": "GET /retailer/process-status/{id}",
+    "purpose": "poll async writes",
+    "notes": ""
+   },
+   {
+    "call": "POST /retailer/subscriptions",
+    "purpose": "push notifications (webhooks)",
+    "notes": "PROCESS_STATUS, SHIPMENT, OFFER_FOR_SALE / OFFER_NOT_FOR_SALE"
+   },
+   {
+    "call": "GET /retailer/insights/…",
+    "purpose": "performance indicators, search terms, competitor prices, rankings",
+    "notes": ""
+   }
+  ],
+  "limits": " Enforced per endpoint; current values at https://api.bol.com/retailer/public/ratelimits; responses carry X-RateLimit headers; 429 on breach. - Retailer account required (bol.com partner agreement, NL/BE). - Every offer needs an Economic Operator ID since Feb 2025 (EU product-safety regulation). - Credentials are self-serve; no third-party app review.",
+  "mcp_sdk": [
+   "SDK: OpenAPI spec + Postman collection + Redoc published by bol.com (api.bol.com/retailer/public/…)"
+  ],
+  "sources": [
+   "https://api.bol.com/retailer/public/Retailer-API/v10/releasenotes.html",
+   "https://r.jina.ai/https://api.bol.com/retailer/public/redoc/v10/retailer.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bol.com",
+  "headers": {
+   "Accept": "application/vnd.retailer.v10+json",
+   "Content-Type": "application/vnd.retailer.v10+json"
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://login.bol.com/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of Retailer API credentials created in the bol Seller Dashboard (Settings > API settings); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a short-lived (~5 minute) JWT."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The matching client secret. The token is cached until expiry (bol blocks clients that request a token for every call)."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "bol Retailer API v10 (NL/BE). Write calls are asynchronous: they answer 202 with a process status (processStatusId, status PENDING|SUCCESS|FAILURE|TIMEOUT) to poll at GET /shared/process-status/{id}. All calls use the vendor media type application/vnd.retailer.v10+json.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/retailer/orders",
+    "fixed_params": {
+     "page": 1,
+     "status": "OPEN"
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/get-orders",
+    "note": "No account endpoint without the retailer id; the probe obtains a token and reads page 1 of open orders ({orders[]}) to verify the credentials."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/retailer/offers/{listing_id}/price",
+    "body": {
+     "pricing.bundlePrices.0.quantity": "json:1",
+     "pricing.bundlePrices.0.unitPrice": "price"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/update-offer-price",
+    "note": "PUT /retailer/offers/{offer-id}/price {pricing: {bundlePrices: [{quantity: 1, unitPrice}]}} replaces the LIVE price of the offer with a single unit price (EUR, any volume/bundle prices are removed). `price` is required; stock is set_inventory; the product title is catalogue data. Returns a process status (status PENDING at first)."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/retailer/offers/{listing_id}/stock",
+    "body": {
+     "amount": "quantity",
+     "managedByRetailer": "json:false"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/update-offer-stock",
+    "note": "PUT /retailer/offers/{offer-id}/stock {amount, managedByRetailer: false} sets the stock of one offer (listing_id = bol offer id, required; offers are not addressed by SKU here). managedByRetailer false means bol deducts sold items from the amount. Asynchronous process status."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/retailer/offers/{listing_id}",
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/delete-offer",
+    "note": "DELETE /retailer/offers/{offer-id} deletes the offer (not reversible; a new offer must be created). To pause it instead, set stock 0. Asynchronous process status."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/retailer/orders",
+    "params": {
+     "page": "page",
+     "status": "status",
+     "latest-change-date": "since"
+    },
+    "fixed_params": {
+     "fulfilment-method": "FBR"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "fields": {
+      "id": "orderId",
+      "status": "orderItems.0.fulfilmentStatus",
+      "created_at": "orderPlacedDateTime"
+     }
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/get-orders",
+    "note": "GET /retailer/orders?page(50 per page)&status(OPEN|SHIPPED|ALL, default OPEN)&latest-change-date(YYYY-MM-DD, up to 3 months back) for orders fulfilled by the retailer (FBR). The list carries no amounts; `status` is the first order item's fulfilmentStatus (OPEN|HANDLED). raw.orderItems[].orderItemId is what mark_shipped needs."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/retailer/shipments",
+    "body": {
+     "orderItems.0.orderItemId": "order_id",
+     "transport.transporterCode": "carrier",
+     "transport.trackAndTrace": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://api.bol.com/retailer/public/redoc/v10/retailer.html#operation/create-shipment",
+    "note": "POST /retailer/shipments {orderItems: [{orderItemId}], transport: {transporterCode, trackAndTrace}} ships ONE ORDER ITEM with your own transporter: `order_id` must be the orderItemId (raw.orderItems[].orderItemId of list_orders), called once per item. `carrier` is a bol transporterCode from the transporters list in the Retailer API docs (e.g. TNT for PostNL, DHL, DPD-NL). Asynchronous process status."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /retailer/offers needs the product EAN, condition and fulfilment method/delivery code plus pricing and stock; the vocabulary has no EAN or condition (sku is not bol's product key)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.bol.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token login.bol.com/token: 401 invalid_client",
+   "spec https://api.bol.com/retailer/public/apispec/Retailer%20API%20-%20v10: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

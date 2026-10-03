@@ -1,0 +1,208 @@
+{
+ "id": "gelato",
+ "category": "ecommerce_suppliers",
+ "label": "Gelato",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "europe",
+  "global"
+ ],
+ "docs_url": "https://dashboard.gelato.com/docs/",
+ "url": "https://www.gelato.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key (X-API-KEY from the Gelato dashboard — per registry; docs walled this pass)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable this pass.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://dashboard.gelato.com/docs/",
+   "https://www.gelato.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://order.gelatoapis.com",
+  "auth": {
+   "type": "header",
+   "header": "X-API-KEY",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Gelato API key (dashboard > Developer > API keys), sent as `X-API-KEY`. Product endpoints live on product.gelatoapis.com and are called by absolute URL."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://product.gelatoapis.com/v3/catalogs",
+    "docs": "https://dashboard.gelato.com/docs/products/catalog/list/",
+    "note": "Gelato has no account endpoint; the probe lists the catalogs ([{catalogUid, title}]) with the key, so `account` is empty on success."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "https://product.gelatoapis.com/v3/catalogs/{catalogUid}/products:search",
+    "path_params": {
+     "catalogUid": "category"
+    },
+    "body": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "products",
+     "key": "products",
+     "fields": {
+      "id": "productUid",
+      "title": "productUid"
+     }
+    },
+    "docs": "https://dashboard.gelato.com/docs/products/product/search/",
+    "note": "POST /v3/catalogs/{catalogUid}/products:search; `category` is the catalogUid (posters, cards, apparel, ... from GET /v3/catalogs) and is required by this endpoint, `query` is not accepted (attributeFilters are not mapped). Products have no name: `title` is the productUid; attributes, weight and dimensions are in `raw`."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "https://product.gelatoapis.com/v3/products/{productUid}",
+    "path_params": {
+     "productUid": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "productUid",
+      "title": "productUid"
+     }
+    },
+    "docs": "https://dashboard.gelato.com/docs/products/product/get/",
+    "note": "GET /v3/products/{productUid}: {productUid, attributes, weight, supportedCountries, notSupportedCountries, isStockable, isPrintable, validPageCounts}; `title` is the productUid. Prices per quantity come from GET /v3/products/{productUid}/prices (not mapped)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v4/orders/{orderId}",
+    "path_params": {
+     "orderId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "fulfillmentStatus",
+      "total": "receipts.0.totalInclVat",
+      "currency": "currency",
+      "created_at": "createdAt",
+      "tracking_number": "shipment.packages.0.trackingCode"
+     }
+    },
+    "docs": "https://dashboard.gelato.com/docs/orders/v4/get/",
+    "note": "GET /v4/orders/{orderId}: {id, orderType, orderReferenceId, fulfillmentStatus, financialStatus, currency, createdAt, items[], shipment{shipmentMethodUid, packages[{trackingCode, trackingUrl}]}, receipts[{totalInclVat}]}; `status` is the fulfillmentStatus (created, passed, printed, shipped, draft, ...), `total` the first receipt's totalInclVat."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /v4/orders requires `orderReferenceId` ('Reference to your internal order id.') and `customerReferenceId` ('Reference to your internal customer id.') plus `currency` and items[{itemReferenceId, productUid, files[{type, url}], quantity}]; the vocabulary carries none of these references, so the body cannot be built without inventing values.",
+   "quote_shipping": "POST /v4/orders:quote takes nested products[{itemReferenceId, productUid, files, quantity}] + recipient{country, ...}; the vocabulary's product_id/country/quantity cannot be shaped into that body by the runtime's flat body form.",
+   "track": "No tracking-events endpoint; shipment.packages[{trackingCode, trackingUrl}] are part of GET /v4/orders/{orderId} (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host order.gelatoapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

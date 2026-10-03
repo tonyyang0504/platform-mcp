@@ -1,0 +1,35 @@
+{
+ "id": "mstaml",
+ "category": "automotive",
+ "label": "Mstaml",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.mstaml.com",
+ "domain": "mstaml.com",
+ "country": "Saudi Arabia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace site (Saudi Arabia); no developer/API/partner-feed pages on the domain and no official API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://mstaml.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

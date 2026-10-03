@@ -1,0 +1,146 @@
+{
+ "id": "superteam_earn",
+ "category": "deals",
+ "label": "Superteam Earn",
+ "lane": "api",
+ "kind": "bounty",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://earn.superteam.fun/api/listings/",
+ "url": "https://earn.superteam.fun",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public listings JSON (open-source Next.js app, SuperteamDAO/earn); submissions only in the UI; per-listing agentAccess flag (HUMAN_ONLY means no agent-made submissions).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://superteam.fun",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No published rate limit ('Terms page not readable this pass; no published rate limit'). One request per second; a call returns the open listings in one array.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/listings",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "buyer": "sponsor.name",
+      "budget_min": "minRewardAsk",
+      "budget_max": "maxRewardAsk",
+      "currency": "token",
+      "deadline": "deadline"
+     }
+    },
+    "docs": "https://earn.superteam.fun/api/listings/",
+    "note": "The documented URL https://earn.superteam.fun/api/listings/ answers 308 to https://superteam.fun/api/listings (the base used here; opened 2026-09-24). Keyless JSON array with no documented query parameters: `query`, `category`, `min_budget`, `page` and `limit` are not sent and every open listing is returned (filter client-side). Fields per the feed: id, title, slug, type (bounty|project), rewardAmount, token, compensationType, minRewardAsk, maxRewardAsk, deadline, status, isFeatured, agentAccess, _count.Submission, sponsor{name,…}. `budget_min`/`budget_max` are the range asks (null for fixed rewards — read `raw.rewardAmount`). No URL field: the listing page is https://earn.superteam.fun/listing/<raw.slug>. Honour `raw.agentAccess`: HUMAN_ONLY listings must not receive agent-made submissions."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'submission only in the UI'; /api/agents answers 403 anonymously and listings flagged agentAccess=HUMAN_ONLY forbid agent-made submissions.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "Details are the listing page HTML (https://earn.superteam.fun/listing/<slug>); re-read the record from the search hit."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

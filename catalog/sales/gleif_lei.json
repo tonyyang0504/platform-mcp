@@ -1,0 +1,108 @@
+{
+ "id": "gleif_lei",
+ "category": "sales",
+ "label": "GLEIF LEI records",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.gleif.org/en/lei-data/gleif-api",
+ "url": "https://www.gleif.org/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Open LEI data (CC0), public REST API without a key (rate-limited); the live call to api.gleif.org/api/v1/lei-records answered 200 this pass → platform-side.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.gleif.org/api/v1",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "Open API, no key. api.gleif.org/docs states a per-minute request limit but the page is script-rendered and the number could not be read on 2026-09-24; 1 request/second is used until it is confirmed.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/lei-records",
+    "fixed_params": {
+     "page[size]": 1
+    },
+    "docs": "https://api.gleif.org/docs",
+    "note": "No credentials; verified with a one-record listing."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/lei-records",
+    "params": {
+     "filter[entity.legalName]": "query",
+     "filter[entity.legalAddress.country]": "country",
+     "page[size]": "limit",
+     "page[number]": "page"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "data",
+     "key": "companies",
+     "total": "meta.pagination.total",
+     "fields": {
+      "id": "id",
+      "name": "attributes.entity.legalName.name",
+      "country": "attributes.entity.legalAddress.country",
+      "address": "attributes.entity.legalAddress.addressLines.0",
+      "founded": "attributes.entity.creationDate",
+      "url": "links.self"
+     }
+    },
+    "docs": "https://api.gleif.org/docs",
+    "note": "JSON:API listing filtered by legal name and (optionally) legal-address country (ISO alpha-2, e.g. US). `id` is the LEI; `url` is the API record link (links.self) — no web page URL is documented. `address` is the first legal-address line; city/region/postalCode are under raw.attributes.entity.legalAddress. No industry field exists in LEI reference data."
+   },
+   "get_company": {
+    "method": "GET",
+    "path": "/lei-records/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "name": "attributes.entity.legalName.name",
+      "country": "attributes.entity.legalAddress.country",
+      "address": "attributes.entity.legalAddress.addressLines.0",
+      "founded": "attributes.entity.creationDate",
+      "url": "links.self"
+     }
+    },
+    "docs": "https://api.gleif.org/docs",
+    "note": "`id` is the 20-character LEI."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

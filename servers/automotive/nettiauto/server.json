@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/nettiauto-mcp",
+ "description": "Nettiauto (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.nettix.fi/docs/car/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "nettiauto"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NETTIAUTO_CLIENT_ID",
+     "description": "Nettix API client id (Alma Media grants API access to business customers on application); used with grant_type=client_credentials at https://auth.nettix.fi/oauth2/token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NETTIAUTO_CLIENT_SECRET",
+     "description": "The client's secret. The 24-hour JWT it mints is sent as the X-Access-Token header.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

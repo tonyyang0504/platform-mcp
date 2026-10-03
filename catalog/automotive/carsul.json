@@ -1,0 +1,34 @@
+{
+ "id": "carsul",
+ "category": "automotive",
+ "label": "Carsul",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://carsul",
+ "domain": "carsul",
+ "country": "Portugal",
+ "official_api": "unknown",
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). Entry has no valid domain/TLD; cannot check.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: Entry has no valid domain/TLD; cannot check."
+}

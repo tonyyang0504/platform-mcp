@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "trademe_nz-deals-mcp",
+ "display_name": "Trade Me Jobs MCP",
+ "version": "0.1.0",
+ "description": "Trade Me Jobs (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/trademe_nz"
+   ],
+   "env": {
+    "PLATFORM_MCP_TRADEME_NZ_CONSUMER_KEY": "${user_config.platform_mcp_trademe_nz_consumer_key}",
+    "PLATFORM_MCP_TRADEME_NZ_CONSUMER_SECRET": "${user_config.platform_mcp_trademe_nz_consumer_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_trademe_nz_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_NZ_CONSUMER_KEY",
+   "description": "Trade Me API consumer key of your registered application (My Trade Me → Developer options; API access is granted after Trade Me reviews the application).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trademe_nz_consumer_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRADEME_NZ_CONSUMER_SECRET",
+   "description": "The application's consumer secret: sent as the OAuth 1.0a PLAINTEXT signature '<consumer secret>&' over HTTPS (Trade Me's documented PLAINTEXT workflow).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /v1/Search/Jobs.json with an application-level OAuth 1.0a PLAINTEXT Authorization header (consumer key + '<consumer secret>&', no member token; rows ≤ 25 without a member token). category is a Trade Me jobs category id. These are employment listings: buyer is the employer (Company); StartDate/EndDate use Trade Me's '/Date(ms)/' JSON format and stay in raw with JobLocation, JobType and pay-range fields. The listing page is https://www.trademe.co.nz/a/jobs/listing/<id>."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v1/Listings/<ListingId>.json (full body; job listings add Company, ShortDescription and application details in raw)."
+  }
+ ]
+}

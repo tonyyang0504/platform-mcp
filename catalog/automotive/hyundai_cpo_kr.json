@@ -1,0 +1,35 @@
+{
+ "id": "hyundai_cpo_kr",
+ "category": "automotive",
+ "label": "Certified",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://certified.hyundai.com",
+ "domain": "certified.hyundai.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Hyundai Developers portal covers connected-car data, not certified used-car inventory.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://certified.hyundai.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

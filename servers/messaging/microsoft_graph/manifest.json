@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "microsoft_graph-mcp",
+ "display_name": "Outlook / Microsoft 365 MCP",
+ "version": "0.1.0",
+ "description": "Outlook / Microsoft 365 (messaging): me, list_inbound, get_thread, send, reply, mark_read. Every too",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "microsoft_graph"
+   ],
+   "env": {
+    "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_ID": "${user_config.platform_mcp_microsoft_graph_client_id}",
+    "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_SECRET": "${user_config.platform_mcp_microsoft_graph_client_secret}",
+    "PLATFORM_MCP_MICROSOFT_GRAPH_REFRESH_TOKEN": "${user_config.platform_mcp_microsoft_graph_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_microsoft_graph_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_ID",
+   "description": "Application (client) ID of the Microsoft Entra app registration.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_microsoft_graph_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_GRAPH_CLIENT_SECRET",
+   "description": "Client secret of the app registration ('Only required for web apps'); leave empty for a public client. Sent in the form body of POST https://login.microsoftonline.com/common/oauth2/v2.0/token.",
+   "sensitive": true,
+   "required": false
+  },
+  "platform_mcp_microsoft_graph_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MICROSOFT_GRAPH_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent including offline_access and the delegated scopes User.Read Mail.ReadWrite Mail.Send. Microsoft may return a new refresh token on every refresh; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/<platform>.json (mode 0600).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me: displayName, mail, userPrincipalName, id."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Inbox, newest first. Graph pages through @odata.nextLink and says 'Don't try to extract the $skip value', so `page` is ignored; `since` is not sent. text is bodyPreview ('The first 255 characters of the message body'); thread_id is conversationId."
+  },
+  {
+   "name": "get_thread",
+   "description": "All messages of a conversation (`thread_id` = conversationId from list_inbound) via an OData $filter; `page` is ignored."
+  },
+  {
+   "name": "send",
+   "description": "sendMail in JSON (plain-text body, one recipient `to`); answers 202 with no body, so no message id: 'A 202 Accepted response code indicates that the request has been accepted; however, it doesn't indicate that the request processing has completed'."
+  },
+  {
+   "name": "reply",
+   "description": "`thread_id` is the MESSAGE id to reply to (a message `id`, not conversationId); the reply goes to its sender with `text` as the comment. 202, no body."
+  },
+  {
+   "name": "mark_read",
+   "description": "PATCH isRead=true on one message (`message_id` required)."
+  }
+ ]
+}

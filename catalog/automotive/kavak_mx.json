@@ -1,0 +1,36 @@
+{
+ "id": "kavak_mx",
+ "category": "automotive",
+ "label": "Kavak",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.kavak.com",
+ "domain": "kavak.com",
+ "country": "Mexico",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kavak publishes no public developer API or SDK.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "api-evangelist/kavak profile",
+   "github.com/anreb/kavak-cars-api"
+  ]
+ },
+ "official_mcp": []
+}

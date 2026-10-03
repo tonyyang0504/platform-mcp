@@ -1,0 +1,93 @@
+{
+ "manifest_version": "0.2",
+ "name": "alibaba_1688_open-mcp",
+ "display_name": "1688 (Alibaba China wholesale) — 一件代发 / 跨境专供 + 1688 Open Platform MCP",
+ "version": "0.1.0",
+ "description": "1688 (Alibaba China wholesale) — 一件代发 / 跨境专供 + 1688 Open Platform (ecommerce suppliers): me, list_pr",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "alibaba_1688_open"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_ID": "${user_config.platform_mcp_alibaba_1688_open_client_id}",
+    "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_SECRET": "${user_config.platform_mcp_alibaba_1688_open_client_secret}",
+    "PLATFORM_MCP_ALIBABA_1688_OPEN_REFRESH_TOKEN": "${user_config.platform_mcp_alibaba_1688_open_refresh_token}",
+    "PLATFORM_MCP_ALIBABA_1688_OPEN_LANGUAGE": "${user_config.platform_mcp_alibaba_1688_open_language}",
+    "PLATFORM_MCP_ALIBABA_1688_OPEN_ORDER_FLOW": "${user_config.platform_mcp_alibaba_1688_open_order_flow}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_alibaba_1688_open_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_ID",
+   "description": "appKey of your 1688 Open Platform app (it is also the last URL path segment of every call).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_1688_open_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_1688_OPEN_CLIENT_SECRET",
+   "description": "appSecret of the same app; signs every call (_aop_signature = uppercase hex HMAC-SHA1 over the urlPath from 'param2' + sorted name+value, https://open.1688.com/doc/signature.htm) and refreshes tokens.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_1688_open_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_1688_OPEN_REFRESH_TOKEN",
+   "description": "refresh_token from the OAuth getToken exchange (need_refresh_token=true, https://open.1688.com/doc/apiAuth.htm); valid for the service subscription period (up to half a year). Access tokens (10 hours) are minted from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_1688_open_language": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_1688_OPEN_LANGUAGE",
+   "description": "Language of translated titles for search and product detail (country: en, ja, ko, es, …; see the API's developer reference).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_alibaba_1688_open_order_flow": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_1688_OPEN_ORDER_FLOW",
+   "description": "fastCreateOrder flow: general (wholesale order), saleproxy / fenxiao (一件代发 dropshipping order; the seller must have authorised proxy sales), boutiquefenxiao, …",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "system/currentTime (the signing example API): verifies the appKey, signature and that an access token can be minted from the refresh token."
+  },
+  {
+   "name": "list_products",
+   "description": "多语言关键词搜索 (cross-border keyword search): `query` is required and may be in the configured language (keywordTranslate); prices are CNY strings (price = wholesale, dropship_price = consignPrice for 一件代发). `id` is the offerId for get_product."
+  },
+  {
+   "name": "get_product",
+   "description": "多语言商品详情: translated title, images, attributes, productSkuInfos[{skuId, specId, price, consignPrice, amountOnSale, skuAttributes}], productSaleInfo (price ranges, 一件代发 fenxiaoSaleInfo) and shipping info. `sku` is the FIRST SKU's specId, which create_order's items take."
+  },
+  {
+   "name": "create_order",
+   "description": "快速创建订单 (fastCreateOrder) with the configured flow. `items` are cargoParamList [{offerId, specId, quantity}] and `shipping_address` is 1688's addressParam {fullName, mobile, phone, postCode, provinceText, cityText, areaText, townText, address} with Chinese region names (a mainland China / consolidation-warehouse address). The order is unpaid (支付宝担保交易 by default); outOrderId is a fresh UUID for idempotency."
+  },
+  {
+   "name": "get_order",
+   "description": "订单详情 (buyer view): status (waitbuyerpay, waitsellersend, waitbuyerreceive, success, cancel, …), totalAmount in CNY, createTime like '20170913231708000-0700'; products, nativeLogistics and invoice in raw.result."
+  },
+  {
+   "name": "track",
+   "description": "物流跟踪 (buyer view): one row per logistics order with the waybill number (logisticsBillNo) and logisticsSteps[{acceptTime, remark}] in time order (Chinese carrier scans)."
+  }
+ ]
+}

@@ -1,0 +1,286 @@
+{
+ "id": "vimeo",
+ "category": "social",
+ "label": "Vimeo",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.vimeo.com/api/upload/videos",
+ "url": "https://vimeo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "No commercial content on Basic accounts; the user's membership tier sets file size and weekly upload quota; transcoding is asynchronous.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post(video upload)",
+   "upload_media",
+   "edit",
+   "delete",
+   "read_comments",
+   "reply",
+   "analytics(stats)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "vimeo.py / vimeo (Node) / vimeo PHP (official libraries)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 5000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (upload access is reviewed).",
+  "base_urls": [
+   "https://api.vimeo.com/"
+  ],
+  "auth": [
+   "1. Vimeo developer app → OAuth 2.0 authorization code (scopes `public private upload edit delete interact stats",
+   "2. **Request upload access** for the app (Vimeo reviews the use case) — until granted `POST /me/videos` fails.",
+   "3. Tenant's membership tier decides file size + weekly upload quota (Free accounts are tightly limited; paid tiers"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /me/videos` {upload{approach: \"tus\", size}, name, description, privacy{view, embed, comments, download}, folder_uri, content_rating} → `upload.upload_link",
+    "purpose": "then tus `PATCH` chunks (`Upload-Offset`, `Tus-Resumable: 1.0.0`), `HEAD` to verify",
+    "notes": ""
+   },
+   {
+    "call": "upload{approach: \"pull\", link}",
+    "purpose": "from a public URL",
+    "notes": ""
+   },
+   {
+    "call": "PATCH /videos/{id}` (name, description, privacy, embed settings); `PUT /videos/{id}/tags/{tag}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /videos/{id}/pictures` → PUT image → `PATCH …/pictures/{p} {active: true}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET/POST /videos/{id}/comments`, `POST /videos/{id}/comments/{c}/replies",
+    "purpose": "`interact` scope",
+    "notes": ""
+   },
+   {
+    "call": "GET /videos/{id}/stats` (plays), `GET /videos/{id}` `stats` field",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "DELETE /videos/{id}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /me/videos?sort=date&direction=desc",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Per-app rate quota (`X-RateLimit-Limit / Remaining / Reset`, 429); transcoding is asynchronous (`transcode.status`). - Vimeo Terms: no commercial content on Basic accounts; content guidelines.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.vimeo.com/api/upload/videos"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.vimeo.com",
+  "headers": {
+   "Accept": "application/vnd.vimeo.*+json;version=3.4"
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Vimeo personal access token (developer.vimeo.com > My Apps > your app > Generate an access token, authenticated, scopes public private edit delete interact stats) or an OAuth authorization-code token; Vimeo access tokens do not expire unless revoked. Sent as 'Authorization: bearer <token>'."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "API rate limits depend on the account plan and are reported in X-RateLimit-* response headers; 429 when exceeded.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developer.vimeo.com/api/reference/users",
+    "note": "GET /me returns the token's user {uri, name, link, account (plan), metadata.connections ...}."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/videos/{post_id}/comments",
+    "params": {
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "comments",
+     "total": "total",
+     "fields": {
+      "id": "uri",
+      "author": "user.name",
+      "text": "text",
+      "created_at": "created_on"
+     }
+    },
+    "docs": "https://developer.vimeo.com/api/reference/videos#get_comments",
+    "note": "GET /videos/{video_id}/comments?page&per_page (`post_id` is the numeric video id) returns {total, page, per_page, paging, data[comment]}. A comment has no bare id field: `id` is its uri (/videos/{video_id}/comments/{comment_id}); replies are a separate connection (GET .../comments/{comment_id}/replies)."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/videos/{post_id}",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developer.vimeo.com/api/reference/videos#delete_video",
+    "note": "DESTRUCTIVE: DELETE /videos/{video_id} permanently deletes the video (204; 403 when the token lacks the delete scope or does not own the video)."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/videos/{post_id}",
+    "params": {
+     "fields": "=uri,link,stats.plays,metadata.connections.comments.total,metadata.connections.likes.total"
+    },
+    "result": {
+     "fields": {
+      "post_id": "uri",
+      "plays": "stats.plays",
+      "comments": "metadata.connections.comments.total",
+      "likes": "metadata.connections.likes.total",
+      "url": "link"
+     }
+    },
+    "docs": "https://developer.vimeo.com/api/reference/videos#get_video",
+    "note": "GET /videos/{video_id} filtered with fields= to the counts: stats.plays ('The current total number of times that the video has been played', may be null when hidden), comments and likes totals. `post_id` in the result is the video uri."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Vimeo has no text posts; the closest call, POST /videos/{video_id}/comments ('Add a comment to a video', https://developer.vimeo.com/api/reference/videos#create_comment), is a comment on a video, not a post.",
+   "publish_image": "Vimeo hosts videos only; there is no image post (https://developer.vimeo.com/api/reference/videos).",
+   "reply_comment": "POST /videos/{video_id}/comments/{comment_id}/replies needs the video id as well as the comment id (https://developer.vimeo.com/api/reference/videos#create_comment_reply); the reply input carries only comment_id.",
+   "read_mentions": "The API has no mentions or notifications endpoint for a user (https://developer.vimeo.com/api/reference/users)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.vimeo.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/vimeo/openapi/master/api.yaml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "read_comments: spec says \"response path items='data' is not in the response schema\"; waived: Vimeo's OpenAPI models paginated collections as bare arrays; the API wraps them as {total, page, per_page, paging, data[]} (developer.vimeo.com common formats) read_comments: spec says \"response path total='total' is not in the response schema\"; waived: Vimeo's OpenAPI models paginated collections as bare arrays; the API wraps them as {total, page, per_page, paging, data[]} (developer.vimeo.com common formats) analytics_post: spec says \"query parameter 'fields' is not defined by the spec\"; waived: `fields` (JSON filter) is accepted by every Vimeo endpoint (developer.vimeo.com, JSON filter); the OpenAPI does not repeat it per operation"
+ }
+}

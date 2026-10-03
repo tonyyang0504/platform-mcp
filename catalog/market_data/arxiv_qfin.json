@@ -1,0 +1,72 @@
+{
+ "id": "arxiv_qfin",
+ "category": "market_data",
+ "label": "arXiv Quantitative Finance (q-fin) papers",
+ "lane": "api",
+ "docs_url": "https://info.arxiv.org/help/api/user-manual.html",
+ "url": "https://arxiv.org/archive/q-fin",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "arXiv API (Atom 1.0 with OpenSearch totals), no key. The terms of use ask for 'no more than one request every three seconds'. Errors are HTTP 200 Atom feeds with a single entry titled 'Error' and the reason in its summary (live 2026-10-01: start=-5). Restricted to the q-fin archive (cat:q-fin*), newest submissions first. Metadata is CC0; paper texts keep their own licences.",
+ "adapter": {
+  "base_url": "https://export.arxiv.org/api",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.33,
+  "envelope": {
+   "fail_when": {
+    "feed.entry.title": "Error"
+   },
+   "error_field": "feed.entry.summary"
+  },
+  "error_kinds": [
+   {
+    "status": 200,
+    "kind": "invalid_input",
+    "note": "arXiv reports bad query parameters as an Error entry"
+   }
+  ],
+  "tools": {
+   "get_news": {
+    "method": "GET",
+    "path": "/query",
+    "params": {
+     "search_query": "fmt:cat:q-fin*[? AND all:{query}]",
+     "start": "offset",
+     "max_results": "limit",
+     "sortBy": "=submittedDate",
+     "sortOrder": "=descending"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "feed.entry",
+     "key": "articles",
+     "total": "feed.totalResults",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "url": "link.0.@href",
+      "published_at": "published",
+      "source": "primary_category.@term"
+     }
+    },
+    "docs": "https://info.arxiv.org/help/api/user-manual.html#_query_interface",
+    "note": "Quantitative-finance papers (trading and microstructure, portfolio management, risk, pricing ...), newest first; query searches all fields (all:<query>); source is the primary category (q-fin.TR ...). `since` is not applied (the API's submittedDate ranges need a bracket syntax this tool does not send)."
+   }
+  },
+  "not_offered": {
+   "me": "No accounts in the API.",
+   "get_candles": "Papers, not market data.",
+   "get_series": "Papers, not series.",
+   "search_symbols": "Papers, not instruments."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

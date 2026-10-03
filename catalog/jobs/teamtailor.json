@@ -1,0 +1,198 @@
+{
+ "id": "teamtailor",
+ "category": "jobs",
+ "label": "Teamtailor",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "se",
+  "eu",
+  "global"
+ ],
+ "docs_url": "https://docs.teamtailor.com/",
+ "url": "https://www.teamtailor.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Career sites (*.teamtailor.com) with a public career-site API for listings; apply forms web-only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "rss",
+   "json_feed"
+  ],
+  "auth": "api_key",
+  "access": "partner_only",
+  "capabilities": [
+   "job_search (public per-company jobs.rss / jobs.json)",
+   "job_details",
+   "employer_posting"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "every Teamtailor career site publishes public feeds (GET https://{company}.teamtailor.com/jobs.rss → application/rss+xml, /jobs.json → application/feed+json, live-verified on career.teamtailor.com) us",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " docs.teamtailor.com is a JavaScript app that rendered no text (also via r.jina.ai) — auth / rate-limit wording not read; docs.teamtailor.com is a JavaScript app that rendered no text (also via r.jina.ai) — auth / rate-limit wording not read; api.teamtailor.com answered 406 without the required headers (Authorization: Token token=…, X-Api-Version). Career-site feeds are public by design (career-site syndication). No candidate apply endpoint without the company key.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.teamtailor.com/",
+   "https://career.teamtailor.com/jobs.rss",
+   "https://career.teamtailor.com/jobs.json",
+   "https://api.teamtailor.com/v1/jobs"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://{api_host}/v1",
+  "headers": {
+   "X-Api-Version": "20240904"
+  },
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "Token token=",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Teamtailor API key with the Public scope (read), created at https://app.teamtailor.com/app/settings/integrations/api-keys; sent as `Authorization: Token token=<key>`."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "Teamtailor API host for the account's data stack: api.teamtailor.com (EU stack) or api.na.teamtailor.com (NA stack)."
+   }
+  ],
+  "rate_per_second": 4,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/jobs",
+    "fixed_params": {
+     "page[size]": 1
+    },
+    "docs": "https://docs.teamtailor.com/#authentication",
+    "note": "Verified with a one-job list, which a Public-scope key can read ('Can read all public data, for example, jobs, departments, and locations')."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/jobs",
+    "params": {
+     "page[number]": "page",
+     "page[size]": "limit"
+    },
+    "fixed_params": {
+     "filter[status]": "published",
+     "filter[feed]": "public"
+    },
+    "default_limit": 10,
+    "max_limit": 30,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "total": "meta.record-count",
+     "fields": {
+      "id": "id",
+      "title": "attributes.title",
+      "url": "links.careersite-job-url",
+      "posted_at": "attributes.created-at",
+      "salary_min": "attributes.min-salary",
+      "salary_max": "attributes.max-salary",
+      "currency": "attributes.currency",
+      "description": "attributes.body"
+     }
+    },
+    "docs": "https://docs.teamtailor.com/#jobs",
+    "note": "JSON:API list of the key owner's OWN published public jobs (GET /v1/jobs, filter[status]=published, filter[feed]=public), not a cross-company search. Filters take division/department/role/location ids and tags only, so query/location are not sent — filter client-side. Paging: page[number] and page[size] ('Default: 10, max: 30'); total = meta.record-count. Requests carry the required 'X-Api-Version' header (20240904). created-at 'Requires admin permission' and is null for a Public key; locations/department are relations (not included), and pitch, remote-status, employment-type, salary-time-unit, end-date and links.careersite-job-apply-url are in raw. Rate limit: '50 requests every 10 seconds' (429)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/jobs/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "attributes.title",
+      "url": "links.careersite-job-url",
+      "posted_at": "attributes.created-at",
+      "salary_min": "attributes.min-salary",
+      "salary_max": "attributes.max-salary",
+      "currency": "attributes.currency",
+      "description": "attributes.body"
+     }
+    },
+    "docs": "https://docs.teamtailor.com/#jobs",
+    "note": "GET /v1/jobs/{id} 'Retreive a specific job' as a JSON:API document {data: {id, attributes, links, relationships}}."
+   }
+  },
+  "not_offered": {
+   "apply": "POST /v1/job-applications (Create job application) needs an Admin-scope key ('Can create new jobs, candidates and job applications'), i.e. the employer's credential; candidates apply via links.careersite-job-apply-url.",
+   "list_messages": "The API reference (Postman collection behind https://docs.teamtailor.com/) has no messages or conversations resource."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.teamtailor.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

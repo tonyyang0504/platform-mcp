@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "spreadconnect-mcp",
+ "display_name": "SPOD / Spreadconnect (Spreadshirt) MCP",
+ "version": "0.1.0",
+ "description": "SPOD / Spreadconnect (Spreadshirt) (ecommerce suppliers): me, list_products, get_product, get_order,",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "spreadconnect"
+   ],
+   "env": {
+    "PLATFORM_MCP_SPREADCONNECT_ACCESS_TOKEN": "${user_config.platform_mcp_spreadconnect_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_spreadconnect_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SPREADCONNECT_ACCESS_TOKEN",
+   "description": "Spreadconnect API token (create an API Integration in the Spreadconnect web app; the token is on its dashboard), sent as the `X-SPOD-ACCESS-TOKEN` header.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /authentication returns {merchantId, pointOfSaleId, pointOfSaleName, pointOfSaleType} for the token."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /articles lists the articles (your products) of the point of sale: {items[{id, title, description, variants[{id, sku, productTypeName, appearanceName, sizeName, d2cPrice, b2bPrice}], images[{imageUrl}]}], count, limit, offset}. `query` and `category` are not accepted; `sku`/`price` are the first variant's (price = d2cPrice, the end-customer price)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /articles/{articleId}: {id, title, description, variants[...], images[...]}; order lines use the variant `sku`. Stock per variant is in GET /stocks (not mapped)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /orders/{orderId}: {id, orderReference, externalOrderReference, state (NEW, CONFIRMED, PROCESSED, CANCELLED), orderItems[{sku, quantity, state, price}], shipping{address, type, price}, price{amount, currency}}. Tracking codes come from the track tool."
+  },
+  {
+   "name": "track",
+   "description": "GET /orders/{orderId}/shipments returns [{id, orderItemReferences, shipping{type{company, name}, price}, tracking[{code, url}], closedDate, sentDate}]; each shipment is one event (its first tracking code)."
+  }
+ ]
+}

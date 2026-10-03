@@ -1,0 +1,336 @@
+{
+ "id": "seznam_sklik",
+ "category": "ads",
+ "label": "Seznam Sklik",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "eu",
+  "cz"
+ ],
+ "docs_url": "https://api.sklik.cz/",
+ "url": "https://o-seznam.cz/reklama/sklik",
+ "verified_at": "2026-09-25",
+ "terms_note": "Any Sklik advertiser generates an API key in the account (client.loginByToken); endpoints https://api.sklik.cz/drak/RPC2/v5 and /drak/json/v5; Fénix REST at api.sklik.cz/fenix; changelog published. Rate limits: not on the intro page. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "rpc",
+   "sdk"
+  ],
+  "auth": "token (Sklik API key → client.loginByToken session; API Drak XML-RPC / JSON, API Fénix REST)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (API Drak v5 XML-RPC/JSON + API Fénix REST) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.sklik.cz/drak/RPC2/v5",
+   "https://api.sklik.cz/drak/json/v5",
+   "https://api.sklik.cz/fenix"
+  ],
+  "auth": [
+   "1. Create an API key in the Sklik account (Nastavení → API).",
+   "2. `client.loginByToken(token)` → session id; pass `{session}` in every call (session expires; call `client.logout` when done).",
+   "3. JSON API: `POST https://api.sklik.cz/drak/json/v5/{method}` with JSON params (datetime as ISO strings, binary as base64)."
+  ],
+  "endpoints": [
+   {
+    "call": "client.get` · `client.getAttributes",
+    "purpose": "account / users / balance",
+    "notes": "user, foreignAccounts, wallet"
+   },
+   {
+    "call": "campaigns.create` · `campaigns.update` · `campaigns.list` · `campaigns.remove",
+    "purpose": "campaigns + daily budget + status",
+    "notes": "name, dayBudget, status, type, adSelection, startDate, endDate"
+   },
+   {
+    "call": "groups.create` · `groups.update` · `groups.list",
+    "purpose": "ad groups + CPC",
+    "notes": "campaignId, name, cpc, cpcContext, status"
+   },
+   {
+    "call": "keywords.create` · `keywords.update` · `keywords.list",
+    "purpose": "keywords + bids + match type",
+    "notes": "groupId, name, matchType, cpc, status"
+   },
+   {
+    "call": "ads.create` · `ads.update` · `banners.create` · `images.upload",
+    "purpose": "ads (text / banner) + image upload",
+    "notes": "groupId, headline1/2, description, finalUrl, imageId"
+   },
+   {
+    "call": "stats.*` (campaign / group / keyword / ad statistics)",
+    "purpose": "reports",
+    "notes": "dateFrom, dateTo, granularity, metrics"
+   },
+   {
+    "call": "conversions.*` · `retargeting.*` · `sharedbudgets.*` · `productsets.*` · `sitelinks.*",
+    "purpose": "conversions, audiences, budgets, shopping",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate / quota limits documented per method (TODO(verify)); free; Sklik business terms.",
+  "mcp_sdk": [
+   "Official examples on GitHub (linked from api.sklik.cz)."
+  ],
+  "sources": [
+   "https://api.sklik.cz/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.sklik.cz/v1",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/user/token",
+    "body_format": "form",
+    "body": {
+     "grant_type": "refresh_token",
+     "refresh_token": "@refresh_token"
+    }
+   },
+   "token_path": "access_token",
+   "token_ttl_seconds": 3300,
+   "fields": [
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Sklik API Fénix refresh token (log in at https://www.sklik.cz/ > Tools > API > create token; you choose its validity and access level r / rw). Exchanged at POST https://api.sklik.cz/v1/user/token (grant_type=refresh_token, form) for a 1-hour access token, re-requested on expiry or 401; the token acts on the refresh token owner's own Sklik account."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user/me",
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "GET /v1/user/me: {userId, userName, actor, scope} of the account the token acts on (API Fénix; spec https://api.sklik.cz/v1/openapi.json)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/user/linked-accounts",
+    "fixed_params": {
+     "a": [
+      "id",
+      "username",
+      "access",
+      "agencyStatus",
+      "relationStatus"
+     ]
+    },
+    "result": {
+     "items": "items",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "username",
+      "access": "access"
+     }
+    },
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "GET /v1/user/linked-accounts: own and managed accounts the token can access (id, username, access r|rw|rwa, agencyStatus, relationStatus). The other tools act on the refresh token owner's account; reaching a managed account needs a token issued with its user_id, which is not configured here. Currency is CZK."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/sklik/campaigns/",
+    "params": {
+     "status": "status",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "a": [
+      "id",
+      "name",
+      "status",
+      "type",
+      "startDate",
+      "endDate",
+      "budget.id",
+      "budget.dayBudget"
+     ],
+     "isDeleted": "false"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "items",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget.dayBudget",
+      "start": "startDate",
+      "end": "endDate",
+      "type": "type"
+     }
+    },
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "GET /v1/sklik/campaigns/?a=id&a=name&a=status&…&isDeleted=false&status=&limit&offset (API Fénix 'List campaigns'). status is active or suspend. `budget` is budget.dayBudget in HELLERS (100 hellers = 1 CZK). `account_id` is not sent (the token selects the account)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/sklik/campaigns/",
+    "params": {
+     "statisticsDateFrom": "date:date_from",
+     "statisticsDateTo": "date:date_to",
+     "id": "campaign_id"
+    },
+    "fixed_params": {
+     "a": [
+      "id",
+      "name",
+      "impressions",
+      "clicks",
+      "ctr",
+      "avgCpc",
+      "totalMoney",
+      "conversions"
+     ],
+     "statisticsGranularity": "daily",
+     "isDeleted": "false",
+     "limit": "1000"
+    },
+    "result": {
+     "items": "items",
+     "key": "rows",
+     "fields": {
+      "date": "firstDate",
+      "campaign_id": "id",
+      "campaign": "name",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "ctr": "ctr",
+      "spend_hellers": "totalMoney",
+      "conversions": "conversions"
+     }
+    },
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "GET /v1/sklik/campaigns/ with statistic attributes (impressions, clicks, ctr, avgCpc, totalMoney, conversions), statisticsDateFrom/To and statisticsGranularity=daily: one row per campaign and day (firstDate). Daily granularity allows at most one month per call. Money is in HELLERS: spend_hellers = totalMoney (clicks + impressions, 100 hellers = 1 CZK). With campaign_id only that campaign is returned. Up to 1000 rows per call."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/sklik/campaigns/{campaign_id}/",
+    "body": {
+     "budget.dayBudget": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "PATCH /v1/sklik/campaigns/{campaign_id}/ {budget: {dayBudget}} answers 204. daily_budget is an INTEGER IN HELLERS (100 hellers = 1 CZK; e.g. 50000 = 500 CZK) and fractional values are refused. It changes the campaign's daily budget, which is its own budget object (shared budgets are managed separately). This spends money. `currency` is ignored (CZK)."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/sklik/campaigns/{campaign_id}/",
+    "body": {
+     "status": "map:action:pause=suspend,resume=active"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://api.sklik.cz/fenix",
+    "note": "PATCH /v1/sklik/campaigns/{campaign_id}/ {status: suspend|active} (pause → suspend, resume → active); answers 204. Resuming restarts spend. Needs a refresh token with write (rw) access."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.sklik.cz: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login api.sklik.cz/v1/user/token: 401",
+   "spec https://api.sklik.cz/v1/openapi.json: 6/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

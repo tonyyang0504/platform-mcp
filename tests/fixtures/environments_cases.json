@@ -1,0 +1,60 @@
+{
+ "_comment": "Shared by tests/test_environments_python.py and tests/environments.typescript.test.mjs: both runtimes must select the same environment, URLs, headers and errors (runtime environment.py / environment.ts).",
+ "adapter": {
+  "base_url": "https://api.shop.example/v1",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://api.sandbox.shop.example/v1",
+    "token_url": "https://api.sandbox.shop.example/oauth/token",
+    "auth_url": "https://auth.sandbox.shop.example/authorize",
+    "scope": "sandbox.scope",
+    "hosts": {"reports.shop.example": "reports.sandbox.shop.example"},
+    "docs": "https://docs.shop.example/sandbox", "verified_at": "2026-09-27", "notes": "sandbox keys"
+   },
+   "dynamic": {
+    "hosts": {"api.shop.example": "api.sandbox.shop.example", "auth.shop.example": "auth.sandbox.shop.example"},
+    "headers": {"X-Sandbox": "v2"},
+    "docs": "https://docs.shop.example/dynamic", "verified_at": "2026-09-27", "notes": "dynamic sandbox"
+   },
+   "test": {"same_host": true, "docs": "https://docs.shop.example/test", "verified_at": "2026-09-27", "notes": "test accounts"}
+  },
+  "headers": {"X-Api-Version": "3"},
+  "rate_per_second": 50,
+  "auth": {"type": "oauth2_refresh_token", "token_url": "https://auth.shop.example/oauth/token", "client_auth": "body", "scope": "prod.scope",
+           "fields": [{"name": "client_id"}, {"name": "client_secret"}, {"name": "refresh_token"}]},
+  "tools": {
+   "list_orders": {"path": "/orders", "result": {"items": "orders", "key": "orders", "fields": {"id": "id"}}},
+   "me": {"kind": "probe", "path": "https://reports.shop.example/me"}
+  }
+ },
+ "select": [
+  {"env": {}, "environment": "production", "base_url": "https://api.shop.example/v1", "token_url": "https://auth.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "production"}, "environment": "production", "base_url": "https://api.shop.example/v1", "token_url": "https://auth.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": " "}, "environment": "production", "base_url": "https://api.shop.example/v1", "token_url": "https://auth.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "sandbox"}, "environment": "sandbox", "base_url": "https://api.sandbox.shop.example/v1", "token_url": "https://api.sandbox.shop.example/oauth/token", "auth_url": "https://auth.sandbox.shop.example/authorize", "scope": "sandbox.scope", "me_path": "https://reports.sandbox.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "SANDBOX"}, "environment": "sandbox", "base_url": "https://api.sandbox.shop.example/v1", "token_url": "https://api.sandbox.shop.example/oauth/token", "scope": "sandbox.scope", "me_path": "https://reports.sandbox.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "dynamic"}, "environment": "dynamic", "base_url": "https://api.sandbox.shop.example/v1", "token_url": "https://auth.sandbox.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3", "X-Sandbox": "v2"}},
+  {"env": {"ENV": "test"}, "environment": "test", "base_url": "https://api.shop.example/v1", "token_url": "https://auth.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "sandbox", "BASE_URL": "https://mock.internal.example:8443/api"}, "environment": "sandbox+base_url", "base_url": "https://mock.internal.example:8443/api", "token_url": "https://api.sandbox.shop.example/oauth/token", "scope": "sandbox.scope", "me_path": "https://reports.sandbox.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"BASE_URL": "https://10.0.0.7"}, "environment": "production+base_url", "base_url": "https://10.0.0.7", "token_url": "https://auth.shop.example/oauth/token", "scope": "prod.scope", "me_path": "https://reports.shop.example/me", "headers": {"X-Api-Version": "3"}},
+  {"env": {"ENV": "staging"}, "error": "configuration: PLATFORM_MCP_SHOP_ENV=staging is not an environment of this server; available: production, dynamic, sandbox, test"},
+  {"env": {"ENV": "../../etc"}, "error": "configuration: PLATFORM_MCP_SHOP_ENV must be an environment name (production, dynamic, sandbox, test)"}
+ ],
+ "overrides": [
+  ["https://api.example.com", true, ""],
+  ["https://api.example.com/", true, ""],
+  ["https://api.example.com:8443/v2/base", true, ""],
+  ["https://[::1]:8443", true, ""],
+  ["https://127.0.0.1", true, ""],
+  ["http://api.example.com", false, "it must start with https://"],
+  ["ftp://api.example.com", false, "it must start with https://"],
+  ["api.example.com", false, "it must start with https://"],
+  ["https://user:hunter2secret@api.example.com", false, "it must not carry user info (credentials) before the host"],
+  ["https://api.example.com/v1?token=abcdef123456", false, "it must not carry a query string or fragment"],
+  ["https://api.example.com/#frag", false, "it must not carry a query string or fragment"],
+  ["https://", false, "it must be https://host[:port][/path] with a valid host name"],
+  ["https://bad host.example.com", false, "it must be https://host[:port][/path] with a valid host name"],
+  ["https://-bad.example.com", false, "it must be https://host[:port][/path] with a valid host name"],
+  ["https://api.example.com:port", false, "it must be https://host[:port][/path] with a valid host name"]
+ ]
+}

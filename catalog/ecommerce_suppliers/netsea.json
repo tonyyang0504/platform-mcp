@@ -1,0 +1,84 @@
+{
+ "id": "netsea",
+ "category": "ecommerce_suppliers",
+ "label": "NETSEA",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "japan"
+ ],
+ "docs_url": "https://www.netsea.jp/search?tmpl=dropshipping&ds_flg=Y&limit=32&searched=Y",
+ "url": "https://www.netsea.jp/",
+ "verified_at": null,
+ "terms_note": "not stated on opened pages",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "none public (member features)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bookvault-mcp",
+ "description": "Bookvault (CopyTECH (UK) Ltd t/a Printondemand-worldwide) (ecommerce suppliers): me, list_products, ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://help.bookvault.app/api-setup",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bookvault"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BOOKVAULT_API_KEY",
+     "description": "Bookvault API key from the portal's Apps page (Bookvault API > Generate Credentials; shown once), sent as `Authorization: basic <key>`. Supply the key exactly as displayed, starting with bv_.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BOOKVAULT_PARTNER",
+     "description": "Print partner for create_order (required by Bookvault): Bookvault_UK, Bookvault_US, Bookvault_AU or Bookvault_CA.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

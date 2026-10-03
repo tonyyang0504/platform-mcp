@@ -1,0 +1,39 @@
+{
+ "id": "hessel_dk",
+ "category": "automotive",
+ "label": "Hessel",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.hessel.dk",
+ "domain": "hessel.dk",
+ "country": "Denmark",
+ "official_api": "unknown",
+ "docs_url": "https://developer.hessel.dk/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). Hessel runs an API developer portal (Azure APIM) but the API list is empty without sign-in; purpose/access unclear.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.hessel.dk/",
+   "https://developer.hessel.dk/apis"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: Hessel runs an API developer portal (Azure APIM) but the API list is empty without sign-in; purpose/access unclear."
+}

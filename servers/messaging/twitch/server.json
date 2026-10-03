@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/twitch-messaging-mcp",
+ "description": "Twitch (messaging): me, send, reply. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://dev.twitch.tv/docs",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "messaging/twitch"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TWITCH_CLIENT_ID",
+     "description": "Twitch app client id (dev.twitch.tv console); also sent as the Client-Id header on every Helix call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_CLIENT_SECRET",
+     "description": "Twitch app client secret (form body of the refresh request to https://id.twitch.tv/oauth2/token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_REFRESH_TOKEN",
+     "description": "User refresh token from the authorization-code flow with scopes user:manage:whispers and user:write:chat. Twitch may return a new refresh token: the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/twitch.json (mode 0600). The state file is keyed by platform id, so it is shared with social/twitch: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent / refresh token) so the two never race on one single-use refresh token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_SENDER_ID",
+     "description": "User id of the token's user (GET /helix/users with the token): from_user_id of whispers and sender_id of chat replies. It 'must match the user ID in the user access token'; the account needs a verified phone number to whisper.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_TWITCH_BROADCASTER_ID",
+     "description": "User id of the channel whose chat reply posts into (needed only for reply).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

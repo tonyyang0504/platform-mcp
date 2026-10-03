@@ -1,0 +1,39 @@
+{
+ "id": "rangeme",
+ "category": "sales",
+ "label": "RangeMe",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "us",
+  "gb",
+  "au",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.rangeme.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Buyer requests and retailer categories are visible to a logged-in supplier account → tenant session; robots.txt (1 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

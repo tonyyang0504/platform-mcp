@@ -1,0 +1,107 @@
+{
+ "id": "tradera",
+ "category": "automotive",
+ "label": "Tradera",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.tradera.com",
+ "domain": "tradera.com",
+ "country": "Sweden",
+ "official_api": true,
+ "docs_url": "https://api.tradera.com/documentation/rest-getting-started",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "soap"
+  ],
+  "auth": "AppId + AppKey (developer app registration), user token for seller calls",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Tradera runs a self-service Developer Program (SOAP v3 / REST v4) with SearchService, PublicService and listing/ProImport services.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.tradera.com/documentation",
+   "https://api.tradera.com/v3/publicservice.asmx",
+   "https://api-v2.tradera.com/docs/"
+  ],
+  "unofficial": [
+   "github.com/ekdennisek/tradera-api-client"
+  ]
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.tradera.com/v4",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "X-App-Id": "app_id",
+    "X-App-Key": "app_key"
+   },
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "Application ID (integer) of an app registered in the Tradera Developer Center (self-service)."
+    },
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "Application key (GUID) of that app. Read-only calls (search, items, categories) need only these two headers."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "Tradera API usage policy: read-only and advisory use by default; no automated bidding or sniping. Default 10,000 calls per 24 h per method. Prices in SEK.",
+  "tools": {
+   "get_listing": {
+    "method": "GET",
+    "path": "/items/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "shortDescription",
+      "description": "longDescription",
+      "price": "buyItNowPrice",
+      "currency": "=SEK",
+      "url": "itemLink",
+      "posted_at": "startDate"
+     }
+    },
+    "docs": "https://api.tradera.com/documentation/rest/items",
+    "note": "GET /v4/items/{itemId} with X-App-Id/X-App-Key (REST v4, beta). price is the Buy Now price (SEK, integer); auction state (maxBid, nextBid, totalBids, endDate), attributeValues, imageLinks and seller stay in raw."
+   }
+  },
+  "not_offered": {
+   "search_listings": "GET /v4/search exists (query, categoryId, pageNumber, orderBy), but its SearchResult schema in the published OpenAPI (https://api.tradera.com/v4/swagger/v4/swagger.json) is an empty object and the REST search page documents no response fields, so results cannot be mapped from evidence.",
+   "decode_vin": "No VIN lookup in the Tradera API.",
+   "get_valuation": "No valuation endpoint in the Tradera API.",
+   "list_dealers": "No dealer directory endpoint in the Tradera API.",
+   "me": "User endpoints need X-User-Id/X-User-Token from the token login flow; this adapter uses application credentials only."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.tradera.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 1/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://api.tradera.com/v4/swagger/v4/swagger.json: 1/1 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

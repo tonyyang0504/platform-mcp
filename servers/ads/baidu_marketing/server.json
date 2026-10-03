@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/baidu_marketing-mcp",
+ "description": "百度营销 Baidu Marketing (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://dev2.baidu.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "baidu_marketing"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_ID",
+     "description": "Your application's appId (商业开发者中心 → 应用管理 → 应用详情).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_SECRET",
+     "description": "The application's secretKey (shown in the approved application's details).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BAIDU_MARKETING_REFRESH_TOKEN",
+     "description": "refreshToken from exchanging the authorization code once at POST https://u.baidu.com/oauth/accessToken (valid 30 days; each refresh returns a new one, saved when PLATFORM_MCP_STATE_DIR is set).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BAIDU_MARKETING_USER_ID",
+     "description": "userId of the promotion account that authorized the app (returned by the OAuth callback / accessToken exchange).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_BAIDU_MARKETING_USER_NAME",
+     "description": "推广账户名称 (userName) of the account to operate — sent as header.userName; with a super-admin (超管) authorization this may be any sub-account.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

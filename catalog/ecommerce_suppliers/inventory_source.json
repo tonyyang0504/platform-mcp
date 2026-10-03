@@ -1,0 +1,111 @@
+{
+ "id": "inventory_source",
+ "category": "ecommerce_suppliers",
+ "label": "Inventory Source",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global",
+  "us_ca"
+ ],
+ "docs_url": "https://www.inventorysource.com/api/",
+ "url": "https://www.inventorysource.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "via Flxpoint account (Inventory Source's parent platform)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "orders",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Flxpoint subscription; Inventory Source automation plans.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.inventorysource.com/api/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Rendered https://www.inventorysource.com/api/ on 2026-09-25 ('Request API Access'): 'In order to access Inventory Source via an API, you will need to sign up with Flxpoint.' Inventory Source publishes no API of its own; programmatic access is Flxpoint's separate paid platform, so there is nothing of Inventory Source's to map."
+}

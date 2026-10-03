@@ -1,0 +1,286 @@
+{
+ "id": "zalora",
+ "category": "ecommerce_channels",
+ "label": "Zalora",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "sg",
+  "my",
+  "ph",
+  "id",
+  "hk",
+  "tw"
+ ],
+ "docs_url": "https://sellercenter-api.zalora.com/docs/",
+ "url": "https://www.zalora.sg/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Zalora seller account per country (SG / MY / ID / PH / HK / TW); OAuth application self-registered in Seller Center; legacy API-key flow deprecated (removal notice July 2026); sandbox and rate limiting exist (numbers not read); fashion-only marketplace.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sandbox"
+  ],
+  "auth": "transitioning: legacy UserID + API key HMAC-SHA256 (Action / Format / Timestamp / Version params) → new OAuth2 client credentials (Seller Center › Settings › Integration Management › OAuth Applications; POST /oauth/client-credentials)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.country",
+  "config.client_id"
+ ],
+ "rate_limits": "not readable",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the dep",
+  "base_urls": [
+   "https://sellercenter-api.zalora.<tld>/"
+  ],
+  "auth": [
+   "1. Seller Center › Settings › Integration Management › OAuth Applications › Add Application → Application ID + Secret.",
+   "2. POST client credentials → access token; Bearer on API calls.",
+   "3. (Legacy: UserID + API key HMAC-SHA256 over sorted params — being removed.)"
+  ],
+  "endpoints": [
+   {
+    "call": "ProductCreate / ProductUpdate / ProductRemove (feeds) · FeedStatus",
+    "purpose": "products, price, quantity",
+    "notes": "async feeds"
+   },
+   {
+    "call": "GetOrders / GetOrderItems",
+    "purpose": "orders",
+    "notes": ""
+   },
+   {
+    "call": "SetStatusToPackedByMarketplace · SetStatusToReadyToShip",
+    "purpose": "pack + ready to ship with tracking",
+    "notes": ""
+   },
+   {
+    "call": "returns / refund handling",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "Financial Operations (new guide section)",
+    "purpose": "settlement reports",
+    "notes": ""
+   }
+  ],
+  "limits": " Enforced (legacy docs); numbers not read. - Zalora seller agreement per country; self-registered OAuth app.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://sellercenter-api.zalora.com/docs/",
+   "https://sellercenter-api.zalora.com/doc",
+   "https://sellercenter-<instance>/oauth/client-credentials"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://sellercenter-api.zalora.com",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://sellercenter-api.zalora.com/oauth/client-credentials",
+   "client_auth": "basic",
+   "token_ttl_seconds": 3500,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Application ID of an OAuth application created in ZALORA Seller Center (Settings > Integration Management > OAuth Applications > Add Application)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Application Secret of the same application; sent with the id as HTTP Basic to /oauth/client-credentials (grant_type=client_credentials) for a 1-hour bearer token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "country",
+    "required": false,
+    "help": "Country code of the price row that update_listing / end_listing change (Seller Center country code of the venture, as used in PUT /v2/product/{productId}/prices/{country})."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "ZALORA Seller Center REST API v2 on the ZALORA GSC instance (sellercenter-api.zalora.com). Country-specific Seller Center instances (zalora.com.my, .sg, .co.id, .com.ph, .com.hk, .com.tw) use their own hosts and token endpoints, which this adapter does not target because the token URL is fixed.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/seller-settings",
+    "docs": "https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml",
+    "note": "GET /v2/seller-settings: the authenticated seller's settings, used as the credential check."
+   },
+   "update_listing": {
+    "method": "PUT",
+    "path": "/v2/product/{listing_id}/prices/{country}",
+    "path_params": {
+     "country": "@country"
+    },
+    "body": {
+     "price": "price"
+    },
+    "result": {
+     "fields": {
+      "status": "status"
+     }
+    },
+    "docs": "https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml",
+    "note": "PUT /v2/product/{productId}/prices/{country} {price} merge-patches the LIVE list (regular) price of one variation for the configured country; an existing sale price is kept (salePrice omitted). `listing_id` is the numeric variation productId (GET /v2/product-set/{productSetId}/products). Returns the stored row with status active|inactive and any warnings."
+   },
+   "set_inventory": {
+    "method": "PUT",
+    "path": "/v2/stock/product",
+    "body": {
+     "0.productId": "int:listing_id",
+     "0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml",
+    "note": "PUT /v2/stock/product [{productId, quantity}] synchronously sets the stock of one variation (`listing_id` = numeric productId, required). Products fulfilled by the venture cannot be updated; ignored products are listed in the response."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/v2/product/{listing_id}/prices/{country}/status",
+    "path_params": {
+     "country": "@country"
+    },
+    "body": {
+     "status": "=inactive"
+    },
+    "result": {
+     "fields": {
+      "status": "=inactive"
+     }
+    },
+    "docs": "https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml",
+    "note": "PUT /v2/product/{productId}/prices/{country}/status {status: inactive} stops selling the variation in the configured country (reversible with active). Only meaningful for multi-country sellers: single-country (LSC) setups reject inactive with 422."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/v2/orders",
+    "params": {
+     "section": "status",
+     "dateStart": "since",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "sort": "createdAt",
+     "sortDir": "desc"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "orders",
+     "fields": {
+      "id": "id",
+      "total": "grandTotal",
+      "currency": "currency",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml",
+    "note": "GET /v2/orders?limit&offset (both required, sent from limit/page)&section&dateStart, newest first. `status` selects the section filter (status_pending, status_shipped, status_delivered, status_failed, status_canceled, status_pending_all, …); per-item statuses are in raw.statusList / raw.items[].status. raw.number is the customer-facing order number and raw.orderItemIds are needed for status changes."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /v2/product-set needs a category/attribute-set specific payload (brand, attributes, variations with seller SKUs; see /v2/product-sets/sample-payload/{categoryId}); the vocabulary has no category or brand.",
+   "mark_shipped": "POST /v2/orders/statuses/set-to-shipped and /v2/order-item/{orderItemId}/tracking-code act on ORDER ITEM ids (orderItemIds), not on an order id; order item ids are not vocabulary inputs."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host sellercenter-api.zalora.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "token sellercenter-api.zalora.com/oauth/client-credentials: 400 invalid_app_id",
+   "spec https://sellercenter-api.zalora.com/docs/openapi-standalone.yaml: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

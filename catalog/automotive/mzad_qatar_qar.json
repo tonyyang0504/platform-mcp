@@ -1,0 +1,35 @@
+{
+ "id": "mzad_qatar_qar",
+ "category": "automotive",
+ "label": "Qic",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://qic.online",
+ "domain": "qic.online",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Bahrain); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://qic.online/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

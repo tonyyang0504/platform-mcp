@@ -1,0 +1,238 @@
+{
+ "id": "taobao_fenxiao_alimama",
+ "category": "ecommerce_suppliers",
+ "label": "Taobao/Tmall distribution (淘宝分销 → Tmall 供销平台) + Taobao Affiliate (淘宝联盟)",
+ "lane": "manual",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://open.taobao.com/",
+ "url": "https://fenxiao.taobao.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (JS shells)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (ISV app on the Taobao Open Platform)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.taobao.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://gw.api.taobao.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error_response",
+   "ok_value": null,
+   "error_field": "error_response"
+  },
+  "config_fields": [
+   {
+    "name": "adzone_id",
+    "required": true,
+    "help": "Promotion slot id: the last number of your 淘宝联盟 PID mm_xxx_xxx_<adzone_id> (pub.alimama.com > 推广管理 > 推广位管理)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "encoding": "hex",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_fmt",
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+    "timestamp_offset": "+08:00",
+    "params": {
+     "v": "2.0",
+     "sign_method": "md5",
+     "format": "json"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.time.get"
+    },
+    "kind": "probe",
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=120",
+    "note": "taobao.time.get: Taobao server time; a signed call that verifies the app_key/app_secret pair."
+   },
+   "list_products": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.tbk.dg.material.optional.upgrade"
+    },
+    "params": {
+     "q": "query",
+     "cat": "category",
+     "adzone_id": "@adzone_id",
+     "page_no": "page",
+     "page_size": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "tbk_dg_material_optional_upgrade_response.result_list.map_data",
+     "key": "products",
+     "total": "tbk_dg_material_optional_upgrade_response.total_results",
+     "fields": {
+      "id": "item_id",
+      "title": "item_basic_info.title",
+      "price": "price_promotion_info.zk_final_price",
+      "final_price": "price_promotion_info.final_promotion_price",
+      "currency": "=CNY",
+      "image_url": "item_basic_info.pict_url",
+      "url": "publish_info.click_url",
+      "shop": "item_basic_info.shop_title",
+      "sales_volume": "item_basic_info.volume",
+      "income_rate": "publish_info.income_rate"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=64759",
+    "note": "淘宝联盟 taobao.tbk.dg.material.optional.upgrade (物料搜索升级版): keyword (`query`) or category (`category`, comma-separated backend cids) search of promotable Taobao/Tmall items for your adzone; price = current selling price (zk_final_price), final_price = estimated price after coupons, url = your promotion click_url, income_rate = commission + subsidy %. `id` is the new-style 淘宝客 item id."
+   },
+   "get_product": {
+    "path": "/router/rest",
+    "fixed_params": {
+     "method": "taobao.tbk.item.info.get"
+    },
+    "params": {
+     "num_iids": "id"
+    },
+    "result": {
+     "root": "tbk_item_info_get_response.results.n_tbk_item.0",
+     "fields": {
+      "id": "num_iid",
+      "title": "title",
+      "price": "zk_final_price",
+      "currency": "=CNY",
+      "url": "item_url",
+      "image_url": "pict_url",
+      "shop": "nick",
+      "sales_volume": "volume",
+      "category": "cat_name"
+     }
+    },
+    "docs": "https://open.taobao.com/api.htm?docType=2&docId=24518",
+    "note": "淘宝联盟 taobao.tbk.item.info.get (简版): one item's title, list price (reserve_price), selling price (zk_final_price), images, shop, 30-day sales and location."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "淘宝联盟 promoters do not buy: the 淘宝客 APIs (https://open.taobao.com/api.htm?docId=64759&docType=2) return promotion links and at most a real_post_fee estimate; freight is quoted by the seller at checkout on Taobao.",
+   "create_order": "Orders are placed by the buyer on Taobao through the promotion link; no 淘宝客 API creates orders (https://open.taobao.com/api.htm?docId=43328&docType=2 only reports them). Distributor purchase orders of the 供销平台 need a per-member session from the distributor's ISV authorisation.",
+   "get_order": "taobao.tbk.order.details.get (https://open.taobao.com/api.htm?docId=43328&docType=2) queries promoted orders only by time window (start_time/end_time ≤ 3 h apart), not by order id.",
+   "track": "No logistics API exists for 淘宝客 promoters (https://open.taobao.com/api.htm?docId=43328&docType=2); shipments belong to the buyer's Taobao order."
+  },
+  "terms": "Taobao Open Platform calling convention (https://open.taobao.com/doc.htm?docId=101617&docType=1): md5 signature over all parameters, timestamp in GMT+8. 淘宝联盟 APIs need an app of type 联盟合作网站/APP and a registered adzone; commissions follow 淘宝联盟 rules."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, adzone_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

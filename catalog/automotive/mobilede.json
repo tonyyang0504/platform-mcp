@@ -1,0 +1,146 @@
+{
+ "id": "mobilede",
+ "category": "automotive",
+ "label": "mobile.de",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://suchen.mobile.de",
+ "domain": "suchen.mobile.de",
+ "country": "Germany",
+ "official_api": true,
+ "docs_url": "https://services.mobile.de/docs/search-api.html",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "xml"
+  ],
+  "auth": "HTTP Basic with API-account credentials issued by mobile.de support",
+  "access": "apply",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). mobile.de publishes Seller-API, Search-API, Ad-Stream and Insights-API docs; API accounts are activated by customer support.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://services.mobile.de/docs/search-api.html",
+   "https://services.mobile.de/docs/seller-api.html",
+   "https://services.mobile.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://services.mobile.de/search-api",
+  "auth": {
+   "type": "basic",
+   "username_field": "username",
+   "password_field": "password",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "Username of a mobile.de API account (Search-API / Ad-Integration access is activated by mobile.de customer support); HTTP Basic."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Password of that API account (HTTP Basic)."
+    }
+   ]
+  },
+  "headers": {
+   "Accept": "application/vnd.de.mobile.api+json"
+  },
+  "rate_per_second": 2,
+  "terms": "mobile.de Search-API ('Ad-Integration'); some API users only see the ads of an agreed set of dealers (applied automatically). Prices in EUR (gross), mileage in km.",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "classification": "fmt:refdata/classes/Car/makes/{make}",
+     "modelDescription": "model",
+     "price.min": "price_min",
+     "price.max": "price_max",
+     "mileage.max": "mileage_max",
+     "firstRegistrationDate.min": "fmt:{year_min}-01",
+     "firstRegistrationDate.max": "fmt:{year_max}-12",
+     "condition": "map:condition:new=NEW,used=USED,NEW=NEW,USED=USED",
+     "country": "location",
+     "page.number": "page",
+     "page.size": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "ads",
+     "key": "listings",
+     "total": "total",
+     "fields": {
+      "id": "mobileAdId",
+      "make": "make",
+      "model": "model",
+      "mileage": "mileage",
+      "mileage_unit": "=km",
+      "condition": "condition",
+      "currency": "price.currency",
+      "url": "detailPageUrl",
+      "posted_at": "creationDate"
+     }
+    },
+    "docs": "https://services.mobile.de/docs/search-api.html",
+    "note": "GET https://services.mobile.de/search-api/search (Accept: application/vnd.de.mobile.api+json). make is mobile.de's make key (e.g. AUDI, BMW → classification=refdata/classes/Car/makes/<make>); model is matched as modelDescription text; year_min/year_max filter the first registration (YYYY-01 … YYYY-12); location is the seller's ISO-3166 country code (e.g. DE, AT). mobile.de rejects searches carrying only numeric filters, so give make, model, condition or location. At most 2,000 ads are reachable per query (page.size ≤ 100). `query` is not used (no free-text parameter). price.consumerPriceGross (a decimal string, EUR) and firstRegistration (YYYYMM) stay in raw."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/ad/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "mobileAdId",
+      "make": "make",
+      "model": "model",
+      "mileage": "mileage",
+      "mileage_unit": "=km",
+      "condition": "condition",
+      "currency": "price.currency",
+      "url": "detailPageUrl",
+      "posted_at": "creationDate",
+      "description": "plainTextDescription",
+      "vin": "vin"
+     }
+    },
+    "docs": "https://services.mobile.de/docs/search-api.html",
+    "note": "GET https://services.mobile.de/search-api/ad/{ad-key} (the mobileAdId): the full ad, richer than a search row; price.consumerPriceGross (decimal string, EUR), firstRegistration, seller and images stay in raw. 404 for a wrong ad-key."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "The Search-API has no VIN lookup (vin is only a field of an ad).",
+   "get_valuation": "Valuations are not part of the Search-API (the separate Insights-API is not covered here).",
+   "list_dealers": "The Search-API filters by customerNumber/customerId but has no dealer directory endpoint.",
+   "me": "No account/identity endpoint in the Search-API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host services.mobile.de: DNS ok, TLSv1.3 (ZeroSSL GmbH)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

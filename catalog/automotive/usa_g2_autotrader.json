@@ -1,0 +1,46 @@
+{
+ "id": "usa_g2_autotrader",
+ "category": "automotive",
+ "label": "Autotrader",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autotrader.com",
+ "domain": "autotrader.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": "https://developer.coxautoinc.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "per Cox Automotive partner agreement",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_valuation",
+   "decode_vin"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Autotrader (Cox Automotive) exposes APIs only via the Cox Automotive Integration Platform storefront for approved partners (inventory, Deal API); no public listings-search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.coxautoinc.com/",
+   "https://developer.coxautoinc.com/marketingcontent/exploreproducts"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/cox-automotive"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Autotrader (Cox Automotive) exposes APIs only via the Cox Automotive Integration Platform storefront for approved partners (inventory, Deal API); no public listings-search API."
+}

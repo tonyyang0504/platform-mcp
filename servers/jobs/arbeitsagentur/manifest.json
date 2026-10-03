@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "arbeitsagentur-mcp",
+ "display_name": "Bundesagentur für Arbeit Jobsuche MCP",
+ "version": "0.1.0",
+ "description": "Bundesagentur für Arbeit Jobsuche (jobs): search, get_posting. Every tool maps to a documented endpo",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "arbeitsagentur"
+   ],
+   "env": {
+    "PLATFORM_MCP_ARBEITSAGENTUR_API_KEY": "${user_config.platform_mcp_arbeitsagentur_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_arbeitsagentur_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ARBEITSAGENTUR_API_KEY",
+   "description": "The fixed public client id from https://jobsuche.api.bund.dev/ ('X-API-Key ist die clientId jobboerse-jobsuche'): set PLATFORM_MCP_ARBEITSAGENTUR_API_KEY=jobboerse-jobsuche. No registration exists; the BA publishes no developer terms of its own.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Bundesagentur für Arbeit job search (was = job-title free text, wo = place free text, page from 1, size = results per page). The OpenAPI's JobSearchResponse schema (stellenangebote[]/titel/arbeitgeber/refnr/arbeitsort) describes the /pc/v4/app/jobs variant, which answered 403 on 2026-09-24; the /pc/v6/jobs response read that day carries ergebnisliste[] with stellenangebotsTitel, firma, referenznummer (the docs: 'in /pc/v6/jobs die referenznummer'), stellenlokationen[].adresse, datumErsteVeroeffentlichung and gehaltsspanneVon/Bis (annual EUR when verguetungsangabe is JAHRESGEHALT). No posting URL or description is in the search hit; call get_posting. No published rate limit."
+  },
+  {
+   "name": "get_posting",
+   "description": "Job details by encryptedJobCode: the docs define it as base64(refnr) ('Base64-kodierter Wert der refnr aus der Jobsuche'), so pass the search hit's referenznummer base64-encoded as id (e.g. 10001-1002716922-S -> MTAwMDEtMTAwMjcxNjkyMi1T). The mapped id is the plain referenznummer; description is the posting text (Markdown-like), arbeitgeberKundennummerHash (logo lookup) stays in raw."
+  }
+ ]
+}

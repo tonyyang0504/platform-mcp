@@ -1,0 +1,192 @@
+{
+ "id": "arbeidsplassen",
+ "category": "jobs",
+ "label": "Arbeidsplassen",
+ "lane": "api",
+ "kind": "government",
+ "regions": [
+  "no"
+ ],
+ "docs_url": "https://pam-stilling-feed.nav.no/swagger",
+ "url": "https://arbeidsplassen.nav.no/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Norwegian PES with an open ads API; apply to the employer.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml",
+   "company_info"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/navikt/pam-stilling-feed (official source + consumer/token scripts, MIT)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (official NAV Job Vacancy Feed — all publicly advertised Norwegian vacancies in NAV's",
+  "base_urls": [
+   "https://pam-stilling-feed.nav.no/",
+   "https://pam-stilling-feed.ekstern.dev.nav.no/swagger"
+  ],
+  "auth": [
+   "1. Every request needs `Authorization: Bearer <JWT>` (\"The API is not publicly open, all requests need to be authenticated\").",
+   "2. A rotating **public token** for experiments is published at `GET https://pam-stilling-feed.nav.no/api/publicToken`",
+   "3. A **private token**: email `nav.team.arbeidsplassen@nav.no` with written acceptance of the terms plus identifier",
+   "4. Env for the suite: `JOBS_ARBEIDSPLASSEN_TOKEN` (private token; fall back to the public token only in dev)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v1/feed` (`?last=true` for the last page)",
+    "purpose": "first / last feed page",
+    "notes": "headers `If-Modified-Since` (RFC-1123), `If-None-Match`; response `version, title, home_page_url, feed_url, next_url, id, next_id, items[]`; `items[] = {id, url, title, content_text, date_modified, _feed_entry{uuid, status ACTIVE"
+   },
+   {
+    "call": "GET /api/v1/feed/{feedPageId}",
+    "purpose": "a specific page (follow `next_url`)",
+    "notes": "same body; returns 304 when `ETag` / `Last-Modified` unchanged; end of feed = `next_url` and `next_id` null → poll"
+   },
+   {
+    "call": "GET /api/v1/feedentry/{entryId}",
+    "purpose": "ad details",
+    "notes": "`uuid, status, sistEndret, json{uuid, published, expires, updated, workLocations[{country, address, city, postalCode, county, municipal}], contactList[{name, email, phone, role, title}], title, description, sourceurl, source, applicationUrl, applicationDue, occupationCategories[{level1, level2}], ca"
+   }
+  ],
+  "limits": " Not published. The docs recommend ETag / Last-Modified conditional requests (304) and sleeping ~2 minutes at the end of the feed before polling again. - `https://arbeidsplassen.nav.no/vilkar-api`: anyone may use the service, free of charge; NAV may cut access on misuse. - Consumers may republish ads and use them for statistics / analytics; an ad must be removed at once when it becomes inactive / deleted at NAV and updated at once when it changes in the API. - The ad's application function must deep-link directly to the system supplier's application function (no scraping of the employer's form",
+  "mcp_sdk": [
+   "Official source + consumer/token admin scripts: https://github.com/navikt/pam-stilling-feed (MIT).",
+   "No official SDK, no MCP server found."
+  ],
+  "sources": [
+   "https://navikt.github.io/pam-stilling-feed/",
+   "https://pam-stilling-feed.ekstern.dev.nav.no/swagger",
+   "https://pam-stilling-feed.ekstern.dev.nav.no/api/openapi.json",
+   "https://pam-stilling-feed.nav.no/api/publicToken",
+   "https://github.com/navikt/pam-stilling-feed",
+   "https://arbeidsplassen.nav.no/vilkar-api",
+   "https://arbeidsplassen.nav.no/vilkar",
+   "https://arbeidsplassen.nav.no/api/",
+   "https://arbeidsplassen.nav.no/robots.txt"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://pam-stilling-feed.nav.no",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "JWT for NAV's job vacancy feed, sent as Authorization: Bearer. A rotating public token for experiments is served at GET https://pam-stilling-feed.nav.no/api/publicToken; a private one comes from nav.team.arbeidsplassen@nav.no after accepting the API terms (https://arbeidsplassen.nav.no/vilkar-api)."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api/v1/feed",
+    "fixed_params": {
+     "last": "true"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "items",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "_feed_entry.businessName",
+      "location": "_feed_entry.municipal",
+      "posted_at": "date_modified"
+     }
+    },
+    "docs": "https://pam-stilling-feed.nav.no/swagger",
+    "note": "NAV's public feed of job vacancies (OpenAPI at https://pam-stilling-feed.nav.no/api/openapi.json) has no search: GET /api/v1/feed 'Returns first page of the feed by default, or last if query param last is provided', so this returns the newest page and query, location, page and limit are not sent — filter client-side and use get_posting (id = feed line id) for the full ad. Pages are chained by next_url/next_id (uuids, not numbers); replicate the feed with a dedicated client for bulk. Items: id, url (the /api/v1/feedentry path), title, content_text, date_modified, _feed_entry{uuid, status, title, businessName, municipal, sistEndret}. Terms: https://arbeidsplassen.nav.no/vilkar-api."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/v1/feedentry/{id}",
+    "result": {
+     "root": "ad_content",
+     "fields": {
+      "id": "uuid",
+      "title": "title",
+      "company": "employer.name",
+      "location": "workLocations.0.city",
+      "url": "link",
+      "posted_at": "published",
+      "description": "description"
+     }
+    },
+    "docs": "https://pam-stilling-feed.nav.no/swagger",
+    "note": "'Returns details for the specified feed entry': the ad (FeedAd) sits under ad_content — title, description (HTML), employer{name, orgnr, homepage}, workLocations[], link (the arbeidsplassen.no listing), published, expires, applicationUrl, applicationDue, sourceurl, engagementtype, extent (all in raw)."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint: the OpenAPI lists /api/v1/feed, /api/v1/feed/{feedPageId} and /api/v1/feedentry/{entryId} only.",
+   "apply": "Page: the API terms require deep-linking the job seeker to the source's application function (applicationUrl in raw); 'no apply API'.",
+   "list_messages": "No messaging API; the OpenAPI documents the feed only."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host pam-stilling-feed.nav.no: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://pam-stilling-feed.nav.no/api/openapi.json: 2/2 tools match (path, method, parameters, body keys, response paths)",
+   "live read with the vendor's published demo credential (https://navikt.github.io/pam-stilling-feed/): search validated against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

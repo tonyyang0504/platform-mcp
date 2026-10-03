@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "adroll-mcp",
+ "display_name": "AdRoll MCP",
+ "version": "0.1.0",
+ "description": "AdRoll (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a docu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "adroll"
+   ],
+   "env": {
+    "PLATFORM_MCP_ADROLL_TOKEN": "${user_config.platform_mcp_adroll_token}",
+    "PLATFORM_MCP_ADROLL_CLIENT_ID": "${user_config.platform_mcp_adroll_client_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_adroll_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADROLL_TOKEN",
+   "description": "AdRoll Personal Access Token (dashboard > settings > Personal Access Tokens), sent as `Authorization: Token <PAT>` (https://apidocs.nextroll.com/guides/get-started.html).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_adroll_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADROLL_CLIENT_ID",
+   "description": "Client ID (consumer key) of your NextRoll developer application, sent in the `apikey` query parameter on every call.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v1/organization/get: the caller's organization {eid, name, created_date}. Default quota is 100 requests per service per day."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /api/v1/organization/get_advertisables: the organization's advertisables (the ad accounts); `id` is the advertisable EID used as account_id."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /api/v1/advertisable/get_campaigns?advertisable={account_id} (is_active defaults to true, so only active campaigns are listed; `status` filters `statuses`). `budget` is the WEEKLY budget (raw.ui_budget_daily says whether the UI shows it as daily). No paging."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /api/v1/report/campaign?data_format=entity: per-campaign totals over the range (USD by default). Prospecting and new-style Facebook campaigns are not in this endpoint (NextRoll recommends its GraphQL Reporting API for those)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /api/v1/campaign/pause or /api/v1/campaign/unpause ?campaign={campaign_id}; `status` is the campaign status after the change. Resuming restarts spending."
+  }
+ ]
+}

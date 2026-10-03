@@ -1,0 +1,36 @@
+{
+ "id": "uk_find_a_tender",
+ "category": "sales",
+ "label": "Find a Tender",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": "https://www.find-tender.service.gov.uk/",
+ "url": "https://www.find-tender.service.gov.uk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "OCDS release API without a key (Open Government Licence); the docs are linked from the site (not fetched separately).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

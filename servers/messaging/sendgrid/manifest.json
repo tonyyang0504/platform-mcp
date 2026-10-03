@@ -1,0 +1,70 @@
+{
+ "manifest_version": "0.2",
+ "name": "sendgrid-mcp",
+ "display_name": "SendGrid MCP",
+ "version": "0.1.0",
+ "description": "SendGrid (messaging): me, send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "sendgrid"
+   ],
+   "env": {
+    "PLATFORM_MCP_SENDGRID_API_KEY": "${user_config.platform_mcp_sendgrid_api_key}",
+    "PLATFORM_MCP_SENDGRID_SENDER": "${user_config.platform_mcp_sendgrid_sender}",
+    "PLATFORM_MCP_SENDGRID_ENV": "${user_config.platform_mcp_sendgrid_env}",
+    "PLATFORM_MCP_SENDGRID_BASE_URL": "${user_config.platform_mcp_sendgrid_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_sendgrid_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SENDGRID_API_KEY",
+   "description": "SendGrid API key with Mail Send (and, for `me`, User Account read) permission, sent as 'Authorization: Bearer <API key>' ('add an HTTP Authorization header to your API request that contains an API Key', https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication). EU-pinned accounts live on https://api.eu.sendgrid.com, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_sendgrid_sender": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SENDGRID_SENDER",
+   "description": "Verified sender address used as `from.email` on every send ('from (object with required email field)' — a verified Sender Identity or authenticated domain is required, https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send). Env: PLATFORM_MCP_SENDGRID_SENDER.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_sendgrid_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SENDGRID_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_sendgrid_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SENDGRID_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v3/user/account answers {type: 'free' | 'paid' ('The type of account for this user'), reputation ('The sender reputation for this user')}; there is no richer identity endpoint on the API key itself."
+  },
+  {
+   "name": "send",
+   "description": "Sends one plain-text email: `to` is one recipient address (personalizations[0].to[0].email — 'personalizations: An array of messages and their metadata', 'to: array of recipient objects with required email field'), `from.email` comes from the per-install `sender` config field, `subject` is required by SendGrid (a missing subject is a 400 -> isError), `text` is content[0] with type text/plain; `channel` is ignored. SendGrid answers '202 Accepted' with an empty body, so status is the literal 'accepted' and message_id is empty (the id is only in the X-Message-Id response header, which the runtime does not expose)."
+  }
+ ]
+}

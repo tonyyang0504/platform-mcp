@@ -1,0 +1,39 @@
+{
+ "id": "spotawheel",
+ "category": "automotive",
+ "label": "Autohero",
+ "vertical": "dealer",
+ "lane": "browser",
+ "url": "https://www.autohero.com",
+ "domain": "autohero.com",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). AUTO1 Group (Autohero) exposes no public developer API or portal; only open-source repos under auto1-oss.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.auto1-group.com/",
+   "https://autohero.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/memo23/autohero-cars-scraper/api",
+   "https://github.com/api-evangelist/auto1"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,37 @@
+{
+ "id": "aliexpress_stores",
+ "category": "sales",
+ "label": "AliExpress store pages",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.aliexpress.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Fetch was redirected to the ja.aliexpress locale mirror; robots.txt (34 Disallow) blocks the ajax endpoints; store pages sit behind anti-bot checks → tenant session. Sellers are mostly consumer-facing shops.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

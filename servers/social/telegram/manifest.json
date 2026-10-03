@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "telegram-social-mcp",
+ "display_name": "Telegram MCP",
+ "version": "0.1.0",
+ "description": "Telegram (social): me, publish_text, delete, publish_image. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "social/telegram"
+   ],
+   "env": {
+    "PLATFORM_MCP_TELEGRAM_TOKEN": "${user_config.platform_mcp_telegram_token}",
+    "PLATFORM_MCP_TELEGRAM_CHAT_ID": "${user_config.platform_mcp_telegram_chat_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_telegram_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TELEGRAM_TOKEN",
+   "description": "Bot token from @BotFather. It is part of the URL path: 'All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: https://api.telegram.org/bot<token>/METHOD_NAME' (https://core.telegram.org/bots/api#making-requests). The bot must be an administrator of the target channel with the right to post (and delete) messages. Same field as the messaging entry (env PLATFORM_MCP_TELEGRAM_TOKEN).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_telegram_chat_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TELEGRAM_CHAT_ID",
+   "description": "The channel (or group) the bot publishes to, sent as `chat_id`: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)', e.g. @mychannel or -1001234567890; env PLATFORM_MCP_TELEGRAM_CHAT_ID. Message ids are unique only inside this chat, so `post_id` values are message_ids of this chat.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getMe: 'A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object' (id, is_bot, first_name, username)."
+  },
+  {
+   "name": "publish_text",
+   "description": "sendMessage {chat_id: <configured chat_id>, text ('Text of the message to be sent, 1-4096 characters after entities parsing'), reply_parameters?} - 'On success, the sent Message is returned'; `id` is the Message's message_id ('Unique message identifier inside this chat'), so it identifies the post only together with the configured chat. `reply_to` (a message_id in the same chat) is sent as reply_parameters.message_id ('Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified'; the Bot API server parses integer fields from JSON strings as well as numbers, tdlib JsonBuilder get_integer_field). parse_mode is not sent (plain text); no url, and `date` is a Unix timestamp under raw.date, so created_at is not mapped."
+  },
+  {
+   "name": "delete",
+   "description": "deleteMessage {chat_id: <configured chat_id>, message_id: post_id ('Identifier of the message to delete')} 'Returns True on success' (the runtime answers {status: 'deleted'}; a failure is an ok:false envelope error). Limitations: 'A message can only be deleted if it was sent less than 48 hours ago', 'Bots granted can_post_messages permissions can delete outgoing messages in channels', 'If the bot is an administrator of a group, it can delete any message there', 'If the bot has can_delete_messages administrator right in a supergroup or a channel, it can delete any message there'. A message outside the configured chat cannot be addressed."
+  },
+  {
+   "name": "publish_image",
+   "description": "sendPhoto {chat_id: <configured chat_id>, photo: image_urls[0] ('pass an HTTP URL as a String for Telegram to get a photo from the Internet ... The photo must be at most 10 MB in size'), caption: text ('Photo caption ..., 0-1024 characters after entities parsing')} - 'On success, the sent Message is returned'; `id` is the message_id inside the configured chat. Only the FIRST image URL is sent (sendMediaGroup, the 2-10 item album method, is not used); further image_urls are ignored. parse_mode is not sent; no url / created_at (raw.date is a Unix timestamp)."
+  }
+ ]
+}

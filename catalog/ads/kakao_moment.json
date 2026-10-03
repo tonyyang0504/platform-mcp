@@ -1,0 +1,294 @@
+{
+ "id": "kakao_moment",
+ "category": "ads",
+ "label": "카카오모먼트 Kakao Moment",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://developers.kakao.com/docs/latest/ko/kakaomoment/common",
+ "url": "https://moment.kakao.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Only a Kakao Developers app converted to a 비즈 앱 with the owner's identity verification and a granted 추가 기능 신청 may call it; calls use a business token (비즈니스 토큰) with the required business consent items; Kakao Business terms agreement required. Campaign types creatable via API: 비즈보드 × 전환/방문, 디스플레이 × 전환/방문, 동영상 × 조회, 카카오톡 채널 × 도달, 개인화 메시지 × 도달. Rate limits: app quota page (not read). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 business token (Kakao Developers biz app with 비즈니스 인증 + Kakao Moment permission)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Kakao Moment REST API) Confidence: **high** — official Kakao Developers documentation read.",
+  "base_urls": [
+   "https://apis.moment.kakao.com/openapi/v4/…"
+  ],
+  "auth": [
+   "1. Create a Kakao Developers app → convert to 비즈 앱 → complete the owner's Kakao account identity verification → request the Kakao Moment permission under [앱] > [추가 기능 신청].",
+   "2. Obtain a 비즈니스 토큰 (business token) authorized for the required business consent items (비즈니스 인증).",
+   "3. Send the token as `Authorization: Bearer` with `adAccountId` header / parameter on each call."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /adAccounts` · `GET /adAccounts/{id}",
+    "purpose": "ad accounts (advertiser or agency created)",
+    "notes": "adAccountId, name, status, business info"
+   },
+   {
+    "call": "GET /campaigns` · `POST /campaigns` · `PUT /campaigns/onOff` · `DELETE /campaigns/{id}",
+    "purpose": "campaigns (type × goal)",
+    "notes": "campaignTypeGoal{campaignType, goal}, name, dailyBudgetAmount, config ON/OFF"
+   },
+   {
+    "call": "GET /adGroups` · `PUT /adGroups/{id}` (daily budget, bid) · `PUT /adGroups/onOff` · `DELETE` · `GET /adGroups/{id}/targets` · `/customTargets",
+    "purpose": "ad groups: budget, bid, targeting",
+    "notes": "dailyBudgetAmount, bidAmount, bidStrategy, pricingType CPC/CPM/CPA, targeting{demographic, customTarget}, schedule"
+   },
+   {
+    "call": "POST /creatives` (display) · `PUT /creatives/{id}` · `PUT /creatives/onOff` · `DELETE` · image upload",
+    "purpose": "creatives (native / banner / video display; message creatives)",
+    "notes": "format, image, title, description, landingUrl, altText"
+   },
+   {
+    "call": "GET /reports` (campaign / adGroup / creative metrics)",
+    "purpose": "reports",
+    "notes": "level, metricsGroup, start, end, dimension"
+   },
+   {
+    "call": "오디언스 / 광고반응타겟 / 고객파일 / 친구그룹 management",
+    "purpose": "audiences",
+    "notes": "name, file upload (hashed)"
+   },
+   {
+    "call": "픽셀 & SDK 연동 관리",
+    "purpose": "conversions (pixel tracking)",
+    "notes": "pixel id, event"
+   }
+  ],
+  "limits": " - Kakao Developers app quotas apply (쿼터 page); business verification + Kakao Business terms; message ads cost 15 KRW (untargeted) / 20 KRW (targeted) per send. Free API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.kakao.com/docs/latest/ko/kakaomoment/common"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://apis.moment.kakao.com",
+  "rate_per_second": 0.2,
+  "auth": {
+   "type": "bearer",
+   "field": "business_token",
+   "extra_headers": {
+    "adAccountId": "ad_account_id"
+   },
+   "fields": [
+    {
+     "name": "business_token",
+     "required": true,
+     "help": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to moment_management in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). No refresh flow; it expires after long non-use."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "ad_account_id",
+    "required": true,
+    "help": "Kakao Moment ad account number, sent as the `adAccountId` header that campaign and report calls require."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "https://kapi.kakao.com/v1/business/tokeninfo",
+    "docs": "https://developers.kakao.com/docs/latest/ko/business-auth/rest-api",
+    "note": "GET https://kapi.kakao.com/v1/business/tokeninfo: validates the business token and lists its biz_agreements (group MOMENT with ad_account_ids)."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/openapi/v4/adAccounts/pages",
+    "params": {
+     "page": "page0",
+     "size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "content",
+     "key": "accounts",
+     "total": "totalElements",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/kakaomoment/ad-account",
+    "note": "GET /openapi/v4/adAccounts/pages (0-based page upstream): Kakao Moment ad accounts (ON and OFF) with raw.memberType. Limited to one call per second."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/openapi/v4/campaigns",
+    "params": {
+     "config": "status"
+    },
+    "result": {
+     "items": "content",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "config"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/kakaomoment/campaign",
+    "note": "GET /openapi/v4/campaigns for the ad account in the ad_account_id config (adAccountId header; account_id is not sent). `status` filters config (ON, OFF, DEL); raw.systemConfig shows admin stops. The list has no budget (GET /openapi/v4/campaigns/{id} carries dailyBudgetAmount). No paging."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/openapi/v4/campaigns/report",
+    "params": {
+     "campaignId": "campaign_id",
+     "start": "date_from",
+     "end": "date_to"
+    },
+    "fixed_params": {
+     "metricsGroup": "BASIC",
+     "timeUnit": "DAY",
+     "level": "CAMPAIGN"
+    },
+    "result": {
+     "items": "data",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "dimensions.campaign_id",
+      "date": "start",
+      "impressions": "metrics.imp",
+      "clicks": "metrics.click",
+      "spend": "metrics.cost",
+      "ctr": "metrics.ctr"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/kakaomoment/report",
+    "note": "GET /openapi/v4/campaigns/report?campaignId=&start=&end=&metricsGroup=BASIC&timeUnit=DAY&level=CAMPAIGN. campaign_id is required by Kakao (up to 5, comma-separated). Kakao expects yyyyMMdd dates: pass date_from/date_to like 20260901 (end no later than yesterday). One call per 5 seconds per ad account; cost is KRW."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/openapi/v4/campaigns/dailyBudgetAmount",
+    "body": {
+     "id": "int:campaign_id",
+     "dailyBudgetAmount": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/kakaomoment/campaign",
+    "note": "PUT /openapi/v4/campaigns/dailyBudgetAmount {id, dailyBudgetAmount}: KRW, 50,000 to 1,000,000,000 in steps of 10 (`currency` is ignored); spends money. Not available for reach campaigns (Bizboard, KakaoTalk channel, Daum shopping); lowering it can cut ad group budgets and bids. One call per 5 seconds."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/openapi/v4/campaigns/onOff",
+    "body": {
+     "id": "int:campaign_id",
+     "config": "map:action:pause=OFF,resume=ON"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.kakao.com/docs/latest/ko/kakaomoment/campaign",
+    "note": "PUT /openapi/v4/campaigns/onOff {id, config: OFF|ON} (only campaigns currently ON or OFF; pausing a KakaoTalk channel reach campaign suspends queued messages). Resuming restarts spending. One call per 5 seconds."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host apis.moment.kakao.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

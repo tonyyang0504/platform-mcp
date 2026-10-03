@@ -1,0 +1,36 @@
+{
+ "id": "auto_ro",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.auto.ro",
+ "domain": "auto.ro",
+ "country": "Romania",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). dealer.auto.ro is a dealer login; no public API docs. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.auto.ro/",
+   "https://dealer.auto.ro/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

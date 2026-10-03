@@ -1,0 +1,187 @@
+{
+ "id": "poe",
+ "category": "marketplaces",
+ "label": "Poe (Quora)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://creator.poe.com/docs",
+ "url": "https://poe.com/create_bot",
+ "verified_at": "2026-09-25",
+ "terms_note": "Bots REST API open to any creator with a Poe API key (poe.com/api/keys); creator monetization needs Stripe, one of 23 eligible countries, tax info within 90 days, $10 payout threshold paid 30-45 days after month end; per-message pricing US-only, per-token pricing for API bots; no rate limit published for the Bots API (inference API: 500 req/min); fraud / inauthentic engagement forfeits earnings.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "create_product (API bot)",
+   "update_product",
+   "set_price (per-token pricing)",
+   "publish (is_private false)",
+   "list_bots",
+   "server-bot settings sync",
+   "openai_compatible_inference"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/poe-platform/fastapi_poe",
+   "https://github.com/poe-platform/server-bot-quick-start",
+   "https://github.com/poe-platform/api-bot-tutorial"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/n0madic/poe-mcp (community; calls Poe bots, not creation)"
+ ],
+ "auth_fields": [
+  "api_key",
+  "base_url",
+  "model_name",
+  "api_type?",
+  "bot_handle?",
+  "bot_api_key?",
+  "prompt_price_usd_per_token?",
+  "completion_price_usd_per_token?",
+  "publish?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict**: has_api **yes** (API bots), UI-only for server-bot creation.",
+  "base_urls": [
+   "https://api.poe.com/bots",
+   "https://api.poe.com/v1"
+  ],
+  "auth": [
+   "1. Tenant creates a Poe API key at `https://poe.com/api/keys` (Poe subscription required for the key).",
+   "2. Every Bots-API call: `Authorization: Bearer <POE_API_KEY>`.",
+   "3. To earn: join the Creator Monetization Program (Stripe as Payment Agent, 23 countries, tax info within 90 days)."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Fields from the docs",
+    "notes": ""
+   },
+   {
+    "call": "POST https://api.poe.com/bots",
+    "purpose": "`handle` (req), `description`, `is_private` (default **true**), `api_bot_settings{model_name, base_url, api_key (write-only, encrypted), api_type: chat_completions_api \\",
+    "notes": "responses_api, max_input_tokens, context_size, input_modalities[text,image,video], output_modalities[text], supported_features[\"tools\"], pricing{prompt, completion, input_cache_reads, context_pricing[]}, param_definitions}`, `parameter_controls` → `{\"edit_bot_status\":\"success\"}`"
+   },
+   {
+    "call": "PATCH https://api.poe.com/bots/{handle}",
+    "purpose": "same fields, merge semantics (\"only the provided fields are updated\"); set `is_private:false` to publish, `pricing` to re-price",
+    "notes": ""
+   },
+   {
+    "call": "GET https://api.poe.com/bots",
+    "purpose": "`bots[] {handle, description, is_private, api_bot_settings}`",
+    "notes": ""
+   },
+   {
+    "call": "POST /bot/fetch_settings/<bot>/<access_key>` or `fastapi_poe.sync_bot_settings(bot_name, access_key)",
+    "purpose": "creation itself only at `poe.com/create_bot`",
+    "notes": ""
+   },
+   {
+    "call": "**n/a** — the \"product\" is a hosted endpoint",
+    "purpose": "—",
+    "notes": ""
+   },
+   {
+    "call": "**none** in the public API — earnings in the Creator dashboard",
+    "purpose": "—",
+    "notes": ""
+   },
+   {
+    "call": "poe.com UI only",
+    "purpose": "—",
+    "notes": ""
+   }
+  ],
+  "limits": " Bots API: none published. Inference API: 500 requests / minute (`x-ratelimit-remaining-requests`, `x-ratelimit-reset-requests`). - Automation of API-bot creation is the documented path (\"You can create and manage API Bots using the Bots REST API\"). - Earnings: $10 payout threshold, paid via Stripe 30–45 days after month end; price-per-message capped at $10,000 per 1,000 messages and US-only; fraud / inauthentic engagement forfeits earnings; Quora may terminate without cause. - Private bots are not reachable through the external OpenAI-compatible API.",
+  "mcp_sdk": [
+   "Official SDK: https://github.com/poe-platform/fastapi_poe (server bots, `sync_bot_settings`), tutorials",
+   "Community MCP servers call Poe bots (https://github.com/n0madic/poe-mcp) — they do not create bots. No official MCP."
+  ],
+  "sources": [
+   "https://creator.poe.com/api-reference/createBot",
+   "https://creator.poe.com/api-reference/updateBot",
+   "https://creator.poe.com/api-reference/listBots",
+   "https://creator.poe.com/docs/api-bots/overview",
+   "https://creator.poe.com/docs/server-bots/quick-start",
+   "https://creator.poe.com/docs/server-bots/updating-bot-settings",
+   "https://creator.poe.com/docs/external-applications/openai-compatible-api",
+   "https://creator.poe.com/docs/resources/creator-monetization",
+   "https://poe.com/pages/earnings-tos",
+   "https://help.poe.com/hc/en-us/articles/21921312368020-Poe-Creator-Monetization-FAQs",
+   "https://github.com/poe-platform/fastapi_poe"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.poe.com",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Poe API key (poe.com/api_key)."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/bots",
+    "docs": "https://creator.poe.com/api-reference/listBots",
+    "note": "No account endpoint; the probe lists the key owner's API bots."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/bots",
+    "default_limit": 100,
+    "result": {
+     "items": "bots",
+     "key": "products",
+     "fields": {
+      "id": "handle",
+      "name": "handle",
+      "description": "description"
+     }
+    },
+    "docs": "https://creator.poe.com/api-reference/listBots",
+    "note": "GET https://api.poe.com/bots ('None' query parameters) lists the creator's API bots in one response (page/limit ignored). id and name are the bot handle; price is not mapped: pricing is api_bot_settings.pricing {prompt, completion}, string dollar amounts PER TOKEN (in raw). is_private, model_name, base_url and api_type are in raw."
+   }
+  },
+  "not_offered": {
+   "get_product": "No GET /bots/{handle} is documented; list_products returns every bot's full record.",
+   "create_product": "POST /bots needs handle plus api_bot_settings {model_name, base_url, api_key, api_type} of the upstream model server (https://creator.poe.com/api-reference/createBot); a name/price/currency product cannot express it.",
+   "update_price": "Bot pricing is two per-token dollar strings (pricing {prompt, completion}) set by PATCH /bots/{handle}; a single major-unit price per product has no faithful mapping.",
+   "list_sales": "No sales endpoint: 'earnings' are shown on the Creators page / help centre only (https://creator.poe.com/docs/resources/creator-monetization).",
+   "get_sales_stats": "Earnings are dashboard-only (creator-monetization page); no stats endpoint.",
+   "list_refunds": "No refunds concept or endpoint in the Bots API.",
+   "refund": "No refunds concept or endpoint in the Bots API."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.poe.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 403 (blocked), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

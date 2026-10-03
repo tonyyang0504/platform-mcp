@@ -1,0 +1,35 @@
+{
+ "id": "dubizzle_specific_cars",
+ "category": "automotive",
+ "label": "Uae",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://uae.dubizzle.com",
+ "domain": "uae.dubizzle.com",
+ "country": "UAE",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dubizzle Group publishes no public listings API; dealer tools are account-based only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://uae.dubizzle.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

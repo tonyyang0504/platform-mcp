@@ -1,0 +1,296 @@
+{
+ "id": "jd_jzt",
+ "category": "ads",
+ "label": "京准通 JD JZT",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://opendoc.jd.com/ads_api/jzt/",
+ "url": "https://jzt.jd.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "JOS developer account + app (jos.jd.com), 入驻流程指导 approval for the ads API, advertiser authorization → access_token; methods named jingdong.ads.ibg.UniversalJosService.* Rate limits: JOS per-app QPS (not read). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (京东开放平台 JOS app_key / app_secret + advertiser authorization access_token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "recommendations"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (京准通 营销API + 数据报表API on the JD Open Platform) Confidence: **high** — official opendoc.jd.com GitBook read.",
+  "base_urls": [
+   "https://api.jd.com/routerjson"
+  ],
+  "auth": [
+   "1. Register a developer account + application on the 京东开放平台 (jos.jd.com, 宙斯开发者中心); follow 入驻流程指导 to get the ads API category approved.",
+   "2. Advertiser (or agency, with 代理子PIN) authorizes the app → `access_token`; requests are signed with `app_key` / `app_secret`, `timestamp`, `v`, `method`, `360buy_param_json`.",
+   "3. Account hierarchy: 账户体系 with agency sub-PINs, 跟单 info, sub-accounts."
+  ],
+  "endpoints": [
+   {
+    "call": "账户管理: 查询代理子PIN列表 · 查询子账号列表 · 财务管理—消费记录明细",
+    "purpose": "accounts + spend",
+    "notes": "pin, subPins, consumption records"
+   },
+   {
+    "call": "搜索快车 推广计划: 新建普通计划 · 查询普通计划列表 · 修改预算 · 修改状态 · 修改投放时间 · 修改分时折扣 · 修改投放策略 · 删除计划",
+    "purpose": "campaigns",
+    "notes": "campaignName, dayBudget, status, putTime, timeDiscount, strategy"
+   },
+   {
+    "call": "单元: 新建普通单元 · 修改单元出价 · 批量修改单元出价 · 获取智能出价建议 · 修改地域定向 · 新增/删除商品定向 · 人群溢价 (全量/增量)",
+    "purpose": "ad groups: bid, targeting, audience premiums",
+    "notes": "groupName, price, areas, skuIds, crowdPremium{crowdId, ratio}"
+   },
+   {
+    "call": "创意: 新建创意 · 修改创意图片或标题 · 修改创意状态 · 上传图片（字节流 / base64）· 全量更换单元所有创意",
+    "purpose": "creatives + image upload",
+    "notes": "adName, imgUrl, title, status, imageBytes / base64"
+   },
+   {
+    "call": "关键词: 添加关键词 · 修改关键词出价 · 修改匹配类型 · 设置关键词抢排名 · 批量修改不同关键词不同出价 · 查询推荐关键词",
+    "purpose": "keywords",
+    "notes": "keyword, price, matchType, rankPosition"
+   },
+   {
+    "call": "推荐广告: 计划 / 单元 / 流量包溢价 / 人群定向",
+    "purpose": "recommendation ads",
+    "notes": "planName, dayBudget, flowPackage premium, crowd targeting"
+   },
+   {
+    "call": "数据报表API: 计划报表 (`…campaign.query`) · 单元维度 (`…group.query`) · 创意维度 · 关键词 (快车) · 自定义报表 · 行业大盘",
+    "purpose": "reports",
+    "notes": "startDay, endDay, clickOrOrderDay, pageNum, pageSize, businessType"
+   },
+   {
+    "call": "conversions upload",
+    "purpose": "not in the ads API (attribution native to JD)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - JOS per-app rate limits (TODO(verify)); onboarding approval required; free API; JD Open Platform developer agreement.",
+  "mcp_sdk": [
+   "JOS SDKs (Java / PHP / .NET) provided by the open platform; no MCP found."
+  ],
+  "sources": [
+   "https://opendoc.jd.com/ads_api/jzt/api/word/introduce.html",
+   "https://opendoc.jd.com/ads_api/jzt/api/word/report/report.html",
+   "https://jos.jd.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.jd.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "error_response",
+   "ok_value": null,
+   "error_field": "error_response"
+  },
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "app_key of the JOS (京东宙斯) application approved for the 京准通 API permission package (https://opendoc.jd.com/ads_api/jzt/api/word/settle.html)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "appSecret of that application; never sent, used for the MD5 request signature."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "OAuth access_token of the 京准通 PIN that authorised the app (https://jos.jd.com/commondoc?listId=32); renew it through the JOS authorisation flow when it expires."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_params}{@app_secret}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp_fmt",
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+    "timestamp_offset": "+08:00",
+    "params": {
+     "app_key": "{@app_key}",
+     "access_token": "{@access_token}",
+     "v": "2.0",
+     "format": "json"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "terms": "京东 JOS gateway (API调用, https://jos.jd.com/commondoc?listId=33): every call goes to https://api.jd.com/routerjson with method, app_key, access_token, timestamp ('yyyy-MM-dd HH:mm:ss', within 6 minutes of server time), v=2.0 and the business parameters as one JSON string in 360buy_param_json; sign = MD5(appSecret + sorted key/value pairs + appSecret) in upper case, 'value无需编码'. Gateway failures answer {error_response: {code, zh_desc, en_desc}}; 京准通 results carry {code: \"1\", success, msg}. Access needs a 京准通 PIN, an approved app and permission package 1802.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/routerjson",
+    "params": {
+     "360buy_param_json": "jsonstr:{\"data\": {\"page\": 1, \"pageSize\": 1, \"clickOrOrderDay\": 0, \"giftFlag\": 0, \"clickOrOrderCaliber\": 0, \"startDay\": {today}, \"endDay\": {today}}, \"system\": {\"platformBusinessType\": \"DST_JZT\"}}"
+    },
+    "fixed_params": {
+     "method": "jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2"
+    },
+    "docs": "https://opendoc.jd.com/ads_api/jzt/api/word/kuaiche/campaign/list.html",
+    "note": "No profile call is documented for the 京准通 API; the probe lists one 搜索快车 campaign (jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2, pageSize 1)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/routerjson",
+    "params": {
+     "360buy_param_json": "jsonstr:{\"data\": {\"page\": {page}, \"pageSize\": {limit}, \"clickOrOrderDay\": 0, \"giftFlag\": 0, \"clickOrOrderCaliber\": 0, \"startDay\": {today}, \"endDay\": {today}}, \"system\": {\"platformBusinessType\": \"DST_JZT\"}}"
+    },
+    "fixed_params": {
+     "method": "jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "jingdong_ads_dsp_rtb_kuaiche_campaign_list_v2_responce.data.data.datas",
+     "key": "campaigns",
+     "total": "jingdong_ads_dsp_rtb_kuaiche_campaign_list_v2_responce.data.data.paginator.items",
+     "fields": {
+      "id": "item.campaignId",
+      "name": "item.campaignName",
+      "status": "item.status"
+     }
+    },
+    "docs": "https://opendoc.jd.com/ads_api/jzt/api/word/kuaiche/campaign/list.html",
+    "note": "查询普通计划列表 (jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2): 京东搜索快车 campaigns (普通快车商品计划, 腰带店铺计划, 门店商品计划) with today's metrics (startDay = endDay = today, clickOrOrderDay 0, click caliber, gifts excluded). Each row is {item: {campaignId, campaignName, campaignType, status (1 暂停, 2 启动, 3 预算用完, 4 不在投放时间段), budget (a string, left in raw), cost, clicks, impressions, CTR, CPC, totalOrderSum, totalOrderROI, …}}. account_id and status are not sent (the access_token's PIN selects the account)."
+   },
+   "update_budget": {
+    "method": "GET",
+    "path": "/routerjson",
+    "params": {
+     "360buy_param_json": "jsonstr:{\"data\": {\"id\": {int:campaign_id}, \"dayBudget\": {daily_budget}}, \"system\": {\"platformBusinessType\": \"DST_JZT\"}}"
+    },
+    "fixed_params": {
+     "method": "jingdong.ads.dsp.rtb.kuaiche.campaign.updatebudget.v2"
+    },
+    "result": {
+     "root": "jingdong_ads_dsp_rtb_kuaiche_campaign_updatebudget_v2_responce.data",
+     "fields": {
+      "status": "=updated",
+      "success": "success"
+     }
+    },
+    "docs": "https://opendoc.jd.com/ads_api/jzt/api/word/kuaiche/campaign/updateBudget.html",
+    "note": "修改预算 (jingdong.ads.dsp.rtb.kuaiche.campaign.updatebudget.v2, data {id, dayBudget}) sets the daily budget in 元 of one 搜索快车 campaign. This spends money. The 京准通 result {code, success, msg} comes back inside a successful gateway response (success = false when it was rejected). currency is ignored (CNY)."
+   },
+   "pause_resume": {
+    "method": "GET",
+    "path": "/routerjson",
+    "params": {
+     "360buy_param_json": "fmt:{\"data\":{\"ids\":[{int:campaign_id}],\"operateType\":{map:action:pause=1,resume=2}},\"system\":{}}"
+    },
+    "fixed_params": {
+     "method": "jingdong.ads.dsp.rtb.kuaiche.campaign.updatestatus.v2"
+    },
+    "result": {
+     "root": "jingdong_ads_dsp_rtb_kuaiche_campaign_updatestatus_v2_responce.data",
+     "fields": {
+      "status": "=updated",
+      "success": "success"
+     }
+    },
+    "docs": "https://opendoc.jd.com/ads_api/jzt/api/word/kuaiche/campaign/updateStatus.html",
+    "note": "修改状态 (jingdong.ads.dsp.rtb.kuaiche.campaign.updatestatus.v2, data {ids: [campaign_id], operateType}) with pause → 1 (暂停) and resume → 2 (启动). success = false in the result means the platform rejected it. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The 京准通 API acts for the PIN that authorised the access_token; the only account-listing calls are for agencies and sub-accounts ('查询代理子PIN列表', '查询子账号列表' under 账户管理, https://opendoc.jd.com/ads_api/jzt/), not the advertiser's own ad accounts.",
+   "get_report": "The cross-channel 自定义报表 (jingdong.ads.ibg.UniversalJosService.custom.query.v2, https://opendoc.jd.com/ads_api/jzt/api/word/report/datacenter/custom/query.html) is in gray release: '当前为灰度发布阶段，如需使用，请发送邮件至org.ads.api1@jd.com申请'; list_campaigns already returns today's cost, clicks, impressions and orders per campaign."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

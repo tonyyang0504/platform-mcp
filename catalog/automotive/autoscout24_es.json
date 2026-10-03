@@ -1,0 +1,42 @@
+{
+ "id": "autoscout24_es",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autoscout24.es",
+ "domain": "autoscout24.es",
+ "country": "Spain",
+ "official_api": true,
+ "docs_url": "https://listing-creation.api.autoscout24.com/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client credentials (issued to dealers/integrators)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). AutoScout24 group offers an official Listing Creation API for dealers/DMS integrators (upload/manage listings), no public search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://listing-creation.api.autoscout24.com/docs",
+   "https://www.autoscout24.de/haendlerportal/api/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://listing-creation.api.autoscout24.com/docs): AutoScout24 group offers an official Listing Creation API for dealers/DMS integrators (upload/manage listings), no public search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

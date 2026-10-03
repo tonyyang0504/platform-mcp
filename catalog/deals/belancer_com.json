@@ -1,0 +1,270 @@
+{
+ "id": "belancer_com",
+ "category": "deals",
+ "label": "Belancer",
+ "lane": "api",
+ "kind": "freelance",
+ "regions": [
+  "bd"
+ ],
+ "docs_url": "https://belancer.com/api/docs",
+ "url": "https://belancer.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Belancer publishes its own OpenAPI (/api/openapi.json) but no developer programme, and its terms page could not be read (JS-only, 2026-09-05). Search, details and messages run on the user's own login through that API; bid submission stays closed until Belancer's written permission is recorded (config.permission_confirmed). Registering an account in a browser session is automation the venue has not licensed — you opt in per account.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "oauth2 password flow (POST /token → bearer; refresh via /auth/token/refresh)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details",
+   "submit_proposal",
+   "messages",
+   "milestones",
+   "contracts",
+   "profile_sync",
+   "saved_searches"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full seller surface in the site's OpenAPI). Lane `assist` → **api (partial)** once Belancer confirms third-party use. Confidence high (openapi.json opened).",
+  "base_urls": [
+   "https://belancer.com"
+  ],
+  "auth": [
+   "1. `POST /token` (OAuth2 password flow: username + password) → bearer; `POST /auth/token/refresh`.",
+   "2. `GET /auth/me`, `GET /auth/seller-profile` for the user's profile."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /projects/search",
+    "purpose": "search",
+    "notes": "query params per schema (skills, budget…)"
+   },
+   {
+    "call": "GET /projects/{project_id}",
+    "purpose": "details",
+    "notes": "project"
+   },
+   {
+    "call": "POST /projects/{project_id}/bids",
+    "purpose": "submit_proposal",
+    "notes": "amount, delivery, cover text (schema)"
+   },
+   {
+    "call": "GET /projects/my_bids` · `PATCH",
+    "purpose": "DELETE /bids/{bid_id}`",
+    "notes": "bid status / edit / withdraw"
+   },
+   {
+    "call": "GET /projects/{project_id}/bids/{bid_id}/milestones",
+    "purpose": "milestones",
+    "notes": "—"
+   },
+   {
+    "call": "GET /messages/projects/threads` · `GET",
+    "purpose": "POST /messages/project/{project_id}/{receiver_id}`",
+    "notes": "messages"
+   },
+   {
+    "call": "POST /orders/{order_id}/deliver` · `/request-extension",
+    "purpose": "delivery",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Terms not readable (JS); no rate limit documented in the spec; credits / bid fees not read.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://belancer.com/api/docs",
+   "https://belancer.com/api/openapi.json",
+   "https://belancer.com/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://belancer.com/api",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/auth/login",
+    "body": {
+     "username": "@username",
+     "password": "@password"
+    }
+   },
+   "token_path": "access_token",
+   "token_ttl_seconds": 1800,
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "E-mail address of your Belancer account (POST /auth/login validates username as an e-mail)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Password of the same Belancer account."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "rate_note": "No rate limit is published in the OpenAPI document. One request per second.",
+  "terms": "Belancer publishes its OpenAPI (/api/openapi.json) but no developer programme; its terms page could not be read (JS-only). Runs on your own login.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/auth/me",
+    "docs": "https://belancer.com/api/docs",
+    "note": "GET /auth/me ('Get Current User', OAuth2PasswordBearer)."
+   },
+   "search_postings": {
+    "method": "GET",
+    "path": "/projects/search",
+    "params": {
+     "query": "query",
+     "category_id": "int:category",
+     "min_budget": "min_budget",
+     "page": "page",
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "status": "open"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "projects",
+     "key": "postings",
+     "total": "total",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "budget_min": "min_budget",
+      "budget_max": "max_budget",
+      "currency": "currency",
+      "posted_at": "created_at"
+     }
+    },
+    "docs": "https://belancer.com/api/docs",
+    "note": "GET /projects/search ('Search Projects'): query, category_id (integer), min_budget, page (default 1), limit (default 10), status=open fixed. The OpenAPI gives no response schema; the live response (2026-09-24) is {total, page, limit, projects[]} with id, name, description, currency, min_budget, max_budget, posted_by, created_at — mapped from that. skills[] item shape is undocumented (raw)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/projects/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "budget_min": "min_budget",
+      "budget_max": "max_budget",
+      "currency": "currency",
+      "posted_at": "created_at"
+     }
+    },
+    "docs": "https://belancer.com/api/docs",
+    "note": "GET /projects/{project_id} ('Get Project'; integer id); same record shape as a search hit (live response 2026-09-24)."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "POST /projects/{project_id}/bids exists in the OpenAPI, but bid submission stays closed until Belancer's written permission for third-party bidding is recorded (terms unreadable; no developer programme).",
+   "withdraw_bid": "Bid writes stay closed (see submit_bid).",
+   "bid_status": "Bid endpoints are kept closed together with submit_bid until Belancer permits third-party use.",
+   "list_messages": "Project messages are addressed by two ids (GET /messages/project/{project_id}/{receiver_id}); the vocabulary's thread_id cannot carry both.",
+   "send_message": "Sending needs project_id and receiver_id (POST /messages/project/{project_id}/{receiver_id}); the vocabulary's thread_id cannot carry both.",
+   "credits": "Bid credits (bid_credit_cost per project) have no balance endpoint in the OpenAPI."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host belancer.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login belancer.com/api/auth/login: 422",
+   "spec https://belancer.com/api/openapi.json: 3/3 tools match (path, method, parameters, body keys, response paths)",
+   "live read without credentials: get_posting, search_postings returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "id": "autohaus24",
+ "category": "automotive",
+ "label": "Autohaus24",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autohaus24.de",
+ "domain": "autohaus24.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Links a dealer portal (haendlerboerse.de) but no documented API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.haendlerboerse.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

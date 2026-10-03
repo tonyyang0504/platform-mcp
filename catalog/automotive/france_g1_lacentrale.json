@@ -1,0 +1,43 @@
+{
+ "id": "france_g1_lacentrale",
+ "category": "automotive",
+ "label": "Lacentrale",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.lacentrale.fr",
+ "domain": "lacentrale.fr",
+ "country": "France",
+ "official_api": false,
+ "docs_url": "https://offre-pro.lacentrale.fr/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). La Centrale takes pro listings via multidiffusion/DMS partner gateways; no public API docs found (L'argus developer portal is a separate brand).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://offre-pro.lacentrale.fr/"
+  ],
+  "unofficial": [
+   "https://developer.largus.fr/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): La Centrale takes pro listings via multidiffusion/DMS partner gateways; no public API docs found (L'argus developer portal is a separate brand)."
+}

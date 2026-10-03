@@ -1,0 +1,135 @@
+{
+ "id": "line_ads",
+ "category": "ads",
+ "label": "LINE広告 (folded into LINEヤフー広告)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://developers.line.biz/en/docs/line-ads-api/",
+ "url": "https://www.lycbiz.com/jp/service/line-ads/",
+ "verified_at": "2026-09-04",
+ "terms_note": "LINE Developers account + LINE Ads (LAP) account; API access approved per the development guidelines (TODO(verify)). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 / channel access (LINE Developers; LINE Ads API development guidelines)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (LINE Ads API documented on LINE Developers; reference JS-rendered, access by approval) Confidence: **medium**.",
+  "base_urls": [
+   "https://api.line.me/…"
+  ],
+  "auth": [
+   "1. LINE Developers account + LAP advertiser account.",
+   "2. Follow 'LINE Ads API development guidelines' for access approval.",
+   "3. Channel access / OAuth token (TODO(verify))."
+  ],
+  "endpoints": [
+   {
+    "call": "campaign endpoints",
+    "purpose": "campaigns",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "ad group endpoints",
+    "purpose": "ad groups + bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "ad endpoints",
+    "purpose": "ads",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "report endpoints",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Approval-gated; LINE Developers terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.line.biz/en/docs/line-ads-api/",
+   "https://www.lycbiz.com/jp/service/line-ads/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://developers.line.biz/en/docs/line-ads-api/about/ says 'Reference and documentation for the LINE Ads API are available on another site' and 'The LINE Ads API can only be used by corporate users who have submitted the required applications … apply for authorization in the LINE Ads Manager'; the reference is on ads.line.me behind that approval, so no endpoint could be read."
+}

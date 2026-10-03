@@ -1,0 +1,74 @@
+{
+ "id": "efinancialcareers",
+ "category": "jobs",
+ "label": "eFinancialCareers",
+ "lane": "assist",
+ "kind": "finance",
+ "regions": [
+  "global",
+  "uk",
+  "us",
+  "sg",
+  "hk"
+ ],
+ "docs_url": "https://recruitershub.efinancialcareers.com/documentation/api-documentation",
+ "url": "https://www.efinancialcareers.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Finance/banking jobs; CV apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "rest",
+   "xml_feed"
+  ],
+  "auth": "api_key",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

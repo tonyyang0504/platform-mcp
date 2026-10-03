@@ -1,0 +1,35 @@
+{
+ "id": "clubauto_ro",
+ "category": "automotive",
+ "label": "Clubauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://clubauto.ro",
+ "domain": "clubauto.ro",
+ "country": "Romania",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). No developer/API/partner-feed link on homepage or common dev paths (/developers,/api,/api-docs,/docs,/partners); no official API found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://clubauto.ro/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,231 @@
+{
+ "id": "kite_ly",
+ "category": "ecommerce_suppliers",
+ "label": "Kite (Prodigi Group)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.kite.ly/docs/",
+ "url": "https://www.kite.ly/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (live + test-mode keys simultaneously)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "sandbox"
+  ],
+  "auth": "api_key — `Authorization: ApiKey <public_key>:<secret_key>` (secret required for charge-incurring order requests; live + test-mode keys active simultaneously)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "iOS SDK",
+   "Android SDK",
+   "curl / Objective-C / Java examples"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Create a Kite account → credentials section: public API key + secret key (test + live)",
+   "2. `Authorization: ApiKey <public_key>:` for reads; append the secret for order requests",
+   "3. Add a card in billing to be charged for orders"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v4.0/template/ · /v4.1/template/",
+    "purpose": "product templates (SKUs, sizes)",
+    "notes": ""
+   },
+   {
+    "call": "GET /v4.0/asset/sign/ (+ managed uploads)",
+    "purpose": "upload design assets",
+    "notes": ""
+   },
+   {
+    "call": "POST /v4.0/print/",
+    "purpose": "create a print order (jobs with template_id + assets, shipping address)",
+    "notes": ""
+   },
+   {
+    "call": "GET /v4.0/order/",
+    "purpose": "list orders (paginated)",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Secret key on charge-incurring calls - Test mode never ships / charges",
+  "mcp_sdk": [
+   "iOS SDK",
+   "Android SDK",
+   "curl / Objective-C / Java examples"
+  ],
+  "sources": [
+   "https://www.kite.ly/docs/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.kite.ly",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "ApiKey ",
+   "field": "api_key_pair",
+   "fields": [
+    {
+     "name": "api_key_pair",
+     "required": true,
+     "help": "Your Kite API key and secret key joined by a colon, exactly as the Authorization header expects them: <public_key>:<secret_key> (dashboard > credentials). The secret key is required for order requests, which are then charged to the card on your Kite account; test-mode keys never create real products."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v4.0/order/",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://www.kite.ly/docs/#getting-a-list-of-orders",
+    "note": "No account endpoint; the probe lists one order ({meta{total_count}, objects[]}), which needs the key and secret."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/v4.0/print/",
+    "body": {
+     "shipping_address.recipient_name": "shipping_address.recipient_name",
+     "shipping_address.address_line_1": "shipping_address.address_line_1",
+     "shipping_address.address_line_2": "shipping_address.address_line_2",
+     "shipping_address.city": "shipping_address.city",
+     "shipping_address.county_state": "shipping_address.county_state",
+     "shipping_address.postcode": "shipping_address.postcode",
+     "shipping_address.country_code": "shipping_address.country_code",
+     "customer_email": "shipping_address.email",
+     "customer_phone": "shipping_address.phone",
+     "jobs": "items"
+    },
+    "result": {
+     "fields": {
+      "id": "print_order_id"
+     }
+    },
+    "docs": "https://www.kite.ly/docs/#placing-orders",
+    "note": "Places a print order charged to the card on your Kite account (secret key in the Authorization header; live keys create and ship real products). `shipping_address` uses Kite's address keys {recipient_name, address_line_1, address_line_2, city, county_state, postcode, country_code (ISO-3, e.g. GBR)} plus `phone` (customer_phone, required by Kite) and `email` (customer_email); `items` are Kite jobs [{template_id, assets[image URLs], options, shipping_class}] - the shipping class is per job, so `shipping_option` is not sent. Answers {print_order_id}."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v4.0/order/{id}",
+    "result": {
+     "fields": {
+      "id": "order_id",
+      "status": "status",
+      "dispatch_status": "dispatch_status",
+      "created_at": "time_submitted",
+      "test_order": "test_order"
+     }
+    },
+    "docs": "https://www.kite.ly/docs/#orders",
+    "note": "GET /v4.0/order/{order_id}: {order_id, status, dispatch_status (e.g. In Print Queue, Dispatched), time_submitted, time_processed, test_order, jobs[{job_id, status, shipped_time, template{id, name}}]}. No tracking number is documented on the order."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/v4.0/order/{order_id}",
+    "result": {
+     "items": "jobs",
+     "key": "events",
+     "fields": {
+      "job_id": "job_id",
+      "status": "status",
+      "shipped_time": "shipped_time",
+      "template_id": "template.id"
+     }
+    },
+    "docs": "https://www.kite.ly/docs/#orders",
+    "note": "Per-job production status of the order (jobs[{job_id, status, shipped_time, template}]); carrier tracking numbers are not part of the documented response."
+   }
+  },
+  "not_offered": {
+   "list_products": "The docs show GET /v4.1/template/?limit=10 only as an authentication example without documenting its response; products are the template_ids listed in the ordering sections.",
+   "get_product": "No documented single-product endpoint; product identifiers and options are documented as template_id tables per product family.",
+   "quote_shipping": "GET /v4.0/shipping_methods/{template_id} answers shipping_regions keyed by Kite region codes (e.g. ROW) with shipping_classes[{class_name, costs[{amount, currency}]}]; the vocabulary's country cannot select the region."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.kite.ly: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

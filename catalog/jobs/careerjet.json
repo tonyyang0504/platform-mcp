@@ -1,0 +1,185 @@
+{
+ "id": "careerjet",
+ "category": "jobs",
+ "label": "Careerjet",
+ "lane": "api",
+ "kind": "aggregator",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.careerjet.com/partners/api/",
+ "url": "https://www.careerjet.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Aggregator with a partner search API (affiliate id); apply on the source site.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "xml_feed",
+   "partner_program"
+  ],
+  "auth": "basic",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details (excerpt + redirect URL)",
+   "feed_xml",
+   "widgets"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://www.careerjet.com/partners/api/ (code examples in several languages; legacy .NET client docs referenced in robots.txt)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Careerjet Publisher Search API v4: GET https://search.api.careerjet.net/v4/query with HTTP Basic (API key as user name, empty password) and REQUIRED user_ip + user_agent of the end us",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No published rate limit; Publisher programme (free sign-up as publisher → per-site API key) intended to 'embed Careerjet's job search results on your site' / monetise traffic; each call must carry the real end-user's IP and user agent (403 'Missing param user_ip or user_agent' otherwise) — server-side batch crawling without a user context is outside the design. XML job feeds also offered to publishers. No published rate limit; robots.txt disallows /apply/, /apply2/, /search/rss.html.",
+  "mcp_sdk": [
+   "https://www.careerjet.com/partners/api/ (code examples in several languages; legacy .NET client docs referenced in robots.txt)"
+  ],
+  "sources": [
+   "https://www.careerjet.com/",
+   "https://www.careerjet.com/robots.txt",
+   "https://www.careerjet.com/partners/api/",
+   "https://www.careerjet.com/partners/publishers",
+   "https://www.careerjet.com/partners"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://search.api.careerjet.net/v4",
+  "auth": {
+   "type": "basic",
+   "field": "api_key",
+   "password": "",
+   "params": {
+    "user_ip": "user_ip",
+    "user_agent": "user_agent"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Careerjet publisher API key (free publisher sign-up at https://www.careerjet.com/partners/api/); sent as the HTTP Basic user name with an empty password."
+    },
+    {
+     "name": "user_ip",
+     "required": true,
+     "help": "The end user's IP address, required by Careerjet as the user_ip query parameter on every call (403 'Missing param user_ip or user_agent' otherwise)."
+    },
+    {
+     "name": "user_agent",
+     "required": true,
+     "help": "The end user's browser user agent, required by Careerjet as the user_agent query parameter on every call."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/query",
+    "fixed_params": {
+     "keywords": "test",
+     "page_size": 1
+    },
+    "docs": "https://www.careerjet.com/partners/api/",
+    "note": "Verified with a one-result query (Careerjet has no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/query",
+    "params": {
+     "keywords": "query",
+     "location": "location",
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "hits",
+     "fields": {
+      "id": "url",
+      "title": "title",
+      "company": "company",
+      "location": "locations",
+      "url": "url",
+      "posted_at": "date",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.careerjet.com/partners/api/",
+    "note": "Publisher Search API v4: page 1-10, page_size ≤ 100. Results are Careerjet redirect URLs to the original posting and no job id is documented, so url doubles as id; salary is a free-text string left in raw. An ambiguous location yields a LOCATIONS response with no jobs. Every call carries the configured end user's user_ip and user_agent as the publisher terms require; locale_code, contract_type, work_hours and sort are not exposed. No published rate limit."
+   }
+  },
+  "not_offered": {
+   "get_posting": "No per-job endpoint is documented ('job_details (excerpt + redirect URL)' come from the search hit).",
+   "apply": "Page: 'Aggregator — applying happens on the source site (assist)'; robots.txt disallows /apply/ and /apply2/.",
+   "list_messages": "No messaging API; only the search endpoint is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host search.api.careerjet.net: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 400 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

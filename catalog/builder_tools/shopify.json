@@ -1,0 +1,205 @@
+{
+ "id": "shopify",
+ "category": "builder_tools",
+ "label": "Shopify",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://shopify.dev/docs/api/admin-rest",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "graphql",
+   "rest",
+   "mcp",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "products_crud",
+   "inventory",
+   "orders",
+   "fulfillment",
+   "customers",
+   "collections",
+   "metafields",
+   "files_upload",
+   "bulk_operations",
+   "webhooks",
+   "storefront_api"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/Shopify/shopify-api-js",
+   "https://github.com/Shopify/shopify_python_api"
+  ]
+ },
+ "official_mcp": [
+  "https://shopify.dev/docs/apps/build/devmcp",
+  "https://github.com/Shopify/dev-mcp"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://shopify.dev/docs/apps/build/devmcp",
+   "https://github.com/Shopify/dev-mcp",
+   "https://github.com/Shopify/shopify-api-js",
+   "https://github.com/Shopify/shopify_python_api"
+  ],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{shop}.myshopify.com/admin/api/2026-07",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "header",
+   "header": "X-Shopify-Access-Token",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Admin API access token of a custom app installed on the store (Settings > Apps and sales channels > Develop apps), with read_products/write_products scopes; sent as X-Shopify-Access-Token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "shop",
+    "required": true,
+    "help": "The store's myshopify subdomain (the part before .myshopify.com)."
+   }
+  ],
+  "terms": "The REST Admin API is legacy for new public apps (GraphQL required since 2025-04-01); custom apps may use it. Rate limit: 2 requests/s (leaky bucket of 40) on standard plans.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/shop.json",
+    "docs": "https://shopify.dev/docs/api/admin-rest/latest/resources/shop",
+    "note": "GET /shop.json: the store's name, domain, plan, currency."
+   },
+   "list_items": {
+    "method": "POST",
+    "path": "/graphql.json",
+    "body": {
+     "query": "=query ListProducts($first: Int!, $after: String, $query: String) { products(first: $first, after: $after, query: $query) { nodes { id legacyResourceId title handle status updatedAt onlineStoreUrl } pageInfo { hasNextPage endCursor } } }",
+     "variables.first": "limit",
+     "variables.after": "cursor",
+     "variables.query": "query"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data.products.nodes",
+     "next_cursor": "data.products.pageInfo.endCursor",
+     "fields": {
+      "id": "legacyResourceId",
+      "title": "title",
+      "url": "onlineStoreUrl",
+      "updated_at": "updatedAt",
+      "status": "status",
+      "gid": "id"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/admin-graphql/latest/queries/products",
+    "note": "GraphQL Admin products(first, after, query) (the REST list paginates with a Link header): items are products; id is the numeric product id used by get/update/delete, query uses Shopify search syntax (e.g. title:shirt status:active). Pass next_cursor back as cursor; on the last page the cursor returns no items (hasNextPage is in raw only on the page)."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/products/{item_id}.json",
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "content": "body_html",
+      "updated_at": "updated_at",
+      "status": "status",
+      "handle": "handle"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/admin-rest/latest/resources/product#get-products-product-id",
+    "note": "GET /products/{id}.json: one product with variants, options and images in raw."
+   },
+   "create_item": {
+    "method": "POST",
+    "path": "/products.json",
+    "body": {
+     "product": "fields",
+     "product.title": "title",
+     "product.body_html": "content"
+    },
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "handle": "handle"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/admin-rest/latest/resources/product#post-products",
+    "note": "POST /products.json {product: {title, body_html, …fields}}: fields may add vendor, product_type, tags, status (active|draft|archived), variants, images … as documented."
+   },
+   "update_item": {
+    "method": "PUT",
+    "path": "/products/{item_id}.json",
+    "body": {
+     "product": "fields",
+     "product.title": "title",
+     "product.body_html": "content"
+    },
+    "result": {
+     "root": "product",
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/admin-rest/latest/resources/product#put-products-product-id",
+    "note": "PUT /products/{id}.json {product: {title, body_html, …fields}}: only the given properties change."
+   },
+   "delete_item": {
+    "method": "DELETE",
+    "path": "/products/{item_id}.json",
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/admin-rest/latest/resources/product#delete-products-product-id",
+    "note": "DELETE /products/{id}.json: deletes the product permanently."
+   }
+  },
+  "not_offered": {
+   "generate_image": "The Admin API has no image generation endpoint.",
+   "generate_video": "The Admin API has no video generation endpoint.",
+   "get_job": "No generation jobs in the Admin API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graphql.myshopify.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 4/5 tool paths found verbatim on their docs pages; names not found on the page: list_items:variables"
+  ],
+  "notes": "-"
+ }
+}

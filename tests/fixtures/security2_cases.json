@@ -1,0 +1,17 @@
+{
+ "_comment": "Shared by tests/test_security2_python.py and tests/security2.typescript.test.mjs.",
+ "http_policy": [
+  {"host": "127.0.0.1", "allow_remote": false, "token": null, "outcome": "open"},
+  {"host": "localhost", "allow_remote": false, "token": null, "outcome": "open"},
+  {"host": "::1", "allow_remote": false, "token": null, "outcome": "open"},
+  {"host": "127.0.0.1", "allow_remote": false, "token": "tttttttttttttttttttttttttttttttt", "outcome": "token"},
+  {"host": "127.0.0.1", "allow_remote": false, "token": "short", "outcome": "refused"},
+  {"host": "0.0.0.0", "allow_remote": false, "token": null, "outcome": "refused"},
+  {"host": "0.0.0.0", "allow_remote": true, "token": null, "outcome": "refused"},
+  {"host": "0.0.0.0", "allow_remote": false, "token": "tttttttttttttttttttttttttttttttt", "outcome": "refused"},
+  {"host": "0.0.0.0", "allow_remote": true, "token": "tttttttttttttttttttttttttttttttt", "outcome": "token"},
+  {"host": "192.168.1.5", "allow_remote": true, "token": "tttttttttttttttttttttttttttttttt", "outcome": "token"},
+  {"host": "::", "allow_remote": false, "token": null, "outcome": "refused"},
+  {"host": "127.0.0.2", "allow_remote": false, "token": null, "outcome": "refused"}
+ ]
+}

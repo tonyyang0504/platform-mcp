@@ -1,0 +1,73 @@
+{
+ "id": "bullhorn",
+ "category": "jobs",
+ "label": "Bullhorn",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "us",
+  "uk",
+  "global"
+ ],
+ "docs_url": "https://bullhorn.github.io/docs/",
+ "url": "https://www.bullhorn.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Staffing-agency ATS; agency career portals; API is agency-side.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

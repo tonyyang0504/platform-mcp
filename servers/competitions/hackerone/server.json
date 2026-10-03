@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/hackerone-mcp",
+ "description": "HackerOne (competitions): me, discover, get_competition, my_entries. Every tool maps to a documented",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.hackerone.com/hacker-resources/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "hackerone"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_HACKERONE_API_USERNAME",
+     "description": "API token identifier from https://hackerone.com/settings/api_token/edit (used as the Basic auth username).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_HACKERONE_API_TOKEN",
+     "description": "API token value generated on the same page (used as the Basic auth password).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

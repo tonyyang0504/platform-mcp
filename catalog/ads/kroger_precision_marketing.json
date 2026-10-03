@@ -1,0 +1,122 @@
+{
+ "id": "kroger_precision_marketing",
+ "category": "ads",
+ "label": "Kroger Precision Marketing",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.krogerprecisionmarketing.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Partner-only API (Pacvue / Skai / Flywheel integrations); Kroger Ad Platform self-service UI for brands; no public terms / rate limits.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "partner credentials (Kroger Ad Platform API for approved ad-tech partners — TODO(verify))",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "keywords",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (partner-only API via Pacvue / Skai / Flywheel; self-service UI for brands) Confidence: **medium**.",
+  "base_urls": [],
+  "auth": [
+   "1. Brand onboarding with KPM (Kroger Ad Platform).",
+   "2. Use an approved partner platform (Pacvue, Skai, Flywheel) or apply for partner API access.",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "paid search campaign management (partner API)",
+    "purpose": "campaigns + keywords",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "performance metrics",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Partner-only; no public terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.krogerprecisionmarketing.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public API reference (docs_url null). Re-checked 2026-09-25 in headless Chromium: https://www.krogerprecisionmarketing.com/ links solutions, Client Resources (creative specs, Kroger Ad Platform, new client setup), Knowledge Hub and Sign In, but no API or developer documentation; the campaign/reporting API is available only to approved ad-tech partners (Pacvue, Skai, Flywheel), and https://developer.kroger.com publishes only shopper APIs (products, locations, cart, identity). No endpoint, auth scheme or response shape can be cited."
+}

@@ -1,0 +1,36 @@
+{
+ "id": "sg_data_gov_sg",
+ "category": "sales",
+ "label": "data.gov.sg",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "sg"
+ ],
+ "docs_url": "https://data.gov.sg/",
+ "url": "https://data.gov.sg/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Open datasets (ACRA entities registered, by UEN) via the data.gov.sg API without a key (Singapore Open Data Licence).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

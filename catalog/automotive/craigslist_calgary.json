@@ -1,0 +1,46 @@
+{
+ "id": "craigslist_calgary",
+ "category": "automotive",
+ "label": "Sapi",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://sapi.craigslist.org",
+ "domain": "sapi.craigslist.org",
+ "country": "Canada",
+ "official_api": true,
+ "docs_url": "https://bapi.craigslist.org/bulkpost-docs/v1/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "craigslist account credentials for paid bulk posting",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Craigslist Bulkpost API (OpenAPI spec) for paid posting accounts to create/modify posts; reference web services give taxonomy only; no listing search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bapi.craigslist.org/bulkpost-docs/v1/",
+   "https://bapi.craigslist.org/bulkpost-docs/v1/bulkpost-openapi.yaml",
+   "https://www.craigslist.org/about/reference"
+  ],
+  "unofficial": [
+   "https://github.com/mislam/craigslist-api",
+   "https://apify.com/api/craigslist-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://bapi.craigslist.org/bulkpost-docs/v1/): Craigslist Bulkpost API (OpenAPI spec) for paid posting accounts to create/modify posts; reference web services give taxonomy only; no listing search API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

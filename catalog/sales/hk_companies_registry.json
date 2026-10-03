@@ -1,0 +1,36 @@
+{
+ "id": "hk_companies_registry",
+ "category": "sales",
+ "label": "Hong Kong Companies Registry e-Search",
+ "lane": "assist",
+ "kind": "register",
+ "regions": [
+  "hk"
+ ],
+ "docs_url": null,
+ "url": "https://www.cr.gov.hk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Name search is free after accepting the terms; document images and director details are paid per search → tenant account. The e-Services home opened.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

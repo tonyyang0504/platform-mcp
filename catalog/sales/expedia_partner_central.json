@@ -1,0 +1,36 @@
+{
+ "id": "expedia_partner_central",
+ "category": "sales",
+ "label": "Expedia Group Partner Central",
+ "lane": "human",
+ "kind": "marketplace",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://partner.expediagroup.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Partner-only platform; Expedia terms forbid bots / scraping — research only. robots.txt (5 Disallow).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

@@ -1,0 +1,33 @@
+{
+ "id": "yad2",
+ "category": "automotive",
+ "label": "Yad2",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.yad2.co.il",
+ "domain": "yad2.co.il",
+ "country": "Israel",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No public or documented Yad2 API found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

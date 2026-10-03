@@ -1,0 +1,157 @@
+{
+ "id": "ideogram",
+ "category": "builder_tools",
+ "label": "Ideogram",
+ "lane": "rest",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://developer.ideogram.ai",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "generate_v3",
+   "edit_v3",
+   "remix_v3",
+   "reframe_v3",
+   "replace_background_v3",
+   "upscale",
+   "describe",
+   "style_reference",
+   "character_reference",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.ideogram.ai",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "header",
+   "header": "Api-Key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Ideogram API key (developer.ideogram.ai > API dashboard, after adding a payment method and credits), sent as the Api-Key header."
+    }
+   ]
+  },
+  "terms": "Image URLs are ephemeral (signed, expiring); download and re-host results.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/models",
+    "fixed_params": {
+     "scope": "owned"
+    },
+    "docs": "https://developer.ideogram.ai/api-reference/custom-model-training/list-models",
+    "note": "GET /models?scope=owned: the key's own custom models; used as a credential check (there is no account endpoint)."
+   },
+   "generate_image": {
+    "method": "POST",
+    "path": "/generate",
+    "body": {
+     "image_request.prompt": "prompt",
+     "image_request.negative_prompt": "negative_prompt",
+     "image_request.aspect_ratio": "aspect_ratio",
+     "image_request.model": "model",
+     "image_request.seed": "seed",
+     "image_request.resolution": "size"
+    },
+    "result": {
+     "fields": {
+      "output_url": "data.0.url",
+      "status": "=completed"
+     }
+    },
+    "docs": "https://developer.ideogram.ai/api-reference/legacy-endpoints/generate",
+    "note": "POST /generate {image_request: {prompt, negative_prompt, aspect_ratio, model, seed, resolution}} (the JSON generate endpoint, listed under Legacy Endpoints) -> {data: [{url, seed, resolution, is_image_safe}]}, synchronous. aspect_ratio uses Ideogram enums (ASPECT_16_9, ASPECT_1_1 …), model V_2, V_2_TURBO, V_2A, V_3 … (default V_2); size is a resolution enum such as RESOLUTION_1024_1024 and cannot be combined with aspect_ratio. The Ideogram 3.0/4.0 endpoints take multipart/form-data and are not mapped."
+   },
+   "get_job": {
+    "method": "GET",
+    "path": "/v1/generations/{job_id}",
+    "result": {
+     "fields": {
+      "job_id": "generation_id",
+      "status": "status",
+      "error": "failure_reason",
+      "output_url": "data.0.url"
+     }
+    },
+    "docs": "https://developer.ideogram.ai/api-reference/generate-images/get-generation",
+    "note": "GET /v1/generations/{generation_id}: status pending|completed|failed of an asynchronous generation (the Ideogram 4.0 async endpoints return the generation_id); once completed data[] carries the image/video URLs (all in raw.data)."
+   },
+   "list_items": {
+    "method": "GET",
+    "path": "/models",
+    "result": {
+     "items": "models",
+     "fields": {
+      "id": "model_id",
+      "title": "name",
+      "updated_at": "last_update_time"
+     }
+    },
+    "docs": "https://developer.ideogram.ai/api-reference/custom-model-training/list-models",
+    "note": "GET /models: custom models owned by or shared with the key (items are models; custom_model_uri is what generation takes). Not paginated."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/models/{item_id}",
+    "result": {
+     "root": "model",
+     "fields": {
+      "id": "model_id",
+      "title": "name",
+      "updated_at": "last_update_time"
+     }
+    },
+    "docs": "https://developer.ideogram.ai/api-reference/custom-model-training/get-model",
+    "note": "GET /models/{model_id}: one custom model."
+   }
+  },
+  "not_offered": {
+   "generate_video": "The only video endpoint (POST /v1/product-360-video, 'Create a looping 360-degree product video') takes a multipart/form-data product image upload; multipart request bodies are not supported by the runtime.",
+   "create_item": "Datasets and models are created with multipart asset uploads / training requests (https://developer.ideogram.ai/api-reference/custom-model-training/upload-dataset-assets), not a JSON item body the vocabulary can express.",
+   "update_item": "No update endpoint for models or datasets is documented.",
+   "delete_item": "No delete endpoint for models or datasets is documented."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.ideogram.ai: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://api.ideogram.ai/openapi.json: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

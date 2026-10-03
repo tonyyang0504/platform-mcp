@@ -1,0 +1,344 @@
+{
+ "id": "falabella",
+ "category": "ecommerce_channels",
+ "label": "Falabella Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "cl",
+  "pe",
+  "co",
+  "mx",
+  "ex"
+ ],
+ "docs_url": "https://developers.falabella.com/",
+ "url": "https://www.falabella.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Falabella seller account (Chile / Peru / Colombia Seller Center); API key from Seller Center integration settings; no sandbox — the portal says integrations run in production and recommends low-value test products; rate limits not read; PHP SDK official.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "api_key (Seller Center UserID + API key signature; parameters Action / Version / Format / Timestamp / Signature)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "official Seller Center PHP SDK (developers.falabella.com/page/seller-center-php-sdk)",
+   "llms.txt index + OpenAPI at https://developers.falabella.com/llms.txt (per search snippet)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.country"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official getting-started page wa",
+  "base_urls": [
+   "https://sellercenter-api.falabella.com"
+  ],
+  "auth": [
+   "1. Seller obtains the API key in Seller Center (integration / API settings).",
+   "2. Every call carries UserID, Action, Version, Format, Timestamp and a Signature computed with the API key (Seller Center convention — to be confirmed on the portal).",
+   "3. Register a webhook URL for status-change notifications."
+  ],
+  "endpoints": [
+   {
+    "call": "ProductCreate / ProductUpdate / ProductRemove (feeds)",
+    "purpose": "create / modify / delete products, price, quantity",
+    "notes": "async feed → FeedStatus"
+   },
+   {
+    "call": "GetOrders / GetOrderItems",
+    "purpose": "orders",
+    "notes": "date + status filters"
+   },
+   {
+    "call": "SetStatusToReadyToShip (label creation) · invoice upload",
+    "purpose": "fulfilment: pack, label, ready to ship",
+    "notes": "shipping provider + tracking from the marketplace label"
+   },
+   {
+    "call": "GetBrands / GetCategoryTree / GetCategoryAttributes",
+    "purpose": "reference data",
+    "notes": ""
+   },
+   {
+    "call": "Webhooks",
+    "purpose": "order / product status changes",
+    "notes": ""
+   },
+   {
+    "call": "Statistics APIs",
+    "purpose": "reports",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read in this pass. - Seller Center account per country; the API key is the seller's own. - Production-only environment: test with low-value products (portal).",
+  "mcp_sdk": [
+   "SDK: official Seller Center PHP SDK (developers.falabella.com/page/seller-center-php-sdk)",
+   "SDK: llms.txt index + OpenAPI at https://developers.falabella.com/llms.txt (per search snippet)"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://developers.falabella.com/v600.0.0/reference/getting-started",
+   "https://developers.falabella.com/reference/getting-started",
+   "https://r.jina.ai/https://developers.falabella.com/v600/reference/productupdate",
+   "https://sellercenter-api.falabella.com"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://sellercenter-api.falabella.com",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Seller Center API key (Mi Cuenta > Integraciones / API in Falabella Seller Center). Signs every request (HMAC-SHA256 hex over the name-sorted, RFC 3986-encoded query, sent as the Signature parameter); never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{query}",
+    "key_field": "api_key",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "signature_param": "Signature"
+   }
+  },
+  "config_fields": [
+   {
+    "name": "user_id",
+    "required": true,
+    "help": "Seller Center UserID: the e-mail login the API key belongs to (sent as UserID)."
+   },
+   {
+    "name": "operator_code",
+    "required": true,
+    "help": "Business unit to write to: facl (Chile), fape (Peru) or faco (Colombia)."
+   },
+   {
+    "name": "warehouse_id",
+    "required": false,
+    "help": "SellerWarehouseId for set_inventory when the seller has several warehouses (GetWarehouse); leave empty with a single warehouse."
+   }
+  ],
+  "envelope": {
+   "ok_field": "ErrorResponse",
+   "ok_value": "__never__",
+   "error_field": "ErrorResponse"
+  },
+  "rate_per_second": 2,
+  "terms": "Falabella Seller Center API (sellercenter-api.falabella.com): every call carries Action, Format, Timestamp, UserID and Version as query parameters, sorted by name and signed with the API key. Writes (ProductUpdate, ProductRemove, UpdateStock) are asynchronous feeds: the answer is a RequestId, and the outcome is read later with FeedStatus in Seller Center. No sandbox; the portal recommends low-value test products.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/",
+    "params": {
+     "Action": "=GetProducts",
+     "Format": "=XML",
+     "Limit": "=1",
+     "Timestamp": "now",
+     "UserID": "@user_id",
+     "Version": "=1.0"
+    },
+    "docs": "https://developers.falabella.com/docs/products/getproducts",
+    "note": "No account endpoint; the probe lists one product (GetProducts, Limit=1) to verify the UserID, API key and signature."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/",
+    "params": {
+     "Action": "=GetOrders",
+     "CreatedAfter": "since",
+     "Format": "=XML",
+     "Limit": "limit",
+     "Offset": "offset",
+     "Status": "status",
+     "Timestamp": "now",
+     "UserID": "@user_id",
+     "Version": "=1.0"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "SuccessResponse.Body.Orders.Order",
+     "key": "orders",
+     "total": "SuccessResponse.Head.TotalCount",
+     "fields": {
+      "id": "OrderId",
+      "created_at": "CreatedAt"
+     }
+    },
+    "docs": "https://developers.falabella.com/docs/orders/getorders",
+    "note": "GetOrders (XML answer, values are strings; the order's item statuses and the Price total stay under raw.Statuses / raw.Price because an order can carry several item statuses). `since` is sent as CreatedAfter (ISO 8601); `status` is an order status code such as pending, ready_to_ship, shipped, delivered, canceled (comma-separated for several). Parameters are listed in name order because the signature covers the sorted query. Shipping an order (SetStatusToReadyToShip) needs order-item ids from GetOrderItems."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/",
+    "params": {
+     "Action": "=ProductUpdate",
+     "Format": "=XML",
+     "Timestamp": "now",
+     "UserID": "@user_id",
+     "Version": "=1.0"
+    },
+    "body_format": "xml",
+    "xml_root": "Request",
+    "body": {
+     "Product.SellerSku": "listing_id",
+     "Product.Name": "title",
+     "Product.Description": "description",
+     "Product.BusinessUnits.BusinessUnit.OperatorCode": "@operator_code",
+     "Product.BusinessUnits.BusinessUnit.Price": "str:price",
+     "Product.BusinessUnits.BusinessUnit.Stock": "quantity"
+    },
+    "result": {
+     "root": "SuccessResponse.Head",
+     "fields": {
+      "feed_id": "RequestId",
+      "status": "=feed_queued"
+     }
+    },
+    "docs": "https://developers.falabella.com/docs/products/productupdate",
+    "note": "ProductUpdate feed keyed by SellerSku (listing_id = your SellerSku) for the configured business unit (facl/fape/faco): only the fields you pass are changed (Name, Description, Price, Stock). Asynchronous: the answer is a feed RequestId; check FeedStatus in Seller Center for rejections."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/",
+    "params": {
+     "Action": "=UpdateStock",
+     "Format": "=XML",
+     "Timestamp": "now",
+     "UserID": "@user_id",
+     "Version": "=1.0"
+    },
+    "body_format": "xml",
+    "xml_root": "Request",
+    "body": {
+     "Warehouse.Stock.SellerWarehouseId": "@warehouse_id",
+     "Warehouse.Stock.SellerSku": "sku",
+     "Warehouse.Stock.Quantity": "quantity"
+    },
+    "result": {
+     "root": "SuccessResponse.Head",
+     "fields": {
+      "feed_id": "RequestId",
+      "status": "=feed_queued"
+     }
+    },
+    "docs": "https://developers.falabella.com/docs/products/updatestock",
+    "note": "UpdateStock for one SellerSku (`sku` is required; it is your SellerSku) in the default warehouse, or in the configured SellerWarehouseId. Not for Fulfillment-by-Falabella stock. Asynchronous feed (RequestId)."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/",
+    "params": {
+     "Action": "=ProductRemove",
+     "Format": "=XML",
+     "Timestamp": "now",
+     "UserID": "@user_id",
+     "Version": "=1.0"
+    },
+    "body_format": "xml",
+    "xml_root": "Request",
+    "body": {
+     "Product.SellerSku": "listing_id"
+    },
+    "result": {
+     "root": "SuccessResponse.Head",
+     "fields": {
+      "feed_id": "RequestId",
+      "status": "=removal_queued"
+     }
+    },
+    "docs": "https://developers.falabella.com/docs/products/productremove",
+    "note": "ProductRemove feed for one SellerSku (listing_id). A removed product can be restored with ProductUpdate and the Status tag (per the docs). Asynchronous feed (RequestId)."
+   }
+  },
+  "not_offered": {
+   "create_listing": "ProductCreate (https://developers.falabella.com/docs/products/productcreate) requires Brand, PrimaryCategory, the category's mandatory ProductData attributes (ConditionType, PackageHeight/Width/Length/Weight, TaxPercentage in Colombia) and a Variation group; the vocabulary carries none of them.",
+   "mark_shipped": "SetStatusToReadyToShip (https://developers.falabella.com/docs/orders/setstatustoreadytoship) takes \"OrderItemIds=[1,2,3]\" and a PackageId, not an order id, and the carrier/tracking come from Falabella's label; order-item ids are not a vocabulary input."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires api_key, user_id, operator_code; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

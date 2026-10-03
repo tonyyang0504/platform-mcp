@@ -1,0 +1,36 @@
+{
+ "id": "fr_societe_com",
+ "category": "sales",
+ "label": "Societe.com",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "fr"
+ ],
+ "docs_url": null,
+ "url": "https://www.societe.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free company sheets from register data; robots.txt (25 Disallow) does not hit the company pages. Terms not read this pass.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

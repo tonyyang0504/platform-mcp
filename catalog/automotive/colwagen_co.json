@@ -1,0 +1,35 @@
+{
+ "id": "colwagen_co",
+ "category": "automotive",
+ "label": "Colwagen",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.colwagen.com.co",
+ "domain": "colwagen.com.co",
+ "country": "Colombia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). Homepage unreachable/bot-blocked from direct, reader and headless fetch; no official API/partner docs found in searches — low-confidence no_api. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://colwagen.com.co/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

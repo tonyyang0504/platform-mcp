@@ -1,0 +1,306 @@
+{
+ "id": "xiaohongshu_pugongying",
+ "category": "ads",
+ "label": "小红书 聚光 / 蒲公英 Xiaohongshu Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=4437",
+ "url": "https://ad.xiaohongshu.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "'第一步注册成为开发者，注册流程由小红书销售内部发起审批，注册完成后将提供对应的授权信息；第二步拿到授权信息后可完成线上授权后，启动接口调用' (third-party summaries of the official whitepaper). Rate limits: unknown. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (developer credentials issued after sales-initiated approval → advertiser online authorization → token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "reports",
+   "budgets_bids"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (聚光 Marketing API on the 小红书商业开放平台).",
+  "base_urls": [
+   "https://ad-market.xiaohongshu.com/…"
+  ],
+  "auth": [
+   "1. Developer registration initiated and approved internally by Xiaohongshu sales; authorization credentials issued.",
+   "2. Advertiser completes online authorization (OAuth) → access token.",
+   "3. Call 账户服务 / 投放管理 / 数据报表 / 素材管理 interfaces."
+  ],
+  "endpoints": [
+   {
+    "call": "账户服务 (account, balance)",
+    "purpose": "accounts",
+    "notes": "advertiser id, balance (TODO(verify))"
+   },
+   {
+    "call": "投放管理: 推广计划 / 单元 / 创意 batch create + query",
+    "purpose": "campaigns, ad groups, ads, budgets & bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "素材管理 (image / video upload)",
+    "purpose": "creatives upload",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "数据报表 (account / campaign / unit / creative by day)",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not confirmed",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits unknown; access by sales-initiated approval; free API; 小红书 advertising qualification review.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://ad-market.xiaohongshu.com/",
+   "https://ad.xiaohongshu.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://adapi.xiaohongshu.com",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "msg"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://adapi.xiaohongshu.com/api/open/oauth2/refresh_token",
+   "token_body": "json",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": "secret",
+    "grant_type": null
+   },
+   "token_path": "data.access_token",
+   "refresh_token_path": "data.refresh_token",
+   "expires_path": "data.access_token_expires_in",
+   "state_key": "xiaohongshu_pugongying",
+   "header": "Access-Token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "app_id of the 小红书开放平台 聚光 (MAPI) application (应用中心 > 编辑应用)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "secret of that application (应用中心 > 编辑应用); sent as `secret` in the refresh call."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from 获取token (auth_code exchange after the advertiser authorised the app's url). Valid 30 days and replaced on every refresh ('刷新后会生成新的 token，老的 access_token 和 refresh_token 将不可再使用'); set PLATFORM_MCP_STATE_DIR so the newest one survives restarts."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": true,
+    "help": "聚光 广告主ID (advertiser_id; returned as approval_advertisers with the token); used by the probe, update_budget and pause_resume."
+   }
+  ],
+  "terms": "小红书开放平台 聚光 Marketing API (MAPI, https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=4437): JSON POST calls to https://adapi.xiaohongshu.com/api/open/jg/… with an Access-Token header (valid 1 day, 'Token有效期&续期' https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=2607); refresh with POST /api/open/oauth2/refresh_token {app_id, secret, refresh_token}, which rotates the refresh token. Answers {code (0 = 成功), success, msg, data}. Requires an approved 开放平台 developer app (聚光 qualification + first top-up) and advertiser authorisation. 蒲公英 (creator marketplace) calls are not mapped.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/api/open/jg/campaign/list",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "page.page_index": "json:1",
+     "page.page_size": "json:1"
+    },
+    "docs": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=3150",
+    "note": "No profile call exists for 聚光 MAPI; the probe lists one campaign of the configured advertiser (POST /api/open/jg/campaign/list, page_size 1)."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/api/open/jg/campaign/list",
+    "body": {
+     "advertiser_id": "int:account_id",
+     "page.page_index": "page",
+     "page.page_size": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data.base_campaign_dtos",
+     "key": "campaigns",
+     "total": "data.page.total_count",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name",
+      "start": "start_time",
+      "end": "expire_time"
+     }
+    },
+    "docs": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=3150",
+    "note": "查询计划 (POST /api/open/jg/campaign/list {advertiser_id, page {page_index, page_size ≤ 100}}): campaign_id, campaign_name, campaign_filter_state (1 有效, 2 暂停, 3 已删除, 4 计划预算不足, 5 现金余额不足 …), limit_day_budget, campaign_day_budget, marketing_target, placement, start_time, expire_time (numeric codes and the budget stay in raw). status is not sent (it is a numeric code)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/api/open/jg/data/report/offline/campaign",
+    "body": {
+     "advertiser_id": "int:account_id",
+     "start_date": "date:date_from",
+     "end_date": "date:date_to",
+     "time_unit": "=DAY",
+     "page_num": "json:1",
+     "page_size": "json:500"
+    },
+    "result": {
+     "items": "data.data_list",
+     "key": "rows",
+     "fields": {
+      "date": "time",
+      "campaign_id": "campaign_id",
+      "campaign": "campaign_name",
+      "spend": "fee",
+      "impressions": "impression",
+      "clicks": "click"
+     }
+    },
+    "docs": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=4879",
+    "note": "标准投计划层级离线报表 (POST /api/open/jg/data/report/offline/campaign, time_unit DAY, first 500 rows): per campaign and day fee (消耗, 元), impression, click, interaction and conversion metrics as strings; data.aggregation_data has the totals. Offline data is ready from 10:00 the next day. campaign_id is not applied (filter rows by campaign_id)."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/api/open/jg/campaign/update",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "campaign_id": "int:campaign_id",
+     "limit_day_budget": "json:1",
+     "campaign_day_budget": "minor:daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=3148",
+    "note": "编辑计划 (POST /api/open/jg/campaign/update {advertiser_id, campaign_id, limit_day_budget: 1 指定预算, campaign_day_budget}) for the configured advertiser_id; daily_budget in 元 is sent in 分 (×100), the unit the MAPI uses for budgets (起量预算 '单位：分'; the campaign list sample shows campaign_day_budget 10000). Since 2026-09-01 this call no longer edits 产品种草 and 客资收集 campaigns ('停止支持…计划编辑'). This spends money; currency is ignored (CNY)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/api/open/jg/campaign/status/update",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "campaign_ids.0": "int:campaign_id",
+     "action_type": "map:action:pause=json:2,resume=json:1"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=3149",
+    "note": "修改计划状态 (POST /api/open/jg/campaign/status/update {advertiser_id, campaign_ids, action_type}) with pause → 2 (暂停) and resume → 1 (开启); 3 (删除) is never sent. data.campaign_ids lists the campaigns actually changed. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "聚光 MAPI has no advertiser-listing call for brand developers: the authorised advertisers come back only inside the token response (data.approval_advertisers, https://ad-market.xiaohongshu.com/docs-center?bizType=943&articleId=4808), and 获取代理商子账号列表 is limited to agency developers (账户服务 category)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host adapi.xiaohongshu.com: DNS ok, TLSv1.2 (DNSPod, Inc.)",
+   "probe: 4/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token adapi.xiaohongshu.com/api/open/oauth2/refresh_token: 200 410010",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "adapi.xiaohongshu.com was intermittent from both audit hosts (TLS timeouts); when it answered, every tool got code 410019 access_token错误 on its path. no answer (timeout/connection) for list_campaigns"
+ }
+}

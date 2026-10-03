@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "outbrain-mcp",
+ "display_name": "Outbrain Amplify MCP",
+ "version": "0.1.0",
+ "description": "Outbrain Amplify (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "outbrain"
+   ],
+   "env": {
+    "PLATFORM_MCP_OUTBRAIN_OB_TOKEN": "${user_config.platform_mcp_outbrain_ob_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_outbrain_ob_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OUTBRAIN_OB_TOKEN",
+   "description": "Amplify API token, sent as the OB-TOKEN-V1 header. Obtain it with `curl -u USER:PASSWORD https://api.outbrain.com/amplify/v0.1/login` (Basic auth; the response is {\"OB-TOKEN-V1\": \"…\"}); tokens last 30 days, so re-issue and replace it monthly. Amplify API access requires Outbrain's approval.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /marketers: the marketers (advertiser accounts) available to the token's user; there is no user endpoint."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /marketers: {marketers: [{id, name, enabled, …}], count}. The marketer currency is on its budgets, not on this record."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /marketers/{account_id}/campaigns?limit (≤50)&offset: the marketer's non-archived campaigns. `status` is onAirReason (e.g. RUNNING, CAMPAIGN_FLY_DATES_PAST); the enabled flag, cpc and amountSpent are in raw. `budget` is the campaign's budget object amount (a budget can be shared by several campaigns; its type DAILY/MONTHLY/CAMPAIGN is in raw.budget). The `status` argument is not sent."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /reports/marketers/{account_id}/periodic?from&to&breakdown=daily&limit=100[&campaignId]: one row per day (up to 100 days per call; totalResults gives the full count), for the marketer or, with campaign_id, one campaign. spend is in the marketer currency; today's figures lag 10–30 minutes. Reporting is limited to 30 requests per minute per marketer and 3 years of history."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /campaigns/{campaign_id} {\"enabled\": false|true} ('Update an Existing Campaign'; enabled is one of the updatable properties). pause sends enabled=false, resume enabled=true; the campaign's onAirReason (in list_campaigns) shows whether it is actually running."
+  }
+ ]
+}

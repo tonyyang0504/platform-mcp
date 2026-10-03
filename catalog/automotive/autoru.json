@@ -1,0 +1,46 @@
+{
+ "id": "autoru",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://auto.ru",
+ "domain": "auto.ru",
+ "country": "Russia",
+ "official_api": true,
+ "docs_url": "https://yandex.ru/dev/autoru/doc/ru/concepts/access",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "x-authorization token issued by Auto.ru account manager",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Auto.ru Business API (apiauto.ru/1.0) is publicly documented for dealer accounts; token obtained from Auto.ru manager; XML/JSON feeds also supported.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://yandex.ru/dev/autoru/doc/ru/concepts/access",
+   "https://yandex.ru/support/autoru-business/ru/integrations/api.html"
+  ],
+  "unofficial": [
+   "github.com/Kolsha/Private-APIs auto.ru notes"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://yandex.ru/dev/autoru/doc/ru/concepts/access): Auto.ru Business API (apiauto.ru/1.0) is publicly documented for dealer accounts; token obtained from Auto.ru manager; XML/JSON feeds also supported. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

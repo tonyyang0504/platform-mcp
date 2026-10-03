@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ideogram-mcp",
+ "description": "Ideogram (builder tools): me, generate_image, get_job, list_items, get_item. Every tool maps to a do",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.ideogram.ai",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ideogram"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_IDEOGRAM_API_KEY",
+     "description": "Ideogram API key (developer.ideogram.ai > API dashboard, after adding a payment method and credits), sent as the Api-Key header.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

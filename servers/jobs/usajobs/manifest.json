@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "usajobs-mcp",
+ "display_name": "USAJOBS MCP",
+ "version": "0.1.0",
+ "description": "USAJOBS (jobs): me, search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "usajobs"
+   ],
+   "env": {
+    "PLATFORM_MCP_USAJOBS_API_KEY": "${user_config.platform_mcp_usajobs_api_key}",
+    "PLATFORM_MCP_USAJOBS_EMAIL": "${user_config.platform_mcp_usajobs_email}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_usajobs_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_USAJOBS_API_KEY",
+   "description": "USAJOBS API key requested on https://developer.usajobs.gov/ (free); sent as the Authorization-Key header on every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_usajobs_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_USAJOBS_EMAIL",
+   "description": "The e-mail address registered with the API key; USAJOBS requires it as the User-Agent header on every call.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-result search (USAJOBS has no account endpoint)."
+  },
+  {
+   "name": "search",
+   "description": "Federal announcements only. ResultsPerPage ≤ 500 and at most 10,000 rows per query. description carries QualificationSummary; PositionRemuneration, ApplyURI and UserArea.Details stay in raw. No published per-second limit."
+  },
+  {
+   "name": "get_posting",
+   "description": "Looks the announcement up with the documented PositionID search parameter (there is no per-id path)."
+  }
+ ]
+}

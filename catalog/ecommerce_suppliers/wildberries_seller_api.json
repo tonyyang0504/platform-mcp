@@ -1,0 +1,111 @@
+{
+ "id": "wildberries_seller_api",
+ "category": "ecommerce_suppliers",
+ "label": "Wildberries Seller API (FBS)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "ru_cis"
+ ],
+ "docs_url": "https://dev.wildberries.ru/openapi/api-information",
+ "url": "https://seller.wildberries.ru/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (docs blocked)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "seller API token (Authorization header; per earlier research the API hosts answer 401 'empty Authorization header')",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://dev.wildberries.ru/openapi/api-information"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Unreadable docs: https://dev.wildberries.ru/openapi/api-information answers HTTP 498 with a browser check ('Проверяем браузер') to plain clients, and a real headless Chromium (2026-09-25, 8-20 s waits, /openapi/api-information and /en/openapi/api-information) gets the anti-bot page 'Что-то не так... Подозрительная активность. Пожалуйста, подождите.' instead of the reference; no official OpenAPI mirror was found on GitHub. Per the discovery it is the Wildberries SELLER API (FBS: a seller's cards, prices, stocks and marketplace orders under a seller token), i.e. a sales channel, with no API for buying from Wildberries as this category's create_order/list_products describe."
+}

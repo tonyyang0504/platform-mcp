@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "shopee_open_platform-mcp",
+ "display_name": "Shopee Seller Centre + Shopee Open Platform MCP",
+ "version": "0.1.0",
+ "description": "Shopee Seller Centre + Shopee Open Platform (ecommerce suppliers): me, list_products, get_product, g",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "shopee_open_platform"
+   ],
+   "env": {
+    "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_ID": "${user_config.platform_mcp_shopee_open_platform_partner_id}",
+    "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_KEY": "${user_config.platform_mcp_shopee_open_platform_partner_key}",
+    "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_SHOP_ID": "${user_config.platform_mcp_shopee_open_platform_shop_id}",
+    "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_REFRESH_TOKEN": "${user_config.platform_mcp_shopee_open_platform_refresh_token}",
+    "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_HOST": "${user_config.platform_mcp_shopee_open_platform_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_shopee_open_platform_partner_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_ID",
+   "description": "partner_id of your Shopee Open Platform app (Console > App list).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_open_platform_partner_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_PARTNER_KEY",
+   "description": "The app's partner_key; signs the refresh request and every call (lower-case hex HMAC-SHA256) and is never sent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_open_platform_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_SHOP_ID",
+   "description": "shop_id that authorised the app (returned in the authorisation redirect).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_open_platform_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_REFRESH_TOKEN",
+   "description": "The shop's refresh_token from v2.public.get_access_token (valid 30 days, single-use). Each refresh (every ~4 h) returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopee_open_platform_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPEE_OPEN_PLATFORM_HOST",
+   "description": "API host: partner.shopeemobile.com (global production), openplatform.shopee.cn (mainland China), openplatform.shopee.com.br (Brazil) or openplatform.sandbox.test-stable.shopee.sg (sandbox).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "v2.shop.get_shop_info: shop_name, region, status, is_cb, auth_time and expire_time of the shop authorisation."
+  },
+  {
+   "name": "list_products",
+   "description": "v2.product.get_item_list: the shop's own NORMAL (live) listings — ids, status and update_time only (the API returns no titles or prices; call get_product per id). `query`/`category` are not applied. Seller-side channel API."
+  },
+  {
+   "name": "get_product",
+   "description": "v2.product.get_item_base_info: name, description, SKU, price_info (current/original price, currency), images, weight/dimensions and logistic_info of one listing (items with variations carry prices on their models)."
+  },
+  {
+   "name": "get_order",
+   "description": "v2.order.get_order_detail for one order_sn: order_status (UNPAID, READY_TO_SHIP, PROCESSED, SHIPPED, COMPLETED, …), total_amount, currency, epoch-second times and item_list in raw."
+  },
+  {
+   "name": "track",
+   "description": "v2.logistics.get_tracking_info: logistics_status and the tracking_info events [{update_time, description, logistics_status}] of an order's package (split orders need the package_number, not supported here)."
+  }
+ ]
+}

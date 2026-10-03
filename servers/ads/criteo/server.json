@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/criteo-mcp",
+ "description": "Criteo (Commerce Growth / Criteo GO) (ads): me, list_accounts, list_campaigns, get_report, update_bu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.criteo.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "criteo"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_CRITEO_CLIENT_ID",
+     "description": "Client id of a Criteo Marketing Solutions app (Developer portal > app > Create new key), sent in the form body of POST https://api.criteo.com/oauth2/token (grant_type=client_credentials).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CRITEO_CLIENT_SECRET",
+     "description": "The app key's secret. Tokens last 900 seconds and are re-requested automatically; the advertisers must have approved the app's consent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_CRITEO_CURRENCY",
+     "description": "ISO 4217 currency for get_report (the statistics endpoint requires `currency`), e.g. EUR or USD.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

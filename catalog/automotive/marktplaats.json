@@ -1,0 +1,135 @@
+{
+ "id": "marktplaats",
+ "category": "automotive",
+ "label": "Marktplaats",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.marktplaats.nl",
+ "domain": "marktplaats.nl",
+ "country": "Netherlands",
+ "official_api": true,
+ "docs_url": "https://api.marktplaats.nl/docs/v1/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (client registered with Marktplaats)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Marktplaats documents a RESTful OAuth2 API (also 2dehands/2ememain) for placing/managing ads plus a Search endpoint; client credentials come from Marktplaats (business/advertiser use).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.marktplaats.nl/docs/v1/",
+   "https://api.marktplaats.nl/docs/v1/overview.html",
+   "https://api.marktplaats.nl/docs/v1/authentication.html",
+   "https://marktplaats.nl/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "io.github.jasp-nerd/marktplaats-mcp (MCP registry, community, unofficial)"
+  ]
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.marktplaats.nl",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://auth.marktplaats.nl/accounts/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client id assigned by Marktplaats (API clients are registered by the platform for business/advertiser use); grant_type=client_credentials at https://auth.marktplaats.nl/accounts/oauth/token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret assigned with it. A client token reaches public resources (categories, search, advertisements) only."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "category_id",
+    "required": false,
+    "help": "Category id to restrict searches to (e.g. the cars category id from GET /v1/categories); without it `query` is mandatory."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Marktplaats API (https://api.marktplaats.nl/docs/v1/): monetary amounts are euro cents; no deep pagination (offset*limit ≤ 5000).",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/v1/search",
+    "params": {
+     "query": "query",
+     "categoryId": "@category_id",
+     "postCode": "location",
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 30,
+    "max_limit": 100,
+    "result": {
+     "items": "_embedded.mp:search-result",
+     "key": "listings",
+     "total": "totalCount",
+     "fields": {
+      "id": "itemId",
+      "title": "title",
+      "dealer": "seller.sellerName",
+      "url": "_links.mp:advertisement-website-link.href"
+     }
+    },
+    "docs": "https://api.marktplaats.nl/docs/v1/search-advertisements.html",
+    "note": "GET /v1/search?query&categoryId&postCode&offset&limit (limit ≤ 200, offset a multiple of limit, offset*limit ≤ 5000); query supports and/or and '-' negation; 400 query-missing when neither query nor categoryId is given. location is a 6-character Dutch/Belgian postcode. make/model/year/price filters are not query parameters (the documented price filter lives in a GET request body, which is not sent). priceModel.askingPrice is in EURO CENTS and stays in raw."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/v1/advertisements/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "itemId",
+      "title": "title",
+      "description": "description",
+      "url": "_links.mp:advertisement-website-link.href"
+     }
+    },
+    "docs": "https://api.marktplaats.nl/docs/v1/advertisement.html",
+    "note": "GET /v1/advertisements/{itemId} (ids like m1234): title, description, categoryId, priceModel (euro cents), attributes and image links in raw."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "No VIN lookup in the Marktplaats API.",
+   "get_valuation": "No valuation endpoint in the Marktplaats API.",
+   "list_dealers": "No dealer directory endpoint (only users/{id} for a known seller).",
+   "me": "GET /v1/me needs a user token from the authorization-code flow; this adapter uses a client token."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.marktplaats.nl: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token auth.marktplaats.nl/accounts/oauth/token: 400 invalid_grant",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,232 @@
+{
+ "id": "producthunt",
+ "category": "social",
+ "label": "Product Hunt",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.producthunt.com/v2/docs",
+ "url": "https://www.producthunt.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free; GraphQL at https://api.producthunt.com/v2/api/graphql; OAuth2 client-credentials token for public reads, authorization code with scopes public private write for user context; 'partial write access to third party applications depending on the use-case' granted by request (hello@producthunt.com) — no mutation to create a Post / launch is offered; PH 'reserves the right to rate-limit any application' (fair use; complexity-based limits per token).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "read(posts, comments, votes, topics)",
+   "write(partial — by request: follows, goals; no post creation)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 260,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (GraphQL read API; write only by arrangement, no launch creation).",
+  "base_urls": [
+   "https://api.producthunt.com/v2/oauth/…"
+  ],
+  "auth": [
+   "1. Create an application at producthunt.com/v2/oauth/applications (API dashboard) → client id / secret.",
+   "2. Read-only public data: `POST /v2/oauth/token` with `grant_type=client_credentials` → developer token.",
+   "3. User context: authorization code with scopes `public private write`; \"partial write access to third party"
+  ],
+  "endpoints": [],
+  "limits": " - Fair-use rate limiting (\"we reserve the right to rate-limit any application\"); complexity-based quota per token (headers `X-Rate-Limit-Limit / Remaining / Reset`). - Launch creation is UI-only (scheduled by the maker/hunter); Product Hunt community rules forbid vote solicitation and fake engagement.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.producthunt.com/v2/docs"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.producthunt.com/v2/api",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Product Hunt API token: the non-expiring developer_token of your application in the API dashboard (https://www.producthunt.com/v2/oauth/applications), or an OAuth user token with scopes public private; sent as 'Authorization: Bearer {token}' (https://api.producthunt.com/v2/docs)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "data",
+   "error_field": "errors"
+  },
+  "envelope_note": "GraphQL failures arrive as HTTP 200 {data: null, errors: [...]} and become error results.",
+  "rate_per_second": 1,
+  "terms": "Read-only by default ('By default all apps are read-only'); 'The Product Hunt API must not be used for commercial purposes' without permission (hello@producthunt.com); fair-use rate limiting (https://api.producthunt.com/v2/docs).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query { viewer { user { id username name headline url } } }"
+    },
+    "docs": "https://github.com/producthunt/producthunt-api/blob/master/schema.graphql",
+    "note": "Query.viewer (needs a user-context token: the developer_token or an OAuth user token; a client-only token has no viewer) returns account.data.viewer.user {id, username, name, headline, url}."
+   },
+   "read_comments": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query($id: ID!, $first: Int!) { post(id: $id) { comments(first: $first) { totalCount edges { node { id body createdAt url user { username } } } } } }",
+     "variables.id": "post_id",
+     "variables.first": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "data.post.comments.edges",
+     "key": "comments",
+     "total": "data.post.comments.totalCount",
+     "fields": {
+      "id": "node.id",
+      "author": "node.user.username",
+      "text": "node.body",
+      "created_at": "node.createdAt",
+      "url": "node.url"
+     }
+    },
+    "docs": "https://github.com/producthunt/producthunt-api/blob/master/schema.graphql",
+    "note": "Post.comments(first, order NEWEST) of the post with id `post_id` (numeric Product Hunt post id; Query.post also takes a slug, not mapped). Cursor-paginated: only the first `limit` comments (max 20 here) are returned and `page` is not honoured; top-level comments only (replies are Comment.replies)."
+   },
+   "analytics_post": {
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+     "query": "=query($id: ID!) { post(id: $id) { id name url votesCount commentsCount reviewsRating featuredAt } }",
+     "variables.id": "post_id"
+    },
+    "result": {
+     "root": "data.post",
+     "fields": {
+      "post_id": "id",
+      "votes": "votesCount",
+      "comments": "commentsCount",
+      "reviews_rating": "reviewsRating",
+      "featured_at": "featuredAt",
+      "url": "url"
+     }
+    },
+    "docs": "https://github.com/producthunt/producthunt-api/blob/master/schema.graphql",
+    "note": "Launch counts of one post: votesCount, commentsCount, reviewsRating and featuredAt as top-level fields (no views in the API). An unknown id answers data.post = null, reported as invalid_input."
+   }
+  },
+  "not_offered": {
+   "publish_text": "The API has no mutation that creates a post or launch; its mutations are goal* and userFollow* only (type Mutation in https://github.com/producthunt/producthunt-api/blob/master/schema.graphql), and 'partial write access' is granted case by case (https://api.producthunt.com/v2/docs).",
+   "publish_image": "No post-creation or media-upload mutation exists (type Mutation in https://github.com/producthunt/producthunt-api/blob/master/schema.graphql).",
+   "reply_comment": "No comment mutation exists (type Mutation in https://github.com/producthunt/producthunt-api/blob/master/schema.graphql: goalCheer, goalCreate, goalUpdate, userFollow ...).",
+   "read_mentions": "The schema has no mentions or notifications query (type Query in https://github.com/producthunt/producthunt-api/blob/master/schema.graphql).",
+   "delete": "No delete mutation for posts or comments exists (type Mutation in https://github.com/producthunt/producthunt-api/blob/master/schema.graphql)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.producthunt.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/producthunt/producthunt-api/master/schema.graphql: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

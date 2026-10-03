@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/matrix-mcp",
+ "description": "Matrix (messaging): me, send, reply, list_inbound, get_thread, mark_read. Every tool maps to a docum",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://spec.matrix.org/latest/client-server-api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "matrix"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MATRIX_ACCESS_TOKEN",
+     "description": "Access token of the account (from a login flow or the client's settings), sent as 'Authorization: Bearer' — 'Access tokens may be provided via a request header, using the Authentication Bearer scheme: Authorization: Bearer TheTokenHere' (https://spec.matrix.org/latest/client-server-api/#using-access-tokens).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MATRIX_HOMESERVER",
+     "description": "Host of the account's homeserver client API without scheme (e.g. matrix.org, or the m.homeserver base_url from /.well-known/matrix/client without https://); every call goes to https://<homeserver>/_matrix/client/... Env: PLATFORM_MCP_MATRIX_HOMESERVER.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

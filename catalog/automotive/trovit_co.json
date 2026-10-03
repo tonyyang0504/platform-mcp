@@ -1,0 +1,44 @@
+{
+ "id": "trovit_co",
+ "category": "automotive",
+ "label": "Autos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autos.trovit.com.co",
+ "domain": "autos.trovit.com.co",
+ "country": "Colombia",
+ "official_api": false,
+ "docs_url": "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). Trovit (LIFULL Connect/Thribee) only ingests partners' XML car feeds (documented per country); no outbound read API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.lifullconnect.com/brands/trovit/",
+   "https://help.thribee.com/hc/en-us/articles/7920210584092-US-Cars-feed"
+  ],
+  "unofficial": [
+   "https://github.com/devzkhalil/laravel-trovit-xml-feed"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Trovit (LIFULL Connect/Thribee) only ingests partners' XML car feeds (documented per country); no outbound read API. No request/response API to serve."
+}

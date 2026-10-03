@@ -1,0 +1,353 @@
+{
+ "id": "ingram_micro",
+ "category": "ecommerce_suppliers",
+ "label": "Ingram Micro (Xvantage / Developer Portal)",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.ingrammicro.com/reseller",
+ "url": "https://developer.ingrammicro.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_by_approval",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk",
+   "mcp",
+   "sandbox"
+  ],
+  "auth": "oauth2 client credentials (developer account tied to an Ingram Micro reseller account → app client keys; sandbox keys immediately, production after app approval ≈ 2 business days)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "price_feed",
+   "stock_feed",
+   "order_create",
+   "orders",
+   "tracking",
+   "returns",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official SDKs (developer.ingrammicro.com › SDKs)"
+  ]
+ },
+ "official_mcp": [
+  "Ingram Micro MCP Server (developer.ingrammicro.com › Resellers › MCP Server)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer d",
+  "base_urls": [],
+  "auth": [
+   "1. Reseller signs up for a developer account (links the Ingram Micro customer number)",
+   "2. Create an app → sandbox client keys",
+   "3. Register the app for production with the API list + usage estimate (~2 business days)",
+   "4. OAuth client credentials → bearer token"
+  ],
+  "endpoints": [
+   {
+    "call": "Product Catalog: search, price & availability (by warehouse)",
+    "purpose": "catalogue + real-time price / stock",
+    "notes": ""
+   },
+   {
+    "call": "Freight Estimate",
+    "purpose": "shipping cost for an order",
+    "notes": ""
+   },
+   {
+    "call": "Orders: create, place, cancel, details, status",
+    "purpose": "order lifecycle",
+    "notes": ""
+   },
+   {
+    "call": "Invoices · Quotes · Deals · Renewals · Returns",
+    "purpose": "back-office",
+    "notes": ""
+   },
+   {
+    "call": "Webhooks",
+    "purpose": "order / status events",
+    "notes": ""
+   }
+  ],
+  "limits": " Documented under Getting Started › Rate Limits (values not read). - Reseller agreement + credit account - App approval per API scope",
+  "mcp_sdk": [
+   "Ingram Micro MCP Server (developer.ingrammicro.com › Resellers › MCP Server)",
+   "Official SDKs (developer.ingrammicro.com › SDKs)"
+  ],
+  "sources": [
+   "https://developer.ingrammicro.com/reseller",
+   "https://developer.ingrammicro.com/reseller/getting-started/api-overview"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.ingrammicro.com:443",
+  "rate_per_second": 2,
+  "config_fields": [
+   {
+    "name": "customer_number",
+    "required": true,
+    "help": "Your Ingram Micro reseller customer number (IM-CustomerNumber header, e.g. 20-222222)."
+   },
+   {
+    "name": "country_code",
+    "required": true,
+    "help": "Two-letter ISO country of your Ingram Micro account (IM-CountryCode header, e.g. US)."
+   },
+   {
+    "name": "sender_id",
+    "required": false,
+    "help": "Optional sender identification text (IM-SenderID header, max 32 chars)."
+   },
+   {
+    "name": "customer_contact",
+    "required": false,
+    "help": "E-mail of the logged-in user (IM-CustomerContact header); required by Freight Estimate (quote_shipping)."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.ingrammicro.com:443/oauth/oauth30/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "IM-CustomerNumber": "customer_number",
+    "IM-CountryCode": "country_code",
+    "IM-SenderID": "sender_id",
+    "IM-CustomerContact": "customer_contact"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID (Consumer Key) of your app on developer.ingrammicro.com (My Apps); production keys after app approval."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret of the same app; exchanged for a bearer token at /oauth/oauth30/token (client_credentials)."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "sha256",
+    "payload": "{nonce}",
+    "headers": {
+     "IM-CorrelationID": "{nonce}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/resellers/v6/catalog",
+    "fixed_params": {
+     "pageNumber": "1",
+     "pageSize": "1"
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "No account endpoint; the probe runs a one-row Product Search (GET /resellers/v6/catalog). `sign` is used only to stamp every request with a fresh 32-hex IM-CorrelationID ('Unique transaction number to identify each transaction', maxLength 32); nothing is signed."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/resellers/v6/catalog",
+    "params": {
+     "keyword": "query",
+     "category": "category",
+     "pageNumber": "page",
+     "pageSize": "limit"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "catalog",
+     "key": "products",
+     "total": "recordsFound",
+     "fields": {
+      "id": "ingramPartNumber",
+      "title": "description",
+      "sku": "vendorPartNumber",
+      "vendor": "vendorName",
+      "upc": "upcCode",
+      "category": "category",
+      "authorized": "authorizedToPurchase"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Search Products (GET /resellers/v6/catalog): keyword = Ingram part number, vendor part number, title or vendor name; category e.g. 'Displays'; max 100 per page. Search returns no price — use get_product for details (price & availability is POST /resellers/v6/catalog/priceandavailability)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/resellers/v6/catalog/details/{id}",
+    "result": {
+     "fields": {
+      "id": "ingramPartNumber",
+      "title": "description",
+      "sku": "vendorPartNumber",
+      "vendor": "vendorName",
+      "upc": "upc",
+      "category": "productCategory"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Product Details (GET /resellers/v6/catalog/details/{ingramPartNumber}, 6-char Ingram part number): description, vendor, category, indicators, dimensions and weights in `raw`; no price."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/resellers/v6/freightestimate",
+    "body": {
+     "shipToAddress.countryCode": "country",
+     "lines.0.customerLineNumber": "=001",
+     "lines.0.ingramPartNumber": "product_id",
+     "lines.0.quantity": "str:quantity"
+    },
+    "result": {
+     "items": "freightEstimateResponse.distribution",
+     "key": "options",
+     "fields": {
+      "carrier_code": "carrierCode",
+      "name": "shipVia",
+      "price": "freightRate",
+      "transit_days": "transitDays",
+      "ship_from": "shipFromBranchNumber",
+      "carriers": "carrierList"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Freight Estimate (POST /resellers/v6/freightestimate) for one Ingram part number to a destination country; one option per ship-from branch with its default carrier (shipVia, freightRate, transitDays) and the alternative carriers in `carriers`. Needs the customer_contact config field (IM-CustomerContact header). Currency is freightEstimateResponse.currencyCode in `raw`."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/resellers/v6/orders",
+    "body": {
+     "customerOrderNumber": "fmt:MCP{datefmt:%y%m%d%H%M%S:now}",
+     "lines": "items",
+     "shipToInfo": "shipping_address",
+     "shipmentDetails.carrierCode": "shipping_option"
+    },
+    "result": {
+     "fields": {
+      "id": "orders.0.ingramOrderNumber",
+      "total": "purchaseOrderTotal",
+      "currency": "orders.0.currencyCode",
+      "created_at": "orders.0.ingramOrderDate",
+      "status": "orders.0.lines.0.lineStatus",
+      "customer_order_number": "customerOrderNumber"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Create your Order v6 (POST /resellers/v6/orders). Pass `items` in Ingram form [{customerLineNumber, ingramPartNumber, quantity}] and `shipping_address` as shipToInfo {contact, companyName, addressLine1, addressLine2, city, state, postalCode, countryCode, phoneNumber, email}; `shipping_option` is a carrier code from quote_shipping. The required customerOrderNumber (max 18) is generated as MCP+yyMMddHHmmss (UTC). Orders are placed on your credit account."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/resellers/v6.1/orders/{id}",
+    "result": {
+     "fields": {
+      "id": "ingramOrderNumber",
+      "status": "orderStatus",
+      "total": "orderTotal",
+      "currency": "currencyCode",
+      "created_at": "ingramOrderDate",
+      "tracking_number": "lines.0.shipmentDetails.0.carrierDetails.0.trackingDetails.0.trackingNumber",
+      "customer_order_number": "customerOrderNumber"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Get Order Details v6.1 (GET /resellers/v6.1/orders/{ordernumber}, e.g. 20-RD3QV): orderStatus, totals, lines[] with lineStatus and shipmentDetails[].carrierDetails[].trackingDetails[] in `raw`; tracking_number is the first line's first parcel."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/resellers/v6.1/orders/{order_id}",
+    "result": {
+     "items": "lines",
+     "key": "events",
+     "fields": {
+      "status": "lineStatus",
+      "part_number": "ingramPartNumber",
+      "carrier": "shipmentDetails.0.carrierDetails.0.carrierName",
+      "tracking_number": "shipmentDetails.0.carrierDetails.0.trackingDetails.0.trackingNumber",
+      "tracking_url": "shipmentDetails.0.carrierDetails.0.trackingDetails.0.trackingUrl",
+      "shipped_at": "shipmentDetails.0.carrierDetails.0.shippedDate",
+      "delivered_at": "shipmentDetails.0.carrierDetails.0.deliveredDate",
+      "estimated_delivery": "shipmentDetails.0.carrierDetails.0.estimatedDeliveryDate"
+     }
+    },
+    "docs": "https://developer.ingrammicro.com/reseller/api-documentation/United_States",
+    "note": "Order lines of Get Order Details v6.1 as shipment events: lineStatus plus the first shipment's carrier, tracking number/URL and shipped/delivered dates per line."
+   }
+  },
+  "terms": "Production base https://api.ingrammicro.com:443 (the spec's sandbox server is https://api.ingrammicro.com:443/sandbox). Reseller API access requires an Ingram Micro reseller account and app approval."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.ingrammicro.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.ingrammicro.com/oauth/oauth30/token: 500",
+   "HTML docs spot-check (render-doc): 7/7 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

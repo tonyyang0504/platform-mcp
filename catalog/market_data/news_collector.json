@@ -1,0 +1,110 @@
+{
+ "id": "news_collector",
+ "category": "market_data",
+ "label": "News RSS/GDELT/Fear&Greed",
+ "provider": "Google News, WSJ/Dow Jones, CNBC, MarketWatch, Yahoo Finance, CoinDesk, Cointelegraph, The Block, Decrypt, Blockworks, DL News, The Defiant, Protos, CryptoSlate, NewsBTC, BeInCrypto, U.Today, CryptoPotato, AMBCrypto, Federal Reserve, ECB, BoE, BoJ, SEC, CFTC, DOJ, FTC, EIA, Nasdaq Trader, PR Newswire, GlobeNewswire, SCMP, Economic Times, BBC, Al Jazeera, Binance announcements, Tree of Alpha, GDELT, alternative.me",
+ "lane": "api",
+ "base_urls": [
+  "https://news.google.com/rss",
+  "https://feeds.a.dj.com",
+  "https://feeds.content.dowjones.io",
+  "https://www.cnbc.com",
+  "https://finance.yahoo.com/news/rssindex",
+  "https://www.coindesk.com",
+  "https://cointelegraph.com/rss",
+  "https://www.theblock.co/rss.xml",
+  "https://decrypt.co/feed",
+  "https://blockworks.co/feed",
+  "https://www.dlnews.com",
+  "https://thedefiant.io/api/feed",
+  "https://protos.com/feed/",
+  "https://cryptoslate.com/feed/",
+  "https://www.newsbtc.com/feed/",
+  "https://beincrypto.com/feed/",
+  "https://u.today/rss",
+  "https://cryptopotato.com/feed/",
+  "https://ambcrypto.com/feed/",
+  "https://www.federalreserve.gov/feeds/press_all.xml",
+  "https://www.ecb.europa.eu/rss/press.html",
+  "https://www.bankofengland.co.uk/rss/news",
+  "https://www.boj.or.jp/en/rss/whatsnew.xml",
+  "https://www.sec.gov",
+  "https://www.cftc.gov/RSS/RSSGP/rssgp.xml",
+  "https://www.justice.gov/news/rss",
+  "https://www.ftc.gov/feeds/press-release.xml",
+  "https://www.eia.gov/rss/todayinenergy.xml",
+  "https://www.nasdaqtrader.com/rss.aspx?feed=tradehalts",
+  "https://www.prnewswire.com/rss/news-releases-list.rss",
+  "https://www.globenewswire.com/RssFeed",
+  "https://www.scmp.com/rss/92/feed",
+  "https://economictimes.indiatimes.com/markets/rssfeeds",
+  "https://feeds.bbci.co.uk/news/business/rss.xml",
+  "https://www.aljazeera.com/xml/rss/all.xml",
+  "https://www.binance.com/bapi/apex/v1/public/apex/cms/",
+  "https://news.treeofalpha.com/api/news",
+  "wss://news.treeofalpha.com/ws",
+  "https://api.gdeltproject.org/api/v2/doc/doc",
+  "https://api.alternative.me/fng/"
+ ],
+ "data_kinds": [
+  "news headlines (RSS/Atom)",
+  "GDELT DOC 2.0 article lists",
+  "Binance announcements",
+  "Tree of Alpha news",
+  "Crypto Fear & Greed index"
+ ],
+ "auth": "none (free machine-readable feeds)",
+ "docs_url": "https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/",
+ "verified_at": "2026-09-25",
+ "adapter": {
+  "base_url": "https://api.gdeltproject.org",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.2,
+  "terms": "GDELT Project open data (free; cite GDELT). GDELT asks for at most one request every 5 seconds.",
+  "tools": {
+   "get_news": {
+    "method": "GET",
+    "path": "/api/v2/doc/doc",
+    "params": {
+     "query": "query",
+     "mode": "=artlist",
+     "format": "=json",
+     "sort": "=datedesc",
+     "maxrecords": "limit",
+     "startdatetime": "datefmt:%Y%m%d%H%M%S:since"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "articles",
+     "key": "articles",
+     "fields": {
+      "id": "url",
+      "title": "title",
+      "url": "url",
+      "published_at": "seendate",
+      "source": "domain"
+     }
+    },
+    "docs": "https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/",
+    "note": "GDELT DOC 2.0 ArtList (JSON), newest first. query uses GDELT syntax (keywords, \"phrases\", OR, domain:, sourcelang:, theme: …) and is required by GDELT; since (ISO date/datetime) becomes startdatetime and must be within the last 3 months; maxrecords ≤ 250 (capped at 100). There is no paging — ignore next_page. published_at is GDELT's seendate (YYYYMMDDTHHMMSSZ); language and sourcecountry are in raw. When called more than once per 5 s GDELT answers a plain-text notice instead of JSON (articles is then empty). The ~40 RSS/Atom feeds, Tree of Alpha, Binance announcements and Fear & Greed collected by this entry's source are not mapped."
+   }
+  },
+  "not_offered": {
+   "me": "No account: GDELT is keyless.",
+   "get_candles": "News source; GDELT has no price data.",
+   "get_series": "alternative.me Fear & Greed (https://alternative.me/crypto/fear-and-greed-index/#api) answers value as a JSON string ('71'), which the numeric `value` field cannot carry without a numeric-coercion expression in result mapping; GDELT timelines are a different mode not mapped here.",
+   "search_symbols": "News source; no instrument search."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "broken",
+  "egress": "datacenter",
+  "notes": "upstream: GDELT DOC 2.0 answers 429 'Please limit requests to one every 5 seconds' after ~11 s even to single isolated requests, from a datacenter and a residential connection (worked once earlier the same day); not fixable client-side; get_news failed: rate_limited 429 rate limited by the platform"
+ }
+}

@@ -1,0 +1,285 @@
+{
+ "id": "nextdoor",
+ "category": "social",
+ "label": "Nextdoor",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "na",
+  "eu"
+ ],
+ "docs_url": "https://developer.nextdoor.com/reference/create-post.md",
+ "url": "https://nextdoor.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Community Guidelines: local relevance, businesses post from a Business Page, no spam. Body <=8,192 chars, <=10 attachments, media URLs must be public.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post(neighbor / business / agency / event / for-sale posts)",
+   "reply(comments + replies)",
+   "edit",
+   "upload_media(URLs, ≤ 10)",
+   "search(public posts)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 8192,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (application-gated Publishing API).",
+  "base_urls": [
+   "https://nextdoor.com/external/api/partner/v1/…"
+  ],
+  "auth": [
+   "1. Submit the **Publishing API request form** (or Displaying API form); \"every application is reviewed individually",
+   "2. Approved apps receive a client id + secret → access token (OAuth 2.0; scopes listed per endpoint, e.g. post",
+   "3. Posts can be made from a **neighbor profile or a Business Page** (`profile_id`)."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /external/api/partner/v1/post/create/` {body_text (≤ 8,192 chars), media_attachments[≤ 10 public URLs], smartlink (URL preview), hashtag (no spaces), lat, lon, profile_id} → {result, share_link h",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "create-agency-post",
+    "purpose": "public agencies",
+    "notes": ""
+   },
+   {
+    "call": "create-event-post",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "create-fsf-post`, `mark-fsf-sold",
+    "purpose": "marketplace",
+    "notes": ""
+   },
+   {
+    "call": "create-comment-to-a-post` / reply to a comment",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "edit-a-post",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "Search API, Trending Posts API, Public Agency Feed API (Displaying access)",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "Share Plugin (open, no application)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Body 8,192 characters, 10 attachments; media / smartlink URLs must be public. - Access is case-by-case; Nextdoor Community Guidelines (local relevance; businesses post from a Business Page; no spam). Rate limits not stated on the pages read.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.nextdoor.com/",
+   "https://developer.nextdoor.com/llms.txt",
+   "https://developer.nextdoor.com/reference/create-post.md",
+   "https://developer.nextdoor.com/reference/applying-for-access.md"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://nextdoor.com/external/api/partner/v1",
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Publish API user access token: apply for access (Nextdoor Partnerships issue client_id / client_secret), send the user through https://www.nextdoor.com/v3/authorize/ with scopes openid post:write post:read comment:write profile:read, then exchange the code at POST https://auth.nextdoor.com/v2/token (https://developer.nextdoor.com/reference/sharing-get-access-token; expires_in 31536000 s in the documented example). Refresh it before expiry (https://developer.nextdoor.com/reference/sharing-refresh-access-token). Sent as 'Authorization: Bearer <access_token>'."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "secure_profile_id",
+    "required": false,
+    "help": "Optional profile id from GET /me/profiles (https://developer.nextdoor.com/reference/me-copy) to post / delete as a business or other profile of the account instead of the default neighbor profile."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "Community Guidelines apply (local relevance, businesses post from a Business Page, no spam); body text up to 8,192 characters, up to 10 publicly accessible media URLs.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me/",
+    "docs": "https://developer.nextdoor.com/reference/me-1",
+    "note": "GET /external/api/partner/v1/me/ (profile:read) returns {id, first_name, last_name, status, verified, is_business_profile, neighborhood_name, city_name, business_name, ...}."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/post/create/",
+    "body": {
+     "body_text": "text",
+     "secure_profile_id": "@secure_profile_id"
+    },
+    "result": {
+     "fields": {
+      "id": "share_link",
+      "url": "share_link"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/create-post",
+    "note": "PUBLISHES a post to the user's Nextdoor neighborhood (or to the business / entity page of config secure_profile_id): POST /post/create/ {body_text (max 8,192 characters)} (post:write) answers {result: 'success', share_link: 'https://nextdoor.com/p/{post_share_id}'}. The API returns no separate id, so `id` and `url` are both the share_link (its last path segment is the post_share_id). `reply_to` is ignored."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/post/create/",
+    "body": {
+     "body_text": "text",
+     "media_attachments": "image_urls",
+     "secure_profile_id": "@secure_profile_id"
+    },
+    "result": {
+     "fields": {
+      "id": "share_link",
+      "url": "share_link"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/create-post",
+    "note": "PUBLISHES a post with media_attachments = image_urls ('The limit is 10 attachments'; every URL must be valid and publicly accessible). body_text is REQUIRED by Nextdoor, so pass `text` (a post without it is rejected with 400). `id` / `url` are the returned share_link."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/post/",
+    "params": {
+     "id": "post_id",
+     "secure_profile_id": "@secure_profile_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/delete-a-post",
+    "note": "DESTRUCTIVE: DELETE /post/?id= 'Deletes your post on Nextdoor that matches the post id provided' (post:write) and answers {message: 'Post deleted successfully'}. `post_id` is the post id as listed by GET /post/ (Get your posts, https://developer.nextdoor.com/reference/get-your-posts)."
+   }
+  },
+  "not_offered": {
+   "read_comments": "No per-post comments endpoint exists: comments come embedded in 'Get your posts' (GET /post/, the most recent posts of the account, https://developer.nextdoor.com/reference/get-your-posts), which cannot be addressed by post id.",
+   "reply_comment": "POST /comment/ requires the post's share id (`id`) in addition to parent_comment_id (https://developer.nextdoor.com/reference/create-comment-to-a-post-create-reply-to-a-comment); a comment id alone cannot address the reply.",
+   "read_mentions": "The Publish API has no mentions or notifications endpoint (https://developer.nextdoor.com/reference/get-your-posts lists only your own posts).",
+   "analytics_post": "view_count and smartlink_click_count are only fields of the recent-posts list GET /post/ (https://developer.nextdoor.com/reference/get-your-posts), not retrievable by post id; business and entity pages are 'not supported at the moment' there."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host nextdoor.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

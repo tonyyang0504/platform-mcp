@@ -1,0 +1,39 @@
+{
+ "id": "tutti",
+ "category": "automotive",
+ "label": "Tutti",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.tutti.ch",
+ "domain": "tutti.ch",
+ "country": "Switzerland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). tutti.ch has no official API; tuttiPRO is a subscription, and the SDK on GitHub is reverse-engineered.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.tutti.ch/de/subscription/pro",
+   "https://github.com/tutti-ch",
+   "https://tutti.ch/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://github.com/filippofinke/tutti-api"
+  ]
+ },
+ "official_mcp": []
+}

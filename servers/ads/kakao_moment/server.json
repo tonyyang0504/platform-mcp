@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/kakao_moment-mcp",
+ "description": "카카오모먼트 Kakao Moment (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resum",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.kakao.com/docs/latest/ko/kakaomoment/common",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "kakao_moment"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_KAKAO_MOMENT_BUSINESS_TOKEN",
+     "description": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to moment_management in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). No refresh flow; it expires after long non-use.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_KAKAO_MOMENT_AD_ACCOUNT_ID",
+     "description": "Kakao Moment ad account number, sent as the `adAccountId` header that campaign and report calls require.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

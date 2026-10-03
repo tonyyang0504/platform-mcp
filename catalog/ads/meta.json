@@ -1,0 +1,303 @@
+{
+ "id": "meta",
+ "category": "ads",
+ "label": "Meta Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.facebook.com/docs/marketing-apis",
+ "url": "https://www.facebook.com/business/ads-guide",
+ "verified_at": "2026-09-24",
+ "terms_note": "Marketing API access is tiered (app review / access levels per the Meta developer docs); advertiser ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (user / system-user access token; ads_management, ads_read, business_management)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "catalog_products",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/facebook/facebook-python-business-sdk (official, Python; also PHP, Java, Ruby, Node.js Business SDKs)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Marketing API on the Graph API).",
+  "base_urls": [
+   "https://graph.facebook.com/v26.0/"
+  ],
+  "auth": [
+   "1. Register an app at developers.facebook.com and add the **Marketing API** product (\"To manage the Marketing API, please visit your App Dashboard and add the Marketing API product to your app\" — SDK README).",
+   "2. Facebook Login (OAuth 2.0) on the user's user with `ads_management` (read + manage) or `ads_read` (reports only), plus `business_management` for Business Manager objects; exchange for a long-lived token (`/oauth/access_token?grant_type=fb_exchange_token`), or use a Business Manager **system use",
+   "3. Access tiers: **Limited Access** (default; \"Heavily rate-limited per ad account. For development only\", max 2 system users) → **Full Access** (\"Lightly rate limited per ad account\") once the app has \"at least 500 Marketing API calls in the last 15 days\" and \"an error rate of less than 15% in the ",
+   "4. Permission levels: Standard Access (own ad accounts, automatic) vs Advanced Access (\"If your app is managing other people's ad accounts, you need advanced access\" — App Review per permission + Business Verification).",
+   "5. Recommended: turn on \"App Secret Proof for Server API calls\" (appsecret_proof)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /me/adaccounts` · `GET /{business_id}/owned_ad_accounts",
+    "purpose": "accounts",
+    "notes": "`id, name, account_status, currency, timezone_name`"
+   },
+   {
+    "call": "GET/POST /act_{id}/campaigns",
+    "purpose": "list / create campaigns",
+    "notes": "`name, objective, status, special_ad_categories, daily_budget / lifetime_budget (CBO)`"
+   },
+   {
+    "call": "GET/POST /act_{id}/adsets` · `POST /{adset_id}",
+    "purpose": "ad sets, budgets, bids",
+    "notes": "`campaign_id, daily_budget, bid_strategy, bid_amount, targeting{}, optimization_goal, billing_event, start_time, end_time, status`"
+   },
+   {
+    "call": "POST /act_{id}/adimages` · `POST /act_{id}/advideos",
+    "purpose": "creative upload",
+    "notes": "`bytes` (base64) / `source` (multipart), returns `hash` / `id`"
+   },
+   {
+    "call": "POST /act_{id}/adcreatives",
+    "purpose": "creative",
+    "notes": "`name, object_story_spec{page_id, link_data{link, message, image_hash, call_to_action}}`"
+   },
+   {
+    "call": "POST /act_{id}/ads` · `POST /{id}` (status) · `DELETE /{id}",
+    "purpose": "ads, pause / resume",
+    "notes": "`adset_id, creative{creative_id}, name, status`"
+   },
+   {
+    "call": "GET /{object_id}/insights",
+    "purpose": "reports (async via `POST …/insights` → report run)",
+    "notes": "`fields, date_preset / time_range, time_increment, level, breakdowns`"
+   },
+   {
+    "call": "POST /act_{id}/customaudiences` · `POST /{audience_id}/users",
+    "purpose": "audiences",
+    "notes": "`subtype CUSTOM / LOOKALIKE, customer_file_source, payload{schema, data[] hashed}`"
+   },
+   {
+    "call": "POST /{pixel_id}/events",
+    "purpose": "Conversions API",
+    "notes": "`data[]{event_name, event_time, user_data{em, ph…}, custom_data}`"
+   },
+   {
+    "call": "GET /search?type=adinterest` · `GET /act_{id}/reachestimate",
+    "purpose": "targeting search",
+    "notes": "`q, type, limit`; `targeting_spec`"
+   },
+   {
+    "call": "GET /ads_archive",
+    "purpose": "competitor Ad Library",
+    "notes": "`search_terms, ad_reached_countries, ad_type, fields`"
+   }
+  ],
+  "limits": " - Rate limiting is per ad account (Limited vs Full tier) using the `x-business-use-case-usage` header; rate-limit errors carry code 17 / 613 / 80004. - Business Verification \"if your app will access sensitive data\"; App Review required for Advanced Access to `ads_management` / `ads_read`. - Ad Library: non-political ads only for EU-reached ads; impressions / spend political-only.",
+  "mcp_sdk": [
+   "Official Business SDKs: Python (`pip install facebook_business`), PHP, Java, Ruby, Node.js — https://github.com/facebook/facebook-python-business-sdk.",
+   "No official MCP server; community servers exist but were not opened this pass."
+  ],
+  "sources": [
+   "https://developers.facebook.com/docs/marketing-api/overview/authorization/",
+   "https://developers.facebook.com/docs/graph-api/changelog",
+   "https://raw.githubusercontent.com/facebook/facebook-python-business-sdk/main/README.md",
+   "https://developers.facebook.com/docs/marketing-apis"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://graph.facebook.com/v26.0",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Long-lived user or Business Manager system-user access token with ads_read (reads) and ads_management (budget updates), from an app with the Marketing API product; sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "fixed_params": {
+     "fields": "id,name"
+    },
+    "docs": "https://developers.facebook.com/docs/graph-api/reference/user/",
+    "note": "GET /v26.0/me?fields=id,name: the user (or system user) behind the token."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/me/adaccounts",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,account_id,name,currency,account_status,timezone_name"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/reference/ad-account/",
+    "note": "GET /me/adaccounts. `id` is the `act_<ad_account_id>` form that the other tools take as account_id; account_status 1 = ACTIVE, 2 = DISABLED, 101 = CLOSED. Up to 100 accounts (list_accounts takes no paging arguments); paging is cursor-based (paging.cursors.after), so only the first page is returned."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/{account_id}/campaigns",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "fields": "id,name,status,effective_status,objective,daily_budget,lifetime_budget,start_time,stop_time",
+     "summary": "total_count"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "total": "summary.total_count",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "start": "start_time",
+      "end": "stop_time"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/reference/ad-account/campaigns/",
+    "note": "GET /act_<id>/campaigns (account_id must carry the act_ prefix, as list_accounts returns it). By default only non-archived, non-deleted campaigns. `status` is not sent (the effective_status filter is a JSON list). daily_budget/lifetime_budget in raw are strings in the currency's minor unit (cents), so they are not mapped to `budget`. Paging is cursor-based; only the first page is returned."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/{campaign_id}",
+    "body": {
+     "daily_budget": "int:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group/",
+    "note": "POST /{campaign_id} {daily_budget} answers {success: true}. daily_budget is an integer in the account currency's MINOR unit (e.g. 5000 = 50.00 USD) and applies only to campaigns using campaign budget (Advantage+ campaign budget); ad-set budgets are set on the ad set. `currency` is ignored (the account currency applies)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/{campaign_id}",
+    "body": {
+     "status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group/",
+    "note": "POST /{campaign_id} {status: PAUSED|ACTIVE} (pause → PAUSED, resume → ACTIVE) answers {success: true}. Pausing a campaign stops all its ad sets and ads; ARCHIVED/DELETED are not reachable from this verb."
+   }
+  },
+  "not_offered": {
+   "get_report": "GET /{object_id}/insights takes a custom range only as the single object parameter `time_range={'since':YYYY-MM-DD,'until':YYYY-MM-DD}` (https://developers.facebook.com/docs/marketing-api/reference/ad-account/insights/: since/until are properties of that object, not parameters); the runtime cannot build it from date_from/date_to. A fixed `date_preset` (e.g. last_7d) is documented but would silently ignore the required date_from/date_to, so it is not mapped."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.facebook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/5 tool paths found verbatim on their docs pages, 1 by their last segments; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

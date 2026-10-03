@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "contrado-mcp",
+ "display_name": "Contrado MCP",
+ "version": "0.1.0",
+ "description": "Contrado (ecommerce suppliers): me, list_products, get_product, get_order. Every tool maps to a docu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "contrado"
+   ],
+   "env": {
+    "PLATFORM_MCP_CONTRADO_API_KEY": "${user_config.platform_mcp_contrado_api_key}",
+    "PLATFORM_MCP_CONTRADO_STORE_ID": "${user_config.platform_mcp_contrado_store_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_contrado_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CONTRADO_API_KEY",
+   "description": "Contrado Helix private token (Contrado Store Account > API Integration; shown once at creation), sent as `X-API-Key`. Scopes: StoresRead, StoreProductsRead, StoreOrdersRead.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_contrado_store_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CONTRADO_STORE_ID",
+   "description": "Store id sent as `X-Store-Id`; needed only with an account-level token (a store-level token already names its store).",
+   "sensitive": true,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /helix/v1/stores returns the envelope {success, message, data: {storeId, storeName, storeURL, cultureCode, ...}} for the stores the token can access (scope StoresRead). Rate limit 100 requests/minute."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /helix/v1/stores/products (scope StoreProductsRead): the store's designed products [{storeProductId, baseProductId, storeProductName, storeProductDescription, productThumb, productImages, storeProductURL, collectionId, isOutOfStock}] inside the {success, data} envelope; `query` and `category` are not accepted (products of one collection come from /stores/collections/{collectionId}/products, not mapped). Prices come from /stores/products/{id}/option-variants (not mapped)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /helix/v1/stores/products/{storeProductId}: data {storeProductId, storeProductName, productThumb, productImages, product3dImages, productSpecification, sizeChart, productionTime, shippingPriceGroupId, isOutOfStock}."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /helix/v1/orders/{orderId} (scope StoreOrdersRead; orderId is Contrado's integer order id): data {orderId, orderStatus, referenceId, externalReferenceId, orderedUtcDateTime, orderTrackingStatus, trackingId, trackingUrl, totalPrice, currencyCode, deliveryAddress, orderLineItems, orderSummary}."
+  }
+ ]
+}

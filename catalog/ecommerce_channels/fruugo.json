@@ -1,0 +1,271 @@
+{
+ "id": "fruugo",
+ "category": "ecommerce_channels",
+ "label": "Fruugo",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66158670/Order+API",
+ "url": "https://www.fruugo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Retailer application to Fruugo (cross-border marketplace, 40+ countries); credentials issued after onboarding; HTTP Basic; feed pulled from a static URL at least daily; stock API limited to 1000 SKUs per POST and only changed SKUs; no numeric rate limit published; no sandbox read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest_xml",
+   "feed"
+  ],
+  "auth": "basic (retailer credentials issued at onboarding)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.feed_url"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation o",
+  "base_urls": [],
+  "auth": [
+   "1. Apply as a retailer; Fruugo approves and issues retailer credentials.",
+   "2. Use HTTP Basic on the Order API and the Stock Status API.",
+   "3. Register the product-feed URL in the Retailer Portal."
+  ],
+  "endpoints": [
+   {
+    "call": "product feed (CSV / XML at a URL)",
+    "purpose": "create / update products, prices, stock",
+    "notes": "11 mandatory fields; StockStatus or StockQuantity; NormalPriceWithoutVAT or NormalPriceWithVAT; ≥ daily"
+   },
+   {
+    "call": "GET stock inventory feed",
+    "purpose": "live SKUs on Fruugo",
+    "notes": "Fruugo SKU id, retailer product id / sku id, title, availability, quantity"
+   },
+   {
+    "call": "POST stock inventory update (XML)",
+    "purpose": "availability + quantity per SKU",
+    "notes": "≤ 1000 SKUs per batch; only changed SKUs; async replication"
+   },
+   {
+    "call": "orders download (XML)",
+    "purpose": "'checked and paid' orders",
+    "notes": "stateless — track what was fetched"
+   },
+   {
+    "call": "confirm · ship · cancel · return",
+    "purpose": "order lifecycle incl. tracking",
+    "notes": "XML actions on order items"
+   },
+   {
+    "call": "packing slip (PDF)",
+    "purpose": "print",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published; stock API batch cap 1000 SKUs, post only changed SKUs. - Retailer agreement after approval; Fruugo handles the storefront / payment in each country. - Feed must be automated and refreshed at least daily. - Only complete, fraud-checked orders are exposed.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66158670/Order+API",
+   "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66682954/Stock+Status+API",
+   "https://fruugo.atlassian.net/wiki/spaces/RR/pages/67608002/Fruugo+Feed"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.fruugo.com",
+  "auth": {
+   "type": "basic",
+   "username_field": "username",
+   "password_field": "password",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "Fruugo Retailer Portal login (the Order and Stock Status APIs use the portal credentials with HTTP Basic)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Fruugo Retailer Portal password."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "Fruugo Order API and Stock Status API (https://fruugo.atlassian.net/wiki/spaces/RR): HTTP Basic with the Retailer Portal credentials, XML answers. Products, titles and prices come only from the product feed Fruugo pulls from your URL; the API changes order status and stock only.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/orders/download/v2",
+    "params": {
+     "from": "today"
+    },
+    "docs": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66158675/Requests+Calls",
+    "note": "No account endpoint; the probe downloads today's released orders (GET /orders/download/v2?from=<today>) to verify the portal credentials."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/orders/download/v2",
+    "params": {
+     "from": "since"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "orders.order",
+     "key": "orders",
+     "fields": {
+      "id": "orderId",
+      "status": "orderStatus",
+      "created_at": "orderDate",
+      "customer_order_id": "customerOrderId",
+      "released_at": "orderReleaseDate"
+     }
+    },
+    "docs": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66158675/Requests+Calls",
+    "note": "Download Orders v2: `since` (ISO 8601 date or datetime) is REQUIRED and is compared with the time Fruugo RELEASED the order (after payment and fraud checks), not the order date. The API is not paged: it returns every order released since then, with order lines, statuses (PENDING, PROCESSED…) and shipments under raw; `status` is not a server-side filter."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/orders/ship",
+    "body_format": "form",
+    "body": {
+     "orderId": "order_id",
+     "trackingCode": "tracking_number",
+     "trackingUrl": "carrier"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66158675/Requests+Calls",
+    "note": "Ship Order for every item on the order (orderId from list_orders). `carrier` is sent as trackingUrl, which Fruugo documents as \"a URL of the courier company where the package can be tracked or at a minimum the courier name\"; `tracking_number` is relayed to the customer. Confirm the order first in the portal or it ships from PENDING directly."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/stockstatus-api",
+    "body_format": "xml",
+    "xml_root": "skus",
+    "body": {
+     "sku.@fruugoSkuId": "listing_id",
+     "sku.itemsInStock": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=stock_updated"
+     }
+    },
+    "docs": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66682960/Stock+Inventory+Update",
+    "note": "Stock Inventory Update: `listing_id` is the fruugoSkuId (Fruugo's numeric SKU id, listed by GET /stockstatus-api), required; itemsInStock is saved synchronously (the live site follows within minutes). The availability flag is left unchanged; use end_listing to mark a SKU NOTAVAILABLE."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/stockstatus-api",
+    "body_format": "xml",
+    "xml_root": "skus",
+    "body": {
+     "sku.@fruugoSkuId": "listing_id",
+     "sku.availability": "=NOTAVAILABLE"
+    },
+    "result": {
+     "fields": {
+      "status": "=not_available"
+     }
+    },
+    "docs": "https://fruugo.atlassian.net/wiki/spaces/RR/pages/66682960/Stock+Inventory+Update",
+    "note": "Sets availability NOTAVAILABLE for one fruugoSkuId (listing_id): \"The product is permanently out of stock and needs to be removed.\" Your product feed must stop listing it too, or the next feed import restores it."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Products are only created from the retailer's CSV/XML product feed that Fruugo fetches from a URL (https://fruugo.atlassian.net/wiki/spaces/RR/pages/67608002/Fruugo+Feed); there is no product-creation API call.",
+   "update_listing": "\"The API doesn't allow the update of other product information such as title or price - these must be controlled by the product feed\" (https://fruugo.atlassian.net/wiki/spaces/RR/pages/66682954/Stock+Status+API); stock is set_inventory."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.fruugo.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

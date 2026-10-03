@@ -1,0 +1,179 @@
+{
+ "id": "idealist",
+ "category": "jobs",
+ "label": "Idealist",
+ "lane": "assist",
+ "kind": "nonprofit",
+ "regions": [
+  "us",
+  "global"
+ ],
+ "docs_url": "https://api-sandbox.idealist.org/listings-api",
+ "url": "https://www.idealist.org/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Non-profit jobs; apply via employer link.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "partner",
+  "access": "paid",
+  "capabilities": [
+   "job_search (volunteer listings, partner API)",
+   "apply_submit (Idealist Apply API, partners)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "keep — assist; the Open Network API (Idealist Listings API + Idealist Apply API, 'Volunteer Match, powered by Idealist') is a paid partner product for CSR / government / community platforms focused on",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Terms of Service §(j): no access 'by means of any automated program, expert system, electronic agent or bot … (including … spiders, robots, scrapers, crawlers, avatars, data mining tools, or the like)'; §(k) no scraping / republishing. The Open Network API requires an inquiry and pricing ('Open Network API Pricing'); documentation links (Listings API, Apply API) are gated behind the partner inquiry.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.idealist.org/en",
+   "https://www.idealist.org/robots.txt",
+   "https://www.idealist.org/en/open-network-api",
+   "https://www.idealist.org/en/terms-of-service"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.idealist.org/api/v1",
+  "auth": {
+   "type": "basic",
+   "field": "api_key",
+   "password": "",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Idealist Listings API key; 'API keys are issued manually. Contact support@idealist.org to request a production key.' Sent as the Basic-auth username with an empty password."
+    }
+   ]
+  },
+  "headers": {
+   "Accept": "application/json"
+  },
+  "rate_per_second": 1,
+  "terms": "Idealist Listings API documentation (https://api-sandbox.idealist.org/listings-api): 'Access to the Listings API is granted on request'; 'All usage of the Idealist API must abide by our Terms of Service' (https://www.idealist.org/en/terms-of-service); listings shown on a partner platform 'must carry attribution to Idealist using one of the approved logos' (https://www.idealist.org/en/design). Responsible use: 'Send requests sequentially, not in parallel', 'Wait at least 250ms between requests', and store the most recent since value to fetch incrementally.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/listings/jobs",
+    "params": {
+     "since": "now"
+    },
+    "docs": "https://api-sandbox.idealist.org/listings-api#authentication",
+    "note": "No account endpoint; the key is verified with a jobs listing request for changes since now ('401 Unauthorized - check your API key')."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/listings/jobs",
+    "params": {
+     "since": "cursor"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "next_cursor": "jobs.99.updated",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "url": "url.en",
+      "posted_at": "firstPublished"
+     }
+    },
+    "docs": "https://api-sandbox.idealist.org/listings-api#jobs",
+    "note": "Incremental feed, not a keyword search: GET /api/v1/listings/jobs 'returns up to 100 jobs, ordered by oldest updated first' and pages with since = the last job's updated value ('since is inclusive, meaning that you should expect to get the last job again'). query, location and page are not sent; pass next_cursor back as cursor to continue (it is set when a full page of 100 came back), and read details with get_posting. hasMore and updated are in raw."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/listings/jobs/{id}",
+    "result": {
+     "root": "job",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "org.name",
+      "location": "address.full",
+      "url": "url.en",
+      "posted_at": "firstPublished",
+      "currency": "salaryCurrency",
+      "description": "description"
+     }
+    },
+    "docs": "https://api-sandbox.idealist.org/listings-api#job-details",
+    "note": "Job details: description (rich text HTML), org, address, applyUrl / applyEmail / applyText, salaryMinimum / salaryMaximum (decimal strings, in raw), salaryPeriod, locationType, expires. '404 Not Found - It can mean a job has expired, has been hidden, etc.'"
+   }
+  },
+  "not_offered": {
+   "apply": "The Apply API only creates applications for volunteer listings ('create listing applications for volunteer listings', POST https://www.idealist.org/api/v1/listings/volops/{volop_id}/apply, https://api-sandbox.idealist.org/apply-api); jobs are applied to through the job's applyUrl / applyEmail.",
+   "list_messages": "No messaging endpoint; the Listings API covers jobs, internships and volunteer listings only."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.idealist.org: DNS ok, TLSv1.2 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

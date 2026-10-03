@@ -1,0 +1,39 @@
+{
+ "id": "autohome_2sc_cn",
+ "category": "automotive",
+ "label": "Car",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://car.autohome.com.cn",
+ "domain": "car.autohome.com.cn",
+ "country": "China",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). open.autohome.com.cn is a login-gated mini-program/cloud platform; no public listings/spec API docs found, only resellers and reverse-engineered clients. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://open.autohome.com.cn/cloud/login"
+  ],
+  "unofficial": [
+   "Aliyun \"item_get/item_search\" reseller articles",
+   "Apify autohome scrapers",
+   "github.com/cv-cat/AutohomeApis"
+  ]
+ },
+ "official_mcp": []
+}

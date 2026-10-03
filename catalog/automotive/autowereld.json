@@ -1,0 +1,44 @@
+{
+ "id": "autowereld",
+ "category": "automotive",
+ "label": "Autowereld",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autowereld.nl",
+ "domain": "autowereld.nl",
+ "country": "Netherlands",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). AutoWereld (DPG Media) takes dealer stock only via couplings with dealer VMS suppliers (e.g. Autotelex, Wheelerdelta); no public API or spec.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.autowereld.nl/adverteren-autobedrijven.html",
+   "https://www.autowereld.nl/faq.html"
+  ],
+  "unofficial": [
+   "https://autotelex.nl/partnersenkoppelingen/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): AutoWereld (DPG Media) takes dealer stock only via couplings with dealer VMS suppliers (e.g. Autotelex, Wheelerdelta); no public API or spec."
+}

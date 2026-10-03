@@ -1,0 +1,241 @@
+{
+ "id": "matterhorn",
+ "category": "ecommerce_suppliers",
+ "label": "Matterhorn",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://matterhorn-wholesale.com/",
+ "url": "https://matterhorn-wholesale.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "UNCONFIRMED",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "not readable (403 direct + proxy)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://matterhorn-wholesale.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://matterhorn-wholesale.com/B2BAPI",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Matterhorn REST API key generated in the customer panel (free for registered wholesale customers), sent as the raw Authorization header value."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Order currency for create_order (e.g. EUR, USD, GBP); left out of the body when unset."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/DICTIONARIES/CATEGORIES",
+    "docs": "https://matterhorn-wholesale.com/?str=api-help",
+    "note": "No account endpoint; the probe reads the category dictionary with the key."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/ITEMS/",
+    "params": {
+     "page": "page",
+     "limit": "limit",
+     "category_id": "category"
+    },
+    "default_limit": 100,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "stock": "stock_total",
+      "url": "url",
+      "image_url": "images.0",
+      "price_eur": "prices.EUR",
+      "brand": "brand",
+      "category": "category_name"
+     }
+    },
+    "docs": "https://matterhorn-wholesale.com/?str=api-help",
+    "note": "GET /B2BAPI/ITEMS/?page=&limit= (100 per page by default, 1000 at most); `category` is category_id (GET /B2BAPI/DICTIONARIES/CATEGORIES), `query` is not accepted. Each product carries prices in many currencies (prices{EUR, USD, GBP, ...}; EUR is mapped as price_eur) and variants[{variant_uid, name (size), stock}] - variant_uid is what orders need."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/ITEMS/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "stock": "stock_total",
+      "url": "url",
+      "image_url": "images.0",
+      "price": "prices.EUR",
+      "currency": "=EUR",
+      "brand": "brand",
+      "category": "category_name",
+      "color": "color"
+     }
+    },
+    "docs": "https://matterhorn-wholesale.com/?str=api-help",
+    "note": "GET /B2BAPI/ITEMS/{id}: {id, name, description, color, category_path, brand, stock_total, url, images[], variants[{variant_uid, name, stock, max_processing_time, ean}], prices{EUR, CHF, CZK, USD, GBP, ...}}. `price` is the EUR wholesale price; other currencies are in `raw`.prices."
+   },
+   "create_order": {
+    "method": "PUT",
+    "path": "/ACCOUNT/ORDERS/",
+    "body": {
+     "items": "items",
+     "delivery_to": "shipping_address",
+     "delivery_method_id": "int:shipping_option",
+     "currency": "@currency"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "total_gross",
+      "currency": "order_currency",
+      "created_at": "order_date",
+      "payment_url": "payment_url"
+     }
+    },
+    "docs": "https://matterhorn-wholesale.com/?str=api-help",
+    "note": "PUT /B2BAPI/ACCOUNT/ORDERS/ places a wholesale order (it is not paid through the API: pay via the returned payment_url or the confirmation e-mail link). `items` are [{variant_uid, quantity}]; `shipping_address` is Matterhorn's delivery_to {first_name, second_name, country (2-letter, lower case), street, house_number, zip, city} - when omitted Matterhorn ships to the key owner's address; `shipping_option` is the numeric delivery_method_id from GET /B2BAPI/DICTIONARIES/DELIVERY/{country}."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/ACCOUNT/ORDERS/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "total": "total_gross",
+      "currency": "order_currency",
+      "created_at": "order_date",
+      "tracking_number": "shipping_number",
+      "tracking_url": "tracking_url",
+      "carrier": "shipping_service",
+      "payment_url": "payment_url"
+     }
+    },
+    "docs": "https://matterhorn-wholesale.com/?str=api-help",
+    "note": "GET /B2BAPI/ACCOUNT/ORDERS/{id}: {id, order_date, status, total_net, total_gross, tax, order_currency, shipping_service, shipping_number and invoice_number (after dispatch), tracking_url, payment_url, delivery_to, positions[{product_variant_uid, quantity, grossprice, status}]}."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "Delivery methods per country come from GET /B2BAPI/DICTIONARIES/DELIVERY/{country}, but the api-help page does not document its response fields (the SwaggerHub reference it points to is not linked readably), so the options cannot be mapped reliably.",
+   "track": "No tracking-events endpoint; the order carries shipping_service, shipping_number and tracking_url once shipped (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host matterhorn-wholesale.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

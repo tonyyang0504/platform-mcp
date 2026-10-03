@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "we_work_remotely-jobs-mcp",
+ "display_name": "We Work Remotely MCP",
+ "version": "0.1.0",
+ "description": "We Work Remotely (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/we_work_remotely"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "We Work Remotely all-jobs RSS 2.0 feed (~80 current remote jobs, ~800 KB). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<company>: <job title>'; location is the WWR region ('Anywhere in the World'); country, skills, category, type and expires_at stay in raw. description is HTML. id is the job link."
+  }
+ ]
+}

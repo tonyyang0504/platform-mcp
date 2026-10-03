@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "faire-mcp",
+ "display_name": "Faire MCP",
+ "version": "0.1.0",
+ "description": "Faire (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders, mark_shippe",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "faire"
+   ],
+   "env": {
+    "PLATFORM_MCP_FAIRE_ACCESS_TOKEN": "${user_config.platform_mcp_faire_access_token}",
+    "PLATFORM_MCP_FAIRE_APP_CREDENTIALS": "${user_config.platform_mcp_faire_app_credentials}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_faire_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FAIRE_ACCESS_TOKEN",
+   "description": "Faire OAuth access token for the brand (Authorization Code Grant: POST https://www.faire.com/api/external-api-oauth2/token), sent as X-FAIRE-OAUTH-ACCESS-TOKEN. Scopes: READ_BRAND, READ_PRODUCTS, WRITE_PRODUCTS, READ_ORDERS, WRITE_ORDERS, WRITE_INVENTORIES.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_faire_app_credentials": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FAIRE_APP_CREDENTIALS",
+   "description": "Base64 of applicationId:applicationSecret from the Faire Developer Portal, sent as X-FAIRE-APP-CREDENTIALS (required together with the OAuth access token).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /brands/profile: the brand of the current session {brand_id, name, currency, locale}."
+  },
+  {
+   "name": "update_listing",
+   "description": "PATCH /products/{product_id} (listing_id = the product id, p_…) with name and description. `price` and `quantity` are ignored here: prices are per variant and region (PATCH /product-prices/by-skus) and stock is set with set_inventory."
+  },
+  {
+   "name": "end_listing",
+   "description": "DELETE /products/{product_id}: sets the product's lifecycle_state to DELETED so it is no longer visible on Faire."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PATCH /product-inventory/by-skus {inventories: [{sku, on_hand_quantity}]} sets the on-hand units of one variant by its SKU (`sku` required; `listing_id` is ignored). All-or-nothing: an unknown SKU fails the request. Returns the resulting on_hand/committed/available quantities keyed by SKU."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /orders?limit&cursor&updated_at_min, ascending by updated_at; pass next_cursor back as `cursor` (page numbers are not sent: Faire rate-limits offset paging). `since` = updated_at_min (ISO 8601). `status` is ignored (Faire only filters with excluded_states). state is NEW|PROCESSING|PRE_TRANSIT|IN_TRANSIT|DELIVERED|CANCELED|BACKORDERED|PENDING_RETAILER_CONFIRMATION; items, address and payout_costs are in raw."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "POST /orders/{order_id}/shipments {shipments: [{order_id, carrier, tracking_code, shipping_type: SHIP_ON_YOUR_OWN}]} adds a shipment and moves the order to PRE_TRANSIT (IN_TRANSIT once the carrier accepts it). carrier: CANADA_POST, DHL_ECOMMERCE, DHL_EXPRESS, FEDEX, PUROLATOR, UPS, USPS, POSTNL, CANPAR, INTERLINK_EXPRESS, GSO, ROYAL_MAIL, DPD, DPDUK, PARCELFORCE, AUSTRALIA_POST, EVRI, LA_POSTE (case-insensitive). The shipping cost (maker_cost) is not sent."
+  }
+ ]
+}

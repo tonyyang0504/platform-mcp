@@ -1,0 +1,211 @@
+{
+ "id": "autotrader_uk",
+ "category": "automotive",
+ "label": "Autotrader UK",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autotrader.co.uk",
+ "domain": "autotrader.co.uk",
+ "country": "UK",
+ "official_api": true,
+ "docs_url": "https://developers.autotrader.co.uk/api",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key + secret POSTed (form) to https://api.autotrader.co.uk/authenticate for a 15-minute bearer token; credentials issued by Autotrader to qualified integrators",
+  "access": "apply",
+  "capabilities": [
+   "decode_vin",
+   "get_valuation",
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Autotrader Connect: documented Vehicles (VRM lookup), Taxonomy, Stock, Valuations and Search APIs for approved retailers/partners.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.autotrader.co.uk/api",
+   "https://www.autotrader.co.uk/partners/retailer/platform/autotrader-connect"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.autotrader.co.uk",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/authenticate",
+    "body_format": "form",
+    "body": {
+     "key": "@key",
+     "secret": "@secret"
+    }
+   },
+   "token_path": "access_token",
+   "token_ttl_seconds": 840,
+   "fields": [
+    {
+     "name": "key",
+     "required": true,
+     "help": "Autotrader Connect API key (issued after Autotrader qualifies your integration; production and sandbox keys differ); POSTed form-encoded to https://api.autotrader.co.uk/authenticate."
+    },
+    {
+     "name": "secret",
+     "required": true,
+     "help": "The matching API secret. Access tokens last 15 minutes and are re-minted on expiry or 401; unused credentials are removed after 90 days."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": true,
+    "help": "Autotrader advertiser id your credentials are permitted for (sent as advertiserId on every call, as in all documented examples)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Autotrader Connect (https://developers.autotrader.co.uk/api): access by agreement with Autotrader; capabilities (Search, Vehicle Taxonomy, Current Valuations) are enabled per integration.",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "advertiserId": "@advertiser_id",
+     "keywords": "query",
+     "standardMake": "make",
+     "standardModel": "model",
+     "minManufacturedYear": "year_min",
+     "maxManufacturedYear": "year_max",
+     "minSuppliedPrice": "price_min",
+     "maxSuppliedPrice": "price_max",
+     "maxOdometerReadingMiles": "mileage_max",
+     "ownershipCondition": "map:condition:new=New,used=Used,New=New,Used=Used",
+     "postcode": "location",
+     "page": "page",
+     "pageSize": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "listings",
+     "total": "totalResults",
+     "fields": {
+      "id": "metadata.searchId",
+      "make": "vehicle.make",
+      "model": "vehicle.model",
+      "price": "adverts.retailAdverts.suppliedPrice.amountGBP",
+      "currency": "=GBP",
+      "mileage": "vehicle.odometerReadingMiles",
+      "mileage_unit": "=miles",
+      "condition": "vehicle.ownershipCondition",
+      "location": "advertiser.location.town",
+      "dealer": "advertiser.name",
+      "posted_at": "metadata.dateOnForecourt"
+     }
+    },
+    "docs": "https://developers.autotrader.co.uk/api#search-api",
+    "note": "GET /search (Capability: Search) — filters the stock of your permitted advertisers (advertiserId from config); make/model are Autotrader standard names (standardMake=Ford, standardModel=Focus), location a UK postcode (distance not mapped), prices in GBP, mileage in miles, condition New|Used. pageSize ≤ 200 per the docs. yearOfManufacture (a string), derivative, media and responseMetrics stay in raw."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "advertiserId": "@advertiser_id",
+     "searchId": "listing_id"
+    },
+    "result": {
+     "root": "results.0",
+     "fields": {
+      "id": "metadata.searchId",
+      "make": "vehicle.make",
+      "model": "vehicle.model",
+      "price": "adverts.retailAdverts.suppliedPrice.amountGBP",
+      "currency": "=GBP",
+      "mileage": "vehicle.odometerReadingMiles",
+      "mileage_unit": "=miles",
+      "condition": "vehicle.ownershipCondition",
+      "location": "advertiser.location.town",
+      "dealer": "advertiser.name",
+      "posted_at": "metadata.dateOnForecourt",
+      "vin": "vehicle.vin"
+     }
+    },
+    "docs": "https://developers.autotrader.co.uk/api#search-api",
+    "note": "GET /search?searchId=<advert searchId>&advertiserId: the documented way to fetch one advert (listing_id = metadata.searchId from search_listings)."
+   },
+   "decode_vin": {
+    "method": "GET",
+    "path": "/vehicles",
+    "params": {
+     "vin": "vin",
+     "advertiserId": "@advertiser_id"
+    },
+    "result": {
+     "root": "results.0.vehicle",
+     "fields": {
+      "vin": "vin",
+      "make": "make",
+      "model": "model",
+      "trim": "trim",
+      "body": "bodyType",
+      "fuel": "fuelType",
+      "engine": "derivative"
+     }
+    },
+    "docs": "https://developers.autotrader.co.uk/api#vehicles-api",
+    "note": "GET /vehicles?vin=&advertiserId (Capability: Vehicle Taxonomy). 'VIN look ups are supported for a selection of OEMs only'; UK registrations (VRM) use ?registration=, which the vocabulary has no input for. engine is the derivative description; yearOfManufacture (string), generation and the technical data stay in raw."
+   },
+   "get_valuation": {
+    "method": "GET",
+    "path": "/vehicles",
+    "params": {
+     "vin": "vin",
+     "valuations": "=true",
+     "odometerReadingMiles": "mileage",
+     "advertiserId": "@advertiser_id"
+    },
+    "result": {
+     "root": "results.0.valuations",
+     "fields": {
+      "low": "trade.amountGBP",
+      "mid": "private.amountGBP",
+      "high": "retail.amountGBP",
+      "currency": "=GBP"
+     }
+    },
+    "docs": "https://developers.autotrader.co.uk/api#valuations",
+    "note": "GET /vehicles?vin&valuations=true&odometerReadingMiles (Capability: Current Valuations; mileage in miles is required). low = trade, mid = private, high = retail valuation (GBP); partExchange is in raw. VIN lookups cover selected OEMs only."
+   }
+  },
+  "not_offered": {
+   "list_dealers": "The Advertisers API is a beta for configured advertisers only, not a public dealer directory.",
+   "me": "No identity endpoint; the token only proves the key/secret pair."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.autotrader.co.uk: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "login api.autotrader.co.uk/authenticate: 401 401",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

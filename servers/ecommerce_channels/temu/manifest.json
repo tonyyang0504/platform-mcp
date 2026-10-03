@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "temu-mcp",
+ "display_name": "Temu MCP",
+ "version": "0.1.0",
+ "description": "Temu (ecommerce channels): me, list_orders, set_inventory, end_listing. Every tool maps to a documen",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "temu"
+   ],
+   "env": {
+    "PLATFORM_MCP_TEMU_APP_KEY": "${user_config.platform_mcp_temu_app_key}",
+    "PLATFORM_MCP_TEMU_APP_SECRET": "${user_config.platform_mcp_temu_app_secret}",
+    "PLATFORM_MCP_TEMU_ACCESS_TOKEN": "${user_config.platform_mcp_temu_access_token}",
+    "PLATFORM_MCP_TEMU_REGION": "${user_config.platform_mcp_temu_region}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_temu_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEMU_APP_KEY",
+   "description": "app_key of your Temu Partner Platform app (issued after app review).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_temu_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEMU_APP_SECRET",
+   "description": "app_secret of the same app; signs every call: upper(MD5(app_secret + sorted key+value of all body fields + app_secret)). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_temu_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEMU_ACCESS_TOKEN",
+   "description": "The store's access_token, issued when the seller authorises your app in Seller Center (manual authorisation copies it; 'can be obtained from Seller Center', Common Parameters). Check its expiry with `me` (result.expiredTime).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_temu_region": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TEMU_REGION",
+   "description": "Gateway of the seller's store: us (United States), eu (Germany, Italy, France, Spain, UK, …) or global (Mexico, Japan, …) → https://openapi-b-{region}.temu.com/openapi/router ('Endpoints and Request Method', Developer Guide).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "bg.open.accesstoken.info.get: the token's mallId, mallType (1 semi-managed, 100 local), expiredTime (epoch seconds) and apiScopeList (the APIs this token may call)."
+  },
+  {
+   "name": "list_orders",
+   "description": "bg.order.list.v2.get: parent orders (PO-…) newest first, each with orderList[] (orderSn, goodsId, skuId, quantity, orderStatus) in `raw`. `status`: pending, unshipped (awaiting shipment), canceled, shipped, received or all. `since` (ISO date/datetime) filters by creation time (createAfter; createBefore is set far in the future because the API needs both). Parent status codes: 1 pending, 2 awaiting shipment, 3 canceled, 4 shipped, 5 received, 41 partially shipped, 51 partially received. `created_at` is epoch seconds; amounts come from bg.order.amount.query (not mapped)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "bg.local.goods.stock.edit (local-mall stores): sets SKU `sku` (Temu skuId) of goods `listing_id` (goodsId) to exactly `quantity` (skuStockTargetList). Both ids are required and numeric; per-SKU results are in raw.skuStockEditStatusInfoList."
+  },
+  {
+   "name": "end_listing",
+   "description": "temu.local.goods.delete: deletes goods `listing_id` (goodsId). Check `deleted` (result.success) and `error`."
+  }
+ ]
+}

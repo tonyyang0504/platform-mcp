@@ -1,0 +1,34 @@
+{
+ "id": "carlist",
+ "category": "automotive",
+ "label": "carlist",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": null,
+ "domain": null,
+ "country": "UAE",
+ "official_api": "unknown",
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). Entry has no domain/URL (label 'carlist', UAE) — cannot be checked; resolve the actual site first.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: Entry has no domain/URL (label 'carlist', UAE) — cannot be checked; resolve the actual site first."
+}

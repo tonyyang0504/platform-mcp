@@ -1,0 +1,33 @@
+{
+ "id": "tori",
+ "category": "automotive",
+ "label": "Tori",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.tori.fi",
+ "domain": "tori.fi",
+ "country": "Finland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No public Tori API; car ads are redirected to partner (autovex) integrations.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

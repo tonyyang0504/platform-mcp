@@ -1,0 +1,269 @@
+{
+ "id": "spreadconnect",
+ "category": "ecommerce_suppliers",
+ "label": "SPOD / Spreadconnect (Spreadshirt)",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.spreadconnect.app/docs/",
+ "url": "https://www.spreadshop.com/spreadconnect/",
+ "verified_at": "2026-09-24",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "api_key header `X-SPOD-ACCESS-TOKEN` (create an API Integration at login.spreadconnect.app; key on the dashboard)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "product_import",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI download on api.spreadconnect.app/docs"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.spreadconnect.app/…"
+  ],
+  "auth": [
+   "1. Register at login.spreadconnect.app",
+   "2. Connect Integration → new Spreadconnect API Integration → API key",
+   "3. Send `X-SPOD-ACCESS-TOKEN: <key>`"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /productTypes · /productTypes/{id} · size chart · views · hotspots · categories · previews",
+    "purpose": "blank catalogue + mockups",
+    "notes": ""
+   },
+   {
+    "call": "GET /stocks · /stocks/{variant} · per product type",
+    "purpose": "stock feed",
+    "notes": ""
+   },
+   {
+    "call": "POST /designs",
+    "purpose": "upload designs",
+    "notes": ""
+   },
+   {
+    "call": "GET/POST/DELETE /articles",
+    "purpose": "the user's products",
+    "notes": ""
+   },
+   {
+    "call": "POST /orders · PUT /orders/{id} · GET shipping types · POST set shipping · confirm · cancel · GET shipments",
+    "purpose": "order lifecycle + tracking",
+    "notes": ""
+   },
+   {
+    "call": "POST/GET/DELETE /subscriptions · simulate events",
+    "purpose": "webhooks",
+    "notes": ""
+   }
+  ],
+  "limits": " Documented on the Rate limits page (values not read). - Terms of Service linked in the docs - Key must stay private",
+  "mcp_sdk": [
+   "OpenAPI download on api.spreadconnect.app/docs"
+  ],
+  "sources": [
+   "https://api.spreadconnect.app/docs/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.spreadconnect.app",
+  "auth": {
+   "type": "header",
+   "header": "X-SPOD-ACCESS-TOKEN",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Spreadconnect API token (create an API Integration in the Spreadconnect web app; the token is on its dashboard), sent as the `X-SPOD-ACCESS-TOKEN` header."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/authentication",
+    "docs": "https://api.spreadconnect.app/docs/#operation/authentication%20info",
+    "note": "GET /authentication returns {merchantId, pointOfSaleId, pointOfSaleName, pointOfSaleType} for the token."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/articles",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "products",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "sku": "variants.0.sku",
+      "price": "variants.0.d2cPrice",
+      "image_url": "images.0.imageUrl"
+     }
+    },
+    "docs": "https://api.spreadconnect.app/docs/#operation/getArticles",
+    "note": "GET /articles lists the articles (your products) of the point of sale: {items[{id, title, description, variants[{id, sku, productTypeName, appearanceName, sizeName, d2cPrice, b2bPrice}], images[{imageUrl}]}], count, limit, offset}. `query` and `category` are not accepted; `sku`/`price` are the first variant's (price = d2cPrice, the end-customer price)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/articles/{articleId}",
+    "path_params": {
+     "articleId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "sku": "variants.0.sku",
+      "price": "variants.0.d2cPrice",
+      "image_url": "images.0.imageUrl"
+     }
+    },
+    "docs": "https://api.spreadconnect.app/docs/#operation/getArticle",
+    "note": "GET /articles/{articleId}: {id, title, description, variants[...], images[...]}; order lines use the variant `sku`. Stock per variant is in GET /stocks (not mapped)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{orderId}",
+    "path_params": {
+     "orderId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "state",
+      "total": "price.amount",
+      "currency": "price.currency",
+      "order_reference": "orderReference",
+      "external_order_reference": "externalOrderReference"
+     }
+    },
+    "docs": "https://api.spreadconnect.app/docs/#operation/getOrder",
+    "note": "GET /orders/{orderId}: {id, orderReference, externalOrderReference, state (NEW, CONFIRMED, PROCESSED, CANCELLED), orderItems[{sku, quantity, state, price}], shipping{address, type, price}, price{amount, currency}}. Tracking codes come from the track tool."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/orders/{orderId}/shipments",
+    "path_params": {
+     "orderId": "order_id"
+    },
+    "result": {
+     "items": "$",
+     "key": "events",
+     "fields": {
+      "shipment_id": "id",
+      "tracking_number": "tracking.0.code",
+      "tracking_url": "tracking.0.url",
+      "carrier": "shipping.type.company",
+      "method": "shipping.type.name",
+      "sent_date": "sentDate",
+      "closed_date": "closedDate"
+     }
+    },
+    "docs": "https://api.spreadconnect.app/docs/#operation/getShipments",
+    "note": "GET /orders/{orderId}/shipments returns [{id, orderItemReferences, shipping{type{company, name}, price}, tracking[{code, url}], closedDate, sentDate}]; each shipment is one event (its first tracking code)."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /orders requires `phone` ('Must not be blank'), `email` ('Must be a valid email address'), `externalOrderReference` ('external order reference from merchant (you). Must not be blank') and shipping{address, customerPrice{amount, currency}} beside orderItems[{sku, quantity, customerPrice}]; the vocabulary carries no customer price, phone or merchant reference, so the body cannot be built without inventing values.",
+   "quote_shipping": "GET /orders/{orderId}/shippingTypes lists shipping types with prices for an existing order only; there is no quote for a product_id/country/quantity before an order exists."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.spreadconnect.app: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

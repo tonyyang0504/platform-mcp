@@ -1,0 +1,35 @@
+{
+ "id": "pran",
+ "category": "automotive",
+ "label": "Pranmotors",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://pranmotors.com",
+ "domain": "pranmotors.com",
+ "country": "India",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). dealer site (homepage HTTP 502 to probe); no developer/API/partner-feed presence known or found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://pranmotors.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

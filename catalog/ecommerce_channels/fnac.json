@@ -1,0 +1,167 @@
+{
+ "id": "fnac",
+ "category": "ecommerce_channels",
+ "label": "Fnac Marketplace",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "fr",
+  "be",
+  "es",
+  "pt"
+ ],
+ "docs_url": "https://marketplace.fnacdarty.com/s/ressources/les-liens-de-connexion-a-nos-outils?language=fr",
+ "url": "https://www.fnac.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Fnac (and Darty) marketplace seller contract; API partner id / key requested from Fnac technical support (Marketplace.api@fnacdarty.com) — documentation access is granted, not public; preprod / test endpoints exist (Darty BOMP preprod, catalogue staging); rate limits not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest_xml"
+  ],
+  "auth": "api_key (partner id + shop id + key exchanged for a token at vendeur.fnac.com/api.php auth)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "messages",
+   "incidents",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "fnapy (community Python wrapper) — https://alexandriagroup.github.io/fnapy/"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.partner_id",
+  "config.shop_id",
+  "secret",
+  "config.sandbox_base"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the of",
+  "base_urls": [
+   "https://vendeur.fnac.com/api.php/<action>"
+  ],
+  "auth": [
+   "1. Seller signs the Fnac marketplace contract and asks Marketplace.api@fnacdarty.com for API partner credentials + documentation.",
+   "2. Call `auth` with partner_id, shop_id and key → token used on every subsequent XML call.",
+   "3. Sandbox credentials are separate from production."
+  ],
+  "endpoints": [
+   {
+    "call": "offers_update",
+    "purpose": "create / update / delete offers (price, stock, state)",
+    "notes": "product reference (EAN), price, quantity, condition; async → batch id"
+   },
+   {
+    "call": "offers_query · batch_query",
+    "purpose": "read offers, import status",
+    "notes": ""
+   },
+   {
+    "call": "orders_query · orders_update",
+    "purpose": "orders; accept / refuse, ship (tracking number + carrier)",
+    "notes": "order_id, action accepted / shipped, tracking"
+   },
+   {
+    "call": "pricing_query",
+    "purpose": "competitor / pricing data",
+    "notes": ""
+   },
+   {
+    "call": "messages_query · messages_update",
+    "purpose": "buyer messages",
+    "notes": ""
+   },
+   {
+    "call": "incidents_query · incidents_update",
+    "purpose": "claims / incidents",
+    "notes": ""
+   },
+   {
+    "call": "client_order_comments · shop_invoices · carriers_query",
+    "purpose": "ratings, invoices, carrier list",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read. - API credentials + documentation on request from Fnac technical support. - Marketplace seller contract (Fnac / Darty).",
+  "mcp_sdk": [
+   "SDK: fnapy (community Python wrapper) — https://alexandriagroup.github.io/fnapy/"
+  ],
+  "sources": [
+   "https://marketplace.fnacdarty.com/s/ressources/les-liens-de-connexion-a-nos-outils?language=fr",
+   "https://vendeur.fnac.com/api.php/,",
+   "https://catalog-mp.fnacdarty.com/docapi",
+   "https://alexandriagroup.github.io/fnapy/api.html",
+   "https://support.channelengine.com/hc/en-us/articles/4409503047709-Fnac-marketplace-guide"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "Fnac Marketplace seller API (https://vendeur.fnac.com/api.php/<service>; the Offers/Orders reference is handed out by Fnac on request and catalog-mp.fnacdarty.com/docapi is login-gated): every request is validated against mp-dialog.xsd. Authentication is itself an XML POST (<auth xmlns=\"http://www.fnac.com/schemas/mp-dialog.xsd\"><partner_id>…</partner_id><shop_id>…</shop_id><key>…</key></auth> → <auth_response><token>) and each later call carries the token as an attribute of the request root (<offers_update partner_id=\"…\" shop_id=\"…\" token=\"…\">). Re-checked 2026-09-25 against the new runtime: the token can now be placed into the request body (auth.token_body_path \"@token\" on an XML body) and the XML login answer is parsed, but session logins still send only JSON or form bodies. Remaining gap: an XML (namespaced-root) session login body."
+}

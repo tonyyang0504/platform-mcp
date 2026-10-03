@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "xandr-mcp",
+ "display_name": "Microsoft Invest (Xandr DSP, discontinued) MCP",
+ "version": "0.1.0",
+ "description": "Microsoft Invest (Xandr DSP, discontinued) (ads): me, list_accounts, list_campaigns, pause_resume. E",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "xandr"
+   ],
+   "env": {
+    "PLATFORM_MCP_XANDR_USERNAME": "${user_config.platform_mcp_xandr_username}",
+    "PLATFORM_MCP_XANDR_PASSWORD": "${user_config.platform_mcp_xandr_password}",
+    "PLATFORM_MCP_XANDR_ADVERTISER_ID": "${user_config.platform_mcp_xandr_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_xandr_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_XANDR_USERNAME",
+   "description": "Xandr / Microsoft Advertising platform API user name (an API-enabled user created through the API Onboarding Process).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_xandr_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_XANDR_PASSWORD",
+   "description": "Password of that API user. POST /auth {auth: {username, password}} returns a token valid for 2 hours after the last call (24-hour hard expiry); the runtime re-authenticates on expiry or 401 (the API allows 10 successful logins per 5 minutes).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_xandr_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_XANDR_ADVERTISER_ID",
+   "description": "Advertiser id that owns the line items; required for pause_resume (PUT /line-item?id=…&advertiser_id=…).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /user?current ('View the current user') with `Authorization: <token>` (no scheme)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /advertiser?start_element=0&num_elements=100 ('View all of your advertisers'); the first 100 advertisers (the vocabulary's list_accounts takes no page argument), total in `total`."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /line-item?advertiser_id=…&start_element&num_elements — line items are the buying unit that carries state and budget (campaigns under augmented line items are generated). `status` filters on state (active / inactive). Budgets live on raw.budget_intervals (seamless line items) or raw.daily_budget (legacy), in the line item's currency, so `budget` is not mapped."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /line-item?id=…&advertiser_id=<configured advertiser_id> {\"line-item\": {\"state\": \"inactive\"|\"active\"}}. Resuming restarts spend."
+  }
+ ]
+}

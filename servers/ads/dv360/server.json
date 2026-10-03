@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/dv360-mcp",
+ "description": "Google Display & Video 360 (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps t",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.google.com/display-video/api/guides/getting-started/overview",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "dv360"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DV360_CLIENT_ID",
+     "description": "OAuth 2.0 client id of a Google Cloud project with the Display & Video 360 API enabled.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DV360_CLIENT_SECRET",
+     "description": "The OAuth client's secret (form body of the refresh_token grant).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DV360_REFRESH_TOKEN",
+     "description": "Refresh token from Google's consent flow with scope https://www.googleapis.com/auth/display-video, for a user with a DV360 user profile (Admin/Standard for writes).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DV360_PARTNER_ID",
+     "description": "DV360 partner id whose advertisers list_accounts returns (GET /v4/advertisers requires partnerId).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_DV360_ADVERTISER_ID",
+     "description": "DV360 advertiser id used by pause_resume (the campaign PATCH path is /v4/advertisers/{advertiserId}/campaigns/{campaignId}).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

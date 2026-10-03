@@ -1,0 +1,281 @@
+{
+ "id": "freelancehunt",
+ "category": "deals",
+ "label": "Freelancehunt",
+ "lane": "api",
+ "kind": "freelance",
+ "regions": [
+  "ua",
+  "kz",
+  "by",
+  "eu"
+ ],
+ "docs_url": "https://apidocs.freelancehunt.com/",
+ "url": "https://freelancehunt.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Personal API key (self-serve); rate-limited (429 + headers); JSON:API; terms on automated bidding not readable this pass.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "json:api"
+  ],
+  "auth": "bearer (personal API key from freelancehunt.com/my/api2)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details",
+   "profile_sync",
+   "reviews"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (official API 2.0 with personal keys). Lane `assist` → **api for search + profile**, bids pending endpoint + rules check. Confidence high (docs read via r.jina.ai — page is JS).",
+  "base_urls": [
+   "https://api.freelancehunt.com/v2/"
+  ],
+  "auth": [
+   "1. Log in → freelancehunt.com/my/api2 → generate API key.",
+   "2. `Authorization: Bearer <token>` on every request."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/projects/?filter[…]",
+    "purpose": "search",
+    "notes": "id, attributes (name, description, budget{amount,currency}, skills…), links.self"
+   },
+   {
+    "call": "GET /v2/projects/{id}",
+    "purpose": "details",
+    "notes": "project"
+   },
+   {
+    "call": "GET /v2/my/profile",
+    "purpose": "profile_sync",
+    "notes": "freelancer profile"
+   },
+   {
+    "call": "GET /v2/my/reviews",
+    "purpose": "reviews",
+    "notes": "paginated"
+   },
+   {
+    "call": "GET /v2/freelancers/` · `/v2/employers/{id}",
+    "purpose": "directory / client facts",
+    "notes": "—"
+   },
+   {
+    "call": "bids endpoint (TODO(verify))",
+    "purpose": "submit_proposal",
+    "notes": "not in the portion read"
+   }
+  ],
+  "limits": " - Rate limit across all API queries: X-Ratelimit-Limit (average over time), X-Ratelimit-Remaining (points), 429 when exceeded; some endpoints add their own limits. - Site rules on automated bids not readable (cookie-policy page returned).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://apidocs.freelancehunt.com/",
+   "https://freelancehunt.com/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.freelancehunt.com/v2",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Personal API token from https://freelancehunt.com/my/api2, sent as 'Authorization: Bearer <token>'."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "rate_note": "'Freelancehunt rate-limits requests … HTTP 429 (Too Many Requests)' with X-Ratelimit-Limit / X-Ratelimit-Remaining headers; no numbers are published. One request per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/my/profile",
+    "docs": "https://apidocs.freelancehunt.com/",
+    "note": "GET /v2/my/profile ('Show current profile')."
+   },
+   "search_postings": {
+    "method": "GET",
+    "path": "/projects",
+    "params": {
+     "page[number]": "page",
+     "filter[skill_id]": "category"
+    },
+    "default_limit": 10,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "attributes.name",
+      "description": "attributes.description",
+      "buyer": "attributes.employer.login",
+      "budget_max": "attributes.budget.amount",
+      "currency": "attributes.budget.currency",
+      "url": "links.self.web",
+      "posted_at": "attributes.published_at",
+      "deadline": "attributes.expired_at"
+     }
+    },
+    "docs": "https://apidocs.freelancehunt.com/",
+    "note": "GET /v2/projects ('Open projects list'; by default open projects). Pagination is page[number]; filter[skill_id] takes comma-separated skill IDs (GET /v2/skills), so pass skill ids as category. No keyword or budget filter is documented, so query and min_budget are not sent and the page size is the platform's (limit is not sent). budget is a single amount (budget_max) in budget.currency; skills[] are {id, name} objects (raw)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/projects/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "attributes.name",
+      "description": "attributes.description",
+      "buyer": "attributes.employer.login",
+      "budget_max": "attributes.budget.amount",
+      "currency": "attributes.budget.currency",
+      "url": "links.self.web",
+      "posted_at": "attributes.published_at",
+      "deadline": "attributes.expired_at"
+     }
+    },
+    "docs": "https://apidocs.freelancehunt.com/",
+    "note": "GET /v2/projects/{project_id} ('Project details')."
+   },
+   "list_messages": {
+    "method": "GET",
+    "path": "/threads/{thread_id}",
+    "result": {
+     "items": "data",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "text": "attributes.message",
+      "sent_at": "attributes.posted_at",
+      "from": "attributes.participants.from.login",
+      "to": "attributes.participants.to.login"
+     }
+    },
+    "docs": "https://apidocs.freelancehunt.com/",
+    "note": "GET /v2/threads/{thread_id} ('Thread messages list'); thread_id is required (GET /v2/threads lists threads). from/to are the participants' logins."
+   },
+   "send_message": {
+    "method": "POST",
+    "path": "/threads/{thread_id}",
+    "body": {
+     "message_html": "text"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://apidocs.freelancehunt.com/",
+    "note": "POST /v2/threads/{thread_id} ('Add message to the thread') with {message_html}."
+   }
+  },
+  "config_fields": [
+   {
+    "name": "safe_type",
+    "required": false,
+    "help": "Default payment protection for new bids: split, employer, developer or employer_cashless (Safe), per the 'Add bid' docs; leave unset for the platform default."
+   }
+  ],
+  "not_offered": {
+   "withdraw_bid": "Revoking needs both ids (POST /v2/projects/{project_id}/bids/{bid_id}/revoke); the vocabulary's withdraw_bid carries bid_id only.",
+   "bid_status": "No per-bid endpoint: bids are listed with GET /v2/my/bids (filter[project_id], filter[status]) or per project, not fetched by bid id.",
+   "credits": "No credit or balance endpoint in the API 2.0 collection.",
+   "submit_bid": "POST /v2/projects/{project_id}/bids ('Add bid' in the Freelancehunt API 2.0 Postman collection) now answers 410 Gone: \"This public endpoint is no longer available due to API v2 deprecation.\" (auth audit 2026-09-26, sent with a dummy token; the refusal comes before authentication)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.freelancehunt.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 4/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "spec https://documenter.gw.postman.com/api/collections/3971751/S1Lzy7WU?segregateAuth=true&versionTag=latest: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "Fixed: submit_bid removed; POST /v2/projects/{id}/bids answers 410 'This public endpoint is no longer available due to API v2 deprecation.' The search 500 was caused by the dummy non-numeric skill id. inconclusive: search_postings: server_error 500"
+ }
+}

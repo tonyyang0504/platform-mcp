@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "yoycol-mcp",
+ "display_name": "Yoycol MCP",
+ "version": "0.1.0",
+ "description": "Yoycol (ecommerce suppliers): me, list_products, get_product, quote_shipping. Every tool maps to a d",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "yoycol"
+   ],
+   "env": {
+    "PLATFORM_MCP_YOYCOL_ACCESS_KEY": "${user_config.platform_mcp_yoycol_access_key}",
+    "PLATFORM_MCP_YOYCOL_SECRET_KEY": "${user_config.platform_mcp_yoycol_secret_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_yoycol_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YOYCOL_ACCESS_KEY",
+   "description": "accessKey issued by Yoycol for OPEN API V4 (sent as X-API-Access-Key).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_yoycol_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_YOYCOL_SECRET_KEY",
+   "description": "secretKey issued with it; signs every request (Base64 HMAC-SHA256 over method, path, timestamp, nonce, accessKey, algorithm, version and the sorted query). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one catalogue product (GET /api/2025/open/v4/catalog/products?page=1&size=1). Auth failures come back as codes 300001-300010 in the body."
+  },
+  {
+   "name": "list_products",
+   "description": "List Products (Catalog): Yoycol print-on-demand blanks {id, spuCode, name, spuDisplayImg, onlineStatus, variantCount}; `query` is a fuzzy name keyword; `category` is not supported. No prices in the list — use get_product."
+  },
+  {
+   "name": "get_product",
+   "description": "Get Product with include=variants: product {id, spuCode, name, spuDisplayImg} and variants[{id, skuCode, size, color, weight, salesPrice, currency, onlineStatus}] in `raw`; mapped price/sku are the first variant's. A variant skuCode is what quote_shipping takes."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "Get Sku Quotes: `product_id` must be a variant skuCode (from get_product). Returns every shipping region with its logistics levels [{levelCode, levelName, firstPrice, additionalPrice, timeEffectPriority}]; `country` and `quantity` are not inputs of this endpoint — pick the region and compute firstPrice + (quantity-1) x additionalPrice."
+  }
+ ]
+}

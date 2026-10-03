@@ -1,0 +1,35 @@
+{
+ "id": "schneider_gruppe",
+ "category": "automotive",
+ "label": "Fahrzeuge",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://fahrzeuge.schneidergruppe.de",
+ "domain": "fahrzeuge.schneidergruppe.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Germany); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://fahrzeuge.schneidergruppe.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

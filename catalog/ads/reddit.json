@@ -1,0 +1,301 @@
+{
+ "id": "reddit",
+ "category": "ads",
+ "label": "Reddit Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://ads-api.reddit.com/docs/v3/",
+ "url": "https://ads.reddit.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Ads API Terms + Advertising Platform Terms + Developer Terms + User Agreement (named in the API description); the Conversions API adds the Advertiser Measurement Program Terms",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Reddit app client_id/secret, ads scopes, Bearer token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Reddit Ads API v3).",
+  "base_urls": [
+   "https://ads-api.reddit.com/api/v3",
+   "https://ads-api.reddit.com/docs/v3/"
+  ],
+  "auth": [
+   "1. Register an OAuth 2.0 application at `https://www.reddit.com/prefs/apps` → `client_id` / `client_secret`.",
+   "2. Authorization code flow at `https://www.reddit.com/api/v1/authorize` requesting the Ads scopes (TODO(verify) names) → token; `Authorization: Bearer <access_token>` on every call.",
+   "3. Management access is allow-listed by Reddit's ads / partner team; reporting scopes are granted more readily (per integration guides — TODO(verify))."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v3/me/ad_accounts` (TODO(verify))",
+    "purpose": "ad accounts",
+    "notes": "id, name, currency"
+   },
+   {
+    "call": "GET/POST /api/v3/ad_accounts/{id}/campaigns` · `PATCH /api/v3/campaigns/{id}",
+    "purpose": "campaigns",
+    "notes": "name, objective, configured_status, spend_cap / goal"
+   },
+   {
+    "call": "GET/POST /api/v3/ad_accounts/{id}/ad_groups` · `PATCH …/ad_groups/{id}",
+    "purpose": "ad groups: bid, budget, targeting, schedule",
+    "notes": "bid_value (micro-currency TODO(verify)), goal_type, targeting{communities, interests, geolocations, devices}"
+   },
+   {
+    "call": "GET/POST /api/v3/ad_accounts/{id}/ads` · `POST /api/v3/ad_accounts/{id}/posts",
+    "purpose": "ads + promoted posts (creative)",
+    "notes": "post_id, headline, click_url, configured_status"
+   },
+   {
+    "call": "POST /api/v3/ad_accounts/{id}/reports",
+    "purpose": "reports",
+    "notes": "starts_at, ends_at, breakdowns, fields"
+   },
+   {
+    "call": "POST /api/v3/ad_accounts/{id}/custom_audiences` (+ user uploads)",
+    "purpose": "audiences",
+    "notes": "name, type, hashed emails / MAIDs"
+   },
+   {
+    "call": "POST /api/v3/pixels/{pixel_id}/conversion_events` (Conversions API, TODO(verify))",
+    "purpose": "conversions upload",
+    "notes": "event_at, event_type, user{email hashed…}, event_metadata"
+   }
+  ],
+  "limits": " - Rate limits and quotas: not readable this pass (TODO(verify)). Free API; Reddit Ads Terms + Developer Terms apply; management endpoints allow-listed.",
+  "mcp_sdk": [
+   "None official found; community connectors (dltHub Reddit Ads source, Supermetrics, Improvado) prove the reporting surface."
+  ],
+  "sources": [
+   "https://ads-api.reddit.com/docs/v3/",
+   "https://ads-api.reddit.com/docs/v3/openapi.json",
+   "https://business.reddithelp.com/s/article/Reddit-Ads-API"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ads-api.reddit.com/api/v3",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://www.reddit.com/api/v1/access_token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App ID of your Reddit Ads developer application (business > developer applications), sent as HTTP Basic user on the token call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The developer application's secret (HTTP Basic password on https://www.reddit.com/api/v1/access_token)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from one authorization-code consent with duration=permanent and scope adsread,adsedit (https://ads-api.reddit.com/docs/v3/guides/quick-start/authenticate); access tokens last one hour or one day and are re-minted from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "business_id",
+    "required": false,
+    "help": "Reddit business id whose ad accounts list_accounts returns (GET /me/businesses lists yours)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://ads-api.reddit.com/docs/v3/api/reddit-advertising-api",
+    "note": "GET /api/v3/me: the authenticated actor {data: {id, email, reddit_username, type}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/businesses/{business_id}/ad_accounts",
+    "path_params": {
+     "business_id": "@business_id"
+    },
+    "params": {
+     "page.size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "currency": "currency"
+     }
+    },
+    "docs": "https://ads-api.reddit.com/docs/v3/api/ad-accounts",
+    "note": "GET /api/v3/businesses/{business_id config}/ad_accounts: the business's ad accounts with currency and time zone. First page only (pagination.next_url)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/ad_accounts/{account_id}/campaigns",
+    "params": {
+     "page.size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "configured_status",
+      "start": "start_time",
+      "end": "end_time"
+     }
+    },
+    "docs": "https://ads-api.reddit.com/docs/v3/api/campaigns",
+    "note": "GET /api/v3/ad_accounts/{ad_account_id}/campaigns (page.size; first page only). `status` is configured_status (ACTIVE, PAUSED, ARCHIVED; raw.effective_status is the delivery state) and is not a filter. Budgets are microcurrency: raw.goal_value (CBO daily/lifetime goal) and raw.spend_cap."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/ad_accounts/{account_id}/reports",
+    "body": {
+     "data.starts_at": "fmt:{date:date_from}T00:00:00Z",
+     "data.ends_at": "fmt:{date:date_to}T23:00:00Z",
+     "data.breakdowns": "json:[\"CAMPAIGN_ID\",\"DATE\"]",
+     "data.fields": "json:[\"IMPRESSIONS\",\"CLICKS\",\"SPEND\",\"CTR\",\"CPC\"]"
+    },
+    "result": {
+     "items": "data.metrics",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "campaign_id",
+      "date": "date",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend_micros": "spend",
+      "ctr": "ctr",
+      "cpc": "cpc"
+     }
+    },
+    "docs": "https://ads-api.reddit.com/docs/v3/api/get-a-report",
+    "note": "POST /api/v3/ad_accounts/{ad_account_id}/reports {data: {starts_at: date_fromT00:00:00Z, ends_at: date_toT23:00:00Z, breakdowns: [CAMPAIGN_ID, DATE], fields: [IMPRESSIONS, CLICKS, SPEND, CTR, CPC]}} (synchronous). spend is microcurrency (1,000,000 = one unit of the account currency). campaign_id is not applied as a filter: filter the rows. First page only."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/campaigns/{campaign_id}",
+    "body": {
+     "data.configured_status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "campaign_id": "id",
+      "status": "configured_status",
+      "effective_status": "effective_status"
+     }
+    },
+    "docs": "https://ads-api.reddit.com/docs/v3/api/campaigns",
+    "note": "PATCH /api/v3/campaigns/{campaign_id} {data: {configured_status: PAUSED|ACTIVE}}. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Reddit campaign budgets are microcurrency integers (\"goal_value: Campaign-level goal value (microcurrency). Only works when is_campaign_budget_optimization is true\", PATCH /api/v3/campaigns/{campaign_id}, https://ads-api.reddit.com/docs/v3/api/campaigns); the adapter cannot scale a daily_budget to micros, and non-CBO budgets live on ad groups."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads-api.reddit.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token www.reddit.com/api/v1/access_token: 401 Unauthorized",
+   "authorize https://www.reddit.com/api/v1/authorize: 302",
+   "HTML docs spot-check (render-doc): 1/5 tool paths found verbatim on their docs pages, 2 by their last segments; names not found on the page: list_accounts:page.size, list_campaigns:page.size, pause_resume:data"
+  ],
+  "notes": "-"
+ }
+}

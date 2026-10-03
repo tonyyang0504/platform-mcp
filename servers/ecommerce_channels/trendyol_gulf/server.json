@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/trendyol_gulf-mcp",
+ "description": "Trendyol Gulf (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Eve",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.trendyol.com/en",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "trendyol_gulf"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TRENDYOL_GULF_API_KEY",
+     "description": "API KEY from Seller Center > Hesap Bilgilerim / Account Information > Entegrasyon Bilgileri / Integration Information (visible to the master/admin user only; PROD and STAGE differ); HTTP Basic username.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TRENDYOL_GULF_API_SECRET",
+     "description": "API SECRET KEY from the same page; HTTP Basic password.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TRENDYOL_GULF_SELLER_ID",
+     "description": "Your Trendyol seller (supplier) ID from the same Integration Information page; used in every path.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_TRENDYOL_GULF_USER_AGENT",
+     "description": "Mandatory User-Agent (requests without it get 403): '<sellerId> - SelfIntegration' for your own software, or '<sellerId> - <IntegratorName>' (alphanumeric, max 30 characters) when an integrator company runs it, e.g. '1234 - SelfIntegration'.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_TRENDYOL_GULF_API_HOST",
+     "description": "apigw.trendyol.com (PROD) or stageapigw.trendyol.com (STAGE, IP-authorised test environment).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

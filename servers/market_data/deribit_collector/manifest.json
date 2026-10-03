@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "deribit_collector-mcp",
+ "display_name": "Deribit options API MCP",
+ "version": "0.1.0",
+ "description": "Deribit options API (market data): me, search_symbols. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deribit_collector"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public API, no credentials: the probe is GET /public/test ({jsonrpc, id, result.version})."
+  },
+  {
+   "name": "search_symbols",
+   "description": "get_instruments has no text search: `query` is sent as the REQUIRED `currency` parameter (BTC, ETH, USDC, USDT, EURR or any) and every non-expired instrument of that currency comes back in one response (kind future/option/spot/…; expired=false default; no pagination, `page`/`limit` ignored). `type` is the instrument kind; base_currency, quote_currency, is_active, expiration_timestamp, strike, option_type, tick_size, contract_size stay in `raw`. JSON-RPC errors arrive as {error: {code, message}} — 10028 is the rate limit."
+  }
+ ]
+}

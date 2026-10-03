@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "otto_retail_media-mcp",
+ "display_name": "OTTO Advertising (OTTO Retail Media) MCP",
+ "version": "0.1.0",
+ "description": "OTTO Advertising (OTTO Retail Media) (ads): me, list_campaigns, update_budget, pause_resume. Every t",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "otto_retail_media"
+   ],
+   "env": {
+    "PLATFORM_MCP_OTTO_RETAIL_MEDIA_CLIENT_ID": "${user_config.platform_mcp_otto_retail_media_client_id}",
+    "PLATFORM_MCP_OTTO_RETAIL_MEDIA_CLIENT_SECRET": "${user_config.platform_mcp_otto_retail_media_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_otto_retail_media_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OTTO_RETAIL_MEDIA_CLIENT_ID",
+   "description": "Client ID of a self-app created in OTTO Partner Connect > API-Zugriff with the advertising-services scope (https://api.otto.market/docs/sellers-integration).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_otto_retail_media_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OTTO_RETAIL_MEDIA_CLIENT_SECRET",
+   "description": "The app's client secret (shown once in OPC). Tokens last 1800 s and are re-minted with the client credentials (no refresh token).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/sponsored-product-ads/campaigns?limit=1: confirms the client credentials and the advertising-services scope (the partner is derived from the token)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v1/sponsored-product-ads/campaigns (the token's partner; account_id is not sent, `status` is not a filter). `budget` is budget.amount in EUR for the period in raw.budgetType (DAILY, WEEKLY, MONTHLY or LIFETIME). Cursor paging: only the first page is returned."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /v1/sponsored-product-ads/campaigns/{id} (application/merge-patch+json) {budget: {amount, currency: EUR}}: a whole-euro amount (minimum 20) applied to the campaign's existing budgetType, which cannot be changed, so it is a daily budget only for DAILY campaigns; spends money. The write is asynchronous: 202 returns a changeRequest (status PENDING) to poll at /v1/sponsored-product-ads/change-requests/{request_id}; only one pending change per campaign (409 otherwise)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /v1/sponsored-product-ads/campaigns/{id} {status: PAUSED|ACTIVE} (only ACTIVE or PAUSED campaigns). Asynchronous: the returned changeRequest status is PENDING until OTTO accepts it. Resuming restarts spending."
+  }
+ ]
+}

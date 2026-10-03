@@ -1,0 +1,35 @@
+{
+ "id": "parkers",
+ "category": "automotive",
+ "label": "Parkers",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.parkers.co.uk",
+ "domain": "parkers.co.uk",
+ "country": "UK",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Parkers publishes no valuation/listings API; only third-party datasets.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://parkers.co.uk/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

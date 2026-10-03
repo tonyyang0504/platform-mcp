@@ -1,0 +1,347 @@
+{
+ "id": "bluesky",
+ "category": "social",
+ "label": "Bluesky",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.bsky.app/",
+ "url": "https://bsky.app/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free, no review: app password (Settings › App passwords) → com.atproto.server.createSession → accessJwt / refreshJwt (or OAuth for AT Protocol clients); limits: 3,000 requests per 5 min per IP, createSession 300 per day per IP, repo writes 5,000 points/hour and 35,000/day per account (CREATE 3, UPDATE 2, DELETE 1 → max 1,666 creates/hour, 11,666/day); Bluesky Community Guidelines (labels for automated accounts, no spam).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest(xrpc)",
+   "sdk",
+   "websocket(firehose)"
+  ],
+  "auth": "oauth2",
+  "access": "open",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "reply",
+   "read_comments",
+   "inbox_dm(chat)",
+   "search",
+   "delete",
+   "webhooks(firehose/jetstream)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "@atproto/api (official TypeScript)",
+   "atproto (official Python SDK, MarshalX)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 300,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /xrpc/com.atproto.repo.createRecord (collection app.bsky.feed.post)",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/com/atproto/repo/createRecord.json"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /xrpc/com.atproto.repo.uploadBlob + embed app.bsky.embed.images",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/com/atproto/repo/uploadBlob.json"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /xrpc/com.atproto.repo.uploadBlob + embed app.bsky.embed.video",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/embed/video.json"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /xrpc/app.bsky.feed.getPostThread",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/getPostThread.json"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /xrpc/com.atproto.repo.createRecord with reply.root / reply.parent",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/post.json"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /xrpc/app.bsky.notification.listNotifications",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/notification/listNotifications.json"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "GET chat.bsky.convo.getConvoForMembers → POST /xrpc/chat.bsky.convo.sendMessage (header `atproto-proxy: did:web:api.bsky.chat#bsky_chat`)",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/chat/bsky/convo/sendMessage.json"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /xrpc/chat.bsky.convo.listConvos, GET chat.bsky.convo.getMessages",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/chat/bsky/convo/listConvos.json"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST /xrpc/com.atproto.repo.deleteRecord",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/com/atproto/repo/deleteRecord.json"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (engagement counts only, via app.bsky.feed.getAuthorFeed / getPosts)",
+   "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/getAuthorFeed.json"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (followersCount on app.bsky.actor.getProfile)",
+   "docs": "https://docs.bsky.app/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (open, no review).",
+  "base_urls": [
+   "https://bsky.social/xrpc/<nsid>"
+  ],
+  "auth": [
+   "1. Tenant creates an **app password** (Settings › Privacy and security › App passwords) — never the main password.",
+   "2. `POST /xrpc/com.atproto.server.createSession` {identifier, password} → `accessJwt` (short-lived) + `refreshJwt`",
+   "3. No developer registration, no app review."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /xrpc/com.atproto.repo.createRecord` {repo: did, collection: `app.bsky.feed.post`, record{$type, text ≤ 300 graphemes, createdAt (ISO, trailing Z), langs[], facets[{index{byteStart,byteEnd}, feat",
+    "purpose": "link",
+    "notes": "tag]}], reply{root, parent}, embed}}"
+   },
+   {
+    "call": "POST /xrpc/com.atproto.repo.uploadBlob` (raw bytes, ≤ 1 MB each, ≤ 4 per post) → `app.bsky.embed.images` with alt text",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "app.bsky.embed.external` {uri, title, description, thumb}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /xrpc/com.atproto.repo.deleteRecord",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /xrpc/app.bsky.feed.getPostThread?uri=",
+    "purpose": "ancestors / descendants",
+    "notes": ""
+   },
+   {
+    "call": "GET /xrpc/app.bsky.feed.getAuthorFeed?actor=",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /xrpc/app.bsky.notification.listNotifications` (reason mention / reply / quote)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /xrpc/app.bsky.feed.searchPosts?q=` (supports `domain:`, `url:`, `from:`)",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "chat.bsky.convo.*` (service proxy header)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "firehose `com.atproto.sync.subscribeRepos` / Jetstream",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - 3,000 requests / 5 min per IP; `createSession` 300 / day per IP; repo writes 5,000 points/hour and 35,000/day per account (CREATE 3, UPDATE 2, DELETE 1 → ≤ 1,666 creates/hour, 11,666/day); `updateRepo` 2,600 / hour. - Free; Bluesky Community Guidelines (label automated accounts, no spam); links are nofollow.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.bsky.app/docs/advanced-guides/rate-limits",
+   "https://docs.bsky.app/docs/advanced-guides/posts"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://bsky.social",
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/xrpc/com.atproto.server.createSession",
+    "body": {
+     "identifier": "@identifier",
+     "password": "@password"
+    }
+   },
+   "token_path": "accessJwt",
+   "token_ttl_seconds": 3600,
+   "fields": [
+    {
+     "name": "identifier",
+     "required": true,
+     "help": "Bluesky handle (e.g. alice.bsky.social) or the account's e-mail; sent as `identifier` to com.atproto.server.createSession."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "An app password from Settings → Privacy and security → App Passwords, never the account password; the runtime exchanges it for a short-lived accessJwt (createSession is capped at 300/day per IP, so the token is cached and re-issued only on expiry or 401)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "did",
+    "required": true,
+    "help": "The account's DID (did:plc:..., shown in Settings → Account or returned by com.atproto.server.getSession); used as `repo` when writing records. The createRecord lexicon also accepts the handle here."
+   }
+  ],
+  "rate_per_second": 10,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/xrpc/com.atproto.server.getSession",
+    "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/com/atproto/server/getSession.json",
+    "note": "GET /xrpc/com.atproto.server.getSession (auth required) returns {handle, did, email?, emailConfirmed?, active?, status?} for the session's account. docs.bsky.app/docs/api/* now 301s to https://endpoints.bsky.app/; the lexicon JSON in the atproto repo is the authoritative definition."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/xrpc/com.atproto.repo.createRecord",
+    "body": {
+     "repo": "@did",
+     "collection": "=app.bsky.feed.post",
+     "record.$type": "=app.bsky.feed.post",
+     "record.text": "text",
+     "record.createdAt": "now"
+    },
+    "result": {
+     "fields": {
+      "id": "uri"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/com/atproto/repo/createRecord.json",
+    "note": "POST /xrpc/com.atproto.repo.createRecord {repo, collection: app.bsky.feed.post, record: {$type, text (<= 300 graphemes), createdAt}} returns {uri, cid}; the AT-URI is the post id used by read_comments / analytics_post (app.bsky.feed.post requires text and createdAt: https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/post.json; the runtime fills createdAt with the current UTC time). `reply_to` is ignored: a reply needs reply.root and reply.parent as {uri, cid} strong refs, and the parent's cid would have to be looked up first. No url / created_at in the response."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/xrpc/app.bsky.feed.getPostThread",
+    "params": {
+     "uri": "post_id"
+    },
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "thread.replies",
+     "key": "comments",
+     "fields": {
+      "id": "post.uri",
+      "author": "post.author.handle",
+      "text": "post.record.text",
+      "created_at": "post.indexedAt"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/getPostThread.json",
+    "note": "GET /xrpc/app.bsky.feed.getPostThread?uri=<at-uri> (depth default 6, parentHeight default 80 kept) returns {thread: threadViewPost {post, parent?, replies?}}; `comments` are the direct replies (each a threadViewPost whose `post` is a postView {uri, cid, author{did, handle}, record, indexedAt, ...}, deeper replies stay under raw.replies). page/limit are not sent: the thread comes back in one response. A reply that is a notFoundPost / blockedPost has no `post` and maps to an empty row."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/xrpc/app.bsky.notification.listNotifications",
+    "params": {
+     "limit": "limit"
+    },
+    "fixed_params": {
+     "reasons": "mention"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "notifications",
+     "key": "mentions",
+     "fields": {
+      "id": "uri",
+      "author": "author.handle",
+      "text": "record.text",
+      "created_at": "indexedAt"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/notification/listNotifications.json",
+    "note": "GET /xrpc/app.bsky.notification.listNotifications?reasons=mention&limit=N (limit 1..100, default 50) returns {cursor, notifications[{uri, cid, author{did, handle}, reason, reasonSubject, record, isRead, indexedAt}]}; `reasons` is an array parameter sent as one value (mention), so replies / quotes are excluded. Pagination is cursor-based, so `page` and `since` are not sent."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/xrpc/app.bsky.feed.getPosts",
+    "params": {
+     "uris": "post_id"
+    },
+    "result": {
+     "root": "posts.0",
+     "fields": {
+      "post_id": "uri",
+      "likes": "likeCount",
+      "reposts": "repostCount",
+      "replies": "replyCount",
+      "quotes": "quoteCount"
+     }
+    },
+    "docs": "https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/getPosts.json",
+    "note": "GET /xrpc/app.bsky.feed.getPosts?uris=<at-uri> (array parameter, up to 25; one value is sent) returns {posts[postView {uri, cid, author, record, replyCount, repostCount, likeCount, quoteCount, indexedAt}]}; counts are mapped from posts[0]. The runtime cannot compose a nested `metrics` object, so counts are top-level fields (postView: https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/app/bsky/feed/defs.json)."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Images must first be uploaded as raw bytes to POST /xrpc/com.atproto.repo.uploadBlob (<= 1 MB each) and embedded as app.bsky.embed.images; the runtime has no file upload.",
+   "reply_comment": "A reply is a createRecord whose record.reply carries root and parent strong refs {uri, cid}; the cid of the comment (and of the thread root) must be fetched first via getPosts / getPostThread, and the runtime cannot chain calls.",
+   "delete": "POST /xrpc/com.atproto.repo.deleteRecord needs {repo, collection, rkey}; the rkey is the last path segment of the post's AT-URI (at://did/app.bsky.feed.post/<rkey>) and the runtime has no expression to split it out of `post_id`."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host bsky.social: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login bsky.social/xrpc/com.atproto.server.createSession: 401 AuthenticationRequired",
+   "spec https://raw.githubusercontent.com/bluesky-social/atproto/main/lexicons/: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,201 @@
+{
+ "id": "freelancer_com",
+ "category": "jobs",
+ "label": "Freelancer.com",
+ "lane": "api",
+ "kind": "freelance_adjacent",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.freelancer.com/",
+ "url": "https://www.freelancer.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Official Freelancer API (bids on the freelancer's own account); job-style contracts handled by the Deals suite.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "job_search (projects)",
+   "job_details",
+   "apply_submit (place bid)",
+   "application_status (bids: award / accept / retract)",
+   "recruiter_messages (threads)",
+   "milestones"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "https://github.com/freelancer/freelancer-sdk-python (official Python SDK, pip freelancersdk, API version 0.1)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": " The developer portal itself is a JavaScript app that could not be rendered (also via r.jina.ai), so endpoint paths and rate limits come from the official SDK README rather than the docs pages (confidence medium). Site terms ('Access and Interference'): no robot, spider, scraper or other automated means to access the Website 'including … access to our API' without express written permission — the OAuth application registration on developers.freelancer.com IS that permission channel; no unreasonable load. The developer portal itself is a JavaScript app that could not be rendered (also via r.jin",
+  "mcp_sdk": [
+   "https://github.com/freelancer/freelancer-sdk-python (official Python SDK, pip freelancersdk, API version 0.1)"
+  ],
+  "sources": [
+   "https://developers.freelancer.com/",
+   "https://developers.freelancer.com/docs",
+   "https://api.github.com/repos/freelancer/freelancer-sdk-python/readme",
+   "https://pypi.org/project/freelancersdk/",
+   "https://www.freelancer.com/about/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.freelancer.com/api",
+  "auth": {
+   "type": "header",
+   "header": "freelancer-oauth-v1",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Freelancer OAuth access token sent as the freelancer-oauth-v1 header: a Personal Access Token from https://accounts.freelancer.com/settings/develop ('valid for thirty days') or a token from your registered OAuth app."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "rate_note": "'Each endpoint has a rate limit … A HTTP 429 response will be triggered if you hit the rate limit' (https://developers.freelancer.com/docs/api-overview/rate-limiting); no numbers are published. One request per second.",
+  "terms": "Freelancer.com User Agreement forbids automated access to the API without express written permission; the OAuth app / personal token is that channel. The developer docs list 'Automatic Bidders' as a prohibited integration.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/projects/0.1/projects/active/",
+    "params": {
+     "query": "query",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "full_description": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.projects",
+     "key": "postings",
+     "total": "result.total_count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "salary_min": "budget.minimum",
+      "salary_max": "budget.maximum",
+      "currency": "currency.code"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/projects#projects-get-3",
+    "note": "GET /projects/0.1/projects/active/ ('Searches for active projects', scope basic): query is space-separated terms over names and descriptions; limit/offset page the results; full_description=true returns the whole text. Freelancer projects are contracts, not employment: salary_min/max are budget.minimum/maximum in currency.code (fixed or hourly per `type`). time_submitted (Unix), owner_id, seo_url and jobs stay in raw. No location text filter (latitude/longitude only)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/projects/0.1/projects/{id}/",
+    "fixed_params": {
+     "full_description": "true"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "salary_min": "budget.minimum",
+      "salary_max": "budget.maximum",
+      "currency": "currency.code"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/projects#projects-get-2",
+    "note": "GET /projects/0.1/projects/{project_id}/ with full_description=true."
+   },
+   "list_messages": {
+    "method": "GET",
+    "path": "/messages/0.1/messages/",
+    "params": {
+     "threads[]": "thread_id",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.messages",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "thread_id",
+      "text": "message"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/messaging/messaging#messages-get",
+    "note": "GET /messages/0.1/messages/ (scope fln:messaging) filtered by threads[]=thread_id. The sender (from_user) is a numeric user id and time_created is Unix time; both stay in raw."
+   }
+  },
+  "not_offered": {
+   "me": "Served by the Freelancer deals server (GET /users/0.1/self/); the jobs vocabulary keeps this entry to project discovery.",
+   "apply": "A Freelancer 'application' is a bid (POST /projects/0.1/bids/) that needs amount, period and milestone_percentage, which the jobs apply input (cover_letter, resume_url) does not carry — use the freelancer deals server's submit_bid."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host www.freelancer.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: get_posting, search returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

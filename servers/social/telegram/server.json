@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/telegram-social-mcp",
+ "description": "Telegram (social): me, publish_text, delete, publish_image. Every tool maps to a documented endpoint",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://core.telegram.org/bots/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/telegram"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TELEGRAM_TOKEN",
+     "description": "Bot token from @BotFather. It is part of the URL path: 'All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: https://api.telegram.org/bot<token>/METHOD_NAME' (https://core.telegram.org/bots/api#making-requests). The bot must be an administrator of the target channel with the right to post (and delete) messages. Same field as the messaging entry (env PLATFORM_MCP_TELEGRAM_TOKEN).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TELEGRAM_CHAT_ID",
+     "description": "The channel (or group) the bot publishes to, sent as `chat_id`: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)', e.g. @mychannel or -1001234567890; env PLATFORM_MCP_TELEGRAM_CHAT_ID. Message ids are unique only inside this chat, so `post_id` values are message_ids of this chat.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

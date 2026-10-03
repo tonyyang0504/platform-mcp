@@ -1,0 +1,106 @@
+{
+ "id": "ownerclan",
+ "category": "ecommerce_suppliers",
+ "label": "Ownerclan",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "korea"
+ ],
+ "docs_url": "https://www.ownerclan.com/V2/service/api-center-guest-view.php",
+ "url": "https://www.ownerclan.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "이용약관 linked; API usage via account",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Ownerclan account login (API 매뉴얼 download after login); third-party account linking '준비중'",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "orders"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Member account; 이용약관.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.ownerclan.com/V2/service/api-center-guest-view.php"
+  ]
+ },
+ "adapter_status": "needs_runtime",
+ "reason": "The Seller manual (https://cdn.ownerclan.com/API%20%EB%A7%A4%EB%89%B4%EC%96%BC.zip, OwnerclanAPI_Seller_Manual v0.11.0) documents GraphQL https://api.ownerclan.com/v1/graphql (item/allItems/createOrder/order) with 'Authorization: Bearer <JWT>' obtained from POST https://auth.ownerclan.com/auth {service: ownerclan, userType: seller, username, password}; the sample's success handler logs the response body itself as the token, i.e. the body is the bare JWT text (a failed login answers JSON {name, message} with HTTP 401, re-probed 2026-09-25). Remaining gap: a session login whose response body is the raw token text — the runtime (as of the 2026-09-25 additions) reads the token only from a JSON/XML body path (token_path), a response header (token_from_header) or cookies (token_from_cookie, incl. \"*\")."
+}

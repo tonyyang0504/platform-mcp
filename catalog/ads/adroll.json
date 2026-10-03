@@ -1,0 +1,293 @@
+{
+ "id": "adroll",
+ "category": "ads",
+ "label": "AdRoll",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://developers.nextroll.com/",
+ "url": "https://www.adroll.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Register as a developer and create an application (consumer key + secret); authenticate with OAuth 2.0 or a Personal Access Token from the dashboard settings page (token + application client ID); base URL https://services.adroll.com; default quota 100 API requests per service per day (raise on request); NextRoll API Terms of Service. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "sdk"
+  ],
+  "auth": "oauth2 or Personal Access Token (+ apikey / client id query parameter)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (NextRoll API for AdRoll: CRUD, GraphQL Reporting, Audience, Universal / Automated / Prospecting",
+  "base_urls": [
+   "https://services.adroll.com"
+  ],
+  "auth": [
+   "1. Create a developer account, then an application (one for production, one for testing) → consumer key + secret.",
+   "2. Either OAuth 2.0 (authorization code with the app's redirect URI — \"Get Started with OAuth 2.0\") or a **Personal Access Token** created in the dashboard settings, sent together with the application's client ID; API keys are also supported (`apikey` always in the query string — \"Migrating to API K",
+   "3. First call: fetch the Advertisable EID (the advertiser account) — most calls are scoped by `advertisable`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v1/organization/get` · `GET /api/v1/advertisable/get` · `POST /api/v1/advertisable/create",
+    "purpose": "accounts (advertisables)",
+    "notes": "eid, name, organization, currency"
+   },
+   {
+    "call": "GET /api/v1/advertisable/get_campaigns` · `GET /api/v1/campaign/get` · `POST /api/v1/campaign/create` · `POST /api/v1/campaign/edit` · `PUT /api/v1/campaign/pause` · `/unpause",
+    "purpose": "campaigns + budget",
+    "notes": "advertisable, name, budget, start_date, end_date, status"
+   },
+   {
+    "call": "GET /api/v1/advertisable/get_adgroups` · `POST /api/v1/adgroup/create` · `POST /api/v1/adgroup/edit` · `add_segments` / `remove_segments` · `select_ads` / `deselect_ads` · `pause` / `unpause",
+    "purpose": "ad groups, targeting segments, ad selection",
+    "notes": "campaign, name, segments[], ads[]"
+   },
+   {
+    "call": "POST /api/v1/ad/create` · `POST /api/v1/ad/create_templated_web_ads` · `PUT /api/v1/ad/edit` · `POST /api/v1/ad/clone` · `POST /api/v1/advertisable_logo/create",
+    "purpose": "ads + creative upload",
+    "notes": "advertisable, name, file (base64 image), width, height, destination_url"
+   },
+   {
+    "call": "GraphQL Reporting API (`POST /reporting/api/v1/query`)",
+    "purpose": "reports",
+    "notes": "advertisable metrics by date, campaign, adgroup, ad"
+   },
+   {
+    "call": "Audience API (CRM segments) · User Lists API (`audience size`)",
+    "purpose": "audiences",
+    "notes": "segment name, hashed emails"
+   },
+   {
+    "call": "Server-to-Server (S2S) API",
+    "purpose": "conversion / event upload",
+    "notes": "event name, user identifiers, value"
+   },
+   {
+    "call": "Geotargeting API (search geo EIDs) · `GET /api/v1/contextual_categories/get_all_contextual_categories",
+    "purpose": "targeting search",
+    "notes": "query"
+   }
+  ],
+  "limits": " - Default quota **100 API requests per service per day** (\"If you think you need your limit increased, send us a message\"). NextRoll API Terms of Service apply. Free.",
+  "mcp_sdk": [
+   "None official found; the docs provide guides for Reporting / Marketing / Marketplace / E-commerce platform integrators."
+  ],
+  "sources": [
+   "https://apidocs.nextroll.com/index.html",
+   "https://apidocs.nextroll.com/guides/get-started.html",
+   "https://apidocs.nextroll.com/crud-api/reference.html"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://services.adroll.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "prefix": "Token ",
+   "field": "token",
+   "params": {
+    "apikey": "client_id"
+   },
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "AdRoll Personal Access Token (dashboard > settings > Personal Access Tokens), sent as `Authorization: Token <PAT>` (https://apidocs.nextroll.com/guides/get-started.html)."
+    },
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID (consumer key) of your NextRoll developer application, sent in the `apikey` query parameter on every call."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v1/organization/get",
+    "docs": "https://apidocs.nextroll.com/crud-api/reference.html",
+    "note": "GET /api/v1/organization/get: the caller's organization {eid, name, created_date}. Default quota is 100 requests per service per day."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/api/v1/organization/get_advertisables",
+    "result": {
+     "items": "results",
+     "key": "accounts",
+     "fields": {
+      "id": "eid",
+      "name": "name"
+     }
+    },
+    "docs": "https://apidocs.nextroll.com/crud-api/reference.html",
+    "note": "GET /api/v1/organization/get_advertisables: the organization's advertisables (the ad accounts); `id` is the advertisable EID used as account_id."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/v1/advertisable/get_campaigns",
+    "params": {
+     "advertisable": "account_id",
+     "statuses": "status"
+    },
+    "result": {
+     "items": "results",
+     "key": "campaigns",
+     "fields": {
+      "id": "eid",
+      "name": "name",
+      "status": "status",
+      "budget": "budget",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://apidocs.nextroll.com/crud-api/reference.html",
+    "note": "GET /api/v1/advertisable/get_campaigns?advertisable={account_id} (is_active defaults to true, so only active campaigns are listed; `status` filters `statuses`). `budget` is the WEEKLY budget (raw.ui_budget_daily says whether the UI shows it as daily). No paging."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/api/v1/report/campaign",
+    "params": {
+     "advertisables": "account_id",
+     "campaigns": "campaign_id",
+     "start_date": "date:date_from",
+     "end_date": "date:date_to"
+    },
+    "fixed_params": {
+     "data_format": "entity"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "eid",
+      "campaign": "campaign",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "spend": "cost",
+      "ctr": "ctr",
+      "cpm": "cpm"
+     }
+    },
+    "docs": "https://apidocs.nextroll.com/crud-api/reference.html",
+    "note": "GET /api/v1/report/campaign?data_format=entity: per-campaign totals over the range (USD by default). Prospecting and new-style Facebook campaigns are not in this endpoint (NextRoll recommends its GraphQL Reporting API for those)."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/api/v1/campaign/{op}",
+    "path_params": {
+     "op": "map:action:pause=pause,resume=unpause"
+    },
+    "params": {
+     "campaign": "campaign_id"
+    },
+    "result": {
+     "root": "$",
+     "fields": {
+      "status": "results"
+     }
+    },
+    "docs": "https://apidocs.nextroll.com/crud-api/reference.html",
+    "note": "PUT /api/v1/campaign/pause or /api/v1/campaign/unpause ?campaign={campaign_id}; `status` is the campaign status after the change. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "update_budget": "\"POST /api/v1/campaign/edit … budget: The new WEEKLY budget for the campaign\" (with ui_budget_daily required); AdRoll stores weekly budgets and the adapter cannot convert a daily amount (https://apidocs.nextroll.com/crud-api/reference.html)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host services.adroll.com: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

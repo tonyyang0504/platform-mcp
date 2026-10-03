@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "careerjet-mcp",
+ "display_name": "Careerjet MCP",
+ "version": "0.1.0",
+ "description": "Careerjet (jobs): me, search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "careerjet"
+   ],
+   "env": {
+    "PLATFORM_MCP_CAREERJET_API_KEY": "${user_config.platform_mcp_careerjet_api_key}",
+    "PLATFORM_MCP_CAREERJET_USER_IP": "${user_config.platform_mcp_careerjet_user_ip}",
+    "PLATFORM_MCP_CAREERJET_USER_AGENT": "${user_config.platform_mcp_careerjet_user_agent}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_careerjet_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CAREERJET_API_KEY",
+   "description": "Careerjet publisher API key (free publisher sign-up at https://www.careerjet.com/partners/api/); sent as the HTTP Basic user name with an empty password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_careerjet_user_ip": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CAREERJET_USER_IP",
+   "description": "The end user's IP address, required by Careerjet as the user_ip query parameter on every call (403 'Missing param user_ip or user_agent' otherwise).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_careerjet_user_agent": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CAREERJET_USER_AGENT",
+   "description": "The end user's browser user agent, required by Careerjet as the user_agent query parameter on every call.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-result query (Careerjet has no account endpoint)."
+  },
+  {
+   "name": "search",
+   "description": "Publisher Search API v4: page 1-10, page_size ≤ 100. Results are Careerjet redirect URLs to the original posting and no job id is documented, so url doubles as id; salary is a free-text string left in raw. An ambiguous location yields a LOCATIONS response with no jobs. Every call carries the configured end user's user_ip and user_agent as the publisher terms require; locale_code, contract_type, work_hours and sort are not exposed. No published rate limit."
+  }
+ ]
+}

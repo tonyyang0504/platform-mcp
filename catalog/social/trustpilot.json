@@ -1,0 +1,310 @@
+{
+ "id": "trustpilot",
+ "category": "social",
+ "label": "Trustpilot",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "eu"
+ ],
+ "docs_url": "https://developers.trustpilot.com/service-reviews-api/",
+ "url": "https://www.trustpilot.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Invitations may only follow a real purchase or service and must go to all customers or a fair sample (no cherry-picking, no incentives); replies must come from the business and are public.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "paid",
+  "capabilities": [
+   "reply(review replies)",
+   "read_comments(reviews)",
+   "invitations(review requests)",
+   "analytics(business unit stats)",
+   "delete(reply)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 2000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (review replies + invitations, behind the paid API module).",
+  "base_urls": [
+   "https://api.trustpilot.com/v1/…",
+   "https://invitations-api.trustpilot.com/v1/…"
+  ],
+  "auth": [
+   "1. Trustpilot for Business account with the **API module** → API key + secret in the Business app (Integrations).",
+   "2. Public endpoints: `apikey` header / query. Private endpoints: **Business user OAuth token** —",
+   "3. `businessUnitId` from `GET /v1/business-units/find?name=<domain>`."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "GET /v1/private/business-units/{businessUnitId}/reviews?stars=&language=&page=&perPage=",
+    "purpose": "private = includes consumer email, tags",
+    "notes": ""
+   },
+   {
+    "call": "POST /v1/private/reviews/{reviewId}/reply` {message}",
+    "purpose": "the suite's engagement job",
+    "notes": ""
+   },
+   {
+    "call": "DELETE /v1/private/reviews/{reviewId}/reply",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST /v1/private/reviews/{reviewId}/tags",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v1/private/reviews/{reviewId}/find-reviewer",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "POST https://invitations-api.trustpilot.com/v1/private/business-units/{businessUnitId}/email-invitations` {consumerEmail, consumerName, referenceNumber, templateId, redirectUri, preferredSendTime}",
+    "purpose": "after a real purchase / service only",
+    "notes": ""
+   },
+   {
+    "call": "POST …/invitation-links`, `GET …/templates",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /v1/business-units/{id}` (public: stars, trustScore, numberOfReviews)",
+    "purpose": "analytics",
+    "notes": ""
+   },
+   {
+    "call": "Business app → webhook on new review / reply",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - Rate-limiting best-practices page (limits per API key; exact numbers not rendered today); 429 → back off. - Trustpilot Guidelines: invite all customers or a fair sample (no cherry-picking), replies must come from the business, no incentives; API module is a paid add-on.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.trustpilot.com/",
+   "https://developers.trustpilot.com/service-reviews-api/",
+   "https://developers.trustpilot.com/invitation-api/",
+   "https://developers.trustpilot.com/rate-limiting/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.trustpilot.com/v1",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/refresh",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Trustpilot API key (Client ID); HTTP Basic username on the refresh request ('Authorization: Basic [BASE64_ENCODED(API_KEY:API_SECRET)]', https://developers.trustpilot.com/authentication)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Trustpilot API secret; HTTP Basic password on the refresh request."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Business-user refresh token from the authorization-code or password grant. 'Access tokens expire after 100 hours and refresh tokens expire after 30 days'; the runtime mints access tokens from it and keeps a returned new refresh token (PLATFORM_MCP_STATE_DIR persists it)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "business_unit_id",
+    "required": true,
+    "help": "Business unit id (GET /v1/business-units/find?name=<domain> with the API key)."
+   },
+   {
+    "name": "business_user_id",
+    "required": true,
+    "help": "Id of the business user replies are authored by (authorBusinessUserId)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/private/business-units/{business_unit_id}/reviews",
+    "path_params": {
+     "business_unit_id": "@business_unit_id"
+    },
+    "fixed_params": {
+     "perPage": 1
+    },
+    "docs": "https://developers.trustpilot.com/business-units-api/",
+    "note": "No who-am-I endpoint: fetches one private review of config business_unit_id, which verifies the business-user token and the unit (account.reviews[0].businessUnit)."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/private/business-units/{business_unit_id}/reviews",
+    "path_params": {
+     "business_unit_id": "@business_unit_id"
+    },
+    "params": {
+     "page": "page",
+     "perPage": "limit"
+    },
+    "fixed_params": {
+     "orderBy": "createdat.desc"
+    },
+    "max_limit": 100,
+    "default_limit": 20,
+    "result": {
+     "items": "reviews",
+     "key": "mentions",
+     "fields": {
+      "id": "id",
+      "author": "consumer.displayName",
+      "text": "text",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://developers.trustpilot.com/business-units-api/",
+    "note": "The business unit's REVIEWS as mentions (private endpoint, newest first; stars, title, companyReply, consumer email in raw). Limited to 100,000 records; `since` is not sent."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/private/reviews/{comment_id}/reply",
+    "body": {
+     "authorBusinessUserId": "@business_user_id",
+     "message": "text"
+    },
+    "result": {
+     "fields": {
+      "id": "=reply"
+     }
+    },
+    "docs": "https://developers.trustpilot.com/service-reviews-api/",
+    "note": "Posts the company reply to review `comment_id` (id from read_mentions), authored by config business_user_id. A review has a single reply and the response body is not documented, so `id` is a fixed marker."
+   }
+  },
+  "not_offered": {
+   "publish_text": "Businesses cannot publish posts; the Service Reviews API only replies to, tags and reads reviews (https://developers.trustpilot.com/service-reviews-api/).",
+   "publish_image": "No publishing endpoint exists (https://developers.trustpilot.com/service-reviews-api/).",
+   "read_comments": "Reviews have no comment threads, only a single companyReply (https://developers.trustpilot.com/service-reviews-api/); reviews are exposed as read_mentions.",
+   "delete": "A business cannot delete reviews; only its own reply can be deleted (DELETE /v1/private/reviews/{reviewId}/reply, https://developers.trustpilot.com/service-reviews-api/), which is not a post.",
+   "analytics_post": "No per-review metrics endpoint beyond likes (https://developers.trustpilot.com/service-reviews-api/)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.trustpilot.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/refresh: 401",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

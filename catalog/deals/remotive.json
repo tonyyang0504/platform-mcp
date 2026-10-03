@@ -1,0 +1,173 @@
+{
+ "id": "remotive",
+ "category": "deals",
+ "label": "Remotive",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://remotive.com/api/remote-jobs?category=software-dev",
+ "url": "https://remotive.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free public API with attribution + frequency conditions; paid private API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://remotive.com/api-documentation"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://remotive.com/api/remote-jobs?category=software-dev",
+   "docs": "https://remotive.com/api-documentation"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://remotive.com/api-documentation"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search JSON). Lane `assist` → **api for search** only with a ≤ 4/day cadence. Confidence high.",
+  "base_urls": [
+   "https://remotive.com/api/remote-jobs?category=&search=&limit="
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/remote-jobs?category=software-dev&limit=",
+    "purpose": "search + details",
+    "notes": "jobs[]: id, url, title, company_name, category, job_type, publication_date, candidate_required_location, salary, description"
+   }
+  ],
+  "limits": " - Link back + name Remotive; no reposting to Jooble/Google Jobs/LinkedIn; max ~4 requests/day; 24 h delay; paid private API $5k/mo. - Free public API with attribution + frequency conditions; paid private API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://remotive.com/api/remote-jobs?category=software-dev&limit=1"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://remotive.com/api",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.01,
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/remote-jobs",
+    "params": {
+     "search": "query",
+     "category": "category",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "job-count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "buyer": "company_name",
+      "url": "url",
+      "posted_at": "publication_date",
+      "description": "description"
+     }
+    },
+    "docs": "https://github.com/remotive-com/remote-jobs-api",
+    "note": "Keyless public API. Only limit is documented (no page parameter), so page > 1 repeats the same result set. Terms: link back to the Remotive URL and name Remotive as the source, never re-post the jobs to other job sites, and 'fetch at most ~4 times a day' (the client-side limiter allows one call per 100 s); listings are delayed 24 h. salary is a free-text string, left in raw. Mirrors jobs/remotive: category is a Remotive category name or slug (/api/remote-jobs/categories); buyer is company_name."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; the feed returns whole records.",
+   "submit_bid": "No application or bid API; the README asks to link back to the Remotive job URL.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

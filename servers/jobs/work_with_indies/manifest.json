@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "work_with_indies-jobs-mcp",
+ "display_name": "Work With Indies MCP",
+ "version": "0.1.0",
+ "description": "Work With Indies (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/work_with_indies"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Work With Indies RSS 2.0 feed (latest ~100 jobs at independent game studios). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<studio> is hiring a <role> to work from <location>'. id is the job link."
+  }
+ ]
+}

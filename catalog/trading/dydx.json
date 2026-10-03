@@ -1,0 +1,101 @@
+{
+ "id": "dydx",
+ "category": "trading",
+ "label": "dYdX v4 (indexer)",
+ "lane": "api",
+ "docs_url": "https://docs.dydx.xyz/indexer-client/http",
+ "url": "https://dydx.trade",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public indexer HTTP API (no key, no signature: reads only). The docs are HTML (no OpenAPI published at the indexer: /v4/swagger.json answers 404). /v4/perpetualMarkets answers {\"markets\": {\"BTC-USD\": {...}}} keyed by ticker. A malformed ticker answers 400 {\"errors\":[{\"msg\":\"ticker must be a valid ticker (BTC-USD, etc)\"}]}. dYdX has no bid/ask on the indexer (orderbook is separate); the ticker uses the oracle price. Trading itself happens on-chain through the dYdX chain (signed transactions), not this API.",
+ "adapter": {
+  "base_url": "https://indexer.dydx.trade/v4",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/perpetualMarkets",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "markets",
+     "items_are_values": true,
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "ticker",
+      "type": "marketType"
+     }
+    },
+    "docs": "https://docs.dydx.xyz/indexer-client/http#get-perpetual-markets",
+    "note": "Every perpetual market (BTC-USD ...), status and margin parameters in raw; paged locally."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/perpetualMarkets",
+    "params": {
+     "ticker": "symbol"
+    },
+    "result": {
+     "root": "markets.*",
+     "fields": {
+      "symbol": "ticker",
+      "last": "num:oraclePrice",
+      "volume": "num:volume24H"
+     }
+    },
+    "docs": "https://docs.dydx.xyz/indexer-client/http#get-perpetual-markets",
+    "note": "last is the oracle price; volume is the 24h USD volume."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/candles/perpetualMarkets/{symbol}",
+    "params": {
+     "resolution": "map:interval:1m=1MIN,5m=5MINS,15m=15MINS,30m=30MINS,1h=1HOUR,4h=4HOURS,1d=1DAY",
+     "limit": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "candles",
+     "key": "candles",
+     "fields": {
+      "time": "startedAt",
+      "open": "num:open",
+      "high": "num:high",
+      "low": "num:low",
+      "close": "num:close",
+      "volume": "num:baseTokenVolume"
+     }
+    },
+    "docs": "https://docs.dydx.xyz/indexer-client/http#get-candles",
+    "note": "interval: 1m 5m 15m 30m 1h 4h 1d; newest first; volume in the base token."
+   }
+  },
+  "not_offered": {
+   "me": "dYdX accounts are chain addresses; there is no authenticated identity on the indexer.",
+   "get_balances": "Subaccount balances need a chain address (GET /addresses/{address}/subaccountNumber/{n}), which is not an input of trading.get_balances; not mapped.",
+   "list_orders": "GET /orders needs an address and subaccount; not an input of the verb.",
+   "place_order": "Orders are signed chain transactions (MsgPlaceOrder), not indexer HTTP calls.",
+   "cancel_order": "Cancellations are signed chain transactions (MsgCancelOrder), not indexer HTTP calls."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "id": "autoscout24_ro",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autoscout24.ro",
+ "domain": "autoscout24.ro",
+ "country": "Romania",
+ "official_api": true,
+ "docs_url": "https://listing-creation.api.autoscout24.com/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "HTTP Basic (AutoScout24 dealer account credentials)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "list_makes_models"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). AutoScout24 group Listing Creation API is public-doc'd but write-only for registered dealer accounts (create/update listings, images, taxonomy); no search endpoint; RO market coverage not explicitly confirmed.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://listing-creation.api.autoscout24.com/docs",
+   "https://listing-creation.api.autoscout24.com/assets/swagger/spec/index.html"
+  ],
+  "unofficial": [
+   "https://apify.com (autoscout24 scrapers)",
+   "https://docs.carapis.com/parsers/autoscout24.com/api-reference"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://listing-creation.api.autoscout24.com/docs): AutoScout24 group Listing Creation API is public-doc'd but write-only for registered dealer accounts (create/update listings, images, taxonomy); no search endpoint; RO market coverage not explicitly confirmed. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

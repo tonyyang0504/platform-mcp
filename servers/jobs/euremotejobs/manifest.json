@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "euremotejobs-mcp",
+ "display_name": "EU Remote Jobs MCP",
+ "version": "0.1.0",
+ "description": "EU Remote Jobs (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "euremotejobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET https://euremotejobs.com/wp-json/wp/v2/job-listings: the WP Job Manager job_listing post type through the WordPress REST API posts controller (arguments page, per_page <= 100, search = WordPress full-text search; the route's own schema is listed at that URL). location and remote are not sent (location is post meta / a region taxonomy, not a query argument). title and description are rendered HTML; company is meta._company_name, location meta._job_location, the apply link meta._application and salary meta._job_salary stay in raw.meta. Only published listings are returned; a page past the end answers 400 rest_post_invalid_page_number (upstream_error). This board stores location in the job_listing_region taxonomy (ids in raw.job_listing_region), so location is usually null."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /wp-json/wp/v2/job-listings/<id> with the numeric post id from search; an unknown id answers 404 rest_post_invalid_id (invalid_input)."
+  }
+ ]
+}

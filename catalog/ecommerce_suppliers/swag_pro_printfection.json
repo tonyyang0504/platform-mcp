@@ -1,0 +1,253 @@
+{
+ "id": "swag_pro_printfection",
+ "category": "ecommerce_suppliers",
+ "label": "Swag Pro (formerly Printfection)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.printfection.com/developers/",
+ "url": "https://www.printfection.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (developers page); B2B use",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key from the Swag Pro account (GitHub-hosted API docs)",
+  "access": "paid",
+  "capabilities": [
+   "orders",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Demo-gated B2B account; swag pricing.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.printfection.com/developers/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.printfection.com/v2",
+  "auth": {
+   "type": "basic",
+   "username_field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Swag Pro (Printfection) API key from https://app.printfection.com/account/api_keys.php, sent as the HTTP Basic username with an empty password."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "campaign_id",
+    "required": false,
+    "help": "Numeric id of the Collection campaign create_order places orders in (GET /campaigns, not mapped). Only Giveaway and Collection campaigns are supported by the API."
+   }
+  ],
+  "rate_per_second": 0.25,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/campaigns",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#campaigns",
+    "note": "There is no account endpoint; the probe lists one campaign with the key (answers an array, so `account` is empty on success). Authenticated requests are hard-limited to 1000 per hour."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/items",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "color": "color",
+      "product_id": "product.id",
+      "product_name": "product.name",
+      "stock": "stock.available",
+      "image_url": "assets.0.url",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#items",
+    "note": "GET /items: the swag items in your account (item objects {id, name, color, product{id, name}, sizes[{id, name, short_name, stock{available}}], stock{available} (only when the item has no sizes), assets[{type, perspective, url}]}), at most 100 per response with limit/offset. `stock` is null for sized items (see raw.sizes). `query` and `category` are not accepted."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/items/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "color": "color",
+      "product_id": "product.id",
+      "product_name": "product.name",
+      "stock": "stock.available",
+      "image_url": "assets.0.url",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#items",
+    "note": "GET /items/:id — one item with sizes[{id, name, short_name, stock{available}}]; size ids are per item and go into create_order lineitems."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders",
+    "body": {
+     "campaign_id": "int:@campaign_id",
+     "ship_to": "shipping_address",
+     "lineitems": "items"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "created_at",
+      "total": "manifest.total",
+      "tracking_number": "manifest.shipments.0.tracking_numbers.0",
+      "redeem_url": "url",
+      "campaign_id": "campaign.id"
+     }
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#orders",
+    "note": "POST /orders creates an OPEN order in the Collection campaign from the campaign_id setting. 'Orders cannot be placed explicitly through the API': Collection orders are gathered and placed (approved, and billed) from within the Swag Pro account. `shipping_address` is ship_to {name, address, address2, company, city, state, zip, country, email, phone}; `items` are lineitems [{item_id, size_id (0 for unsized items), quantity}] (several lineitems only on Collection campaigns). `shipping_option` is not sent."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "created_at": "created_at",
+      "total": "manifest.total",
+      "tracking_number": "manifest.shipments.0.tracking_numbers.0",
+      "redeem_url": "url",
+      "campaign_id": "campaign.id"
+     }
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#orders",
+    "note": "GET /orders/:id — status is one of open, received, approved, processed, shipped, completed (cancelled after DELETE); totals and shipments come from the order manifest {subtotal, tax, shipping, fulfillment, total, shipments[{carrier, method, tracking_numbers[]}]}."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/orders/{order_id}",
+    "result": {
+     "items": "manifest.shipments",
+     "key": "events",
+     "fields": {
+      "carrier": "carrier",
+      "method": "method",
+      "tracking_number": "tracking_numbers.0",
+      "date": "created_at"
+     }
+    },
+    "docs": "https://printfection.github.io/API-Documentation/#orders",
+    "note": "The order's manifest.shipments [{carrier, method, tracking_numbers[], created_at}] as events (one per shipment); empty until the order ships. There is no separate tracking endpoint."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "No shipping-quote endpoint; the API covers items, orders, lineitems and campaigns only, and shipping cost appears in an order's manifest after processing."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.printfection.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

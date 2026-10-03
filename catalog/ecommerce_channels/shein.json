@@ -1,0 +1,312 @@
+{
+ "id": "shein",
+ "category": "ecommerce_channels",
+ "label": "SHEIN Marketplace",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "eu",
+  "us",
+  "fr",
+  "de",
+  "it",
+  "es",
+  "br",
+  "mx"
+ ],
+ "docs_url": "https://open.sheincorp.com/",
+ "url": "https://www.shein.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "SHEIN Marketplace seller (US / EU / MX / BR marketplaces per registry research) plus an Open Platform account; every application is reviewed by SHEIN before authorisation integration; documentation and auth details are inside the account; no sandbox or rate limit text public.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key + seller authorisation (Open Platform account → application → review → 'Authorization Integration'; key/secret details in the documents, not public)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "orders",
+   "fulfilment_tracking",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.app_id",
+  "secret",
+  "token"
+ ],
+ "rate_limits": "not readable",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — official Open Platform home opened;",
+  "base_urls": [],
+  "auth": [
+   "1. Apply for an Open Platform account (seller or service provider).",
+   "2. Create an application; SHEIN reviews it.",
+   "3. Authorization integration (seller grants the app access) → solution integration."
+  ],
+  "endpoints": [
+   {
+    "call": "Product Management OpenAPI",
+    "purpose": "publish products (create / edit)",
+    "notes": ""
+   },
+   {
+    "call": "Seller Fulfilled Order Management",
+    "purpose": "orders; upload tracking number; update order status",
+    "notes": ""
+   },
+   {
+    "call": "SHEIN Fulfilled Order Management",
+    "purpose": "appointment delivery, shipping labels",
+    "notes": ""
+   },
+   {
+    "call": "Stock Preparation Orders",
+    "purpose": "inbound stock to SHEIN",
+    "notes": ""
+   }
+  ],
+  "limits": " Not public. - Open Platform account + application review. - Seller authorisation per shop.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://open.sheincorp.com/",
+   "https://r.jina.ai/https://open.sheincorp.com/",
+   "https://open.sheincorp.com/documents"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi.sheincorp.com",
+  "rate_per_second": 5,
+  "headers": {
+   "language": "en"
+  },
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "msg"
+  },
+  "config_fields": [
+   {
+    "name": "random_key",
+    "required": true,
+    "help": "The 5-character RandomKey you choose (letters/digits, e.g. 'test1'); it prefixes every x-lt-signature and must equal the last 5 characters of sign_key."
+   },
+   {
+    "name": "site",
+    "required": false,
+    "help": "SHEIN sub-site for price and shelf changes, e.g. shein-us, shein-mx, shein-fr (店铺站点和币种信息 /open-api/openapi-business-backend/site/query)."
+   },
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Selling currency of that site for price changes, e.g. USD, MXN, EUR."
+   },
+   {
+    "name": "warehouse_code",
+    "required": false,
+    "help": "Merchant warehouse code (from `me`) for stock updates; required when the store has several warehouses."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "open_key_id",
+     "required": true,
+     "help": "openKeyId returned by the store-authorisation call /open-api/auth/get-by-token (Store Authorization Application Manual); sent as x-lt-openKeyId."
+    },
+    {
+     "name": "sign_key",
+     "required": true,
+     "help": "The HMAC key SHEIN's Signature Rules define as SecretKey + RandomKey: the DECRYPTED secretKey from /open-api/auth/get-by-token (it is returned AES-encrypted with your appSecretKey; decrypt it once as the authorisation manual shows) immediately followed by your random_key, e.g. '6BEC9C4B668B4B14B17EEF106BB98AE5test1'. Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "sign_key",
+    "encoding": "base64_hex",
+    "payload": "{@open_key_id}&{timestamp}&{path}",
+    "headers": {
+     "x-lt-openKeyId": "{@open_key_id}",
+     "x-lt-timestamp": "{timestamp}",
+     "x-lt-signature": "{@random_key}{signature}"
+    }
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/open-api/msc/warehouse/list",
+    "docs": "https://open.sheincorp.com/documents/apidoc/detail/3002013",
+    "note": "商家仓库列表查询: the store's warehouses (warehouseCode, warehouseName, saleCountryList, warehouseType 1 = merchant warehouse); verifies openKeyId and signature."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/open-api/order/order-list",
+    "body": {
+     "queryType": "json:1",
+     "startTime": "datefmt:%Y-%m-%d %H:%M:%S:since",
+     "endTime": "datefmt:%Y-%m-%d 23:59:%S:since",
+     "page": "page",
+     "pageSize": "limit",
+     "orderStatus": "int:status",
+     "queryOrderType": "json:4"
+    },
+    "default_limit": 30,
+    "max_limit": 30,
+    "result": {
+     "items": "info.orderList",
+     "key": "orders",
+     "total": "info.count",
+     "fields": {
+      "id": "orderNo",
+      "status": "orderStatus",
+      "created_at": "orderCreateTime",
+      "updated_at": "orderUpdateTime"
+     }
+    },
+    "docs": "https://open.sheincorp.com/documents/apidoc/detail/3001921",
+    "note": "请求订单列表: orders issued on ONE calendar day — `since` (YYYY-MM-DD, required) selects that day 00:00:00–23:59:00 in Beijing time (the API accepts at most a 48-hour window). `status` is SHEIN's numeric orderStatus: 1 pending, 2 to ship, 3 awaiting SHEIN shipment, 4 shipped, 5 delivered, 6 refunded, 7 awaiting pickup, 8 reported lost, 9 rejected. Line items: /open-api/order/order-detail (not mapped)."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/open-api/stock/change-inventory/v2",
+    "body": {
+     "updateSkuInventoryQuantityRequests.0.idempotencyKey": "uuid",
+     "updateSkuInventoryQuantityRequests.0.skuCode": "sku",
+     "updateSkuInventoryQuantityRequests.0.invType": "=VI",
+     "updateSkuInventoryQuantityRequests.0.warehouseCode": "@warehouse_code",
+     "updateSkuInventoryQuantityRequests.0.changeType": "=OVERWRITE",
+     "updateSkuInventoryQuantityRequests.0.changeQuantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://open.sheincorp.com/documents/apidoc/detail/3001738",
+    "note": "更新商家库存接口v2: overwrites the merchant virtual stock of SHEIN sku_code `sku` (required) with `quantity` (reserved/occupied units cannot be removed). Per-SKU failures are in raw.info.failedList."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/open-api/openapi-business-backend/product/price/save",
+    "body": {
+     "productPriceList.0.productCode": "listing_id",
+     "productPriceList.0.currencyCode": "@currency",
+     "productPriceList.0.shopPrice": "price",
+     "productPriceList.0.site": "@site"
+    },
+    "result": {
+     "root": "info.data",
+     "fields": {
+      "status": "status",
+      "success": "success",
+      "message": "message"
+     }
+    },
+    "docs": "https://open.sheincorp.com/documents/apidoc/detail/3001940",
+    "note": "更新商品售价: sets the shop price of SKU `listing_id` (SHEIN sku_code) on the configured site/currency; the special price is reset. status 1 = done, 2 = waiting for price review (wait for the review webhook before changing it again), 0 = failed."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/open-api/goods/modify-skc-shelf",
+    "body": {
+     "skc_site_info_list.0.shelf_state": "json:2",
+     "skc_site_info_list.0.site_list.0": "@site",
+     "skc_site_info_list.0.skc_name": "listing_id"
+    },
+    "result": {
+     "root": "info",
+     "fields": {
+      "status": "=delisted",
+      "failures": "failure_count",
+      "failure_results": "failure_results"
+     }
+    },
+    "docs": "https://open.sheincorp.com/documents/apidoc/detail/3001939",
+    "note": "商品上下架: takes SKC `listing_id` (skc_name) off the shelf on the configured site. The same SKC+site cannot be changed again within 20 minutes; check `failures`."
+   }
+  },
+  "not_offered": {
+   "create_listing": "商品发布/编辑 (/open-api/goods/product/publishOrEdit, https://open.sheincorp.com/documents/apidoc/detail/3002018) needs the leaf category, attribute template values, brand, SKC/SKU structures and images uploaded through /open-api/goods/transform-pic; the vocabulary's create_listing inputs cannot build it.",
+   "mark_shipped": "批量上传运单号 (https://open.sheincorp.com/documents/apidoc/detail/3001274) requires per-item 'goodsId' (required; 'each piece has a different goodsId, obtained from the order detail API') and an 'expressIdCode' from the ship-channel query; mark_shipped has only order_id, carrier and tracking_number."
+  },
+  "terms": "SHEIN Open Platform: every call carries x-lt-openKeyId, x-lt-timestamp (ms) and x-lt-signature = RandomKey + Base64(hex(HMAC-SHA256(key = SecretKey + RandomKey, OpenKeyId + '&' + Timestamp + '&' + Path))) (Signature Rules, https://open.sheincorp.com/documents/system/passwdrule). Apps are created on the Open Platform and each store authorises them (tempToken → openKeyId + encrypted secretKey)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires open_key_id, sign_key, random_key; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

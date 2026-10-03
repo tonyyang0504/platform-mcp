@@ -1,0 +1,98 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercado_libre-ecommerce-channels-mcp",
+ "display_name": "Mercado Libre MCP",
+ "version": "0.1.0",
+ "description": "Mercado Libre (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Eve",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ecommerce_channels/mercado_libre"
+   ],
+   "env": {
+    "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_ID": "${user_config.platform_mcp_mercado_libre_client_id}",
+    "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_SECRET": "${user_config.platform_mcp_mercado_libre_client_secret}",
+    "PLATFORM_MCP_MERCADO_LIBRE_REFRESH_TOKEN": "${user_config.platform_mcp_mercado_libre_refresh_token}",
+    "PLATFORM_MCP_MERCADO_LIBRE_SELLER_ID": "${user_config.platform_mcp_mercado_libre_seller_id}",
+    "PLATFORM_MCP_MERCADO_LIBRE_ENV": "${user_config.platform_mcp_mercado_libre_env}",
+    "PLATFORM_MCP_MERCADO_LIBRE_BASE_URL": "${user_config.platform_mcp_mercado_libre_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mercado_libre_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_ID",
+   "description": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercado_libre_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_CLIENT_SECRET",
+   "description": "Secret Key of the same application; sent as client_secret in the token request body.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercado_libre_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_REFRESH_TOKEN",
+   "description": "Refresh token (TG-...) from a one-time authorization-code consent by the seller's ADMIN account (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercado_libre_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_SELLER_ID",
+   "description": "Numeric Mercado Libre user id of the seller (the `id` returned by GET /users/me); used as the seller filter of the order search.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_mercado_libre_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_mercado_libre_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCADO_LIBRE_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /users/me returns the authorised user {id, nickname, site_id, country_id, ...}; its id is the seller_id config value."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /items/{item_id} {title, price, available_quantity} with only the given fields (Sync and modify listings). The title can only change while sold_quantity = 0; `description` has its own endpoint (/items/{id}/description) and is not mapped. The listing guide points to the Prices API for price management. Returns the item; `status` is active|paused|closed|under_review..."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /items/{item_id} {status: paused} takes the listing off sale and out of view, reversible with status active. `closed` (final, can only be relisted) and the deleted flag are not used."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /items/{item_id} {available_quantity} sets stock; 0 auto-pauses the item (out_of_stock) on MLB, MLA, MLM, MLC, MPE and MLV, and a positive value reactivates it. `listing_id` (item id, e.g. MLA1136716168) is required; items are not addressed by SKU. Variation stock is per variation (not mapped)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /orders/search?seller={seller_id}&order.status(confirmed|payment_required|payment_in_process|partially_paid|paid|cancelled...; comma-separated)&order.date_created.from(ISO-8601, hour precision)&sort=date_desc&offset&limit (the documented page size is 50). Returns {results[{id, status, total_amount, currency_id, date_created, shipping{id}}], paging{total, offset, limit}}."
+  }
+ ]
+}

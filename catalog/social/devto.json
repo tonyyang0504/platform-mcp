@@ -1,0 +1,258 @@
+{
+ "id": "devto",
+ "category": "social",
+ "label": "Dev.to",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.forem.com/api/v1",
+ "url": "https://dev.to/",
+ "verified_at": "2026-09-02",
+ "terms_note": "Cross-posts must set canonical_url; links are nofollow; DEV Code of Conduct forbids promotional spam. ~30 reads / 10 writes per 30 s.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "edit",
+   "read_comments",
+   "analytics",
+   "search(own)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 60000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://dev.to/api/…"
+  ],
+  "auth": [
+   "1. The member generates an API key at dev.to › Settings › Extensions › DEV Community API Keys (BYO per tenant).",
+   "2. Header `api-key: <key>`; no OAuth, no review."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /articles` {article{title, body_markdown, published, series, main_image, canonical_url, description, tags[≤ 4], organization_id}}",
+    "purpose": "front matter optional inside body_markdown",
+    "notes": ""
+   },
+   {
+    "call": "PUT /articles/{id}` (same body; toggles published)",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "GET /articles/me`, `/articles/me/published`, `/articles/me/unpublished`, `/articles/me/all",
+    "purpose": "includes page_views_count, public_reactions_count, comments_count",
+    "notes": ""
+   },
+   {
+    "call": "GET /articles?username=&tag=&state=&top=`, `GET /articles/{id}",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "GET /comments?a_id={article_id}` (threaded)",
+    "purpose": "no create-comment endpoint in v1 — replies are human",
+    "notes": ""
+   },
+   {
+    "call": "GET /analytics/totals",
+    "purpose": "historical",
+    "notes": "referrers` (organization / admin scope)"
+   },
+   {
+    "call": "GET /users/me",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " - ≈ 30 requests / 30 s for reads, 10 / 30 s for writes (429 on excess). - Free. DEV Code of Conduct + terms: canonical_url for cross-posts, no spam; links in posts are nofollow; moderators can unpublish.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.forem.com/api/v1"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://dev.to/api",
+  "auth": {
+   "type": "header",
+   "header": "api-key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "DEV Community API key (dev.to > Settings > Extensions > DEV Community API Keys); sent as the `api-key` header."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developers.forem.com/api/v1#operation/getUserMe",
+    "note": "GET /api/users/me returns the authenticated user (MyUser: id, username, name, ...)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/comments",
+    "params": {
+     "a_id": "post_id",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 30,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "comments",
+     "fields": {
+      "id": "id_code",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://developers.forem.com/api/v1#operation/getCommentsByArticleId",
+    "note": "Threaded: each top-level comment carries its replies nested inline (in `raw`); `page` filters top-level comments only. The v1 schema documents only type_of, id_code, created_at, image_url, so author/text are not mapped."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/articles/{post_id}",
+    "result": {
+     "fields": {
+      "post_id": "id",
+      "public_reactions": "public_reactions_count",
+      "positive_reactions": "positive_reactions_count",
+      "url": "url",
+      "published_at": "published_at"
+     }
+    },
+    "docs": "https://developers.forem.com/api/v1#operation/getArticleById",
+    "note": "Public reaction counts from the article record (ArticleIndex); the runtime cannot compose a nested `metrics` object, so counts are top-level fields."
+   }
+  },
+  "not_offered": {
+   "publish_text": "POST /api/articles takes a nested {article: {title, body_markdown, published, ...}} body and a mandatory title the vocabulary has no argument for; the runtime's body form is flat (arg name -> top-level key).",
+   "publish_image": "Articles are markdown documents; images are `main_image`/inline markdown inside the same nested {article} body (see publish_text).",
+   "reply_comment": "Forem API v1 has no create-comment endpoint; replies are written by humans on dev.to.",
+   "read_mentions": "No mentions or notifications endpoint in Forem API v1.",
+   "delete": "No delete endpoint in Forem API v1; PUT /api/articles/{id} can only unpublish."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host dev.to: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/forem/forem/main/swagger/v1/api_v1.json: 3/3 tools match (path, method, parameters, body keys, response paths)",
+   "live read without credentials: analytics_post, read_comments returned data that validates against the vocabulary"
+  ],
+  "notes": "analytics_post: spec says \"response path fields.post_id='id' is not in the response schema\"; waived: forem's spec wraps the article object in an `items` key although the endpoint returns one article; the fields exist there, and the call was verified live analytics_post: spec says \"response path fields.public_reactions='public_reactions_count' is not in the response schema\"; waived: forem's spec wraps the article object in an `items` key although the endpoint returns one article; the fields exist there, and the call was verified live analytics_post: spec says \"response path fields.positive_reactions='positive_reactions_count' is not in the response schema\"; waived: forem's spec wraps the article object in an `items` key although the endpoint returns one article; the fields exist there, and the call was verified live analytics_post: spec says \"response path fields.url='url' is not in the response schema\"; waived: forem's spec wraps the article object in an `items` key although the endpoint returns one article; the fields exist there, and the call was verified live analytics_post: spec says \"response path fields.published_at='published_at' is not in the response schema\"; waived: forem's spec wraps the article object in an `items` key although the endpoint returns one article; the fields exist there, and the call was verified live"
+ }
+}

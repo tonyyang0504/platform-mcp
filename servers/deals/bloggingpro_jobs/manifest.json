@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "bloggingpro_jobs-mcp",
+ "display_name": "BloggingPro Job Board MCP",
+ "version": "0.1.0",
+ "description": "BloggingPro Job Board (deals): search_postings, get_posting. Every tool maps to a documented endpoin",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bloggingpro_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /wp-json/wp/v2/job-listings: the WP Job Manager 'job_listing' post type exposed through the WordPress REST API posts controller (arguments page, per_page ≤ 100, search, and the job-categories / job-types taxonomy filters, as listed by the route's own schema at https://www.bloggingpro.com/wp-json/wp/v2/job-listings (OPTIONS)). `query` is WordPress full-text `search`; `category` is a job-categories TERM ID (GET /wp-json/wp/v2/job-categories lists them) — not a slug. min_budget is not sent (salary is free text in meta._job_salary). title/description are rendered HTML; buyer is meta._company_name, deadline meta._job_expires (often absent); the apply link (meta._application) and location stay in raw.meta. Only published, public listings are returned."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /wp-json/wp/v2/job-listings/<id> (the numeric post id from search_postings). An unknown id answers 404 rest_post_invalid_id."
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "bama",
+ "category": "automotive",
+ "label": "Bama",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://bama.ir",
+ "domain": "bama.ir",
+ "country": "Iran",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Bama.ir has dealer sign-up but no published API/web service documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bama.ir/dealers/car/sign-up",
+   "https://bama.ir/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

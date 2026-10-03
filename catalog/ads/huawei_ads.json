@@ -1,0 +1,341 @@
+{
+ "id": "huawei_ads",
+ "category": "ads",
+ "label": "鲸鸿动能 Petal Ads (Huawei Ads)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api02-0000001058566534",
+ "url": "https://ads.huawei.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Complete Huawei Developer Alliance real-name authentication, request a client ID, apply for Marketing API permissions, then OAuth 2.0 login → access_token (refreshable). Rate limits: not specified on the page. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Huawei Developer client id; login → access_token + refresh_token)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Petal Ads Marketing API) Confidence: **high** — official Huawei doc page read (WebFetch).",
+  "base_urls": [
+   "https://ads.cloud.huawei.com/openapi/v2/…"
+  ],
+  "auth": [
+   "1. Real-name authentication in the Huawei Developer Alliance; request a client ID.",
+   "2. Apply for Marketing API permissions for the Petal Ads account.",
+   "3. OAuth 2.0: '登录并获取access_token' → bearer token, '刷新access_token' with the refresh token; then '获取用户信息'."
+  ],
+  "endpoints": [
+   {
+    "call": "account / user info",
+    "purpose": "accounts",
+    "notes": "advertiser id, name"
+   },
+   {
+    "call": "推广计划 create / query / edit",
+    "purpose": "campaigns + budget + status",
+    "notes": "campaign name, budget, daily budget, status, marketing goal"
+   },
+   {
+    "call": "任务 create / query / edit · batch edit task status",
+    "purpose": "ad groups (tasks) + bid + schedule + targeting",
+    "notes": "task name, bid, bid type, schedule, targeting, status"
+   },
+   {
+    "call": "创意 create / query / edit · batch edit creative status",
+    "purpose": "creatives (assets upload via material APIs)",
+    "notes": "creative name, assets, landing page"
+   },
+   {
+    "call": "推广产品 (promotion products)",
+    "purpose": "catalog / app products",
+    "notes": "product id, app id"
+   },
+   {
+    "call": "报表: campaign data, task data, creative data, financial reports",
+    "purpose": "reports",
+    "notes": "date range, dimensions, metrics"
+   },
+   {
+    "call": "人群 V1 / V2 · intention scoring",
+    "purpose": "audiences",
+    "notes": "audience name, data upload"
+   },
+   {
+    "call": "转化跟踪: conversion goals, deep conversion objectives",
+    "purpose": "conversions",
+    "notes": "goal type, callback"
+   }
+  ],
+  "limits": " - Rate limits not specified on the page. Access by Huawei Developer verification + permission approval. Free API.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api02-0000001058566534"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ads.cloud.huawei.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": [
+    "200",
+    200
+   ],
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth-login.cloud.huawei.com/oauth2/v2/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Your Marketing API client ID (华为开发者联盟 → 申请客户端ID)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The client secret shown for that client ID in the developer alliance."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from the authorization-code login (authorize with access_type=offline and the ads scopes, then exchange the code at /oauth2/v2/token), see ads_api09."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "Advertiser ID; required when the authorizing Huawei ID is a manager (经理) account, a service-provider account or linked to several sub-client advertisers."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/openapi/v2/promotion/campaign/query",
+    "params": {
+     "advertiser_id": "@advertiser_id"
+    },
+    "fixed_params": {
+     "page_num": "1",
+     "page_size": "10"
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api19-0000001057938573",
+    "note": "Refreshes the access token and reads the first page of campaigns: verifies the authorization and Marketing API permission."
+   },
+   "list_accounts": {
+    "path": "/openapi/v2/manager/advertiser/query",
+    "params": {
+     "page_num": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "data.advertiser_info_list",
+     "key": "accounts",
+     "total": "data.total",
+     "fields": {
+      "id": "advertiser_id",
+      "name": "nick_name"
+     }
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api_jlzh1-0000001229444855",
+    "note": "GET openapi/v2/manager/advertiser/query: the advertiser accounts under a manager (经理) account authorization (page_size 10–50). Advertiser ids are 18-digit integers above 2^53: the Python server returns them exactly, the TypeScript server's JSON parser may round the last digits."
+   },
+   "list_campaigns": {
+    "path": "/openapi/v2/promotion/campaign/query",
+    "params": {
+     "advertiser_id": "account_id",
+     "page_num": "page",
+     "page_size": "limit",
+     "show_status": "status"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "data.data",
+     "key": "campaigns",
+     "total": "data.total",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name",
+      "status": "show_status",
+      "operation_status": "campaign_status",
+      "daily_budget": "today_daily_budget",
+      "tomorrow_daily_budget": "tomorrow_daily_budget",
+      "product_type": "product_type",
+      "created_at": "created_time"
+     }
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api19-0000001057938573",
+    "note": "GET openapi/v2/promotion/campaign/query?advertiser_id&page_num&page_size (the documented query-parameter form; the new /ads/v1/promotion/campaign/query takes a JSON body on GET, which is not sent). page_size must be 10–50. `status` is a show_status value such as CAMPAIGN_STATUS_DELIVERY_OK (【计划界面显示的状态】)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/openapi/v2/reports/campaign/query",
+    "body": {
+     "advertiser_id": "account_id",
+     "start_date": "date:date_from",
+     "end_date": "date:date_to",
+     "time_granularity": "=STAT_TIME_GRANULARITY_DAILY",
+     "group_by": "json:[\"CAMPAIGN_ID\",\"DATE\"]",
+     "filtering.campaign_ids.0": "str:campaign_id",
+     "page": "json:1",
+     "page_size": "json:1000"
+    },
+    "result": {
+     "items": "data.list",
+     "key": "rows",
+     "fields": {
+      "date": "stat_datetime",
+      "campaign_id": "campaign_id",
+      "campaign": "campaign_name",
+      "impressions": "show_count",
+      "clicks": "click_count",
+      "spend": "cost",
+      "cpc": "cpc",
+      "downloads": "download_count",
+      "installs": "install_count",
+      "activations": "active_count"
+     }
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_api67-0000001057938581",
+    "note": "POST openapi/v2/reports/campaign/query per day and campaign (time_granularity DAILY, group_by CAMPAIGN_ID + DATE), filtered to campaign_id when given: impressions (show_count), clicks, cost (CNY), cpc and download/install/activation counts; up to 1,000 rows. stat_datetime is YYYYMMDDHH. Contract (合约) data is not included."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/ads/v1/promotion/campaign/update",
+    "body": {
+     "advertiser_id": "@advertiser_id",
+     "campaign_id": "str:campaign_id",
+     "daily_budget.daily_budget": "int:daily_budget",
+     "daily_budget.daily_budget_op_type": "=UPDATE_TODAY_DAILY_BUDGET"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_new_api05-0000001455960409",
+    "note": "POST /ads/v1/promotion/campaign/update {campaign_id, daily_budget: {daily_budget, daily_budget_op_type: UPDATE_TODAY_DAILY_BUDGET}}: today's campaign daily limit, a whole number of CNY that must differ from the current value (see 修改限额约束). `currency` is not applied."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/ads/v1/promotion/campaign/update",
+    "body": {
+     "advertiser_id": "@advertiser_id",
+     "campaign_id": "str:campaign_id",
+     "campaign_status": "map:action:pause=OPERATION_DISABLE,resume=OPERATION_ENABLE"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developer.huawei.com/consumer/cn/doc/promotion/ads_new_api05-0000001455960409",
+    "note": "POST /ads/v1/promotion/campaign/update {campaign_id, campaign_status: OPERATION_DISABLE | OPERATION_ENABLE}."
+   }
+  },
+  "terms": "鲸鸿动能 (Petal Ads) Marketing API: developer real-name verification, a client ID and Marketing API permission for the advertiser, manager or service-provider account are required (https://developer.huawei.com/consumer/cn/doc/promotion/ads_api02-0000001058566534). Responses carry code \"200\" (queries) or 200 (edits) on success; other codes are errors (e.g. 1000009992 token expired)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads.cloud.huawei.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth-login.cloud.huawei.com/oauth2/v2/token: 400 1101",
+   "authorize https://oauth-login.cloud.huawei.com/oauth2/v3/authorize: 200",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

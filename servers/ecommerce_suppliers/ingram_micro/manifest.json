@@ -1,0 +1,105 @@
+{
+ "manifest_version": "0.2",
+ "name": "ingram_micro-mcp",
+ "display_name": "Ingram Micro (Xvantage / Developer Portal) MCP",
+ "version": "0.1.0",
+ "description": "Ingram Micro (Xvantage / Developer Portal) (ecommerce suppliers): me, list_products, get_product, qu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ingram_micro"
+   ],
+   "env": {
+    "PLATFORM_MCP_INGRAM_MICRO_CLIENT_ID": "${user_config.platform_mcp_ingram_micro_client_id}",
+    "PLATFORM_MCP_INGRAM_MICRO_CLIENT_SECRET": "${user_config.platform_mcp_ingram_micro_client_secret}",
+    "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_NUMBER": "${user_config.platform_mcp_ingram_micro_customer_number}",
+    "PLATFORM_MCP_INGRAM_MICRO_COUNTRY_CODE": "${user_config.platform_mcp_ingram_micro_country_code}",
+    "PLATFORM_MCP_INGRAM_MICRO_SENDER_ID": "${user_config.platform_mcp_ingram_micro_sender_id}",
+    "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_CONTACT": "${user_config.platform_mcp_ingram_micro_customer_contact}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_ingram_micro_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_CLIENT_ID",
+   "description": "Client ID (Consumer Key) of your app on developer.ingrammicro.com (My Apps); production keys after app approval.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ingram_micro_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_CLIENT_SECRET",
+   "description": "Client Secret of the same app; exchanged for a bearer token at /oauth/oauth30/token (client_credentials).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_ingram_micro_customer_number": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_NUMBER",
+   "description": "Your Ingram Micro reseller customer number (IM-CustomerNumber header, e.g. 20-222222).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_ingram_micro_country_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_COUNTRY_CODE",
+   "description": "Two-letter ISO country of your Ingram Micro account (IM-CountryCode header, e.g. US).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_ingram_micro_sender_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_SENDER_ID",
+   "description": "Optional sender identification text (IM-SenderID header, max 32 chars).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_ingram_micro_customer_contact": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_CONTACT",
+   "description": "E-mail of the logged-in user (IM-CustomerContact header); required by Freight Estimate (quote_shipping).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe runs a one-row Product Search (GET /resellers/v6/catalog). `sign` is used only to stamp every request with a fresh 32-hex IM-CorrelationID ('Unique transaction number to identify each transaction', maxLength 32); nothing is signed."
+  },
+  {
+   "name": "list_products",
+   "description": "Search Products (GET /resellers/v6/catalog): keyword = Ingram part number, vendor part number, title or vendor name; category e.g. 'Displays'; max 100 per page. Search returns no price — use get_product for details (price & availability is POST /resellers/v6/catalog/priceandavailability)."
+  },
+  {
+   "name": "get_product",
+   "description": "Product Details (GET /resellers/v6/catalog/details/{ingramPartNumber}, 6-char Ingram part number): description, vendor, category, indicators, dimensions and weights in `raw`; no price."
+  },
+  {
+   "name": "quote_shipping",
+   "description": "Freight Estimate (POST /resellers/v6/freightestimate) for one Ingram part number to a destination country; one option per ship-from branch with its default carrier (shipVia, freightRate, transitDays) and the alternative carriers in `carriers`. Needs the customer_contact config field (IM-CustomerContact header). Currency is freightEstimateResponse.currencyCode in `raw`."
+  },
+  {
+   "name": "create_order",
+   "description": "Create your Order v6 (POST /resellers/v6/orders). Pass `items` in Ingram form [{customerLineNumber, ingramPartNumber, quantity}] and `shipping_address` as shipToInfo {contact, companyName, addressLine1, addressLine2, city, state, postalCode, countryCode, phoneNumber, email}; `shipping_option` is a carrier code from quote_shipping. The required customerOrderNumber (max 18) is generated as MCP+yyMMddHHmmss (UTC). Orders are placed on your credit account."
+  },
+  {
+   "name": "get_order",
+   "description": "Get Order Details v6.1 (GET /resellers/v6.1/orders/{ordernumber}, e.g. 20-RD3QV): orderStatus, totals, lines[] with lineStatus and shipmentDetails[].carrierDetails[].trackingDetails[] in `raw`; tracking_number is the first line's first parcel."
+  },
+  {
+   "name": "track",
+   "description": "Order lines of Get Order Details v6.1 as shipment events: lineStatus plus the first shipment's carrier, tracking number/URL and shipped/delivered dates per line."
+  }
+ ]
+}

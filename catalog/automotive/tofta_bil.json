@@ -1,0 +1,41 @@
+{
+ "id": "tofta_bil",
+ "category": "automotive",
+ "label": "Tofta Bil",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://tofta-bil.accesspaket.bytbilcms.com",
+ "domain": "tofta-bil.accesspaket.bytbilcms.com",
+ "country": "Sweden",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (dealer package)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Dealer site on Bytbil CMS; stock flows via Blocket/Bytbil dealer API included in dealer packages, no public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://tofta-bil.accesspaket.bytbilcms.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Dealer site on Bytbil CMS; stock flows via Blocket/Bytbil dealer API included in dealer packages, no public docs."
+}

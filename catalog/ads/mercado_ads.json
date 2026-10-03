@@ -1,0 +1,285 @@
+{
+ "id": "mercado_ads",
+ "category": "ads",
+ "label": "Mercado Ads (Mercado Libre Publicidad)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "latam",
+  "br",
+  "mx",
+  "ar",
+  "cl",
+  "co"
+ ],
+ "docs_url": "https://developers.mercadolibre.com.ar/en_us/product-ads-us-read",
+ "url": "https://www.mercadoads.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Create a Mercado Libre application (developers.mercadolibre.com), OAuth 2.0 authorization code → access token (6 h) + refresh; Product Ads endpoints require the Api-Version header and the advertiser_id; per-site (MLA, MLB, MLM…). Rate limits per app. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp"
+  ],
+  "auth": "oauth2 (Mercado Libre app; Bearer access token + Api-Version header)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ads",
+   "budgets_bids",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Mercado Libre MCP Server (official, listed in the developers portal navigation)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Product Ads API + Display Ads API) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://api.mercadolibre.com/advertising/…"
+  ],
+  "auth": [
+   "1. Create an app at developers.mercadolibre.com (redirect URI, scopes); user authorizes → `code` → `POST /oauth/token` → access token (6 h) + refresh token.",
+   "2. `GET /advertising/advertisers?product_id=PADS` → `advertiser_id` for the seller.",
+   "3. Send `Authorization: Bearer` + `Api-Version` on Product Ads calls."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /advertising/advertisers?product_id=PADS",
+    "purpose": "advertisers (accounts)",
+    "notes": "advertiser_id, site_id, account_name"
+   },
+   {
+    "call": "GET /advertising/product_ads/campaigns?advertiser_id=` · `POST …/campaigns` · `PUT …/campaigns/{id}",
+    "purpose": "campaigns (automatic / customized) + budget + status + goal",
+    "notes": "name, status active/paused, budget, acos_target / strategy, channel"
+   },
+   {
+    "call": "GET /advertising/product_ads/ads?advertiser_id=` · `PUT …/ads/{item_id}` (assign to campaign / status)",
+    "purpose": "ads (listings) in campaigns",
+    "notes": "item_id, campaign_id, status"
+   },
+   {
+    "call": "GET /advertising/product_ads/campaigns/{id}/metrics?date_from&date_to` · `…/ads/{item_id}/metrics",
+    "purpose": "reports",
+    "notes": "clicks, prints, cost, cpc, acos, direct/indirect units, total_amount"
+   },
+   {
+    "call": "Display Ads API (`/advertising/display/…`)",
+    "purpose": "brand display campaigns",
+    "notes": "campaign, line items, creatives (TODO(verify))"
+   },
+   {
+    "call": "keywords · audiences upload · conversions upload",
+    "purpose": "not in Product Ads (automatic targeting)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - App rate limits; OAuth token 6 h; Api-Version header required; free; Mercado Libre developer terms.",
+  "mcp_sdk": [
+   "Official Mercado Libre MCP Server (developers portal). Community: dltHub mercado-ads source."
+  ],
+  "sources": [
+   "https://developers.mercadolibre.com.ar/en_us/product-ads-us-read",
+   "https://developers.mercadolibre.com.ar/en_us/display-ads",
+   "https://developers.mercadolibre.com.ar/es_ar/product-ads"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.mercadolibre.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.mercadolibre.com/oauth/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "App ID of your application (developers.mercadolibre.com > My applications); sent as client_id in the token request body."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Secret Key of the same application; sent as client_secret in the token request body."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (TG-...) from a one-time authorization-code consent by the advertiser's ADMIN account (Product Ads enabled under Mi perfil > Publicidad) (valid 6 months). It is SINGLE-USE: every refresh returns a new access token (6 h) and a new refresh token, and only the last one issued is accepted. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developers.mercadolibre.com.ar/en_us/authentication-and-authorization",
+    "note": "GET /users/me: the authorised Mercado Libre user {id, nickname, site_id}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/advertising/advertisers",
+    "fixed_params": {
+     "product_id": "PADS"
+    },
+    "headers": {
+     "Api-Version": "1"
+    },
+    "result": {
+     "items": "advertisers",
+     "key": "accounts",
+     "fields": {
+      "id": "advertiser_id",
+      "name": "advertiser_name"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/product-ads-us-read",
+    "note": "GET /advertising/advertisers?product_id=PADS (Api-Version: 1): Product Ads advertisers the user can access ({advertiser_id, site_id, advertiser_name, account_name}); the currency follows raw.site_id. A 404 'No permissions found for user_id' means Product Ads is not enabled for the user."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/advertising/advertisers/{account_id}/product_ads/campaigns",
+    "headers": {
+     "Api-Version": "2"
+    },
+    "params": {
+     "limit": "limit",
+     "offset": "offset",
+     "filters[status]": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "results",
+     "key": "campaigns",
+     "total": "paging.total",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget",
+      "currency": "currency_id"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/product-ads-us-read",
+    "note": "GET /advertising/advertisers/{advertiser_id}/product_ads/campaigns (api-version: 2) with limit/offset and filters[status] (active or paused). `budget` is the campaign's daily budget in currency_id; raw carries strategy and acos_target."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/advertising/advertisers/{account_id}/product_ads/campaigns",
+    "headers": {
+     "Api-Version": "2"
+    },
+    "params": {
+     "date_from": "date:date_from",
+     "date_to": "date:date_to",
+     "filters[campaign_ids]": "campaign_id",
+     "limit": "=50"
+    },
+    "fixed_params": {
+     "metrics": "clicks,prints,ctr,cost,cpc,acos,units_quantity,total_amount"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "id",
+      "campaign": "name",
+      "impressions": "metrics.prints",
+      "clicks": "metrics.clicks",
+      "spend": "metrics.cost",
+      "acos": "metrics.acos",
+      "sales_amount": "metrics.total_amount",
+      "currency": "currency_id"
+     }
+    },
+    "docs": "https://developers.mercadolibre.com.ar/en_us/product-ads-us-read",
+    "note": "Campaign search with metrics: GET /advertising/advertisers/{advertiser_id}/product_ads/campaigns?date_from&date_to&metrics=clicks,prints,ctr,cost,cpc,acos,units_quantity,total_amount (optionally filters[campaign_ids]); one row per campaign with totals for the range (first 50 campaigns). Dates can reach 90 days back; data refreshes daily at 10:00 GMT-3."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Mercado Libre's public Product Ads documentation is the read-only reference (\"With the following Product Ads endpoints, you can monitor campaigns, ads, and metrics\", https://developers.mercadolibre.com.ar/en_us/product-ads-us-read); no campaign update endpoint is documented publicly.",
+   "pause_resume": "No campaign status update endpoint is documented in the public Product Ads reference (https://developers.mercadolibre.com.ar/en_us/product-ads-us-read), which only covers reading campaigns, ads and metrics."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.mercadolibre.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.mercadolibre.com/oauth/token: 400 invalid client_id or client_secret",
+   "authorize https://auth.mercadolibre.com.ar/authorization: 403",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

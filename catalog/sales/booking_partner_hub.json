@@ -1,0 +1,36 @@
+{
+ "id": "booking_partner_hub",
+ "category": "sales",
+ "label": "Booking.com Partner Hub",
+ "lane": "human",
+ "kind": "marketplace",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://partner.booking.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Partner terms limit the extranet to the accommodation partner's own account; the public site's Terms forbid automated access — research only, a person acts. join.booking.com opened.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

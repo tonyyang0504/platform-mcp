@@ -1,0 +1,97 @@
+{
+ "id": "cv_library",
+ "category": "jobs",
+ "label": "CV-Library",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://www.cv-library.co.uk/partnercentre",
+ "url": "https://www.cv-library.co.uk/",
+ "verified_at": "2026-09-04",
+ "terms_note": "CV-profile apply; no jobseeker API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "xml_feed",
+   "partner_program"
+  ],
+  "auth": "partner",
+  "access": "apply",
+  "capabilities": [
+   "feed_xml",
+   "job_search (feed)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the affiliate XML live-jobs feed could feed the Radar (partner sign-up) but there is no candidate apply / status API",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "The XML feed is an affiliate arrangement (apply to the Partner Centre);",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. The site blocks direct requests (403 'CV-Library.co.uk - Blocked'); read through r.jina.ai. Partner Centre offers affiliates a real-time XML jobs feed on request (no self-serve docs); /recruiter/api is the recruiter client login (job-posting API for paying recruiters). User terms read via r.jina.ai contain no explicit bot / scraping clause in the extracted sentences (only credit / billing automation wording).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cv-library.co.uk/",
+   "https://www.cv-library.co.uk/partnercentre",
+   "https://www.cv-library.co.uk/recruiter/api",
+   "https://www.cv-library.co.uk/terms"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No readable public API reference (re-checked 2026-09-25): https://www.cv-library.co.uk/partnercentre, /developers, /api and /partners now answer HTTP 403 to plain requests and a 'Blocked - You triggered a security action' page to headless Chromium, so nothing beyond the earlier reading can be confirmed. That earlier reading of the Partner Centre described a Traffic Partner programme whose only data product is an 'XML live jobs feed' supplied to signed-up affiliates ('We can supply you this in XML format') with no published URL, parameters or schema, onboarded by the Partner Manager. The official GitHub org (github.com/cv-library) holds only Docker/infrastructure repositories, no API client or spec."
+}

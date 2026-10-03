@@ -1,0 +1,310 @@
+{
+ "id": "twitch",
+ "category": "social",
+ "label": "Twitch",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://dev.twitch.tv/docs/chat/",
+ "url": "https://www.twitch.tv/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free; Helix needs Client-Id + OAuth token; chat send = user token with user:write:chat or app token with user:bot + channel:bot (the broadcaster must authorize channel:bot or mod the bot); 20 messages / 30 s (100 for mods / VIPs / broadcaster), 1 message/s per channel for non-privileged accounts, verified bots 7,500 / 30 s; whispers user:manage:whispers 40 rps, 3/s per user, 100 unique recipients per day; concurrent join limit 100 chat rooms; Developer Agreement bans spam and unsolicited whispers.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "websocket",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "analytics",
+   "search",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 500,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.twitch.tv/helix/chat/messages {broadcaster_id, sender_id, message ≤ 500}",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (chat is text + emotes only)",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no upload API; clips are created from a live stream: POST helix/clips)",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "EventSub `channel.chat.message` (WebSocket or webhook) — there is no REST “read chat” endpoint",
+   "docs": "https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST helix/chat/messages with `reply_parent_message_id`",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "same EventSub chat events (filter on the channel/bot name)",
+   "docs": "https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.twitch.tv/helix/whispers?from_user_id=&to_user_id= {message}",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no endpoint returns received whispers; EventSub has no whisper event for third parties)",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE helix/moderation/chat (delete a chat message) · DELETE helix/videos",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "— (no per-message metrics; GET helix/clips / helix/videos carry view counts)",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET helix/channels/followers (total) · GET helix/streams · GET helix/analytics/games (CSV report URLs)",
+   "docs": "https://dev.twitch.tv/docs/api/reference/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (chat + channel data; no feed posts).",
+  "base_urls": [
+   "https://api.twitch.tv/helix/"
+  ],
+  "auth": [
+   "1. Twitch developer console app → OAuth 2.0 authorization code (user token) or client credentials (app token).",
+   "2. Chat bot pattern: the bot account grants `user:bot` (+ `user:write:chat`, `user:read:chat`), the broadcaster",
+   "3. Whispers need `user:manage:whispers`; follower lists `moderator:read:followers`."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /helix/chat/messages",
+    "purpose": "`broadcaster_id`, `sender_id`, `message` ≤ 500, `reply_parent_message_id`",
+    "notes": ""
+   },
+   {
+    "call": "POST /helix/chat/announcements",
+    "purpose": "`moderator:manage:announcements`",
+    "notes": ""
+   },
+   {
+    "call": "EventSub `channel.chat.message` (v1)",
+    "purpose": "condition broadcaster_user_id + user_id",
+    "notes": ""
+   },
+   {
+    "call": "POST /helix/whispers?from_user_id&to_user_id",
+    "purpose": "40 rps, 3/s per user, 100 unique recipients / day",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/channels`, `PATCH /helix/channels` (title / game / tags)",
+    "purpose": "`channel:manage:broadcast`",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/channels/followers",
+    "purpose": "total always; details need moderator scope",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/streams`, `/clips`, `/search/channels`, `/search/categories",
+    "purpose": "research",
+    "notes": ""
+   },
+   {
+    "call": "PATCH /helix/chat/settings",
+    "purpose": "slow / follower mode",
+    "notes": ""
+   }
+  ],
+  "limits": " - Chat: 20 messages / 30 s (100 for broadcaster / mods / VIPs), 1 msg/s per channel unprivileged, verified bots 7,500 / 30 s; join limit 100 chat rooms per account. - Helix: 800 points per minute per client bucket (`Ratelimit-Limit / -Remaining / -Reset`). - Free; Developer Agreement + Community Guidelines (no spam, no unsolicited whispers, bots must identify).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dev.twitch.tv/docs/chat/",
+   "https://dev.twitch.tv/docs/api/reference/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.twitch.tv/helix",
+  "rate_per_second": 5,
+  "rate_note": "Helix token bucket of 800 points per minute per user token; chat messages additionally follow chat rate limits (20 per 30 s as a regular user, 100 per 30 s as moderator/broadcaster).",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://id.twitch.tv/oauth2/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "Client-Id": "client_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Twitch app client id (dev.twitch.tv console); also sent as the Client-Id header required on every Helix call."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Twitch app client secret (form body of the refresh request to https://id.twitch.tv/oauth2/token)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "User refresh token from the authorization-code flow with scopes user:write:chat and moderator:manage:chat_messages. 'Because refresh tokens may change, your app should safely store the new refresh token': the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/twitch.json (mode 0600)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "broadcaster_id",
+    "required": true,
+    "help": "User id of the channel whose chat is used (GET /helix/users?login=…)."
+   },
+   {
+    "name": "sender_id",
+    "required": true,
+    "help": "User id of the token's user (GET /helix/users with the token); sender of messages and moderator for delete."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users",
+    "docs": "https://dev.twitch.tv/docs/api/reference/#get-users",
+    "note": "Get Users without ids returns the token's user (account.data[0]: id, login, display_name)."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/chat/messages",
+    "body": {
+     "broadcaster_id": "@broadcaster_id",
+     "sender_id": "@sender_id",
+     "message": "text",
+     "reply_parent_message_id": "reply_to"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "id": "message_id"
+     }
+    },
+    "docs": "https://dev.twitch.tv/docs/api/reference/#send-chat-message",
+    "note": "Sends a chat message (max 500 characters) to config broadcaster_id's chat. A message that fails AutoMod or chat settings answers 200 with raw.is_sent=false and raw.drop_reason — check is_sent."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/chat/messages",
+    "body": {
+     "broadcaster_id": "@broadcaster_id",
+     "sender_id": "@sender_id",
+     "message": "text",
+     "reply_parent_message_id": "comment_id"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "id": "message_id"
+     }
+    },
+    "docs": "https://dev.twitch.tv/docs/api/reference/#send-chat-message",
+    "note": "Chat reply: `comment_id` is the chat message id being replied to (reply_parent_message_id). Check raw.is_sent."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/moderation/chat?message_id={post_id}",
+    "params": {
+     "broadcaster_id": "@broadcaster_id",
+     "moderator_id": "@sender_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://dev.twitch.tv/docs/api/reference/#delete-chat-messages",
+    "note": "Deletes ONE chat message (`post_id` = message id; created within the last 6 hours, not the broadcaster's or another moderator's). message_id is always sent: without it Twitch 'removes all messages in the broadcaster's chat room'."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Chat messages are text and emotes only (Send Chat Message takes `message` text, https://dev.twitch.tv/docs/api/reference/#send-chat-message); there is no image upload.",
+   "read_comments": "There is no REST endpoint to read chat; messages arrive through EventSub channel.chat.message (WebSocket or webhook, https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/).",
+   "read_mentions": "Mentions are only visible in the EventSub chat stream (https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/); no REST feed exists.",
+   "analytics_post": "Chat messages have no metrics endpoint; Helix analytics endpoints return CSV report URLs for extensions and games (https://dev.twitch.tv/docs/api/reference/#get-game-analytics)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.twitch.tv: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token id.twitch.tv/oauth2/token: 400 invalid client",
+   "authorize https://id.twitch.tv/oauth2/authorize: 400",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

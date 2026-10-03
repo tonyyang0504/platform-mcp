@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/x-mcp",
+ "description": "X (social): me, publish_text, read_comments, reply_comment, read_mentions, delete, analytics_post. E",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.x.com/x-api/posts/create-post",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "x"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_X_CLIENT_ID",
+     "description": "OAuth 2.0 Client ID of the X app (Developer Console > Keys and tokens). Sent as the HTTP Basic username on POST https://api.x.com/2/oauth2/token (grant_type=refresh_token).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_CLIENT_SECRET",
+     "description": "OAuth 2.0 Client Secret of a CONFIDENTIAL client ('Web App and Automated App or bots are confidential clients'; 'You don't need client id for confidential clients with a valid Authorization Header'); HTTP Basic password on the token request. Public clients (Native App, Single page App) are not supported by this entry.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_REFRESH_TOKEN",
+     "description": "Refresh token from a one-time OAuth 2.0 Authorization Code Flow with PKCE consent with scopes tweet.read tweet.write users.read offline.access ('If the scope offline.access is applied an OAuth 2.0 refresh token will be issued', https://docs.x.com/resources/fundamentals/authentication/oauth-2-0/authorization-code). Access tokens (2 h) are minted from it; a new refresh token returned by the grant replaces the old one in memory (and in PLATFORM_MCP_STATE_DIR/x.json when that is set).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_USER_ID",
+     "description": "Numeric X user id of the authorizing account (data.id from the `me` tool, GET /2/users/me); read_mentions calls /2/users/<user_id>/mentions. Env: PLATFORM_MCP_X_USER_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

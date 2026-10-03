@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/applovin-mcp",
+ "description": "AppLovin Ads (AXON) (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every tool m",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://support.applovin.com/en/growth/promoting-your-apps/api/reporting-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "applovin"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_APPLOVIN_CAMPAIGN_API_KEY",
+     "description": "Campaign Management API key (AppLovin dashboard > your account, top right > Keys; not the Ad Unit Management key), sent as the raw `Authorization` header value on api.ads.axon.ai.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_APPLOVIN_REPORT_KEY",
+     "description": "Report Key (dashboard > account > Keys), sent as the api_key query parameter of GET https://r.applovin.com/report; needed only for get_report.",
+     "isRequired": false,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_APPLOVIN_ACCOUNT_ID",
+     "description": "Numeric AppLovin account id (dashboard > account > Go to settings: the number after the account name); every Campaign Management call carries it as ?account_id=.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

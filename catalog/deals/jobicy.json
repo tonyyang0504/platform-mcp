@@ -1,0 +1,196 @@
+{
+ "id": "jobicy",
+ "category": "deals",
+ "label": "Jobicy",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobicy.com/jobs-rss-feed",
+ "url": "https://jobicy.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free, keyless; fair-use rule = keep attribution + redirect applicants to the original job URL; MCP endpoint offered for AI tools.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json",
+   "feed_rss",
+   "mcp"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Jobicy MCP endpoint (documented on the Jobs API page; URL behind the 'MCP server' section)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://jobicy.com/jobs-rss-feed"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://jobicy.com/api/v2/remote-jobs?count=100&industry=dev",
+   "docs": "https://jobicy.com/jobs-rss-feed"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://jobicy.com/jobs-rss-feed"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search; REST + MCP + RSS) Confidence high (official Jobs API page opened).",
+  "base_urls": [
+   "https://jobicy.com/api/v2/remote-jobs"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v2/remote-jobs?count=20&tag=python",
+    "purpose": "search by tag",
+    "notes": "count (1-50 per page text), tag"
+   },
+   {
+    "call": "GET /api/v2/remote-jobs?geo=canada&industry=marketing",
+    "purpose": "search by geo / industry",
+    "notes": "geo (country / region list), industry (dev, marketing, supporting…)"
+   },
+   {
+    "call": "MCP server (section 06 on the page)",
+    "purpose": "AI tool access",
+    "notes": "remote job search for AI tools"
+   },
+   {
+    "call": "RSS filtered feeds (section on the page)",
+    "purpose": "feed",
+    "notes": "per category / geo"
+   }
+  ],
+  "limits": " - Fair use: 'Do not present Jobicy listings as your own original job postings or remove source attribution'; application buttons must redirect to the original job URL (2026-09-02 audit quote). - Free, no key; no numeric rate limit on the page.",
+  "mcp_sdk": [
+   "Jobicy MCP endpoint (official, documented on the Jobs API page)"
+  ],
+  "sources": [
+   "https://jobicy.com/jobs-rss-feed"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobicy.com/api/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/remote-jobs",
+    "params": {
+     "tag": "query",
+     "industry": "category",
+     "count": "limit"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "jobTitle",
+      "buyer": "companyName",
+      "url": "url",
+      "posted_at": "pubDate",
+      "budget_min": "salaryMin",
+      "budget_max": "salaryMax",
+      "currency": "salaryCurrency",
+      "description": "jobDescription"
+     }
+    },
+    "docs": "https://jobicy.com/jobs-rss-feed",
+    "note": "Keyless ('No API key … No account or authentication header is required'). location must be a Jobicy location slug (?get=locations lists them); there is no page parameter — count is the whole result set, so page > 1 repeats it. Jobicy asks that stored listings be re-checked only 'once or twice per hour'. An official MCP server also exists at https://jobicy.com/mcp. Mirrors jobs/jobicy: category is sent as industry (documented filters: count, geo, industry, tag). buyer is the hiring company; salaryMin/Max map to budget_min/max."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; the feed returns whole records.",
+   "submit_bid": "Fair use: 'redirect applicants to the original job URL' — no application or bid API.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

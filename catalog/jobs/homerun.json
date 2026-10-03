@@ -1,0 +1,202 @@
+{
+ "id": "homerun",
+ "category": "jobs",
+ "label": "Homerun",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "nl",
+  "eu"
+ ],
+ "docs_url": "https://developers.homerun.co/",
+ "url": "https://www.homerun.co/",
+ "verified_at": "2026-09-25",
+ "terms_note": "SMB career pages *.homerun.co; form apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "xml_feed"
+  ],
+  "auth": "api_key",
+  "access": "paid",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml",
+   "employer_posting"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (employer-key REST API + a public Atom feed per career page).",
+  "base_urls": [
+   "https://api.homerun.co/v2"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET https://feed.homerun.co/jobs` (from a career page) → `jobs_atom_<hash>.xml",
+    "purpose": "public list of a company's open jobs",
+    "notes": "Atom `feed`: `title`, `subtitle`, `logo`, `updated`; `entry`: `author/name`, `title`, `link rel=alternate` (job page), `id` (`job_…`), `summary`, `content`, `description` (HTML), `updated`, `type`, `location`, `department`, `salary_indication`"
+   },
+   {
+    "call": "GET /v2/vacancies` (employer key, `vacancies:read`)",
+    "purpose": "company's vacancies",
+    "notes": "`filter[status]=draft"
+   },
+   {
+    "call": "GET /v2/vacancies/{vacancy_id}` · `/questions",
+    "purpose": "one vacancy + its application-form questions",
+    "notes": "as above; questions need `vacancy-questions:read`"
+   },
+   {
+    "call": "POST /v2/job-applications` (+ `/{id}/files`, `/{id}/files/temporary`, `/{id}/answers`, `/{id}/confirmation-email`)",
+    "purpose": "create an application — **employer side only**",
+    "notes": "scope `job-applications:write`; `traffic_source`, `question_answers`, `disqualification_reason` on read"
+   },
+   {
+    "call": "GET /v2/job-applications` · `PATCH` · `DELETE",
+    "purpose": "applicant management (employer)",
+    "notes": "not usable for the candidate"
+   }
+  ],
+  "limits": " \"We enforce a rate limit of 60 requests per minute\" (employer API; `429 You're requesting too much in too little time`). Feed: not published. - Terms of Service (homerun.co/terms-of-service) bind the employer Customer: 11.1 — no access to \"non-public areas of our website or Service without authorization\", no spam / unsolicited promotion, no attempt to \"probe, scan, compromise, test, decompile, reverse engineer … or bypass any part of the SaaS\". Nothing addresses candidate-side automation; the Atom feed is a public, linked resource. - Applying is the career-page form (files + custom questions)",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.homerun.co/",
+   "https://developers.homerun.co/",
+   "https://www.homerun.co/terms-of-service",
+   "https://www.homerun.co/terms",
+   "https://jobs.homerun.co/",
+   "https://jobs.homerun.co/jobs.rss",
+   "https://jobs.homerun.co/jobs.json",
+   "https://feed.homerun.co/jobs",
+   "https://feed.homerun.co/jobs_atom_decd43e3a73c1801b1307c029cdab4926ba01c023a43b4c2df9f0ff9647394f2.xml",
+   "https://support.homerun.co/en/articles/4494533-homerun-api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.homerun.co/v2",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Homerun Public API v2 key generated on https://app.homerun.co/settings/integrations with the `vacancies:read` scope; sent as `Authorization: Bearer`."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/vacancies",
+    "fixed_params": {
+     "perPage": 1
+    },
+    "docs": "https://developers.homerun.co/#tag/Vacancies/operation/vacancies.get",
+    "note": "Homerun has no account endpoint; the key is verified with a one-item vacancies list (needs the vacancies:read scope)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/vacancies?filter[status]=public&include[]=location&include[]=department&include[]=salaryIndication",
+    "params": {
+     "page": "page",
+     "perPage": "limit"
+    },
+    "default_limit": 15,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "location": "location.name",
+      "posted_at": "created_at",
+      "description": "description"
+     }
+    },
+    "docs": "https://developers.homerun.co/#tag/Vacancies/operation/vacancies.get",
+    "note": "Employer API: GET /v2/vacancies lists the key owner's OWN vacancies (filter[status]=public; include[]=location, department, salaryIndication), not a cross-company search. There is no keyword or location filter, so query/location are not sent — filter client-side. page (default 1) and perPage ('[1 .. 100]', default 15). salary_indication {currency, salary_value, max_salary_value, time_period} is in raw (amounts are decimal strings such as \"45000.00\"); location_type, type and expires_at too. Rate limit: '60 requests per minute'. Homerun suggests its Job XML Feeds when only listing vacancies."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/vacancies/{id}?include[]=location&include[]=department&include[]=salaryIndication&include[]=page_content",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "location": "location.name",
+      "posted_at": "created_at",
+      "description": "description"
+     }
+    },
+    "docs": "https://developers.homerun.co/#tag/Vacancies/operation/vacancies.vacancy-id.get",
+    "note": "GET /v2/vacancies/{vacancy_id} (e.g. job_SnhUsAg1QwTRFIRNUfM6) returns {data: Vacancy}; page_content and salary_indication are in raw."
+   }
+  },
+  "not_offered": {
+   "apply": "POST /job-applications creates an applicant as the employer (key scope job-applications:write, 'sourced' flag), i.e. the company's own ATS import, not a candidate applying; candidates apply through the Homerun career page.",
+   "list_messages": "The API has no message or conversation endpoints (only notes, tags, answers, files and the confirmation email)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.homerun.co: DNS ok, TLSv1.2 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

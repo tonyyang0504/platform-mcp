@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "guardian_jobs-mcp",
+ "display_name": "Guardian Jobs MCP",
+ "version": "0.1.0",
+ "description": "Guardian Jobs (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "guardian_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Guardian Jobs job-board RSS (Madgex, RSS 2.0, 20 postings per page). keywords is the board's own search-box parameter (the feed of any search is the search URL under /jobsrss/) and page selects further pages of 20 (checked 2026-09-25: keywords narrows the feed; page=2 returns the next 20, an exhausted page returns an empty channel). location, remote and limit are not sent (location filtering on these boards uses internal location ids). title is 'Employer: Job title' and description begins with the salary line, so company and salary are not split out. id is the posting link."
+  }
+ ]
+}

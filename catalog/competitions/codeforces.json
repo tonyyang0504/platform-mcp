@@ -1,0 +1,128 @@
+{
+ "label": "Codeforces",
+ "lane": "api",
+ "kind": "coding",
+ "docs_url": "https://codeforces.com/apiHelp",
+ "url": "https://codeforces.com/",
+ "verified_at": "2026-09-27",
+ "version": "0.1.0",
+ "terms_note": "Public API: 'at most 1 time per two seconds' (otherwise status FAILED, 'Call limit exceeded'). Anonymous standings of regular contests only via GET with exactly one parameter, contestId (https://codeforces.com/apiHelp/methods#contest.standings).",
+ "adapter": {
+  "base_url": "https://codeforces.com/api",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.5,
+  "envelope": {
+   "ok_field": "status",
+   "ok_value": "OK",
+   "error_field": "comment"
+  },
+  "tools": {
+   "discover": {
+    "method": "GET",
+    "path": "/contest.list",
+    "fixed_params": {
+     "gym": "false"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result",
+     "slice": true,
+     "key": "competitions",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "url": "fmt:https://codeforces.com/contest/{id}",
+      "kind": "=coding",
+      "status": "phase",
+      "starts_at": "iso:startTimeSeconds"
+     },
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "title"
+       ]
+      },
+      {
+       "arg": "kind",
+       "fields": [
+        "kind"
+       ],
+       "match": "equals"
+      },
+      {
+       "arg": "status",
+       "fields": [
+        "status"
+       ],
+       "match": "equals",
+       "value": "map:status:open=CODING,upcoming=BEFORE,completed=FINISHED"
+      }
+     ]
+    },
+    "docs": "https://codeforces.com/apiHelp/methods#contest.list",
+    "note": "All regular (non-gym) contests, upcoming first, then finished ones newest first; the method takes no filters, so the server filters locally (query: substring of the title; kind: every contest is coding; status: open = CODING, upcoming = BEFORE, completed = FINISHED) and pages the matches. status in the results is Codeforces' phase (BEFORE, CODING, PENDING_SYSTEM_TEST, SYSTEM_TEST, FINISHED)."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/contest.standings",
+    "params": {
+     "contestId": "competition_id"
+    },
+    "result": {
+     "root": "result.contest",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "url": "fmt:https://codeforces.com/contest/{id}",
+      "kind": "=coding",
+      "status": "phase",
+      "starts_at": "iso:startTimeSeconds",
+      "rules_url": "=https://codeforces.com/blog/entry/4088"
+     }
+    },
+    "docs": "https://codeforces.com/apiHelp/methods#contest.standings",
+    "note": "The Contest object from contest.standings (the API has no single-contest method); anonymous callers get it only for public regular contests that have started. Large contests answer several MB: the answer is held for 60 s and a following standings call for the same contest pages it without downloading it again.",
+    "cache_ttl": 60
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/contest.standings",
+    "params": {
+     "contestId": "competition_id"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.rows",
+     "slice": true,
+     "key": "standings",
+     "fields": {
+      "rank": "rank",
+      "team": "party.teamName|party.members.0.handle",
+      "score": "points"
+     }
+    },
+    "docs": "https://codeforces.com/apiHelp/methods#contest.standings",
+    "note": "Official public standings; the API forbids from/count for anonymous callers, so the full ranklist is fetched and paged locally. raw has penalty and per-problem results."
+   }
+  },
+  "not_offered": {
+   "me": "Authorized methods need an API key and secret with a SHA-512 apiSig (https://codeforces.com/apiHelp); this entry serves the anonymous public methods only.",
+   "my_entries": "user.status needs a handle, not an account session; no authenticated 'my entries' mapping in this public entry.",
+   "enter": "Registration is done on the website; the API has no registration method.",
+   "submit": "The API has no submission method (read-only API)."
+  }
+ },
+ "id": "codeforces",
+ "category": "competitions",
+ "live_check": {
+  "date": "2026-09-27",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

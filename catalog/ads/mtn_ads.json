@@ -1,0 +1,125 @@
+{
+ "id": "mtn_ads",
+ "category": "ads",
+ "label": "MTN Ads (MTN Advertising)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "africa",
+  "za",
+  "ng",
+  "gh",
+  "zm"
+ ],
+ "docs_url": "https://developers.mtn.com/categories/advertising",
+ "url": "https://ads.mtn.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Register on developers.mtn.com, create an app → OAuth 2.0 client credentials; product availability per operating company (Group portal moving to appx.developers.mtn.com). Free tier / commercial terms per product.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 client credentials (MTN Developer Portal app: client_id / client_secret)",
+  "access": "signup",
+  "capabilities": [
+   "audiences",
+   "targeting_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (telco advertising data APIs, not campaign management) Confidence: **high** — official developer portal read.",
+  "base_urls": [],
+  "auth": [
+   "1. Register an account on developers.mtn.com and create an App.",
+   "2. OAuth 2.0 client credentials (`grant_type=client_credentials`, client_id, client_secret) → bearer.",
+   "3. Subscribe the App to 'MTN Advertising API V1' / 'Advertising V2' (country availability: UG, Eswatini, group)."
+  ],
+  "endpoints": [
+   {
+    "call": "Advertising V1 / V2 endpoints",
+    "purpose": "customer-data-driven ad targeting",
+    "notes": "TODO(verify) per product page"
+   },
+   {
+    "call": "campaigns / ads / budgets / reports",
+    "purpose": "not offered (MTN Ads inventory is sales-led)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Per-product quotas and commercial terms on the portal; portal migration notice for Group users.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.mtn.com/categories/advertising",
+   "https://developers.mtn.com/products"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: MTN's Advertising category (https://developers.mtn.com/categories/advertising: 'Reach customers with APIs engineered for mobile advertising') offers ad-serving products whose Advertising V2 swagger exposes POST /v1/customers/{customerId} 'Fetch Adverts' to deliver ads to a subscriber; there are no advertiser account, campaign, budget or report endpoints to map."
+}

@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      actions: { patterns: ["*"] }
+  - package-ecosystem: pip
+    directory: /
+    schedule: { interval: weekly }
+  - package-ecosystem: npm
+    directory: /runtime/typescript
+    schedule: { interval: weekly }
+    groups:
+      mcp-sdk: { patterns: ["@modelcontextprotocol/*"] }

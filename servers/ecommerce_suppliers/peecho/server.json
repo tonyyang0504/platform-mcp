@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/peecho-mcp",
+ "description": "Peecho (Prodigi Group) (ecommerce suppliers): me, quote_shipping, create_order, get_order. Every too",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.peecho.com/print-api-documentation",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "peecho"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_PEECHO_MERCHANT_API_KEY",
+     "description": "Peecho Merchant API key (dashboard > Settings > API), sent as the merchantApiKey query parameter and inside order/quote bodies. Test-environment keys belong to https://test.www.peecho.com/rest/v3/, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PEECHO_CURRENCY",
+     "description": "Currency for create_order (required by Peecho, e.g. EUR or USD) and quote_shipping prices (EUR when unset).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

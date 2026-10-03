@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "codeforces-mcp",
+ "display_name": "Codeforces MCP",
+ "version": "0.1.0",
+ "description": "Codeforces (competitions): discover, get_competition, standings. Every tool maps to a documented end",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "codeforces"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "discover",
+   "description": "All regular (non-gym) contests, upcoming first, then finished ones newest first; the method takes no filters, so the server filters locally (query: substring of the title; kind: every contest is coding; status: open = CODING, upcoming = BEFORE, completed = FINISHED) and pages the matches. status in the results is Codeforces' phase (BEFORE, CODING, PENDING_SYSTEM_TEST, SYSTEM_TEST, FINISHED)."
+  },
+  {
+   "name": "get_competition",
+   "description": "The Contest object from contest.standings (the API has no single-contest method); anonymous callers get it only for public regular contests that have started. Large contests answer several MB: the answer is held for 60 s and a following standings call for the same contest pages it without downloading it again."
+  },
+  {
+   "name": "standings",
+   "description": "Official public standings; the API forbids from/count for anonymous callers, so the full ranklist is fetched and paged locally. raw has penalty and per-problem results."
+  }
+ ]
+}

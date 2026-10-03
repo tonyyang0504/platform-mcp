@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "coupang_open_api-mcp",
+ "display_name": "Coupang Wing (seller) + Coupang Open API MCP",
+ "version": "0.1.0",
+ "description": "Coupang Wing (seller) + Coupang Open API (ecommerce suppliers): me, list_products, get_product, get_",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "coupang_open_api"
+   ],
+   "env": {
+    "PLATFORM_MCP_COUPANG_OPEN_API_ACCESS_KEY": "${user_config.platform_mcp_coupang_open_api_access_key}",
+    "PLATFORM_MCP_COUPANG_OPEN_API_SECRET_KEY": "${user_config.platform_mcp_coupang_open_api_secret_key}",
+    "PLATFORM_MCP_COUPANG_OPEN_API_VENDOR_ID": "${user_config.platform_mcp_coupang_open_api_vendor_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_coupang_open_api_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_OPEN_API_ACCESS_KEY",
+   "description": "Coupang Open API Access Key issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급) after business verification; calls must come from one of the (up to 10) allow-listed IPs, and keys expire and must be re-issued.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_coupang_open_api_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_OPEN_API_SECRET_KEY",
+   "description": "The matching Secret Key: signs every request (HMAC-SHA256 hex over signed-date + method + path + query, sent as `Authorization: CEA algorithm=HmacSHA256, access-key=..., signed-date=..., signature=...`). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_coupang_open_api_vendor_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_COUPANG_OPEN_API_VENDOR_ID",
+   "description": "Coupang vendorId (업체코드, e.g. A00012345), shown in WING after login; used in every path/query.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe lists one registered product ({code, message, nextToken, data[]}) to verify the HMAC keys, IP allow-list and vendorId."
+  },
+  {
+   "name": "list_products",
+   "description": "The seller's OWN registered products (GET_PRODUCTS_BY_QUERY). `query` searches sellerProductName (20 characters at most); `category` is not a filter of this endpoint. nextToken is the page key (1 or absent for the first page, the response's nextToken is the next one; empty when there is none)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET_PRODUCT_BY_PRODUCT_ID: the full listing (delivery and return settings, items[{vendorItemId, itemName, originalPrice, salePrice, maximumBuyCount, externalVendorSku, images}]). `price` is the first item's salePrice in the market currency (KRW in Korea); vendorItemId (옵션ID) per item is in `raw`."
+  },
+  {
+   "name": "get_order",
+   "description": "GET_ORDERSHEET_BY_ORDERID: a customer order placed with the seller; the first shipment box (data[0]) of that orderId. status is ACCEPT (결제완료), INSTRUCT (상품준비중), DEPARTURE, DELIVERING, FINAL_DELIVERY or NONE_TRACKING. Prices are {currencyCode, units, nanos} objects (orderItems[].orderPrice), so no numeric `total` is mapped; receiver and orderItems are in `raw`."
+  },
+  {
+   "name": "track",
+   "description": "One row per shipment box of the order with its delivery status, carrier (deliveryCompanyName), invoiceNumber (운송장번호), shipped and delivered dates. The per-box status history endpoint (/ordersheets/{shipmentBoxId}/history) is not used: its documented schema (data[].details[]) and example (data[] of events) disagree."
+  }
+ ]
+}

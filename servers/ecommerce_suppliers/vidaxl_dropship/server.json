@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/vidaxl_dropship-mcp",
+ "description": "vidaXL B2B dropshipping (ecommerce suppliers): me, list_products, get_product, create_order, get_ord",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://b2b.vidaxl.com/pages/8-api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "vidaxl_dropship"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_VIDAXL_DROPSHIP_EMAIL",
+     "description": "The vidaXL B2B customer e-mail (HTTP Basic username).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_VIDAXL_DROPSHIP_API_TOKEN",
+     "description": "API token shown under MY ACCOUNT on b2b.vidaxl.com (HTTP Basic password). Sandbox tokens belong to https://sandbox.b2b.vidaxl.com, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

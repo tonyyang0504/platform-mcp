@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "landing_jobs-mcp",
+ "display_name": "Landing.jobs MCP",
+ "version": "0.1.0",
+ "description": "Landing.jobs (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "landing_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Keyless list of open jobs. The documented query parameters are only offset and limit ('The default is 50 items. 50 is also the maximum number of items per page'), so query, location and remote are not sent - filter the returned postings client-side (remote, tags[], type, expires_at and locations[] are in raw). description is role_description (HTML); main_requirements, nice_to_have and perks are in raw. The company name is not in the job record."
+  },
+  {
+   "name": "get_posting",
+   "description": "'Returns the job offer with the given id' (URL https://landing.jobs/api/v1/jobs/[id]); keyless."
+  }
+ ]
+}

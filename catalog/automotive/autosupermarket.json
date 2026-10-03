@@ -1,0 +1,45 @@
+{
+ "id": "autosupermarket",
+ "category": "automotive",
+ "label": "Autosupermarket",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autosupermarket.it",
+ "domain": "autosupermarket.it",
+ "country": "Italy",
+ "official_api": true,
+ "docs_url": "https://api.autosupermarket.it/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "X-Auth-Token API key for dealer/profile endpoints; listing/dealer reads open",
+  "access": "open",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "list_dealers",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence low). Site publishes an OpenAPI 3.1 \"Autosupermarket API\" reference (API Platform) with open GET /listings and /dealers plus token-auth dealer endpoints; it looks like the site backend exposed rather than a supported partner program.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.autosupermarket.it/",
+   "https://autosupermarket.it/docs"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "The AutoSuperMarket API reference (https://api.autosupermarket.it/documentazione, rendered 2026-09-25) is a dealer-account API: every request needs the dealer's X-Auth-Token ('Anche le richieste API senza autenticazione avranno esito negativo'), and its listing resources are the dealer's own (/dealer/headquarters/:id/listings, POST/PATCH/DELETE /listings). No public search; the dealer-upload side is outside the read-only automotive vocabulary."
+}

@@ -1,0 +1,232 @@
+{
+ "id": "lemon_squeezy",
+ "category": "marketplaces",
+ "label": "Lemon Squeezy",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.lemonsqueezy.com/api",
+ "url": "https://app.lemonsqueezy.com",
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation allowed with a store API key; MoR, 5 % + 50¢; rate limits not published; the public feature request for product create/update (nolt #279) is still open",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "checkout_links",
+   "set_price_per_checkout",
+   "orders",
+   "refunds",
+   "webhooks",
+   "license_keys",
+   "customers",
+   "discounts"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/lmsqueezy/lemonsqueezy.js"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/YawLabs/lemonsqueezy-mcp",
+  "https://github.com/atharvagupta2003/mcp-lemonsqueezy",
+  "https://github.com/IntrepidServicesLLC/lemonsqueezy-mcp-server"
+ ],
+ "auth_fields": [
+  "api_key",
+  "store_id",
+  "variant_id",
+  "default_price_cents?",
+  "webhook_secret?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null,
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.lemonsqueezy.com/v1",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://docs.lemonsqueezy.com/api/getting-started/requests",
+    "verified_at": "2026-09-27",
+    "notes": "Lemon Squeezy test mode is a key, not a host: 'API keys can be created in both live and test modes' and every request goes to https://api.lemonsqueezy.com. Put a test-mode API key in PLATFORM_MCP_LEMON_SQUEEZY_API_KEY; records created in test mode carry test_mode: true."
+   }
+  },
+  "headers": {
+   "Accept": "application/vnd.api+json",
+   "Content-Type": "application/vnd.api+json"
+  },
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Lemon Squeezy API key (Settings > API > create key; 'Generated API keys are valid for a year'), sent as 'Authorization: Bearer {api_key}'. Test-mode keys only see test-mode data (https://docs.lemonsqueezy.com/api/getting-started/requests)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "store_id",
+    "required": false,
+    "help": "Numeric store id (GET /v1/stores). Filters list_products / list_sales with filter[store_id] and is required by get_sales_stats."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Lemon Squeezy is the merchant of record; JSON:API requests (Accept / Content-Type application/vnd.api+json).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://docs.lemonsqueezy.com/api/users/retrieve-user",
+    "note": "GET /v1/users/me returns the key's user {data: {type: users, id, attributes: {name, email, color, avatar_url, ...}}}."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "params": {
+     "filter[store_id]": "@store_id",
+     "page[number]": "page",
+     "page[size]": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "total": "meta.page.total",
+     "fields": {
+      "id": "id",
+      "name": "attributes.name",
+      "description": "attributes.description",
+      "price": "attributes.price",
+      "status": "attributes.status",
+      "url": "attributes.buy_now_url",
+      "created_at": "attributes.created_at",
+      "updated_at": "attributes.updated_at"
+     }
+    },
+    "docs": "https://docs.lemonsqueezy.com/api/products/list-all-products",
+    "note": "GET /v1/products?page[number]&page[size] (max 100) [&filter[store_id]=config store_id]. `price` is an INTEGER in cents of the store currency (999 = 9.99; price_formatted in raw); status is draft or published; `status` input is not a documented filter and is not sent; currency is not on the product (see the store)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{product_id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "name": "attributes.name",
+      "description": "attributes.description",
+      "price": "attributes.price",
+      "status": "attributes.status",
+      "url": "attributes.buy_now_url",
+      "created_at": "attributes.created_at",
+      "updated_at": "attributes.updated_at"
+     }
+    },
+    "docs": "https://docs.lemonsqueezy.com/api/products/retrieve-product",
+    "note": "GET /v1/products/:id; `price` is an integer in cents (see list_products)."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/orders",
+    "params": {
+     "filter[store_id]": "@store_id",
+     "page[number]": "page",
+     "page[size]": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "sales",
+     "total": "meta.page.total",
+     "fields": {
+      "id": "id",
+      "product_id": "attributes.first_order_item.product_id",
+      "product_name": "attributes.first_order_item.product_name",
+      "amount": "attributes.total",
+      "currency": "attributes.currency",
+      "customer_email": "attributes.user_email",
+      "status": "attributes.status",
+      "created_at": "attributes.created_at",
+      "refunded": "attributes.refunded"
+     }
+    },
+    "docs": "https://docs.lemonsqueezy.com/api/orders/list-all-orders",
+    "note": "GET /v1/orders (newest first) [&filter[store_id]]. `amount` is total as an INTEGER in cents of `currency` (total_usd, refunded_amount and *_formatted in raw); status is pending, failed, paid, refunded, partial_refund or fraudulent. `product_id` and `since` are not sent (not documented order filters) - filter the rows by created_at / product_id yourself."
+   },
+   "get_sales_stats": {
+    "method": "GET",
+    "path": "/stores/{store_id}",
+    "path_params": {
+     "store_id": "@store_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "revenue": "attributes.total_revenue",
+      "sales": "attributes.total_sales",
+      "thirty_day_revenue": "attributes.thirty_day_revenue",
+      "thirty_day_sales": "attributes.thirty_day_sales",
+      "currency": "=USD",
+      "period": "=all_time"
+     }
+    },
+    "docs": "https://docs.lemonsqueezy.com/api/stores/the-store-object",
+    "note": "Store totals from GET /v1/stores/{config store_id}: revenue = total_revenue ('A positive integer in cents representing the total all-time revenue of the store in USD'), sales = total_sales (all-time count), plus thirty_day_revenue / thirty_day_sales. The API has no date-range report, so since / until / product_id are ignored and period is 'all_time'; refunds are not reported."
+   },
+   "refund": {
+    "method": "POST",
+    "path": "/orders/{sale_id}/refund",
+    "body": {
+     "data.type": "=orders",
+     "data.id": "str:sale_id",
+     "data.attributes.amount": "int:amount"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "sale_id": "id",
+      "amount": "attributes.refunded_amount",
+      "currency": "attributes.currency",
+      "status": "attributes.status",
+      "created_at": "attributes.refunded_at"
+     }
+    },
+    "docs": "https://docs.lemonsqueezy.com/api/orders/issue-refund",
+    "note": "MOVES MONEY - DESTRUCTIVE: POST /v1/orders/:id/refund issues a FULL refund when `amount` is omitted, otherwise a partial refund of `amount` as an INTEGER in cents of the order currency (100 = 1.00; a non-integer amount is rejected before sending). `reason` is not accepted. Returns the order with updated refunded / refunded_amount."
+   }
+  },
+  "not_offered": {
+   "create_product": "Products are created in the dashboard; the API reference lists only The product object, Retrieve a product and List all products (https://docs.lemonsqueezy.com/api/products/the-product-object).",
+   "update_price": "Prices live on variants / price objects, which the API exposes read-only (Retrieve / List only: https://docs.lemonsqueezy.com/api/variants/the-variant-object, https://docs.lemonsqueezy.com/api/prices/the-price-object).",
+   "list_refunds": "There is no refunds resource; refunds are the refunded / refunded_amount / refunded_at attributes and status refunded or partial_refund on orders (https://docs.lemonsqueezy.com/api/orders/the-order-object) - use list_sales."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.lemonsqueezy.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

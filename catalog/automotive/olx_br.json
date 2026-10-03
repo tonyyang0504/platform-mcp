@@ -1,0 +1,46 @@
+{
+ "id": "olx_br",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.olx.com.br",
+ "domain": "olx.com.br",
+ "country": "Brazil",
+ "official_api": true,
+ "docs_url": "https://developers.olx.com.br/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhook"
+  ],
+  "auth": "OAuth2 (OLX account authorization)",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "published_listings",
+   "leads",
+   "vehicle_history"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). OLX Brasil integration portal documents ad import (insert/edit/delete), published ads, leads, chat, webhooks and vehicle history APIs for integrators/professional advertisers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.olx.com.br/",
+   "https://developers.olx.com.br/anuncio/api/import.html"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developers.olx.com.br/): OLX Brasil integration portal documents ad import (insert/edit/delete), published ads, leads, chat, webhooks and vehicle history APIs for integrators/professional advertisers. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "autoria-mcp",
+ "display_name": "AUTO.RIA MCP",
+ "version": "0.1.0",
+ "description": "AUTO.RIA (automotive): get_listing, get_valuation. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "autoria"
+   ],
+   "env": {
+    "PLATFORM_MCP_AUTORIA_API_KEY": "${user_config.platform_mcp_autoria_api_key}",
+    "PLATFORM_MCP_AUTORIA_USER_ID": "${user_config.platform_mcp_autoria_user_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_autoria_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AUTORIA_API_KEY",
+   "description": "Personal API key from the developers.ria.com cabinet (Особистий кабінет); sent as the api_key query parameter. auto/info is freemium, statistic-avarage-price is paid.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_autoria_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AUTORIA_USER_ID",
+   "description": "Your RIA user id (integer); required by get_valuation (auto/statistic-avarage-price takes user_id and api_key in the query).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "get_listing",
+   "description": "GET https://developers.ria.com/auto/info?api_key&auto_id=<ad id> (freemium). price is the USD price (UAH and EUR are in raw); autoData holds year, race (mileage text), fuelName, gearboxName; stateData.regionName, photoData, seoLinkM and the VIN (only if the seller made it public) stay in raw. The seller's phone is always masked."
+  },
+  {
+   "name": "get_valuation",
+   "description": "PAID. POST https://developers.ria.com/auto/statistic-avarage-price/?user_id&api_key {langId: 4, period: 365, params: {omniId: <VIN>}} — search by unique identifier ('available only if the car was advertised on the site'). Pass `vin` (a state plate or AUTO.RIA ad id also work as omniId). Returns a price history, not a band: raw.graphData[] = {date: 'YYYY-MM', price: {UAH, USD}} over the last 365 days; low/mid/high stay null."
+  }
+ ]
+}

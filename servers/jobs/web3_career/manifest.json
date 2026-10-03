@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "web3_career-jobs-mcp",
+ "display_name": "Web3 Career MCP",
+ "version": "0.1.0",
+ "description": "Web3 Career (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/web3_career"
+   ],
+   "env": {
+    "PLATFORM_MCP_WEB3_CAREER_TOKEN": "${user_config.platform_mcp_web3_career_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_web3_career_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WEB3_CAREER_TOKEN",
+   "description": "Web3.career API token from https://web3.career/web3-jobs-api ('Your token is for your use only … Do not share it').",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET /api/v1?token=&tag=&limit= (1–100, no offset or cursor, so page is ignored). tag must be one exact slug from the documented list (solidity, rust, backend, defi, …) — 'Invalid tags silently return empty results' — so pass a tag as query. The body is a mixed array '[string, string, Job[]]' ('typically at index 2'), mapped from element 2. country wants a slug (united-states), not ISO, and remote only accepts 'true', so neither is sent. url is apply_url (required attribution link); salary is free text (raw)."
+  }
+ ]
+}

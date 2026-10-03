@@ -1,0 +1,15 @@
+{
+ "id": "okx_options_proxy",
+ "category": "market_data",
+ "label": "OKX options chain proxy",
+ "provider": "OKX",
+ "lane": "api",
+ "base_urls": [
+  "https://www.okx.com"
+ ],
+ "data_kinds": [
+  "options chain (tickers, opt-summary mark IV, open interest, index price)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

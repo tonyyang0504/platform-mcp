@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "infojobs-mcp",
+ "display_name": "InfoJobs MCP",
+ "version": "0.1.0",
+ "description": "InfoJobs (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "infojobs"
+   ],
+   "env": {
+    "PLATFORM_MCP_INFOJOBS_CLIENT_ID": "${user_config.platform_mcp_infojobs_client_id}",
+    "PLATFORM_MCP_INFOJOBS_CLIENT_SECRET": "${user_config.platform_mcp_infojobs_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_infojobs_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INFOJOBS_CLIENT_ID",
+   "description": "Client ID of an application registered at https://developer.infojobs.net/ ('App authentication is done via HTTP basic access authentication' with Client ID and Client secret).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_infojobs_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INFOJOBS_CLIENT_SECRET",
+   "description": "Client secret of the same InfoJobs application.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET /api/9/offer (User role public, no scope): q keyword, page (the example answers currentPage 1), maxResults (default 20; 'We strongly recommend limiting to 50 or fewer'). province/city/country take dictionary keys (/dictionary/*), so location/country are not sent. salaryMin/salaryMax are dictionary items ({id, value} text), left in raw; the list hit has no full description (requirementMin in raw)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /api/7/offer/{offerId} (User role public). minPay/maxPay are Pay objects and stay in raw; externalUrlForm, when set, is where the application must be made."
+  }
+ ]
+}

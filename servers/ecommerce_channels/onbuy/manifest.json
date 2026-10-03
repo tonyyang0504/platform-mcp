@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "onbuy-mcp",
+ "display_name": "OnBuy MCP",
+ "version": "0.1.0",
+ "description": "OnBuy (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_shippe",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "onbuy"
+   ],
+   "env": {
+    "PLATFORM_MCP_ONBUY_CONSUMER_KEY": "${user_config.platform_mcp_onbuy_consumer_key}",
+    "PLATFORM_MCP_ONBUY_SECRET_KEY": "${user_config.platform_mcp_onbuy_secret_key}",
+    "PLATFORM_MCP_ONBUY_SITE_ID": "${user_config.platform_mcp_onbuy_site_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_onbuy_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ONBUY_CONSUMER_KEY",
+   "description": "Consumer key from the OnBuy/OnCommerce Seller Control Panel > Integrations > OnBuy API (Test and Live keys differ).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_onbuy_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ONBUY_SECRET_KEY",
+   "description": "Secret key from the same page; exchanged with the consumer key at POST /v2/auth/request-token for a 15-minute access token (bound to the calling IP), sent as the raw Authorization header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_onbuy_site_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ONBUY_SITE_ID",
+   "description": "OnBuy site id your listings/orders belong to: 2000 = OnBuy UK (GET /v2/sites lists the others).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No seller-profile call without the seller id; the probe obtains a token (verifying the consumer/secret keys) and reads the configured site."
+  },
+  {
+   "name": "update_listing",
+   "description": "Product Listings: Update by SKU — PUT /v2/listings/by-sku {site_id, listings: [{sku, price, stock}]} changes the LIVE price and/or stock of your listing; `listing_id` is your SKU. Per-SKU problems come back in results[].error (e.g. 'SKU does not exist') with HTTP 200 — check raw/error. Title/description belong to the product (OPC) and are not changed here."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Update by SKU with {sku, stock}: sets the stock of one listing (`sku` required). Per-SKU errors are returned in results[].error with HTTP 200."
+  },
+  {
+   "name": "end_listing",
+   "description": "Product Listings: Delete by SKU — DELETE /v2/listings/by-sku {site_id, skus: [sku]} DELETES your listing (the product/OPC remains; re-listing needs a new create). `listing_id` is your SKU; the per-SKU outcome ({status: ok} or {error}) is in raw.results."
+  },
+  {
+   "name": "list_orders",
+   "description": "Orders: Browse — filter[status] awaiting_dispatch (the default when omitted) | dispatched | partially_dispatched | cancelled | cancelled_by_seller | cancelled_by_buyer | refunded | partially_refunded | all; since = filter[date_from] as 'YYYY-MM-DD HH:MM:SS'. price_total is a decimal string; buyer, addresses and products are in raw. No page parameters are documented, so only the first result page is returned."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "Orders: Dispatch — PUT /v2/orders/dispatch {site_id, orders: [{order_id, tracking: {supplier_name, number}}]} marks the WHOLE order dispatched and e-mails the buyer. supplier_name (`carrier`) is required whenever a tracking number is sent and is for internal reference only (OnBuy detects the courier from the number). Per-order success/failure is in raw.results[order_id]."
+  }
+ ]
+}

@@ -1,0 +1,191 @@
+{
+ "id": "reed",
+ "category": "jobs",
+ "label": "Reed",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "uk"
+ ],
+ "docs_url": "https://www.reed.co.uk/developers/jobseeker",
+ "url": "https://www.reed.co.uk/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Jobseeker API (search + job details, basic-auth key). Applications need the Reed account form — assisted for apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "basic",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Jobseeker search + details API, no apply).",
+  "base_urls": [
+   "https://www.reed.co.uk/api/{version}/…"
+  ],
+  "auth": [
+   "1. Register on the developer portal (\"Sign up for a reed.co.uk API key\") — free.",
+   "2. Every request: HTTP Basic auth with the API key as the user name and an empty password.",
+   "3. No OAuth, no user context — the key identifies the developer, not the job seeker."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/1.0/search",
+    "purpose": "job search",
+    "notes": "`keywords`, `locationName`, `distanceFromLocation` (miles, default 10), `permanent"
+   },
+   {
+    "call": "GET /api/1.0/jobs/{jobId}",
+    "purpose": "job details",
+    "notes": "employerId, employerName, jobTitle, jobDescription (HTML), locationName, min/max salary, yearlyMinimum/Maximum, currency, salaryType, datePosted, expirationDate, externalUrl, jobUrl, applications count, contractType, fullTime/partTime"
+   }
+  ],
+  "limits": " Not published on the developer pages; `resultsToTake` is capped at 100 per call. - Free developer key; no separate API terms text was found on the jobseeker pages (the portal only says to register). - Search/details only — nothing in the API acts on a job seeker's account, so no automated-application question arises.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.reed.co.uk/developers/jobseeker",
+   "https://www.reed.co.uk/developers"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.reed.co.uk/api/1.0",
+  "auth": {
+   "type": "basic",
+   "field": "api_key",
+   "password": "",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Reed Jobseeker API key from https://www.reed.co.uk/developers/jobseeker; sent as the HTTP Basic user name with an empty password."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/search",
+    "fixed_params": {
+     "keywords": "test",
+     "resultsToTake": 1
+    },
+    "docs": "https://www.reed.co.uk/developers/jobseeker",
+    "note": "Verified with a one-result search (Reed has no account endpoint)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "keywords": "query",
+     "locationName": "location",
+     "resultsToTake": "limit",
+     "resultsToSkip": "offset"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "results",
+     "key": "postings",
+     "total": "totalResults",
+     "fields": {
+      "id": "jobId",
+      "title": "jobTitle",
+      "company": "employerName",
+      "location": "locationName",
+      "url": "jobUrl",
+      "posted_at": "date",
+      "salary_min": "minimumSalary",
+      "salary_max": "maximumSalary",
+      "currency": "currency",
+      "description": "jobDescription"
+     }
+    },
+    "docs": "https://www.reed.co.uk/developers/jobseeker"
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/jobs/{id}",
+    "result": {
+     "fields": {
+      "id": "jobId",
+      "title": "jobTitle",
+      "company": "employerName",
+      "location": "locationName",
+      "url": "jobUrl",
+      "posted_at": "datePosted",
+      "salary_min": "minimumSalary",
+      "salary_max": "maximumSalary",
+      "currency": "currency",
+      "description": "jobDescription"
+     }
+    },
+    "docs": "https://www.reed.co.uk/developers/jobseeker"
+   }
+  },
+  "not_offered": {
+   "apply": "Reed's Jobseeker API has no application endpoint; candidates apply on reed.co.uk.",
+   "list_messages": "No messaging API."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.reed.co.uk: DNS ok, TLSv1.2 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

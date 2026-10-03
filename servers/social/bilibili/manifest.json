@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "bilibili-mcp",
+ "display_name": "Bilibili MCP",
+ "version": "0.1.0",
+ "description": "Bilibili (social): me, delete, analytics_post. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bilibili"
+   ],
+   "env": {
+    "PLATFORM_MCP_BILIBILI_CLIENT_ID": "${user_config.platform_mcp_bilibili_client_id}",
+    "PLATFORM_MCP_BILIBILI_CLIENT_SECRET": "${user_config.platform_mcp_bilibili_client_secret}",
+    "PLATFORM_MCP_BILIBILI_REFRESH_TOKEN": "${user_config.platform_mcp_bilibili_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bilibili_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BILIBILI_CLIENT_ID",
+   "description": "client_id of your Bilibili open-platform app (openhome.bilibili.com); also the x-bili-accesskeyid of every signed call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bilibili_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BILIBILI_CLIENT_SECRET",
+   "description": "The app secret (app_secret); signs every call (HMAC-SHA256) and is sent only to the refresh endpoint.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bilibili_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BILIBILI_REFRESH_TOKEN",
+   "description": "The user's refresh_token from the OAuth2 code exchange (https://api.bilibili.com/x/account-oauth2/v1/token, scopes USER_INFO, ARC_BASE, ARC_DATA). Single-use: each refresh returns a new one that replaces it (persisted when PLATFORM_MCP_STATE_DIR is set).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "获取用户公开信息 (scope USER_INFO): name, face, openid of the authorising user."
+  },
+  {
+   "name": "delete",
+   "description": "视频稿件删除 (scope ARC_BASE): irreversibly deletes one of the user's video submissions by resource_id (BV id)."
+  },
+  {
+   "name": "analytics_post",
+   "description": "获取单个稿件数据 (scope ARC_DATA): view, danmaku, reply, favorite, coin, share, like, title and ptime of one video submission (BV id) the user authored or co-authored."
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "bybit_options_proxy",
+ "category": "market_data",
+ "label": "Bybit options chain proxy",
+ "provider": "Bybit",
+ "lane": "api",
+ "base_urls": [
+  "https://api.bybit.com/v5/market/tickers"
+ ],
+ "data_kinds": [
+  "options chain (BTC/ETH/SOL USDT-settled)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

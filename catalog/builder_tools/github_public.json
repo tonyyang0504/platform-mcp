@@ -1,0 +1,84 @@
+{
+ "id": "github_public",
+ "category": "builder_tools",
+ "label": "GitHub (public search, no token)",
+ "lane": "api",
+ "docs_url": "https://docs.github.com/en/rest/search/search",
+ "url": "https://github.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public, unauthenticated reads only. The official OpenAPI description (github/rest-api-description, api.github.com.json, 13 MB, 1,231 operations) was ingested through the forge. Unauthenticated limits: search 10 requests per minute, other REST calls 60 per hour per IP; GitHub signals an exhausted primary limit with HTTP 403 'API rate limit exceeded' (or 429), which the runtime reports as rate_limited. Search returns at most the first 1,000 results of any query.",
+ "adapter": {
+  "base_url": "https://api.github.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 0.16,
+  "headers": {
+   "Accept": "application/vnd.github+json",
+   "X-GitHub-Api-Version": "2022-11-28"
+  },
+  "tools": {
+   "list_items": {
+    "method": "GET",
+    "path": "/search/{coll}",
+    "path_params": {
+     "coll": "map:collection:repositories=repositories,users=users,topics=topics"
+    },
+    "params": {
+     "q": "query",
+     "per_page": "limit",
+     "page": "page"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "items",
+     "total": "total_count",
+     "fields": {
+      "id": "full_name|login|name",
+      "title": "full_name|login|display_name",
+      "url": "html_url",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.github.com/en/rest/search/search",
+    "note": "collection is repositories, users or topics (required); query is GitHub search syntax (required): 'mcp server language:python stars:>100'. Best match first. At most 1,000 results reachable."
+   },
+   "get_item": {
+    "method": "GET",
+    "path": "/{coll}/{item_id}",
+    "path_params": {
+     "coll": "map:collection:repositories=repos,users=users"
+    },
+    "result": {
+     "fields": {
+      "id": "full_name|login",
+      "title": "full_name|name|login",
+      "url": "html_url",
+      "updated_at": "updated_at",
+      "content": "description|bio"
+     }
+    },
+    "docs": "https://docs.github.com/en/rest/repos/repos#get-a-repository",
+    "note": "collection repositories (item_id 'owner/repo') or users (item_id a login)."
+   }
+  },
+  "not_offered": {
+   "me": "No token in this public entry (GET /user needs one).",
+   "generate_image": "Not an image service.",
+   "generate_video": "Not a video service.",
+   "get_job": "No jobs in this entry.",
+   "create_item": "Creating issues or repositories needs a token; public read entry only.",
+   "update_item": "Needs a token; public read entry only.",
+   "delete_item": "Needs a token; public read entry only."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

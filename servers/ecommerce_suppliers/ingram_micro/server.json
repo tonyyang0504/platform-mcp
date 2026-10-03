@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/ingram_micro-mcp",
+ "description": "Ingram Micro (Xvantage / Developer Portal) (ecommerce suppliers): me, list_products, get_product, qu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.ingrammicro.com/reseller",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ingram_micro"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_CLIENT_ID",
+     "description": "Client ID (Consumer Key) of your app on developer.ingrammicro.com (My Apps); production keys after app approval.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_CLIENT_SECRET",
+     "description": "Client Secret of the same app; exchanged for a bearer token at /oauth/oauth30/token (client_credentials).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_NUMBER",
+     "description": "Your Ingram Micro reseller customer number (IM-CustomerNumber header, e.g. 20-222222).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_COUNTRY_CODE",
+     "description": "Two-letter ISO country of your Ingram Micro account (IM-CountryCode header, e.g. US).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_SENDER_ID",
+     "description": "Optional sender identification text (IM-SenderID header, max 32 chars).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_INGRAM_MICRO_CUSTOMER_CONTACT",
+     "description": "E-mail of the logged-in user (IM-CustomerContact header); required by Freight Estimate (quote_shipping).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

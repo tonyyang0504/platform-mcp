@@ -1,0 +1,57 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/prodigi_art-mcp",
+ "description": "Prodigi — art prints / wall art (cross-ref prodigi in the POD table) (ecommerce suppliers): me, get_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.prodigi.com/print-api/docs/reference/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "prodigi_art"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_PRODIGI_ART_API_KEY",
+     "description": "Prodigi API key for the LIVE environment (dashboard), sent as `X-API-Key`. A Sandbox key needs PLATFORM_MCP_PRODIGI_ART_ENV=sandbox (https://api.sandbox.prodigi.com/v4.0).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PRODIGI_ART_ENV",
+     "description": "Vendor environment (default production): sandbox = https://api.sandbox.prodigi.com/v4.0. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_PRODIGI_ART_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,90 @@
+{
+ "manifest_version": "0.2",
+ "name": "walmart-mcp",
+ "display_name": "Walmart Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Walmart Marketplace (ecommerce channels): me, list_orders, update_listing, set_inventory, end_listin",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "walmart"
+   ],
+   "env": {
+    "PLATFORM_MCP_WALMART_CLIENT_ID": "${user_config.platform_mcp_walmart_client_id}",
+    "PLATFORM_MCP_WALMART_CLIENT_SECRET": "${user_config.platform_mcp_walmart_client_secret}",
+    "PLATFORM_MCP_WALMART_SHIP_NODE": "${user_config.platform_mcp_walmart_ship_node}",
+    "PLATFORM_MCP_WALMART_ENV": "${user_config.platform_mcp_walmart_env}",
+    "PLATFORM_MCP_WALMART_BASE_URL": "${user_config.platform_mcp_walmart_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_walmart_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WALMART_CLIENT_ID",
+   "description": "Walmart Marketplace API Client ID (Seller Center > Settings > API Key Management / Developer Portal, production keys).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_walmart_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WALMART_CLIENT_SECRET",
+   "description": "The matching Client Secret; sent only as HTTP Basic to POST /v3/token, which returns a 15-minute access token sent as WM_SEC.ACCESS_TOKEN.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_walmart_ship_node": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WALMART_SHIP_NODE",
+   "description": "shipNode id for set_inventory when you have several ship nodes; empty = your default ship node.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_walmart_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WALMART_ENV",
+   "description": "Vendor environment (default production): sandbox = https://sandbox.walmartapis.com; sandbox_dynamic = https://sandbox.walmartapis.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_walmart_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WALMART_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Token detail: expiry, validity and the scopes (orders, item, price, inventory…) granted to these API keys."
+  },
+  {
+   "name": "list_orders",
+   "description": "All orders (last 180 days, seller-fulfilled): `since` = createdStartDate (ISO date/datetime; Walmart's default is 7 days ago); `status` = Created, Acknowledged, Shipped, Delivered or Cancelled (a purchase-order LINE status). Up to 200 per call; Walmart pages with an opaque list.meta.nextCursor query string (kept under raw), not page numbers, so narrow with `since` instead of `page`. orderDate and line details are in raw (orderDate is epoch ms)."
+  },
+  {
+   "name": "update_listing",
+   "description": "Update a price: sets the BASE price (USD) of one SKU (listing_id = your seller SKU). Only `price` is applied (required); title/description go through the item feed and stock through set_inventory. Allow up to five minutes to reach walmart.com."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Update inventory for one item: `sku` (your seller SKU) is required; the quantity is set in EACH at the configured shipNode (or your default ship node)."
+  },
+  {
+   "name": "end_listing",
+   "description": "Retire an item (listing_id = seller SKU): \"it can take up to 48 hours for items to be retired from our catalog\"; to sell it again the item must be set up anew."
+  }
+ ]
+}

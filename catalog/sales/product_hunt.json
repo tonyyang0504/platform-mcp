@@ -1,0 +1,36 @@
+{
+ "id": "product_hunt",
+ "category": "sales",
+ "label": "Product Hunt API v2",
+ "lane": "api",
+ "kind": "directory",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.producthunt.com/v2/docs",
+ "url": "https://www.producthunt.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "GraphQL API v2 on the user's developer token (rate-limited); the site walls curl (Cloudflare) but opened through WebFetch.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

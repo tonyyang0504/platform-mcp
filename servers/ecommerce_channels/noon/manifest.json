@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "noon-mcp",
+ "display_name": "noon MCP",
+ "version": "0.1.0",
+ "description": "noon (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "noon"
+   ],
+   "env": {
+    "PLATFORM_MCP_NOON_KEY_ID": "${user_config.platform_mcp_noon_key_id}",
+    "PLATFORM_MCP_NOON_PRIVATE_KEY": "${user_config.platform_mcp_noon_private_key}",
+    "PLATFORM_MCP_NOON_PROJECT_CODE": "${user_config.platform_mcp_noon_project_code}",
+    "PLATFORM_MCP_NOON_WAREHOUSE_CODE": "${user_config.platform_mcp_noon_warehouse_code}",
+    "PLATFORM_MCP_NOON_COUNTRY_CODE": "${user_config.platform_mcp_noon_country_code}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_noon_key_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOON_KEY_ID",
+   "description": "key_id from your noon service-account key file (.json), created in the noon Partner portal.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_noon_private_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOON_PRIVATE_KEY",
+   "description": "private_key (PEM) from the same service-account key file; it signs the RS256 login JWT.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_noon_project_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOON_PROJECT_CODE",
+   "description": "project_code from the key file, sent as default_project_code at login.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_noon_warehouse_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOON_WAREHOUSE_CODE",
+   "description": "Integration warehouse code for stock updates and FBPI order listing (see ListWarehouses).",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_noon_country_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NOON_COUNTRY_CODE",
+   "description": "Marketplace country code for pricing (e.g. ae, sa, eg).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Logs in with the RS256 service-account JWT (session cookies) and returns user_code and username."
+  },
+  {
+   "name": "update_listing",
+   "description": "BatchUpsertPricing for one partner SKU (listing_id) in the configured country_code: sets the price. Only `price` is applied — quantities go through set_inventory and titles/descriptions through the Content API (brand, category and attributes required). The per-item result is in result_code/message."
+  },
+  {
+   "name": "end_listing",
+   "description": "BatchUpsertPricing with is_active false for the partner SKU (listing_id) in the configured country_code: deactivates the offer there."
+  },
+  {
+   "name": "set_inventory",
+   "description": "UpdateStock {items: [{warehouse_code, partner_sku, qty}]} for the configured warehouse_code; `sku` is the partner SKU. The per-item result is in result_code/message."
+  },
+  {
+   "name": "list_orders",
+   "description": "ListFbpiOrders for the configured warehouse_code (Fulfilled By Partner orders, up to 50 per page), created after `since` when given; pass next_cursor back as `cursor` (the next_token query parameter). Item statuses (mp_status, integration_status) are under items. `status` is not applied."
+  }
+ ]
+}

@@ -1,0 +1,176 @@
+{
+ "id": "shopify_app_store",
+ "category": "marketplaces",
+ "label": "Shopify App Store",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://shopify.dev/docs/apps/launch",
+ "url": "https://partners.shopify.com",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql",
+   "partner_program"
+  ],
+  "auth": "token",
+  "access": "signup",
+  "capabilities": [
+   "partner_api_app_events",
+   "transactions_payouts",
+   "app_credits",
+   "experimental_shop_lookup"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "partner_client_id",
+  "partner_client_secret"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://partners.shopify.com/{organization_id}/api/2026-07",
+  "auth": {
+   "type": "header",
+   "header": "X-Shopify-Access-Token",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Partner API client access token (Partner Dashboard > Settings > Partner API clients, with the View financials permission for transactions and Manage apps for app data); 'The API client access token must belong to the organization that you're querying'. Sent as X-Shopify-Access-Token (https://shopify.dev/docs/api/partner/latest)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "organization_id",
+    "required": true,
+    "help": "Partner organization id from the Partners Dashboard URL (https://partners.shopify.com/{organization_id}/...); part of every endpoint URL."
+   }
+  ],
+  "envelope": {
+   "ok_field": "data",
+   "error_field": "errors"
+  },
+  "envelope_note": "GraphQL failures arrive as HTTP 200 {data: null, errors: [...]} and become error results.",
+  "rate_per_second": 2,
+  "terms": "Partner API data covers the partner organization's own apps and earnings; app listings are created and submitted only in the Partner Dashboard.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/graphql.json",
+    "body": {
+     "query": "=query { publicApiVersions { handle displayName supported } }"
+    },
+    "docs": "https://shopify.dev/docs/api/partner/latest/queries/publicApiVersions",
+    "note": "The Partner API has no organization / viewer query; the probe runs publicApiVersions against the organization endpoint to prove that organization_id and the token work."
+   },
+   "get_product": {
+    "method": "POST",
+    "path": "/graphql.json",
+    "body": {
+     "query": "=query($id: ID!) { app(id: $id) { id name apiKey } }",
+     "variables.id": "product_id"
+    },
+    "result": {
+     "root": "data.app",
+     "fields": {
+      "id": "id",
+      "name": "name"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/partner/latest/queries/app",
+    "note": "app(id) with `product_id` = the app's Partner gid (e.g. gid://partners/App/1234): id, name, apiKey (raw). The Partner API carries no listing text, price or status for an app."
+   },
+   "list_sales": {
+    "method": "POST",
+    "path": "/graphql.json",
+    "body": {
+     "query": "=query($first: Int!, $createdAtMin: DateTime, $appId: ID) { transactions(first: $first, createdAtMin: $createdAtMin, appId: $appId, types: [APP_ONE_TIME_SALE, APP_SUBSCRIPTION_SALE, APP_USAGE_SALE]) { edges { node { __typename id createdAt ... on AppSubscriptionSale { id createdAt netAmount { amount currencyCode } grossAmount { amount currencyCode } app { id name } shop { myshopifyDomain name } } ... on AppOneTimeSale { id createdAt netAmount { amount currencyCode } grossAmount { amount currencyCode } app { id name } shop { myshopifyDomain name } } ... on AppUsageSale { id createdAt netAmount { amount currencyCode } grossAmount { amount currencyCode } app { id name } shop { myshopifyDomain name } } } } pageInfo { hasNextPage } } }",
+     "variables.first": "limit",
+     "variables.createdAtMin": "since",
+     "variables.appId": "product_id"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "data.transactions.edges",
+     "key": "sales",
+     "fields": {
+      "id": "node.id",
+      "product_id": "node.app.id",
+      "product_name": "node.app.name",
+      "amount": "node.netAmount.amount",
+      "currency": "node.netAmount.currencyCode",
+      "status": "node.__typename",
+      "created_at": "node.createdAt"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/partner/latest/queries/transactions",
+    "note": "transactions(types: APP_ONE_TIME_SALE, APP_SUBSCRIPTION_SALE, APP_USAGE_SALE; createdAtMin = `since` as an ISO-8601 DateTime; appId = `product_id` gid). `amount` is netAmount.amount (your earnings after Shopify's fee; a decimal string; grossAmount and shopifyFee are in raw), `status` is the transaction type; merchant emails are not exposed (the shop's myshopifyDomain and name are under raw.node.shop), so `customer_email` is null. Cursor-paginated: only the first `limit` transactions are returned (raw pageInfo.hasNextPage) and `page` is not honoured."
+   },
+   "list_refunds": {
+    "method": "POST",
+    "path": "/graphql.json",
+    "body": {
+     "query": "=query($first: Int!, $createdAtMin: DateTime) { transactions(first: $first, createdAtMin: $createdAtMin, types: [APP_SALE_ADJUSTMENT]) { edges { node { __typename id createdAt ... on AppSaleAdjustment { id createdAt netAmount { amount currencyCode } grossAmount { amount currencyCode } app { id name } shop { myshopifyDomain name } chargeId } } } pageInfo { hasNextPage } } }",
+     "variables.first": "limit",
+     "variables.createdAtMin": "since"
+    },
+    "default_limit": 50,
+    "max_limit": 100,
+    "result": {
+     "items": "data.transactions.edges",
+     "key": "refunds",
+     "fields": {
+      "id": "node.id",
+      "sale_id": "node.chargeId",
+      "amount": "node.netAmount.amount",
+      "currency": "node.netAmount.currencyCode",
+      "status": "node.__typename",
+      "created_at": "node.createdAt"
+     }
+    },
+    "docs": "https://shopify.dev/docs/api/partner/latest/objects/AppSaleAdjustment",
+    "note": "App sale adjustments (refunds and other negative corrections of app charges) since `since` (ISO-8601 DateTime): amount is the (negative) netAmount; sale_id is the adjusted charge id. First `limit` rows only (cursor pagination)."
+   }
+  },
+  "not_offered": {
+   "list_products": "The Partner API QueryRoot has an app(id) lookup but no query that lists an organization's apps (https://shopify.dev/docs/api/partner/latest).",
+   "create_product": "Apps are created and submitted for App Store review in the Partner Dashboard; the Partner API reference has no app-creation operation (https://shopify.dev/docs/api/partner/latest).",
+   "update_price": "App pricing plans are edited in the Partner Dashboard; the Partner API reference documents no pricing write (https://shopify.dev/docs/api/partner/latest).",
+   "get_sales_stats": "The Partner API returns individual transactions only; no earnings summary query exists (https://shopify.dev/docs/api/partner/latest/queries/transactions).",
+   "refund": "No refund operation for app charges is documented in the Partner API reference (https://shopify.dev/docs/api/partner/latest); refunds are issued from the Partner Dashboard."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host partners.shopify.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 0/4 tool paths found verbatim on their docs pages; names not found on the page: get_product:variables, list_refunds:query, list_refunds:variables, list_sales:variables"
+  ],
+  "notes": "-"
+ }
+}

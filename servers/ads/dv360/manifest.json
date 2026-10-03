@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "dv360-mcp",
+ "display_name": "Google Display & Video 360 MCP",
+ "version": "0.1.0",
+ "description": "Google Display & Video 360 (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps t",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dv360"
+   ],
+   "env": {
+    "PLATFORM_MCP_DV360_CLIENT_ID": "${user_config.platform_mcp_dv360_client_id}",
+    "PLATFORM_MCP_DV360_CLIENT_SECRET": "${user_config.platform_mcp_dv360_client_secret}",
+    "PLATFORM_MCP_DV360_REFRESH_TOKEN": "${user_config.platform_mcp_dv360_refresh_token}",
+    "PLATFORM_MCP_DV360_PARTNER_ID": "${user_config.platform_mcp_dv360_partner_id}",
+    "PLATFORM_MCP_DV360_ADVERTISER_ID": "${user_config.platform_mcp_dv360_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dv360_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DV360_CLIENT_ID",
+   "description": "OAuth 2.0 client id of a Google Cloud project with the Display & Video 360 API enabled.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dv360_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DV360_CLIENT_SECRET",
+   "description": "The OAuth client's secret (form body of the refresh_token grant).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dv360_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DV360_REFRESH_TOKEN",
+   "description": "Refresh token from Google's consent flow with scope https://www.googleapis.com/auth/display-video, for a user with a DV360 user profile (Admin/Standard for writes).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dv360_partner_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DV360_PARTNER_ID",
+   "description": "DV360 partner id whose advertisers list_accounts returns (GET /v4/advertisers requires partnerId).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_dv360_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DV360_ADVERTISER_ID",
+   "description": "DV360 advertiser id used by pause_resume (the campaign PATCH path is /v4/advertisers/{advertiserId}/campaigns/{campaignId}).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v4/partners?pageSize=1: confirms the token and DV360 access ({partners: [{partnerId, displayName, entityStatus}]})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /v4/advertisers?partnerId={partner_id config}: the partner's advertisers. Only the first page is returned (pageToken paging)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /v4/advertisers/{account_id}/campaigns (account_id = advertiser id). `status` is active, paused or archived (archived campaigns are hidden unless asked for). Planned budgets are in raw.campaignBudgets (budgetAmountMicros over a date range); start/end are {year, month, day} objects. First page only."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /v4/advertisers/{advertiser_id config}/campaigns/{campaign_id}?updateMask=entityStatus {entityStatus: ENTITY_STATUS_PAUSED|ENTITY_STATUS_ACTIVE}. Resuming lets its insertion orders spend again."
+  }
+ ]
+}

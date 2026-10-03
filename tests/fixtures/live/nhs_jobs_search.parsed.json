@@ -1,0 +1,38 @@
+{
+ "nhsJobs": {
+  "vacancyDetails": [
+   {
+    "id": "5596068",
+    "reference": "A3233-26-0001",
+    "title": "Practice Nurse/Nurse Associate",
+    "description": "The successful candidate will be enaged with delivery of the nursing element of general medical services at Golborne Canalside Health Centre; long-ter...",
+    "employer": "Golborne Medical Centre",
+    "type": "Permanent",
+    "salary": "Negotiable",
+    "closeDate": "2026-10-02",
+    "postDate": "2026-09-16T07:05:26.573555617",
+    "url": "https://beta.jobs.nhs.uk/candidate/jobadvert/A3233-26-0001",
+    "locations": {
+     "location": "London, W10 5DD"
+    }
+   },
+   {
+    "id": "5609923",
+    "reference": "M0035-26-0449",
+    "title": "Nurse",
+    "description": "36 hours per week | 3 x 12-hour shifts (8:00am - 8:00pm) | Weekend flexibility required Location: South West Region (Somerset, Wiltshire, Avon & Glouc...",
+    "employer": "InHealth Group",
+    "type": "Permanent",
+    "salary": "Negotiable",
+    "closeDate": "2026-10-16",
+    "postDate": "2026-09-18T14:04:51.822005681",
+    "url": "https://beta.jobs.nhs.uk/candidate/jobadvert/M0035-26-0449",
+    "locations": {
+     "location": "Bridgwater, BA11 5LA"
+    }
+   }
+  ],
+  "totalPages": "2708",
+  "totalResults": "5415"
+ }
+}

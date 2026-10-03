@@ -1,0 +1,36 @@
+{
+ "id": "pl_regon_gus",
+ "category": "sales",
+ "label": "GUS REGON API",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "pl"
+ ],
+ "docs_url": "https://api.stat.gov.pl/Home/RegonApi",
+ "url": "https://api.stat.gov.pl/Home/RegonApi",
+ "verified_at": "2026-09-05",
+ "terms_note": "SOAP API 'BIR1' with a free user key from GUS → platform-key.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

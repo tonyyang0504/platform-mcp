@@ -1,0 +1,36 @@
+{
+ "id": "suumo_jp",
+ "category": "automotive",
+ "label": "Suumo",
+ "vertical": "real_estate",
+ "lane": "scrape",
+ "url": "https://suumo.jp",
+ "domain": "suumo.jp",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). SUUMO (Recruit real estate) has no public API; Recruit Web Service offers none for it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://webservice.recruit.co.jp/",
+   "https://suumo.jp/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

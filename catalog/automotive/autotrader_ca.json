@@ -1,0 +1,46 @@
+{
+ "id": "autotrader_ca",
+ "category": "automotive",
+ "label": "Autotrader",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.autotrader.ca",
+ "domain": "autotrader.ca",
+ "country": "Canada",
+ "official_api": false,
+ "docs_url": "https://dealerapi.autotrader.ca/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "dealer_stats"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). AutoTrader.ca (TRADER Corp) exposes a dealer Web API help page (dealer stats/logs) and takes inventory via dealer feeds (HomeNet/CSV); nothing open for listing search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dealerapi.autotrader.ca/",
+   "https://www.autotrader.ca/dealer/signup/"
+  ],
+  "unofficial": [
+   "https://parse.bot/marketplace/17f38610-10ed-4f84-a76c-34ccc296ba3a/autotrader-ca-api"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): AutoTrader.ca (TRADER Corp) exposes a dealer Web API help page (dealer stats/logs) and takes inventory via dealer feeds (HomeNet/CSV); nothing open for listing search."
+}

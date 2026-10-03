@@ -1,0 +1,102 @@
+{
+ "id": "coinbase_exchange",
+ "category": "trading",
+ "label": "Coinbase Exchange",
+ "lane": "api",
+ "country": "US",
+ "docs_url": "https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproducts",
+ "url": "https://exchange.coinbase.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only (no key). HTML docs; the only spec link the docs page carries belongs to another product (Deribit app), so the mapping comes from the HTML reference. Public endpoints are rate-limited per IP (docs: 10 requests per second, bursts to 15). Candle rows are [time, LOW, HIGH, OPEN, CLOSE, volume] newest first, at most 300; granularity must be 60, 300, 900, 3600, 21600 or 86400 (400 'Unsupported granularity' otherwise). The ticker does not repeat the product id. Unknown product: 404 {\"message\":\"NotFound\"} (live 2026-10-01).",
+ "adapter": {
+  "base_url": "https://api.exchange.coinbase.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 3,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/products",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "base",
+        "quote"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "id",
+      "base": "base_currency",
+      "quote": "quote_currency",
+      "type": "status"
+     }
+    },
+    "docs": "https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproducts",
+    "note": "Every product including delisted ones (type = status: online, delisted ...); paged locally."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/products/{symbol}/ticker",
+    "result": {
+     "fields": {
+      "symbol": "arg:symbol",
+      "last": "num:price",
+      "bid": "num:bid",
+      "ask": "num:ask",
+      "volume": "num:volume"
+     }
+    },
+    "docs": "https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproductticker"
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/products/{symbol}/candles",
+    "params": {
+     "granularity": "map:interval:1m=60,5m=300,15m=900,1h=3600,6h=21600,1d=86400"
+    },
+    "default_limit": 100,
+    "max_limit": 300,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "cap": "head",
+     "fields": {
+      "time": "iso:0",
+      "low": "1",
+      "high": "2",
+      "open": "3",
+      "close": "4",
+      "volume": "5"
+     }
+    },
+    "docs": "https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproductcandles",
+    "note": "interval: 1m 5m 15m 1h 6h 1d. Newest first; up to 300 per call; the newest `limit` are returned."
+   }
+  },
+  "not_offered": {
+   "me": "Private endpoints need CB-ACCESS-KEY, an HMAC-SHA256 CB-ACCESS-SIGN and a passphrase; public-data entry only.",
+   "get_balances": "GET /accounts needs an API key; public-data entry only.",
+   "list_orders": "GET /orders needs an API key; public-data entry only.",
+   "place_order": "POST /orders needs an API key and spends money; not mapped.",
+   "cancel_order": "DELETE /orders/{order_id} needs an API key; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

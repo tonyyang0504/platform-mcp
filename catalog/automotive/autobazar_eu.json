@@ -1,0 +1,42 @@
+{
+ "id": "autobazar_eu",
+ "category": "automotive",
+ "label": "Autobazar",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autobazar.eu",
+ "domain": "autobazar.eu",
+ "country": "Slovakia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Autobazar.EU accepts dealer XML import feeds (per third-party integrators); no official public API docs found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "nadupanyweb.sk Autobazar.EU XML feed integration",
+   "Apify autobazar-eu scraper"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Autobazar.EU accepts dealer XML import feeds (per third-party integrators); no official public API docs found."
+}

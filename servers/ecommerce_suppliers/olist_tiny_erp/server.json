@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/olist_tiny_erp-mcp",
+ "description": "Olist Tiny ERP (BR integration hub — not a supplier) (ecommerce suppliers): me, list_products, get_p",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api-docs.erp.olist.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "olist_tiny_erp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_ID",
+     "description": "Client ID of the API v3 app created in your Olist ERP (Tiny) account (Configurações > Aplicativos; https://api-docs.erp.olist.com/).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_OLIST_TINY_ERP_CLIENT_SECRET",
+     "description": "Client secret of the same app, sent in the token request body.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_OLIST_TINY_ERP_REFRESH_TOKEN",
+     "description": "refresh_token from the one-time authorization-code exchange (https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/auth ... then /token with grant_type=authorization_code). Access tokens expire after 4 hours and are re-minted from it; the refresh token 'tem duração de 1 dia' and each refresh returns a new one, which replaces it in memory (set PLATFORM_MCP_STATE_DIR to persist it across restarts).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "lemmy-mcp",
+ "display_name": "Lemmy MCP",
+ "version": "0.1.0",
+ "description": "Lemmy (social): me, read_comments, read_mentions, analytics_post, publish_text, publish_image, delet",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lemmy"
+   ],
+   "env": {
+    "PLATFORM_MCP_LEMMY_USERNAME_OR_EMAIL": "${user_config.platform_mcp_lemmy_username_or_email}",
+    "PLATFORM_MCP_LEMMY_PASSWORD": "${user_config.platform_mcp_lemmy_password}",
+    "PLATFORM_MCP_LEMMY_INSTANCE": "${user_config.platform_mcp_lemmy_instance}",
+    "PLATFORM_MCP_LEMMY_COMMUNITY_ID": "${user_config.platform_mcp_lemmy_community_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lemmy_username_or_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMMY_USERNAME_OR_EMAIL",
+   "description": "Username or e-mail of the account on its instance; sent as `username_or_email` to POST https://<instance>/api/v3/user/login (Login {username_or_email, password, totp_2fa_token?}, https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/Login.ts).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lemmy_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMMY_PASSWORD",
+   "description": "The account's password. The runtime exchanges it for the LoginResponse `jwt` (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/LoginResponse.ts) and sends 'Authorization: Bearer <jwt>' (lemmy-js-client setHeaders pattern); the token is cached for a day and re-issued on expiry or 401. Accounts with TOTP enabled cannot log in this way (totp_2fa_token is not sent). Mark automated accounts as bot_account in the profile settings.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lemmy_instance": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMMY_INSTANCE",
+   "description": "Host of the account's Lemmy instance without scheme, e.g. lemmy.ml; every call (including the login) goes to https://<instance>/api/v3/... (the v3 API served by the 0.19.x release line that public instances run; Lemmy 1.0's /api/v4 is not covered).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_lemmy_community_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMMY_COMMUNITY_ID",
+   "description": "Numeric id of the community the account posts to (CreatePost.community_id, an integer: shown by GET https://<instance>/api/v3/community?name=<name> as community_view.community.id); sent as a JSON integer on publish_text / publish_image. Env PLATFORM_MCP_LEMMY_COMMUNITY_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v3/site with the session token returns GetSiteResponse {site_view, admins, version, my_user, all_languages, ...}; the connected account is account.my_user (MyUserInfo: local_user_view.person {id, name, display_name, actor_id, bot_account, ...}, follows, moderates). Wrong credentials fail at the login step (auth_error); the login itself is the credential check, because /site also answers anonymously and silently ignores an invalid token (checked live on lemmy.ml 0.19.20)."
+  },
+  {
+   "name": "read_comments",
+   "description": "GET /api/v3/comment/list?post_id=&page=&limit= (GetComments: type_, sort, max_depth, page, limit, community_id, community_name, post_id, parent_id, saved_only, liked_only, disliked_only) returns GetCommentsResponse {comments: CommentView[]} where each CommentView carries comment {id, creator_id, post_id, content (markdown), published, updated, deleted, removed, ap_id, path, ...}, creator (Person {id, name, display_name, actor_id, ...}), post, community and counts (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/CommentView.ts). `sort` and `max_depth` are not sent (instance defaults: a flat page of the post's comments). Lemmy's server-side page size is 1..50 (FETCH_LIMIT_MAX = 50, 'Fetch limit is > 50' otherwise; default 10, https://raw.githubusercontent.com/LemmyNet/lemmy/0.19.4/crates/db_schema/src/utils.rs), so `limit` is capped at 50; `page` is 1-based."
+  },
+  {
+   "name": "read_mentions",
+   "description": "GET /api/v3/user/mention?page=&limit= (GetPersonMentions: sort, page, limit, unread_only; needs the token) returns GetPersonMentionsResponse {mentions: PersonMentionView[]} with person_mention {id, recipient_id, comment_id, read, published}, comment, creator, post, community, recipient, counts (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/PersonMentionView.ts). `id` is the mentioning comment's id (the mention record's own id is raw.person_mention.id); `since` is not a documented parameter and is not sent; `unread_only` is not sent, so read mentions are included. Same 1..50 page size as read_comments."
+  },
+  {
+   "name": "analytics_post",
+   "description": "GET /api/v3/post?id=<post id> (GetPost: id or comment_id) returns GetPostResponse {post_view, community_view, moderators, cross_posts}; the counts come from post_view.counts (PostAggregates {post_id, comments, score, upvotes, downvotes, published, newest_comment_time}). The runtime cannot compose a nested `metrics` object, so counts are top-level fields; the post itself is not under raw (raw is the counts object)."
+  },
+  {
+   "name": "publish_text",
+   "description": "POST /api/v3/post (CreatePost {name, community_id, url?, body?, alt_text?, nsfw?, language_id?, ...}) returns PostResponse {post_view{post{id, name, body, ap_id, published, ...}, creator, community, counts}}. Lemmy posts need a title, so `text` is sent as `name` AND as the markdown `body`; the title must be 3-200 characters without a newline (is_valid_post_title, https://raw.githubusercontent.com/LemmyNet/lemmy/0.19.4/crates/utils/src/utils/validation.rs) or the instance answers 400 invalid_post_title (upstream_error), and the body may be up to 50,000 characters. The post goes to the configured community_id (sent as a JSON integer). `reply_to` is ignored: posts cannot reply (use reply_comment-style comments via POST /comment, not offered). `id` is the post id used by read_comments / analytics_post / delete; `url` is the post's ActivityPub id (its canonical URL on the home instance)."
+  },
+  {
+   "name": "publish_image",
+   "description": "A Lemmy image post is a link post: CreatePost {name, community_id, url} with `url` = the first image URL (image_urls[0]; Lemmy fetches the link's metadata and thumbnail server-side, and instances render image URLs inline). Only ONE url fits a post, so further image_urls are ignored. `text` is REQUIRED here in practice because it becomes the mandatory `name` (title, 3-200 characters, no newline); without it the instance answers 400. Same response mapping as publish_text."
+  },
+  {
+   "name": "delete",
+   "description": "POST /api/v3/post/delete (DeletePost {post_id: PostId, deleted: boolean}) marks the account's own post deleted and returns PostResponse {post_view} (under raw; the runtime answers {status: 'deleted'}). `post_id` is sent as a JSON integer (a non-numeric id is an invalid_input); deleting someone else's post is refused by the instance with a 400 (upstream_error). Deletion federates best-effort: 'federated content cannot be recalled from other instances'."
+  }
+ ]
+}

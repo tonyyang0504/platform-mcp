@@ -1,0 +1,194 @@
+{
+ "id": "authentic_jobs",
+ "category": "deals",
+ "label": "Authentic Jobs",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "us",
+  "global"
+ ],
+ "docs_url": "https://authenticjobs.com/ (RSS feed linked in the footer)",
+ "url": "https://authenticjobs.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS; apply via the posting's external link / e-mail; terms not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "feed_rss"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (WordPress RSS). Lane `assist` → **keep**; feed usable for discovery. Confidence high.",
+  "base_urls": [
+   "https://authenticjobs.com/?feed=job_feed"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /?feed=job_feed",
+    "purpose": "search",
+    "notes": "title, link, description, pubDate"
+   }
+  ],
+  "limits": " - Public RSS; robots.txt disallows /feed/ (jobs-tab audit) — use the query form. - Public RSS; apply via the posting's external link / e-mail; terms not read.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://authenticjobs.com/",
+   "https://authenticjobs.com/?feed=job_feed"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://authenticjobs.com/wp-json/wp/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.33,
+  "rate_note": "No rate limit is published for the REST API; robots.txt asks for 'Crawl-delay: 3', so one request every three seconds.",
+  "terms": "Listings are Authentic Jobs content; apply through each listing's own link. robots.txt (Disallow: /*?, Crawl-delay: 3) is aimed at crawlers — keep usage to on-demand lookups at the crawl-delay pace.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/job-listings",
+    "params": {
+     "search": "query",
+     "job-categories": "category",
+     "page": "page",
+     "per_page": "limit"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "buyer": "meta._company_name",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "deadline": "meta._job_expires",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#list-posts",
+    "note": "GET /wp-json/wp/v2/job-listings: the WP Job Manager 'job_listing' post type exposed through the WordPress REST API posts controller (arguments page, per_page ≤ 100, search, and the job-categories / job-types taxonomy filters, as listed by the route's own schema at https://authenticjobs.com/wp-json/wp/v2/job-listings (OPTIONS)). `query` is WordPress full-text `search`; `category` is a job-categories TERM ID (GET /wp-json/wp/v2/job-categories lists them) — not a slug. min_budget is not sent (salary is free text in meta._job_salary). title/description are rendered HTML; buyer is meta._company_name, deadline meta._job_expires (often absent); the apply link (meta._application) and location stay in raw.meta. Only published, public listings are returned."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/job-listings/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title.rendered",
+      "buyer": "meta._company_name",
+      "url": "link",
+      "posted_at": "date_gmt",
+      "deadline": "meta._job_expires",
+      "description": "content.rendered"
+     }
+    },
+    "docs": "https://developer.wordpress.org/rest-api/reference/posts/#retrieve-a-post",
+    "note": "GET /wp-json/wp/v2/job-listings/<id> (the numeric post id from search_postings). An unknown id answers 404 rest_post_invalid_id."
+   }
+  },
+  "not_offered": {
+   "me": "Anonymous read-only REST access; there is no account to verify without a WordPress login, which the board does not offer to API clients.",
+   "submit_bid": "No application endpoint: each listing carries an external apply URL or e-mail (meta._application); candidates apply there.",
+   "withdraw_bid": "No application endpoint (see submit_bid).",
+   "bid_status": "No application endpoint (see submit_bid).",
+   "list_messages": "No messaging in the REST routes (posts, taxonomies and media only).",
+   "send_message": "No messaging in the REST routes (posts, taxonomies and media only).",
+   "credits": "Free to read; no account, credit or balance endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "a transient 503 on page 2 in the first pass; clean on rerun; all read tools answered, schema-valid, pagination advances"
+ }
+}

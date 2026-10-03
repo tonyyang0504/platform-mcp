@@ -1,0 +1,63 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/lemon_squeezy-mcp",
+ "description": "Lemon Squeezy (marketplaces): me, list_products, get_product, list_sales, get_sales_stats, refund. E",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.lemonsqueezy.com/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "lemon_squeezy"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LEMON_SQUEEZY_API_KEY",
+     "description": "Lemon Squeezy API key (Settings > API > create key; 'Generated API keys are valid for a year'), sent as 'Authorization: Bearer {api_key}'. Test-mode keys only see test-mode data (https://docs.lemonsqueezy.com/api/getting-started/requests).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LEMON_SQUEEZY_STORE_ID",
+     "description": "Numeric store id (GET /v1/stores). Filters list_products / list_sales with filter[store_id] and is required by get_sales_stats.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_LEMON_SQUEEZY_ENV",
+     "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_LEMON_SQUEEZY_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

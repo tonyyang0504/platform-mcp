@@ -1,0 +1,176 @@
+{
+ "id": "fourdayweek",
+ "category": "jobs",
+ "label": "4dayweek.io",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://4dayweek.io/developers",
+ "url": "https://4dayweek.io/",
+ "verified_at": "2026-09-24",
+ "terms_note": "4-day-week roles; external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "feed_xml"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — 'a free, public, no-auth JSON API for every live job on 4dayweek.io': GET https://4dayweek.io/api/v2/jobs (page, limit ≤100, category, level, schedule 4_day_week/9_day_fortnight…, wor",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "GET /api/v2/jobs/{slug};",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "RSS at /feed.",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Developer API page: 60 requests/minute per IP across /api/v1 and /api/v2 (HTTP 429 + Retry-After), responses edge- cached 60 s, jobs refreshed a few times per day ('a few polls per hour is plenty'), link back to 4dayweek.io requested. Developer API page: 60 requests/minute per IP across /api/v1 and /api/v2 (HTTP 429 + Retry-After), responses edge- cached 60 s, jobs refreshed a few times per day ('a few polls per hour is plenty'), link back to 4dayweek.io requested. Site terms forbid 'scraping, crawling, harvesting, or using any automated means to access, collect, or extract data from the Serv",
+  "mcp_sdk": [],
+  "sources": [
+   "https://4dayweek.io/",
+   "https://4dayweek.io/robots.txt",
+   "https://4dayweek.io/developers",
+   "https://4dayweek.io/api/v1",
+   "https://4dayweek.io/feed",
+   "https://4dayweek.io/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://4dayweek.io",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api/v2/jobs",
+    "params": {
+     "q": "query",
+     "country": "location",
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "total": "total",
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "company": "company.name",
+      "location": "locations.0.country",
+      "url": "url",
+      "posted_at": "posted_at",
+      "salary_min": "salary_min",
+      "salary_max": "salary_max",
+      "currency": "salary_currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://4dayweek.io/developers",
+    "note": "'A free, public, no-auth JSON API for every live job on 4dayweek.io': q = full-text search, page ('Default 1'), limit ('Default 25. Max 100'), country 'matches office or remote-allowed country' — a country name, so location is sent as country and the alpha-2 country argument is not. id is the slug (use it with get_posting); salary_min/salary_max are in cents of salary_currency per salary_period ('8000000 = $80,000 USD'); location is the primary location's country (locations[] and work_arrangement in raw). Limits: '60 requests per minute per IP across both /api/v1 and /api/v2' (429 + Retry-After), responses cached 60 s. 'Please link back to https://4dayweek.io.'"
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/v2/jobs/{id}",
+    "result": {
+     "fields": {
+      "id": "slug",
+      "title": "title",
+      "company": "company.name",
+      "location": "locations.0.country",
+      "url": "url",
+      "posted_at": "posted_at",
+      "salary_min": "salary_min",
+      "salary_max": "salary_max",
+      "currency": "salary_currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://4dayweek.io/developers",
+    "note": "GET /api/v2/jobs/{slug} 'Returns a single V2JobDTO (same shape as an item from the list) or 404'."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify (no-auth API) and no account endpoint.",
+   "apply": "Page: 'external apply' — postings link to the employer; 4dayweek's paid 'Auto Apply' is their product, not an API.",
+   "list_messages": "No messaging API; the developer page documents the jobs endpoints and the RSS feed only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

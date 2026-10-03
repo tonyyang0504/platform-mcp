@@ -1,0 +1,43 @@
+{
+ "id": "iseecars",
+ "category": "automotive",
+ "label": "Iseecars",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.iseecars.com",
+ "domain": "iseecars.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": "https://www.iseecars.com/vin-api",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": "apply",
+  "capabilities": [
+   "decode_vin",
+   "get_valuation"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). iSeeCars advertises a VIN Insights API with a Get API Access request form; no public documentation or listings API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.iseecars.com/vin-api",
+   "https://www.iseecars.com/dealer-resources/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): iSeeCars advertises a VIN Insights API with a Get API Access request form; no public documentation or listings API."
+}

@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "tenderned-mcp",
+ "display_name": "TenderNed MCP",
+ "version": "0.1.0",
+ "description": "TenderNed (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "tenderned"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /publicaties?page (0-based)&size: the latest TenderNed publications, newest first, as listed on data.overheid.nl ('publicatie Webservice (TNS)'). The dataset page documents only page and size, so `query`, `category` and `min_budget` are ignored; filter the rows yourself. Rows carry publicatieId, publicatieDatum, aanbestedingNaam, opdrachtgeverNaam, typePublicatie {code, omschrijving} (e.g. AAO aankondiging, AGO gegunde opdracht), procedure, typeOpdracht (D/L/W) and a link to the notice page (in raw). No budget is published in the list."
+  }
+ ]
+}

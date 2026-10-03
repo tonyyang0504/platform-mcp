@@ -1,0 +1,65 @@
+{
+ "id": "zhaopin",
+ "category": "jobs",
+ "label": "智联招聘",
+ "lane": "assist",
+ "kind": "general",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://www.zhaopin.com/",
+ "url": "https://www.zhaopin.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Web + app; online CV apply; anti-bot on search — assisted browser only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

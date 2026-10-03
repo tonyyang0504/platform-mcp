@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/meta-mcp",
+ "description": "Meta Ads (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to a",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/marketing-apis",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "meta"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_META_ACCESS_TOKEN",
+     "description": "Long-lived user or Business Manager system-user access token with ads_read (reads) and ads_management (budget updates), from an app with the Marketing API product; sent as `Authorization: Bearer`.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

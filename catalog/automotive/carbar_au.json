@@ -1,0 +1,36 @@
+{
+ "id": "carbar_au",
+ "category": "automotive",
+ "label": "Carbar",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.carbar.com.au",
+ "domain": "carbar.com.au",
+ "country": "Australia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Carbar partner pages are commercial (fleet/novated) offers, not an API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.carbar.com.au/partners/carsales/group-subscription",
+   "https://carbar.com.au/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,204 @@
+{
+ "id": "world_bank_procurement",
+ "category": "deals",
+ "label": "World Bank Procurement Notices",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://search.worldbank.org/api/v2/procnotices?format=json",
+ "url": "https://projects.worldbank.org/en/projects-operations/procurement",
+ "verified_at": "2026-09-24",
+ "terms_note": "World Bank open data API, keyless; terms of use = World Bank open data licence.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://search.worldbank.org/api/v2/procnotices?format=json"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://search.worldbank.org/api/v2/procnotices?format=json&rows=100&os=0&srt=noticedate&order=desc&qterm=...",
+   "docs": "https://search.worldbank.org/api/v2/procnotices?format=json"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://search.worldbank.org/api/v2/procnotices?format=json"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** for discovery (open-data search API) Confidence high (live API opened).",
+  "base_urls": [
+   "https://search.worldbank.org/api/v2/procnotices"
+  ],
+  "auth": [
+   "1. None (open data)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v2/procnotices?format=json&rows=100&os=0&qterm=software",
+    "purpose": "search",
+    "notes": "total, procnotices[]: id, notice_type, noticedate, notice_status, project_ctry_name, project_id, project_name, bid_reference_no, bid_description, deadline fields, url"
+   },
+   {
+    "call": "GET /api/v2/procnotices?format=json&id=<id>",
+    "purpose": "details",
+    "notes": "one notice"
+   }
+  ],
+  "limits": " - World Bank open-data terms; keyless; no limit on the page. - Bids go to the borrower's implementing agency named in the notice (assist). - World Bank open data API, keyless; terms of use = World Bank open data licence.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://search.worldbank.org/api/v2/procnotices?format=json&rows=2"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://search.worldbank.org/api/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "Keyless open-data API; no rate limit is published. One request per second.",
+  "terms": "World Bank open data terms; bids go to the borrower's implementing agency named in each notice.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/procnotices",
+    "params": {
+     "qterm": "query",
+     "rows": "limit",
+     "os": "offset"
+    },
+    "fixed_params": {
+     "format": "json"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "procnotices",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "bid_description|project_name",
+      "description": "notice_text",
+      "buyer": "project_name",
+      "posted_at": "noticedate",
+      "deadline": "submission_date"
+     }
+    },
+    "docs": "https://documents.worldbank.org/en/publication/documents-reports/api",
+    "note": "GET /api/v2/procnotices?format=json with the World Bank Search API conventions documented on the API page: qterm (full-text query), rows (page size, default 10) and os (0-based record offset). The procnotices collection itself has no dedicated reference page (confidence medium); fields are from the live response: id, notice_type, noticedate (DD-Mon-YYYY), notice_status, project_ctry_name, project_id, project_name, bid_reference_no, bid_description, procurement_method_name, submission_date, notice_text (HTML). total is a string in the response, so total is null. buyer is the financed project's name; contract awards are included (notice_type). Some notices carry no bid_description; their title falls back to project_name (live check 2026-09-26)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/procnotices",
+    "params": {
+     "id": "id"
+    },
+    "fixed_params": {
+     "format": "json"
+    },
+    "result": {
+     "root": "procnotices.0",
+     "fields": {
+      "id": "id",
+      "title": "bid_description|project_name",
+      "description": "notice_text",
+      "buyer": "project_name",
+      "posted_at": "noticedate",
+      "deadline": "submission_date"
+     }
+    },
+    "docs": "https://documents.worldbank.org/en/publication/documents-reports/api",
+    "note": "Same collection filtered by id (e.g. OP00470638)."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "submit_bid": "Bids are submitted to the borrower's implementing agency as each notice instructs; the API is read-only.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API is documented.",
+   "send_message": "No messaging API is documented.",
+   "credits": "No account or credit endpoint; the API is keyless."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: notices without bid_description had a null title (schema-invalid); title falls back to project_name. Result order is not stable upstream (identical requests return ties in different orders), so py/ts first ids can differ; all read tools answered, schema-valid, pagination advances"
+ }
+}

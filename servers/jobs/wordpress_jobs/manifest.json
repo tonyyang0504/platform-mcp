@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "wordpress_jobs-jobs-mcp",
+ "display_name": "WordPress.net Jobs MCP",
+ "version": "0.1.0",
+ "description": "WordPress.net Jobs (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jobs/wordpress_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "jobs.wordpress.net WordPress RSS 2.0 feed (10 latest job posts). s is WordPress's feed search (https://wordpress.org/documentation/article/wordpress-feeds/; checked 2026-09-25: ?s=developer narrows the feed) and paged selects older posts (a page past the end answers 404 -> invalid_input). location and limit are not sent. description is the full post (content:encoded, HTML); the excerpt is raw.description and the post id raw['post-id']. id is the job permalink."
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "matrix-mcp",
+ "display_name": "Matrix MCP",
+ "version": "0.1.0",
+ "description": "Matrix (messaging): me, send, reply, list_inbound, get_thread, mark_read. Every tool maps to a docum",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "matrix"
+   ],
+   "env": {
+    "PLATFORM_MCP_MATRIX_ACCESS_TOKEN": "${user_config.platform_mcp_matrix_access_token}",
+    "PLATFORM_MCP_MATRIX_HOMESERVER": "${user_config.platform_mcp_matrix_homeserver}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_matrix_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MATRIX_ACCESS_TOKEN",
+   "description": "Access token of the account (from a login flow or the client's settings), sent as 'Authorization: Bearer' — 'Access tokens may be provided via a request header, using the Authentication Bearer scheme: Authorization: Bearer TheTokenHere' (https://spec.matrix.org/latest/client-server-api/#using-access-tokens).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_matrix_homeserver": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MATRIX_HOMESERVER",
+   "description": "Host of the account's homeserver client API without scheme (e.g. matrix.org, or the m.homeserver base_url from /.well-known/matrix/client without https://); every call goes to https://<homeserver>/_matrix/client/... Env: PLATFORM_MCP_MATRIX_HOMESERVER.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "'Gets information about the owner of a given access token' — account carries user_id (required), device_id and is_guest."
+  },
+  {
+   "name": "send",
+   "description": "'This endpoint is used to send a message event to a room': `to` is the ROOM id (!id:server) the account has joined, not a user id (a DM is a room too); `text` is sent as an m.room.message with msgtype m.text ('This message is the most basic message and is used to represent text'); `subject` and `channel` are ignored. The runtime generates a fresh UUID per call as the txnId ('Clients should generate an ID unique across requests with the same access token; it will be used by the server to ensure idempotency of requests'), so retries by the caller are new events. message_id is the event_id."
+  },
+  {
+   "name": "reply",
+   "description": "A threaded reply is an m.room.message whose content carries m.relates_to {rel_type: m.thread, event_id: <thread root>} plus the fallback fields (is_falling_back: true, m.in_reply_to: {event_id}) the threading section asks clients to include for non-threaded clients: `thread_id` is the thread root event id ($...) and `channel` (the room id) is REQUIRED — the same PUT .../rooms/{roomId}/send/m.room.message/{txnId} as send, with a fresh UUID txnId per call. Replying to a message that is not yet a thread root starts a thread on it. message_id is the new event_id."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Lists ONE room: `channel` is the room id (!id:server) and is REQUIRED — there is no cross-room inbox endpoint (that is /sync, a long-poll). dir=b with no `from` returns the newest events first ('If it is not provided, the homeserver shall return a list of messages from the first or last (per the value of the dir parameter) visible event in the room history for the requesting user'); the server pages by start / end tokens, so `page` is ignored and only the newest `limit` ('Default: 10') events are returned; `since` is not sent. Every room event is a row: state events and non-text messages have no content.body (see raw.type / raw.content); `thread_id` is the room id; origin_server_ts is Unix ms under raw."
+  },
+  {
+   "name": "get_thread",
+   "description": "'Retrieve all of the child events for a given parent event which relate to the parent using the given relType', with relType m.thread: `thread_id` is the thread root event id ($...) and `channel` (the room id) is REQUIRED. Events come 'ordered topologically most-recent first'; the root event itself is not included; the server pages by next_batch, so `page` is ignored and only `limit` events are returned ('The server can and should apply a maximum value to this parameter'). `thread_id` on each row is the room id; the root is under raw.content['m.relates_to'].event_id."
+  },
+  {
+   "name": "mark_read",
+   "description": "'This API updates the marker for the given receipt type to the event ID specified' with receipt type m.read (public read receipt): `channel` (the room id) and `message_id` ('The event ID to acknowledge up to') are both required; `thread_id` is not used (no request body is sent, so the receipt is unthreaded — 'If not specified, the read receipt is unthreaded (default)'). Matrix answers an empty object; status is the literal 'read'."
+  }
+ ]
+}

@@ -1,0 +1,110 @@
+{
+ "id": "jumia_vendor",
+ "category": "ecommerce_suppliers",
+ "label": "Jumia (Vendor Center)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "mea"
+ ],
+ "docs_url": "https://vendorhub.jumia.com.ng/kyc-and-bank-information/",
+ "url": "https://vendorhub.jumia.com.ng/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (Rules and regulations section exists; not opened)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth"
+  ],
+  "auth": "oauth2 (Vendor Center application — see the sales-channel audit `jumia`)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Vendor account (11 African markets).",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://vendorhub.jumia.com.ng/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "The Jumia Vendor API (OpenAPI https://vendorcenter.jumia.com/api-docs/openapi.yaml, opened 2026-09-25; the docs_url is a seller KYC help page) is the SELLER side of Jumia: a vendor manages its own product feeds, stock/price and fulfils the orders it receives (pack, ready-to-ship, labels) with OAuth bearer tokens. There is no API for buying from Jumia, so this category's list_products (supplier catalogue), quote_shipping and create_order (spends money at a supplier) have no counterpart; the seller side belongs in ecommerce_channels/jumia."
+}

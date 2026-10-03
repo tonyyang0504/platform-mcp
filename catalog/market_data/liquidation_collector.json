@@ -1,0 +1,15 @@
+{
+ "id": "liquidation_collector",
+ "category": "market_data",
+ "label": "Liquidations REST (Binance)",
+ "provider": "Binance",
+ "lane": "api",
+ "base_urls": [
+  "https://fapi.binance.com/fapi/v1/forceOrders"
+ ],
+ "data_kinds": [
+  "liquidations (authenticated, account-scoped, 90 days)"
+ ],
+ "auth": "api key (forceOrders is authenticated per liquidation_stream docstring)",
+ "docs_url": null
+}

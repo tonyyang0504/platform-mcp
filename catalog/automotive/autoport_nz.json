@@ -1,0 +1,35 @@
+{
+ "id": "autoport_nz",
+ "category": "automotive",
+ "label": "Autoport",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autoport.nz",
+ "domain": "autoport.nz",
+ "country": "New Zealand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace site; homepage/footer scan and dev-path probes found no developer, API or partner-feed pages.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autoport.nz/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

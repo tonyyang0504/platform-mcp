@@ -1,0 +1,63 @@
+{
+ "id": "ebay",
+ "category": "automotive",
+ "label": "Ebay",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.ebay.com",
+ "domain": "ebay.com",
+ "country": "USA",
+ "official_api": true,
+ "docs_url": "https://developer.ebay.com/develop/api/buy/browse_api",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "OAuth2 (application or user token)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). eBay Developers Program (self-serve keys) exposes Browse API search/get item incl. eBay Motors, plus Sell Inventory APIs; eBay publishes an official read-only MCP server (eBay/npm-public-api-mcp).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/eBay/npm-public-api-mcp"
+  ],
+  "sources": [
+   "https://developer.ebay.com/",
+   "https://developer.ebay.com/develop/api/buy/browse_api",
+   "https://developer.ebay.com/api-docs/user-guides/static/trading-user-guide/ebay-motors.html",
+   "https://github.com/eBay/npm-public-api-mcp"
+  ],
+  "unofficial": [
+   "https://ebaymcp.com/",
+   "https://github.com/cunicopia-dev/ebay-mcp",
+   "https://github.com/pipeworx-io/mcp-ebay"
+  ]
+ },
+ "official_mcp": [
+  {
+   "name": "@ebay/npm-public-api-mcp",
+   "url": "https://www.npmjs.com/package/@ebay/npm-public-api-mcp",
+   "repo": "https://github.com/eBay/npm-public-api-mcp",
+   "transport": "stdio",
+   "note": "Official local server (npx -y @ebay/npm-public-api-mcp; EBAY_CLIENT_ID/EBAY_CLIENT_SECRET, application or user token); production supports GET (read-only) calls to eBay's REST APIs incl. Buy Browse item search/get."
+  }
+ ],
+ "adapter_status": "official_mcp",
+ "reason": "eBay publishes its own read-only MCP server for its REST APIs (@ebay/npm-public-api-mcp, stdio, https://github.com/eBay/npm-public-api-mcp; GET-only in production), which covers the Buy Browse API item search/get including eBay Motors. No generated server here: developer.ebay.com answers HTTP 403 (bot wall) to plain and headless-Chromium fetches on 2026-09-25, so the Browse API reference could not be re-read first-hand, and mirrors are not used. Use the vendor MCP.",
+ "official_mcp_url": "https://github.com/eBay/npm-public-api-mcp"
+}

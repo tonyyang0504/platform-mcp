@@ -1,0 +1,146 @@
+{
+ "id": "eluta",
+ "category": "jobs",
+ "label": "Eluta.ca",
+ "lane": "api",
+ "kind": "aggregator",
+ "regions": [
+  "ca"
+ ],
+ "docs_url": "https://www.eluta.ca/developers",
+ "url": "https://www.eluta.ca/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Canadian employer-site aggregator; apply on origin.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rss",
+   "opensearch"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "feed_xml",
+   "job_details (link to the employer posting)"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "Advanced Search) can be fetched as RSS 2.0 (GET https://www.eluta.ca/rss?q=<keywords>&l=<location>&limit=N, also fmt=j for JSON-P) — live-verified ('Eluta: developer jobs', PyRSS2Gen).",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Free of charge, no key, no published rate limit; Developer rules: use the data to 'create good things' (personal or commercial is fine), no adult / illegal / hateful sites, no made-for-AdSense spam pages; usage is subject to Eluta's standard Terms of Service. Free of charge, no key, no published rate limit; robots.txt disallows /rss? for crawlers (the feed is meant for developers, not search engines) and Disallow: / for unlisted agents.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.eluta.ca/",
+   "https://www.eluta.ca/robots.txt",
+   "https://www.eluta.ca/developers",
+   "https://www.eluta.ca/rss?q=developer",
+   "https://www.eluta.ca/eluta-xml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.eluta.ca",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.01,
+  "terms": "Eluta developers page: 'No adult or illegal sites', 'No spam pages'; the feed is free of charge.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/rss",
+    "params": {
+     "q": "query",
+     "l": "location"
+    },
+    "default_limit": 20,
+    "max_limit": 20,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description",
+      "company": "employer",
+      "location": "location"
+     }
+    },
+    "docs": "https://www.eluta.ca/developers",
+    "note": "Eluta offers its search 'free of charge using either RSS ... or our OpenSearch API': 'You can create an RSS feed for any search on Eluta' (example /rss?fmt=j&q=French&l=Toronto+ON&limit=5; fmt=j is a JavaScript snippet, so it is not sent and the RSS 2.0 form is used). q is the keyword search and l the location (e.g. 'Toronto ON'); the feed returns the first 20 matches and has no page parameter, so page is not sent. employer, location and a highlighted snippet (description, HTML) are per item; id is the posting link. Eluta's policy: 'You may not check each RSS feed more than 2 times per hour'. Past it the feed answers 200 with a channel titled 'Eluta: Too Many Requests' and one notice item; the runtime turns that into a rate_limited error instead of a posting, and the client-side limit is one call per 100 s. Responses come through a squid cache (Cache-Control max-age 3 h, Vary: User-Agent), so a feed can be up to 3 h old (live check 2026-09-26)."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  },
+  "envelope": {
+   "fail_when": {
+    "rss.channel.title": "Eluta: Too Many Requests"
+   }
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: past 'not more than 2 times per hour' per feed, the RSS answers 200 with a 'Too Many Requests' item that was returned as a posting; now a rate_limited error, limit one call per 100 s. Upstream squid cache (max-age 3 h, Vary: User-Agent) can serve different snapshots; also: next_page now null (no page parameter); all read tools answered, schema-valid"
+ }
+}

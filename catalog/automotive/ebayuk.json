@@ -1,0 +1,60 @@
+{
+ "id": "ebayuk",
+ "category": "automotive",
+ "label": "Ebay",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.ebay.co.uk",
+ "domain": "ebay.co.uk",
+ "country": "UK",
+ "official_api": true,
+ "docs_url": "https://developer.ebay.com/api-docs/buy/browse/overview.html",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "OAuth2 (client credentials for Browse; user token for Sell APIs)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). eBay Developers Program (Browse/Inventory APIs, incl. eBay Motors UK) is self-service, and eBay publishes an official local MCP server for its public APIs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/eBay/npm-public-api-mcp (@ebay/npm-public-api-mcp, local stdio)"
+  ],
+  "sources": [
+   "https://developer.ebay.com/api-docs/buy/browse/overview.html",
+   "https://github.com/eBay/npm-public-api-mcp"
+  ],
+  "unofficial": [
+   "github.com/YosefHayim/ebay-mcp",
+   "Apideck eBay MCP"
+  ]
+ },
+ "official_mcp": [
+  {
+   "name": "@ebay/npm-public-api-mcp",
+   "url": "https://www.npmjs.com/package/@ebay/npm-public-api-mcp",
+   "repo": "https://github.com/eBay/npm-public-api-mcp",
+   "transport": "stdio",
+   "note": "Official local server (npx -y @ebay/npm-public-api-mcp; EBAY_CLIENT_ID/EBAY_CLIENT_SECRET, application or user token); production supports GET (read-only) calls to eBay's REST APIs incl. Buy Browse item search/get."
+  }
+ ],
+ "adapter_status": "official_mcp",
+ "reason": "eBay's own read-only MCP server (@ebay/npm-public-api-mcp) reaches the Browse API for any marketplace, including EBAY_GB (eBay Motors UK). developer.ebay.com answered HTTP 403 to plain and headless-Chromium fetches on 2026-09-25, so no adapter was generated from its docs. Use the vendor MCP.",
+ "official_mcp_url": "https://github.com/eBay/npm-public-api-mcp"
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "mintegral-mcp",
+ "display_name": "Mintegral MCP",
+ "version": "0.1.0",
+ "description": "Mintegral (ads): me, list_accounts, list_campaigns, update_budget, pause_resume. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mintegral"
+   ],
+   "env": {
+    "PLATFORM_MCP_MINTEGRAL_ACCESS_KEY": "${user_config.platform_mcp_mintegral_access_key}",
+    "PLATFORM_MCP_MINTEGRAL_API_KEY": "${user_config.platform_mcp_mintegral_api_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mintegral_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MINTEGRAL_ACCESS_KEY",
+   "description": "Access Key from Mintegral AppGrowth > Account Management > Basic Information; sent as the access-key header of every Open API call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mintegral_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MINTEGRAL_API_KEY",
+   "description": "API Key from the same Basic Information page; never sent, only used to compute the per-request token = md5(api_key + md5(timestamp)).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/open/v1/account/balance verifies the key pair and answers data.list [{user_id, username, currency, balance}]."
+  },
+  {
+   "name": "list_accounts",
+   "description": "The only account-level call is Get Account Balance: data.list holds the account(s) the key belongs to with {user_id, username, currency, balance}."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "Lists offers (GET /api/open/v1/offers, at most 50 per page): in Mintegral the offer is the unit that carries budget, bid and RUNNING/STOPPED status, while a 'campaign' is the promoted app; so campaign ids used by update_budget and pause_resume are offer_ids. status filters by offer status (e.g. RUNNING, STOPPED). Budgets are per-region arrays (raw.budget: [{country_code, total_budget, daily_cap_type, daily_cap}]) and are not flattened. account_id is not sent: the access key selects the account. Parameters are sent as a query string (the reference's GET example shows them as a JSON object; the same API's audience list documents them in the query)."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /api/open/v1/offer/budget {offer_id, budget: [{country_code: ALL, daily_cap_type: BUDGET, daily_cap, total_budget: OPEN}]} sets one daily spend cap (whole units of the account currency, minimum 50) for all regions of the offer; this spends money, replaces any per-region budgets and leaves the total budget open ('\"OPEN\" means no budget'). daily_budget must be a whole number; currency is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /api/open/v1/offer/status {offer_id, status: RUNNING|STOPPED} starts or pauses one offer (pause → STOPPED, resume → RUNNING). Resuming restarts spend."
+  }
+ ]
+}

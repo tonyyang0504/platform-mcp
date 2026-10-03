@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/shein-mcp",
+ "description": "SHEIN Marketplace (ecommerce channels): me, list_orders, set_inventory, update_listing, end_listing.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.sheincorp.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "shein"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SHEIN_OPEN_KEY_ID",
+     "description": "openKeyId returned by the store-authorisation call /open-api/auth/get-by-token (Store Authorization Application Manual); sent as x-lt-openKeyId.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHEIN_SIGN_KEY",
+     "description": "The HMAC key SHEIN's Signature Rules define as SecretKey + RandomKey: the DECRYPTED secretKey from /open-api/auth/get-by-token (it is returned AES-encrypted with your appSecretKey; decrypt it once as the authorisation manual shows) immediately followed by your random_key, e.g. '6BEC9C4B668B4B14B17EEF106BB98AE5test1'. Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHEIN_RANDOM_KEY",
+     "description": "The 5-character RandomKey you choose (letters/digits, e.g. 'test1'); it prefixes every x-lt-signature and must equal the last 5 characters of sign_key.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SHEIN_SITE",
+     "description": "SHEIN sub-site for price and shelf changes, e.g. shein-us, shein-mx, shein-fr (店铺站点和币种信息 /open-api/openapi-business-backend/site/query).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SHEIN_CURRENCY",
+     "description": "Selling currency of that site for price changes, e.g. USD, MXN, EUR.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SHEIN_WAREHOUSE_CODE",
+     "description": "Merchant warehouse code (from `me`) for stock updates; required when the store has several warehouses.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "kucoin-mcp",
+ "display_name": "KuCoin (spot) MCP",
+ "version": "0.1.0",
+ "description": "KuCoin (spot) (trading): list_markets, get_ticker, get_candles. Every tool maps to a documented endp",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kucoin"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Every spot symbol (BTC-USDT style); paged locally; query is a substring of symbol/base/quote."
+  },
+  {
+   "name": "get_ticker",
+   "description": "24h statistics; volume is the 24h base volume."
+  },
+  {
+   "name": "get_candles",
+   "description": "interval: 1m 3m 5m 15m 30m 1h 2h 4h 6h 8h 12h 1d 1w 1M. Newest first; at most 1500 per call; the newest `limit` are returned."
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "bitstamp-mcp",
+ "display_name": "Bitstamp MCP",
+ "version": "0.1.0",
+ "description": "Bitstamp (trading): list_markets, get_ticker, get_candles. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bitstamp"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "GET /api/v2/markets/ returns every market at once (no paging documented); the server sorts by symbol and pages locally (page/limit). `query` is not sent: the API has no text search (its only filter is `entity`). symbol is Bitstamp's url symbol, e.g. btcusd."
+  },
+  {
+   "name": "get_ticker",
+   "description": "symbol is the market_symbol from list_markets, e.g. btcusd or etheur. Prices in the counter currency; volume is the last 24h volume in the base currency."
+  },
+  {
+   "name": "get_candles",
+   "description": "interval is one of 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 1d, 3d (the documented step values 60…259200 seconds); returns the latest `limit` candles (max 1000), oldest first. time is the candle open in UTC."
+  }
+ ]
+}

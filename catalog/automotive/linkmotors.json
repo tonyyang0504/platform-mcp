@@ -1,0 +1,35 @@
+{
+ "id": "linkmotors",
+ "category": "automotive",
+ "label": "Gestionale",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://gestionale.linkmotors.it",
+ "domain": "gestionale.linkmotors.it",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). Linkmotors dealer software host; /api returns 'OK' but no public documentation. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://gestionale.linkmotors.it/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

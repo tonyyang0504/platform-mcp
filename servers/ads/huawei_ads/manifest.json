@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "huawei_ads-mcp",
+ "display_name": "鲸鸿动能 Petal Ads (Huawei Ads) MCP",
+ "version": "0.1.0",
+ "description": "鲸鸿动能 Petal Ads (Huawei Ads) (ads): me, list_accounts, list_campaigns, get_report, update_budget, pau",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "huawei_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_HUAWEI_ADS_CLIENT_ID": "${user_config.platform_mcp_huawei_ads_client_id}",
+    "PLATFORM_MCP_HUAWEI_ADS_CLIENT_SECRET": "${user_config.platform_mcp_huawei_ads_client_secret}",
+    "PLATFORM_MCP_HUAWEI_ADS_REFRESH_TOKEN": "${user_config.platform_mcp_huawei_ads_refresh_token}",
+    "PLATFORM_MCP_HUAWEI_ADS_ADVERTISER_ID": "${user_config.platform_mcp_huawei_ads_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_huawei_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HUAWEI_ADS_CLIENT_ID",
+   "description": "Your Marketing API client ID (华为开发者联盟 → 申请客户端ID).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_huawei_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HUAWEI_ADS_CLIENT_SECRET",
+   "description": "The client secret shown for that client ID in the developer alliance.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_huawei_ads_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HUAWEI_ADS_REFRESH_TOKEN",
+   "description": "refresh_token from the authorization-code login (authorize with access_type=offline and the ads scopes, then exchange the code at /oauth2/v2/token), see ads_api09.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_huawei_ads_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HUAWEI_ADS_ADVERTISER_ID",
+   "description": "Advertiser ID; required when the authorizing Huawei ID is a manager (经理) account, a service-provider account or linked to several sub-client advertisers.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Refreshes the access token and reads the first page of campaigns: verifies the authorization and Marketing API permission."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET openapi/v2/manager/advertiser/query: the advertiser accounts under a manager (经理) account authorization (page_size 10–50). Advertiser ids are 18-digit integers above 2^53: the Python server returns them exactly, the TypeScript server's JSON parser may round the last digits."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET openapi/v2/promotion/campaign/query?advertiser_id&page_num&page_size (the documented query-parameter form; the new /ads/v1/promotion/campaign/query takes a JSON body on GET, which is not sent). page_size must be 10–50. `status` is a show_status value such as CAMPAIGN_STATUS_DELIVERY_OK (【计划界面显示的状态】)."
+  },
+  {
+   "name": "get_report",
+   "description": "POST openapi/v2/reports/campaign/query per day and campaign (time_granularity DAILY, group_by CAMPAIGN_ID + DATE), filtered to campaign_id when given: impressions (show_count), clicks, cost (CNY), cpc and download/install/activation counts; up to 1,000 rows. stat_datetime is YYYYMMDDHH. Contract (合约) data is not included."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /ads/v1/promotion/campaign/update {campaign_id, daily_budget: {daily_budget, daily_budget_op_type: UPDATE_TODAY_DAILY_BUDGET}}: today's campaign daily limit, a whole number of CNY that must differ from the current value (see 修改限额约束). `currency` is not applied."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /ads/v1/promotion/campaign/update {campaign_id, campaign_status: OPERATION_DISABLE | OPERATION_ENABLE}."
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/onbuy-mcp",
+ "description": "OnBuy (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_shippe",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.api.onbuy.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "onbuy"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ONBUY_CONSUMER_KEY",
+     "description": "Consumer key from the OnBuy/OnCommerce Seller Control Panel > Integrations > OnBuy API (Test and Live keys differ).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ONBUY_SECRET_KEY",
+     "description": "Secret key from the same page; exchanged with the consumer key at POST /v2/auth/request-token for a 15-minute access token (bound to the calling IP), sent as the raw Authorization header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ONBUY_SITE_ID",
+     "description": "OnBuy site id your listings/orders belong to: 2000 = OnBuy UK (GET /v2/sites lists the others).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,347 @@
+{
+ "id": "freelancer",
+ "category": "deals",
+ "label": "Freelancer",
+ "lane": "assist",
+ "kind": "freelance",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.freelancer.com/",
+ "url": "https://www.freelancer.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Freelancer.com User Agreement §33 forbids any robot, spider, scraper or other automated means to access the Website or the API without express written permission. Official OAuth (developers.freelancer.com, freelancer-oauth-v1) is the documented API path; bid and message stay off the autonomous registry flags until that permission is on file. Team, invitations, discussions, account settings, notifications, billing, disputes, support, profile photos and contest entry have no official autonomous lane. A browser session that registers or edits a member profile is automation the agreement does not license — you opt in per account and carry the account risk.",
+ "forbids_automation": true,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "oauth2 (freelancer-oauth-v1 header)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details",
+   "submit_proposal",
+   "withdraw_bid",
+   "messages",
+   "bid_status",
+   "credits"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/freelancer/freelancer-sdk-python (official SDK)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://www.freelancer.com/api/users/0.1/self/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/projects/0.1/projects/active/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/projects/0.1/projects/{id}/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "POST /api/projects/0.1/bids/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "PUT /api/projects/0.1/bids/{bid_id}/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/messages/0.1/threads/?contexts[]=&context_type=project",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /api/messages/0.1/threads/{thread}/messages/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/projects/0.1/bids/{bid_id}/",
+   "docs": "https://developers.freelancer.com/"
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /api/users/0.1/self/?membership_details=true",
+   "docs": "https://developers.freelancer.com/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full seller API). The connected OAuth app/account selects the official API lane and",
+  "base_urls": [
+   "https://www.freelancer.com/api/"
+  ],
+  "auth": [
+   "1. Create an app at developers.freelancer.com → OAuth2 → `freelancer-oauth-v1: <token>` header."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /projects/0.1/projects/active/",
+    "purpose": "search",
+    "notes": "query, jobs[], budget, bid_stats, time_submitted"
+   },
+   {
+    "call": "GET /projects/0.1/projects/{id}/",
+    "purpose": "details",
+    "notes": "owner via result.users when authenticated"
+   },
+   {
+    "call": "POST /projects/0.1/bids/",
+    "purpose": "submit_proposal",
+    "notes": "project_id, bidder_id, amount, period, milestone_percentage, description"
+   },
+   {
+    "call": "PUT /projects/0.1/bids/{bid_id}/` action=retract",
+    "purpose": "withdraw",
+    "notes": "—"
+   },
+   {
+    "call": "GET /messages/0.1/threads/` · `POST /messages/0.1/threads/{id}/messages/",
+    "purpose": "messages",
+    "notes": "context project"
+   },
+   {
+    "call": "GET /users/0.1/self/?membership_details=true",
+    "purpose": "credits",
+    "notes": "bids_remaining"
+   }
+  ],
+  "limits": " - Provider account/app access, rate limits and applicable terms still govern live requests; provider errors are surfaced. - Bid credits per membership; 10 % / $5 project fee for freelancers (site pricing, not re-read). - User Agreement §33 (https://www.freelancer.com/about/terms, opened 2026-09-22): no robot, spider, scraper or other automated means to access the Website **or the API** without express written permission. Registry `api.bid` / `api.message` stay false.",
+  "mcp_sdk": [
+   "Official SDK (REST, not MCP): https://github.com/freelancer/freelancer-sdk-python",
+   "Official MCP endpoint: **none** on https://developers.freelancer.com/ (checked 2026-09-22). Do not add a third-party MCP wrapper as a Freelancer connector."
+  ],
+  "sources": [
+   "https://www.freelancer.com/about/terms",
+   "https://developers.freelancer.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.freelancer.com/api",
+  "auth": {
+   "type": "header",
+   "header": "freelancer-oauth-v1",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Freelancer OAuth access token sent as the freelancer-oauth-v1 header: a Personal Access Token from https://accounts.freelancer.com/settings/develop ('valid for thirty days') or a token from your registered OAuth app (scopes basic, fln:project_manage, fln:messaging, fln:user_information as needed)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "bidder_id",
+    "required": false,
+    "help": "Your Freelancer user id (GET /users/0.1/self/ → result.id); required by POST /projects/0.1/bids/ as bidder_id."
+   },
+   {
+    "name": "milestone_percentage",
+    "required": false,
+    "help": "Initial milestone percentage (20–100) required by POST /projects/0.1/bids/ ('Please fill in the milestone percentage (20 - 100)')."
+   }
+  ],
+  "rate_per_second": 1,
+  "rate_note": "'Each endpoint has a rate limit … A HTTP 429 response will be triggered if you hit the rate limit' (https://developers.freelancer.com/docs/api-overview/rate-limiting); no numbers are published. One request per second.",
+  "terms": "User Agreement: no automated access to the Website or API without express written permission (the OAuth app / token is that channel). The developer docs name 'Automatic Bidders' the most common prohibited integration ('it will not be approved'); submit_bid places one bid per explicit call on the token owner's account — never loop it over projects.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/0.1/self/",
+    "docs": "https://developers.freelancer.com/docs/users/authenticated-users#logged-in-user-get",
+    "note": "GET /users/0.1/self/ (scopes basic, fln:user_information); result.id is the bidder_id submit_bid needs."
+   },
+   "search_postings": {
+    "method": "GET",
+    "path": "/projects/0.1/projects/active/",
+    "params": {
+     "query": "query",
+     "min_price": "min_budget",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "fixed_params": {
+     "full_description": "true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.projects",
+     "key": "postings",
+     "total": "result.total_count",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "budget_min": "budget.minimum",
+      "budget_max": "budget.maximum",
+      "currency": "currency.code"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/projects#projects-get-3",
+    "note": "GET /projects/0.1/projects/active/ (scope basic): query = space-separated terms over names and descriptions; min_price filters fixed-price budgets ≥ the value in USD; limit/offset page. Categories are numeric job ids (jobs[]), so category is not sent. owner_id, time_submitted (Unix), seo_url, bid_stats and jobs stay in raw."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/projects/0.1/projects/{id}/",
+    "fixed_params": {
+     "full_description": "true"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "description": "description",
+      "budget_min": "budget.minimum",
+      "budget_max": "budget.maximum",
+      "currency": "currency.code"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/projects#projects-get-2",
+    "note": "GET /projects/0.1/projects/{project_id}/ with full_description=true."
+   },
+   "submit_bid": {
+    "method": "POST",
+    "path": "/projects/0.1/bids/",
+    "body": {
+     "project_id": "int:posting_id",
+     "bidder_id": "int:@bidder_id",
+     "amount": "amount",
+     "period": "int:period_days",
+     "milestone_percentage": "int:@milestone_percentage",
+     "description": "message"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "bid_id": "id",
+      "status": "=submitted"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/bids#bids-post",
+    "note": "POST /projects/0.1/bids/ (scopes basic, fln:project_manage) with {project_id, bidder_id, amount, period, milestone_percentage, description}; 'Required fields: project_id, bidder_id, amount, period, milestone_percentage'. bidder_id and milestone_percentage come from config fields; amount is in the project's currency (currency is not sent). 409 DUPLICATE_BID if you already bid. Automatic bidding is a prohibited integration — one explicit bid per call."
+   },
+   "withdraw_bid": {
+    "method": "PUT",
+    "path": "/projects/0.1/bids/{bid_id}/",
+    "body": {
+     "action": "=retract"
+    },
+    "body_format": "form",
+    "result": {
+     "fields": {
+      "status": "=retracted"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/bids#bids-put-1",
+    "note": "PUT /projects/0.1/bids/{bid_id}/ with form action=retract ('retracts the bid from the project before it has been awarded')."
+   },
+   "bid_status": {
+    "method": "GET",
+    "path": "/projects/0.1/bids/{bid_id}/",
+    "result": {
+     "root": "result",
+     "fields": {
+      "bid_id": "id",
+      "status": "award_status"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/projects/bids#bids-get-1",
+    "note": "GET /projects/0.1/bids/{bid_id}/; status is award_status (awarded, rejected, revoked, pending, canceled — the schema allows null); retracted, paid_status and complete_status stay in raw."
+   },
+   "list_messages": {
+    "method": "GET",
+    "path": "/messages/0.1/messages/",
+    "params": {
+     "threads[]": "thread_id",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result.messages",
+     "key": "messages",
+     "fields": {
+      "id": "id",
+      "thread_id": "thread_id",
+      "text": "message"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/messaging/messaging#messages-get",
+    "note": "GET /messages/0.1/messages/ (scope fln:messaging) filtered by threads[]=thread_id. from_user is a numeric user id and time_created Unix time; both stay in raw."
+   },
+   "send_message": {
+    "method": "POST",
+    "path": "/messages/0.1/threads/{thread_id}/messages/",
+    "body": {
+     "message": "text"
+    },
+    "body_format": "form",
+    "result": {
+     "root": "result",
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developers.freelancer.com/docs/messaging/threads#threads-post-2",
+    "note": "POST /messages/0.1/threads/{thread_id}/messages/ (scope fln:messaging) with message=<text> (form-encoded)."
+   }
+  },
+  "not_offered": {
+   "credits": "The API documents no bid-credit endpoint; the account balance (users/self balance_details) is money, not bids."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host www.freelancer.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 7/7 tool paths found verbatim on their docs pages; names not found on the page: submit_bid:bidder_id, submit_bid:period, submit_bid:project_id",
+   "live read without credentials: get_posting, search_postings returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

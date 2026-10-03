@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "mercari_shops_jp-mcp",
+ "display_name": "Mercari Shops (JP) MCP",
+ "version": "0.1.0",
+ "description": "Mercari Shops (JP) (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "mercari_shops_jp"
+   ],
+   "env": {
+    "PLATFORM_MCP_MERCARI_SHOPS_JP_ACCESS_TOKEN": "${user_config.platform_mcp_mercari_shops_jp_access_token}",
+    "PLATFORM_MCP_MERCARI_SHOPS_JP_API_HOST": "${user_config.platform_mcp_mercari_shops_jp_api_host}",
+    "PLATFORM_MCP_MERCARI_SHOPS_JP_USER_AGENT": "${user_config.platform_mcp_mercari_shops_jp_user_agent}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_mercari_shops_jp_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCARI_SHOPS_JP_ACCESS_TOKEN",
+   "description": "Personal API Access Token issued on your mercari Shops shop administration page; sent as Authorization: Bearer.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_mercari_shops_jp_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCARI_SHOPS_JP_API_HOST",
+   "description": "api.mercari-shops.com (production) or api.mercari-shops-sandbox.com (sandbox).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_mercari_shops_jp_user_agent": {
+   "type": "string",
+   "title": "PLATFORM_MCP_MERCARI_SHOPS_JP_USER_AGENT",
+   "description": "User-Agent required by mercari Shops: <API_CLIENT_NAME>/<VERSION>, where API_CLIENT_NAME is the value Mercari assigns to your company at contract (e.g. EXAMPLE_SHOP/1.0.0); requests without the correct User-Agent are restricted.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "query shop returns the shop you own (data.shop {id, name, shopStatus, businessKind})."
+  },
+  {
+   "name": "update_listing",
+   "description": "updateProduct(input: {id, name, description, price}) edits a LIVE product; only the fields sent change. price is an integer in yen between 300 and 9999999; name at most 130 characters, description 3000. Stock is per variant: use set_inventory. `status` is the product visibility (OPENED|UNOPENED)."
+  },
+  {
+   "name": "end_listing",
+   "description": "updateProduct(input: {id, status: UNOPENED}) makes the product private (非公開); reversible with status OPENED. The product is not deleted."
+  },
+  {
+   "name": "set_inventory",
+   "description": "updateProductVariant(by: {skuCode} or {id}, input: {stockQuantity}) sets the stock of one VARIANT: pass `sku` (the variant skuCode) or `listing_id` as the variant id — not the product id."
+  },
+  {
+   "name": "list_orders",
+   "description": "orderTransactions(first, orderedDateGte, statuses) — status: WAITING_FOR_PAYMENT|WAITING_FOR_SHIPPING|COMPLETING|COMPLETED|CANCELING|CANCELED; since is an ISO-8601 DateTime. totalPrice is integer yen including sales fee and shipping. Pagination is by cursor (pageInfo.endCursor in raw), so only the first page is reachable here."
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "remotive-deals-mcp",
+ "display_name": "Remotive MCP",
+ "version": "0.1.0",
+ "description": "Remotive (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/remotive"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "Keyless public API. Only limit is documented (no page parameter), so page > 1 repeats the same result set. Terms: link back to the Remotive URL and name Remotive as the source, never re-post the jobs to other job sites, and 'fetch at most ~4 times a day' (the client-side limiter allows one call per 100 s); listings are delayed 24 h. salary is a free-text string, left in raw. Mirrors jobs/remotive: category is a Remotive category name or slug (/api/remote-jobs/categories); buyer is company_name."
+  }
+ ]
+}

@@ -1,0 +1,155 @@
+{
+ "id": "figma",
+ "category": "builder_tools",
+ "label": "Figma",
+ "lane": "mcp_http",
+ "kind": null,
+ "regions": null,
+ "docs_url": "https://developers.figma.com/docs/figma-mcp-server/",
+ "url": null,
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation allowed under Figma Developer Terms; remote MCP on all plans but Starter / View / Collab seats = 6 tool calls per MONTH, Dev/Full seats 200/day 10-20/min (create_new_file, whoami, add_code_connect_map exempt; use_figma is NOT); write-to-canvas is open beta, free now, 'eventually usage-based paid'; only clients in the Figma MCP Catalog may connect; REST Tier 1 (files/images) 10-20 req/min; variables REST = Enterprise full members only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "mcp_write_canvas(use_figma)",
+   "mcp_create_file",
+   "mcp_upload_assets",
+   "mcp_generate_design_from_ui",
+   "mcp_read_design_context",
+   "mcp_variables_read",
+   "mcp_search_design_system",
+   "rest_read_file_json",
+   "rest_export_images",
+   "rest_comments",
+   "rest_variables_write(enterprise_only)",
+   "rest_webhooks_v2",
+   "rest_dev_resources"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developers.figma.com/docs/rest-api/",
+   "https://developers.figma.com/docs/plugins/"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.figma.com/mcp",
+  "https://github.com/mcp/com.figma.mcp/mcp",
+  "https://github.com/figma/mcp-server-guide"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (REST API v1 + official remote MCP server with write tools + Plugin API).",
+  "base_urls": [
+   "https://api.figma.com/v1/",
+   "https://api.figma-gov.com/v1/",
+   "https://mcp.figma.com/mcp"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "Purpose",
+    "purpose": "Fields",
+    "notes": ""
+   },
+   {
+    "call": "whole document JSON (import a tenant design as reference)",
+    "purpose": "`ids`, `depth`, `geometry=paths`, `version`",
+    "notes": ""
+   },
+   {
+    "call": "subset of nodes",
+    "purpose": "`ids` (comma list), `depth`",
+    "notes": ""
+   },
+   {
+    "call": "svg",
+    "purpose": "pdf&scale=`",
+    "notes": "rendered exports (URLs valid ~30 days)"
+   },
+   {
+    "call": "variables + collections (**Enterprise only**, Tier 2)",
+    "purpose": "scope `file_variables:read`",
+    "notes": ""
+   },
+   {
+    "call": "atomic bulk create/update/delete of collections, modes (≤ 40), variables (≤ 5000/collection), mode values (**Enterprise**, Tier 3)",
+    "purpose": "`variableCollections[]`, `variableModes[]`, `variables[]`, `variableModeValues[]`",
+    "notes": ""
+   },
+   {
+    "call": "leave review comments on a design",
+    "purpose": "`message`, `client_meta`",
+    "notes": ""
+   },
+   {
+    "call": "FILE_UPDATE`, `FILE_VERSION_UPDATE`, `LIBRARY_PUBLISH`, `FILE_COMMENT` …",
+    "purpose": "`event_type`, `team_id`, `endpoint`, `passcode`",
+    "notes": ""
+   },
+   {
+    "call": "blank Design / FigJam / Slides file (rate-limit exempt)",
+    "purpose": "name, type",
+    "notes": ""
+   },
+   {
+    "call": "general create / edit / inspect — pages, frames, components, variants, variables, styles, text, images",
+    "purpose": "free-form ops (counts against the tool-call cap)",
+    "notes": ""
+   },
+   {
+    "call": "images into / exports out of a file",
+    "purpose": "file paths",
+    "notes": ""
+   },
+   {
+    "call": "live running UI → editable layers (Claude Code first; other clients beta)",
+    "purpose": "url / selection",
+    "notes": ""
+   },
+   {
+    "call": "design → code reads",
+    "purpose": "node / selection",
+    "notes": ""
+   },
+   {
+    "call": "Mermaid → FigJam",
+    "purpose": "mermaid text",
+    "notes": ""
+   }
+  ],
+  "limits": " - REST (leaky bucket, per plan + seat): Tier 1 files/images **10/min** Starter, 15/min Professional, 20/min Organization (Dev/Full seats); Tier 2 25/50/100 per min; Tier 3 50/100/150 per min. View / Collab seats: 20 per MONTH Tier 1, 5/min Tier 2-3. 429 carries `Retry-After`, `X-Figma-Plan-Tier`, `X-Figma-Rate-Limit-Type`. - MCP tool calls: Starter View/Collab **20/month**, Starter Dev/Full 200/day 10/min; Professional View/Collab **6/month**, Dev/Full 200/day 15/min; Organization Dev/Full 600/day 20/min; Enterprise highest. Exempt: `add_code_connect_map`, `create_new_file`, `whoami`. **`use_",
+  "mcp_sdk": [
+   "Remote MCP `https://mcp.figma.com/mcp` — registry `https://github.com/mcp/com.figma.mcp/mcp`; guide",
+   "REST docs `https://developers.figma.com/docs/rest-api/` (OpenAPI at `github.com/figma/rest-api-spec`);"
+  ],
+  "sources": [
+   "https://developers.figma.com/docs/figma-mcp-server/",
+   "https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/",
+   "https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/",
+   "https://developers.figma.com/docs/rest-api/",
+   "https://developers.figma.com/docs/rest-api/variables-endpoints/",
+   "https://developers.figma.com/docs/rest-api/rate-limits/",
+   "https://developers.figma.com/docs/rest-api/authentication/",
+   "https://developers.figma.com/docs/rest-api/oauth-apps/",
+   "https://developers.figma.com/docs/plugins/",
+   "https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server",
+   "https://github.com/mcp/com.figma.mcp/mcp",
+   "https://github.com/figma/mcp-server-guide/blob/main/README.md"
+  ]
+ },
+ "adapter_status": "official_mcp",
+ "official_mcp_url": "https://mcp.figma.com/mcp",
+ "reason": "Figma's builder offering is its own remote MCP server (https://mcp.figma.com/mcp, OAuth; tools use_figma, create_new_file, get_design_context, generate_figma_design … per https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/), which writes to the canvas; the REST API (https://developers.figma.com/docs/rest-api/) is read-mostly (files, images, comments, Enterprise-only variables) and cannot create or edit design nodes. Pointer entry, no generated server."
+}

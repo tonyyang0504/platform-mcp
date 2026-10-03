@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "tiktok-ads-mcp",
+ "display_name": "TikTok for Business (TikTok Ads Manager) MCP",
+ "version": "0.1.0",
+ "description": "TikTok for Business (TikTok Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, updat",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ads/tiktok"
+   ],
+   "env": {
+    "PLATFORM_MCP_TIKTOK_ACCESS_TOKEN": "${user_config.platform_mcp_tiktok_access_token}",
+    "PLATFORM_MCP_TIKTOK_APP_ID": "${user_config.platform_mcp_tiktok_app_id}",
+    "PLATFORM_MCP_TIKTOK_SECRET": "${user_config.platform_mcp_tiktok_secret}",
+    "PLATFORM_MCP_TIKTOK_ADVERTISER_ID": "${user_config.platform_mcp_tiktok_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_tiktok_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_ACCESS_TOKEN",
+   "description": "Long-term advertiser access token from the TikTok API for Business authorization flow (/oauth2/access_token/), sent as the `Access-Token` header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_APP_ID",
+   "description": "Developer app id (Application Management page); sent as a query parameter only to /oauth2/advertiser/get/ (me, list_accounts).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_SECRET",
+   "description": "The developer app's secret, sent as the `secret` query parameter only to /oauth2/advertiser/get/ (me, list_accounts).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_tiktok_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TIKTOK_ADVERTISER_ID",
+   "description": "Advertiser (ad account) id that update_budget writes to (campaign/update requires advertiser_id in the body).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /oauth2/advertiser/get/?app_id&secret returns {code, message, data: {list: [{advertiser_id, advertiser_name}]}}. TikTok answers HTTP 200 with a non-zero `code` on failure: check code == 0."
+  },
+  {
+   "name": "list_accounts",
+   "description": "Advertiser accounts that authorised the app. Currency is not in this response (GET /advertiser/info/ has it). A non-zero `code` in a 200 body yields an empty list."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /campaign/get/?advertiser_id&page&page_size (1-1000). `status` is operation_status ENABLE|DISABLE (secondary_status in raw); `budget` is in the account currency and its meaning follows budget_mode (BUDGET_MODE_DAY daily, BUDGET_MODE_TOTAL lifetime, BUDGET_MODE_INFINITE none). The `status` argument is not sent (filtering is a JSON object)."
+  },
+  {
+   "name": "get_report",
+   "description": "Synchronous basic report, campaign level, one row per campaign per day (YYYY-MM-DD, closed interval, ad account time zone); metrics are strings. `campaign_id` is not applied (the filter is a JSON array of objects); filter the rows instead. Up to 1,000 rows (page 1)."
+  },
+  {
+   "name": "update_budget",
+   "description": "POST /campaign/update/ {advertiser_id (config), campaign_id, budget}. The value replaces the campaign budget in its current budget_mode (daily only for BUDGET_MODE_DAY campaigns), in the account currency; `currency` is ignored. A failed update (non-zero code, empty data) is reported as invalid_input."
+  },
+  {
+   "name": "pause_resume",
+   "description": "POST /campaign/status/update/ {advertiser_id (config), campaign_ids: [campaign_id], operation_status: DISABLE (pause) | ENABLE (resume)}; answers {code, data: {status, campaign_ids}}. Deleted campaigns cannot change status. A non-zero code (empty data) is reported as invalid_input."
+  }
+ ]
+}

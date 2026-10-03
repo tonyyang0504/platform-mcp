@@ -1,0 +1,35 @@
+{
+ "id": "kfh_auto_kwd",
+ "category": "automotive",
+ "label": "Kfh",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.kfh.com",
+ "domain": "kfh.com",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Kuwait Finance House bank; no car-data API relevant to listings.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://kfh.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

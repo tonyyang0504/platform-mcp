@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/base_jp-mcp",
+ "description": "BASE (store platform) + BASE Developers API + BASE Apps supplier connectors (ecommerce suppliers): m",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://apps.thebase.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "base_jp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BASE_JP_CLIENT_ID",
+     "description": "Client ID of your app at https://developers.thebase.in/ (API application required).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BASE_JP_CLIENT_SECRET",
+     "description": "Client secret of the same app.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BASE_JP_REFRESH_TOKEN",
+     "description": "Refresh token from the one-time authorization-code exchange (GET /1/oauth/authorize with scope read_users read_items read_orders → POST /1/oauth/token, https://docs.thebase.in/api/oauth/access_token). Valid about 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BASE_JP_REDIRECT_URI",
+     "description": "The callback URL registered for your BASE Developers app; BASE requires it in every refresh-token request ('redirect_uri 登録したコールバックURL (必須)', https://docs.thebase.in/api/oauth/refresh_token).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

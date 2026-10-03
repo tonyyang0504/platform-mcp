@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/nextdoor-ads-mcp",
+ "description": "Nextdoor Ads (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps to a documented",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.nextdoor.com/reference",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ads/nextdoor"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NEXTDOOR_API_TOKEN",
+     "description": "Nextdoor Ads Manager API token (NAM > settings > API, https://ads.nextdoor.com/v2/manage/api) for an account granted Ads API access; one token per user, valid for one year, acting for every advertiser tied to the NAM account.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NEXTDOOR_ADVERTISER_ID",
+     "description": "Nextdoor advertiser id used by pause_resume (the status path is /api/v3/advertisers/{advertiserId}/campaigns/{campaignId}/status).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

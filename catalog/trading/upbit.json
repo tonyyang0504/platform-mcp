@@ -1,0 +1,105 @@
+{
+ "id": "upbit",
+ "category": "trading",
+ "label": "Upbit (업비트)",
+ "lane": "api",
+ "country": "KR",
+ "docs_url": "https://docs.upbit.com/kr/reference/list-trading-pairs",
+ "url": "https://upbit.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Quotation (public) API only, no key. Docs in Korean (docs.upbit.com/kr) and English (global-docs.upbit.com), HTML only. Quotation calls are limited per second per IP and group (live 2026-10-01: header Remaining-Req: group=ticker; min=600; sec=8; the docs: 10 per second for the market/ticker/candle groups). Ticker answers a list (one element per market). An unknown market answers 404 {\"error\":{\"name\":404,\"message\":\"Code not found\"}}. Candle times are given without a zone (candle_date_time_utc); the server appends Z.",
+ "adapter": {
+  "base_url": "https://api.upbit.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/v1/market/all",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "raw.english_name",
+        "raw.korean_name"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "market"
+     }
+    },
+    "docs": "https://docs.upbit.com/kr/reference/list-trading-pairs",
+    "note": "Every market as QUOTE-BASE (KRW-BTC, BTC-ETH, USDT-XRP) with Korean and English names in raw; query matches the code or either name."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/v1/ticker",
+    "params": {
+     "markets": "symbol"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "symbol": "market",
+      "last": "trade_price",
+      "volume": "acc_trade_volume_24h"
+     }
+    },
+    "docs": "https://docs.upbit.com/kr/reference/list-tickers",
+    "note": "symbol is a market code such as KRW-BTC (quote first). Upbit's ticker carries no bid/ask (they are in the orderbook endpoint)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/v1/candles/{unit}",
+    "path_params": {
+     "unit": "map:interval:1m=minutes/1,3m=minutes/3,5m=minutes/5,10m=minutes/10,15m=minutes/15,30m=minutes/30,1h=minutes/60,4h=minutes/240,1d=days,1w=weeks,1M=months"
+    },
+    "params": {
+     "market": "symbol",
+     "count": "limit"
+    },
+    "default_limit": 100,
+    "max_limit": 200,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "fields": {
+      "time": "fmt:{candle_date_time_utc}Z",
+      "open": "opening_price",
+      "high": "high_price",
+      "low": "low_price",
+      "close": "trade_price",
+      "volume": "candle_acc_trade_volume"
+     }
+    },
+    "docs": "https://docs.upbit.com/kr/reference/list-candles-minutes",
+    "note": "interval: 1m 3m 5m 10m 15m 30m 1h 4h 1d 1w 1M; up to 200 candles, newest first."
+   }
+  },
+  "not_offered": {
+   "me": "Exchange API calls need an access key and a JWT signed with the secret key; public-data entry only.",
+   "get_balances": "GET /v1/accounts needs a JWT-authenticated key; public-data entry only.",
+   "list_orders": "GET /v1/orders/open needs a JWT-authenticated key; public-data entry only.",
+   "place_order": "POST /v1/orders needs a JWT-authenticated key and spends money; not mapped.",
+   "cancel_order": "DELETE /v1/order needs a JWT-authenticated key; not mapped."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

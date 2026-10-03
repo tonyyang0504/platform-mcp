@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "hyperliquid_spot-mcp",
+ "display_name": "Hyperliquid Spot (public info) MCP",
+ "version": "0.1.0",
+ "description": "Hyperliquid Spot (public info) (trading): me, list_markets, get_ticker, get_balances, list_orders. E",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hyperliquid_spot"
+   ],
+   "env": {
+    "PLATFORM_MCP_HYPERLIQUID_SPOT_WALLET_ADDRESS": "${user_config.platform_mcp_hyperliquid_spot_wallet_address}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_hyperliquid_spot_wallet_address": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HYPERLIQUID_SPOT_WALLET_ADDRESS",
+   "description": "Public 0x address (42 hex characters) of the MAIN wallet whose orders/balances to read. Not a secret; no private key is needed or accepted. Only list_orders/get_balances use it.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Public info endpoint, no credentials: the probe posts {\"type\": \"spotMeta\"} (weight 20)."
+  },
+  {
+   "name": "list_markets",
+   "description": "Spot pairs in one response (`query` is not sent). Canonical pairs are named like PURR/USDC; others are @<index> (e.g. @107), which is also the coin name get_ticker expects. `raw.tokens` holds token indices, resolved in spotMeta.tokens."
+  },
+  {
+   "name": "get_ticker",
+   "description": "Top of the spot L2 book (weight 2); `symbol` is PURR/USDC or @<index>. No last price or 24h volume per symbol (spotMetaAndAssetCtxs is a positional array)."
+  },
+  {
+   "name": "get_balances",
+   "description": "Spot balances of PLATFORM_MCP_HYPERLIQUID_SPOT_WALLET_ADDRESS (weight 2)."
+  },
+  {
+   "name": "list_orders",
+   "description": "Open orders of the configured wallet (perp and spot alike; spot coins appear as PURR/USDC or @<index>); `side` is B (buy) or A (sell)."
+  }
+ ]
+}

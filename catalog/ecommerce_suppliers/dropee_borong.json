@@ -1,0 +1,108 @@
+{
+ "id": "dropee_borong",
+ "category": "ecommerce_suppliers",
+ "label": "Dropee → Borong (B2B eProcurement) — not dropship any more",
+ "lane": "manual",
+ "kind": "regional",
+ "regions": [
+  "sea"
+ ],
+ "docs_url": "https://www.borong.com/",
+ "url": "https://www.dropee.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "punchout"
+  ],
+  "auth": "not published (enterprise integration)",
+  "access": "partner_only",
+  "capabilities": [
+   "orders",
+   "webhooks"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Enterprise contract.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.borong.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://www.borong.com/integrations/api/ on 2026-09-25: Borong (formerly Dropee, now B2B e-procurement) describes an OAuth 2.0 REST API (catalog, purchase requisitions/orders, suppliers, webhooks) but states 'Full API documentation is available to authenticated developers and integration partners'; no public reference is linked. Docs behind the partner login."
+}

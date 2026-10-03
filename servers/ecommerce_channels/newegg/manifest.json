@@ -1,0 +1,97 @@
+{
+ "manifest_version": "0.2",
+ "name": "newegg-mcp",
+ "display_name": "Newegg Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Newegg Marketplace (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "newegg"
+   ],
+   "env": {
+    "PLATFORM_MCP_NEWEGG_API_KEY": "${user_config.platform_mcp_newegg_api_key}",
+    "PLATFORM_MCP_NEWEGG_SECRET_KEY": "${user_config.platform_mcp_newegg_secret_key}",
+    "PLATFORM_MCP_NEWEGG_SELLER_ID": "${user_config.platform_mcp_newegg_seller_id}",
+    "PLATFORM_MCP_NEWEGG_COUNTRY_CODE": "${user_config.platform_mcp_newegg_country_code}",
+    "PLATFORM_MCP_NEWEGG_CURRENCY": "${user_config.platform_mcp_newegg_currency}",
+    "PLATFORM_MCP_NEWEGG_WAREHOUSE_LOCATION": "${user_config.platform_mcp_newegg_warehouse_location}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_newegg_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_API_KEY",
+   "description": "Newegg Marketplace API key assigned by the Newegg integration team (or your third-party developer key); sent verbatim as the Authorization header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_newegg_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_SECRET_KEY",
+   "description": "The seller's Secret Key (assigned to you, or to your third-party developer on the seller's authorization); sent as the SecretKey header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_newegg_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_SELLER_ID",
+   "description": "Your Newegg seller ID (e.g. A006); sent as ?sellerid= on every call.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_newegg_country_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_COUNTRY_CODE",
+   "description": "ISO 3-letter ship-to country your prices target, e.g. USA; used in PriceList.Price[].CountryCode by update_listing/end_listing.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_newegg_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_CURRENCY",
+   "description": "Currency matching country_code, e.g. USD for USA (wrong combinations are rejected).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_newegg_warehouse_location": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEWEGG_WAREHOUSE_LOCATION",
+   "description": "ISO 3-letter country of the warehouse whose stock set_inventory writes, e.g. USA.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Seller Status Check: {IsSuccess, SellerID, SellerName, Status (Active|Suspended|InActive|Terminated|Closed), Membership, WarehouseLocation...}."
+  },
+  {
+   "name": "update_listing",
+   "description": "Update Item Price (Type 1 = Seller Part #): sets the LIVE selling price for the configured country/currency. `listing_id` is your Seller Part #. Only the price is applied: stock is set_inventory; title/description are item content (datafeeds). Returns the item's PriceList in raw."
+  },
+  {
+   "name": "end_listing",
+   "description": "Update Item Price with Active 0 deactivates the item for the configured country (reversible with Active 1; while deactivated, price and inventory updates are disregarded)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Update Item Inventory (Type 1 = Seller Part #): sets AvailableQuantity in the configured warehouse country; `sku` is your Seller Part # (required). SBN (Shipped by Newegg) items cannot be updated."
+  },
+  {
+   "name": "list_orders",
+   "description": "Get Order Information (GetOrderInfoRequest): `status` is the numeric order status (0 Unshipped, 1 Partially Shipped, 2 Shipped, 3 Invoiced, 4 Voided, 5 Payment Pending); since = OrderDateFrom in Pacific time, e.g. '2026-09-01 00:00:00'; PageSize max 100. 1000 requests/hour. Items (ItemInfoList) and ship-to address are in raw."
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+ "id": "carro_sg",
+ "category": "automotive",
+ "label": "Carro",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.carro.sg",
+ "domain": "carro.sg",
+ "country": "Singapore",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official Carro developer API found (getcarro.com Retailer API is an unrelated US company).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

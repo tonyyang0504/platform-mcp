@@ -1,0 +1,154 @@
+{
+ "id": "topcoder",
+ "category": "competitions",
+ "label": "Topcoder",
+ "lane": "api",
+ "kind": "programming",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://github.com/topcoder-platform/challenge-api-v6/blob/develop/docs/swagger.yaml",
+ "url": "https://www.topcoder.com",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public challenge list and detail (anonymous) from the Challenge V6 API swagger. Registration and submission go through separate member APIs that need a Topcoder JWT.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none for public challenges (JWT/M2M for member and admin endpoints)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "winners"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "discover",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "enter",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "standings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "claim",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.topcoder.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "No rate limit in the swagger. Two requests per second.",
+  "tools": {
+   "discover": {
+    "method": "GET",
+    "path": "/v6/challenges",
+    "params": {
+     "search": "query",
+     "status": "map:status:open=Active,completed=Completed",
+     "page": "page",
+     "perPage": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "competitions",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "kind": "track.name",
+      "status": "status",
+      "starts_at": "startDate",
+      "deadline": "submissionEndDate",
+      "tags": "tags"
+     }
+    },
+    "docs": "https://github.com/topcoder-platform/challenge-api-v6/blob/develop/docs/swagger.yaml",
+    "note": "GET /v6/challenges: `search` matches name, description and tags; `status` open→Active, completed→Completed (upcoming is not a public status and is rejected); without `status` all public challenges are listed. Page size up to 100 (`perPage`). The response is a bare array; the total is only in the X-Total header, so `total` is null. Prizes (prizeSets, overview.totalPrizes, numbers), phases, numOfRegistrants and numOfSubmissions stay in `raw`."
+   },
+   "get_competition": {
+    "method": "GET",
+    "path": "/v6/challenges/{competition_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "kind": "track.name",
+      "status": "status",
+      "starts_at": "startDate",
+      "deadline": "submissionEndDate",
+      "tags": "tags",
+      "description": "description"
+     }
+    },
+    "docs": "https://github.com/topcoder-platform/challenge-api-v6/blob/develop/docs/swagger.yaml",
+    "note": "GET /v6/challenges/{challengeId} (UUID). `description` is markdown; prizeSets, phases, terms and skills stay in `raw`."
+   },
+   "standings": {
+    "method": "GET",
+    "path": "/v6/challenges/{competition_id}",
+    "result": {
+     "items": "winners",
+     "key": "standings",
+     "fields": {
+      "rank": "placement",
+      "team": "handle"
+     }
+    },
+    "docs": "https://github.com/topcoder-platform/challenge-api-v6/blob/develop/docs/swagger.yaml",
+    "note": "The challenge's `winners` array (placement, handle, userId) from GET /v6/challenges/{challengeId}; empty until the challenge completes. There is no public live leaderboard; `page`/`limit` do not apply."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials ('auth: none'); member endpoints need a Topcoder JWT from the Auth0 login, not an API key.",
+   "my_entries": "Submissions live in the separate submission API behind a member JWT; the Challenge V6 swagger has no per-member listing.",
+   "enter": "Registration is a resource creation in the separate Resources API behind a member JWT; not in the Challenge V6 swagger.",
+   "submit": "Submissions are multipart file uploads to the separate submission API (member JWT); binary uploads are out of scope."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

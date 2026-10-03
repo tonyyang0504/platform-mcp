@@ -1,0 +1,37 @@
+{
+ "id": "wellfound",
+ "category": "sales",
+ "label": "Wellfound company profiles",
+ "lane": "assist",
+ "kind": "directory",
+ "regions": [
+  "us",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://wellfound.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Company pages are behind the member login for most fields; robots.txt (31 Disallow) blocks parameterised URLs → tenant session.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

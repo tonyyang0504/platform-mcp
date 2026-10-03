@@ -1,0 +1,106 @@
+{
+ "id": "pinduoduo_open",
+ "category": "ecommerce_suppliers",
+ "label": "Pinduoduo seller (商家后台) + Open Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://open.pinduoduo.com/",
+ "url": "https://mms.pinduoduo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (client_id / secret + merchant authorization)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.pinduoduo.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "The Pinduoduo Open Platform docs are now readable (article API behind https://open.pinduoduo.com/application/document/browse?idStr=8EC06C399636041E 'API调用详解', 2026-09-25): POST https://gw-api.pinduoduo.com/api/router with type, client_id, timestamp (s), access_token and sign = UPPER(MD5(client_secret + sorted k/v + client_secret)). But the platform is SELLER-side (商家 authorization; 商品管理, 订单查询, 电子面单, 物流发货 for the merchant's own shop) with no API for buying from Pinduoduo, so this category's supplier catalogue, shipping quote and create_order have no counterpart; an adapter belongs with the sales channels."
+}

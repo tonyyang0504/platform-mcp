@@ -1,0 +1,32 @@
+{
+ "id": "dlsite",
+ "category": "marketplaces",
+ "label": "DLsite",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "jp",
+  "global"
+ ],
+ "docs_url": "https://www.dlsite.com/maniax/circle",
+ "url": "https://www.dlsite.com",
+ "verified_at": null,
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program"
+  ],
+  "auth": "none",
+  "access": "apply",
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null
+}

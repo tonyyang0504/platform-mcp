@@ -1,0 +1,70 @@
+{
+ "id": "hyperliquid_collector",
+ "category": "market_data",
+ "label": "Hyperliquid REST",
+ "provider": "Hyperliquid",
+ "lane": "api",
+ "base_urls": [
+  "https://api.hyperliquid.xyz/info"
+ ],
+ "data_kinds": [
+  "candles (candleSnapshot)",
+  "funding",
+  "open interest"
+ ],
+ "auth": "none",
+ "docs_url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+ "verified_at": "2026-09-24",
+ "adapter": {
+  "base_url": "https://api.hyperliquid.xyz",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "REST requests 'share an aggregated weight limit of 1200 per minute' per IP; l2Book/allMids/clearinghouseState weigh 2, all other documented info requests 20, candleSnapshot adds weight per 60 items (https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits). One request per second (weight 20 each).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=meta"
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "note": "Public info endpoint, no credentials: the probe posts {\"type\": \"meta\"} (weight 20)."
+   },
+   "search_symbols": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=meta"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "universe",
+     "key": "results",
+     "fields": {
+      "symbol": "name",
+      "type": "=perpetual"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "note": "Perpetuals universe from {\"type\": \"meta\"}: every listed coin (name, szDecimals, maxLeverage, isDelisted in `raw`) in one response; there is no text filter or pagination, so `query`, `page` and `limit` are ignored (filter client-side). Spot pairs (spotMeta) are not mapped."
+   }
+  },
+  "not_offered": {
+   "get_candles": "candleSnapshot is documented as {\"type\": \"candleSnapshot\", \"req\": {coin, interval, startTime, endTime}} with startTime/endTime REQUIRED epoch-millisecond integers in the JSON body (the runtime's dotted body keys could build `req`, but the vocabulary passes start/end as strings and the runtime cannot coerce them to integers) — a runtime type-cast expression is needed. Response rows {t, T, s, i, o, c, h, l, v, n} would map.",
+   "get_series": "fundingHistory {\"type\", coin, startTime} likewise needs an integer-millisecond startTime in the body (see get_candles).",
+   "get_news": "No news endpoint on this API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "id": "nettiauto_fi",
+ "category": "automotive",
+ "label": "Nettiauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.nettiauto.com",
+ "domain": "nettiauto.com",
+ "country": "Finland",
+ "official_api": true,
+ "docs_url": "https://api.nettix.fi/docs/car/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client_credentials (client_id/secret) -> X-Access-Token JWT",
+  "access": "apply",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "list_dealers",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Nettix (Alma Media) publishes an OpenAPI-documented Nettiauto REST API (ads CRUD, search, dealers) available to business customers on application.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.nettix.fi/docs/car/",
+   "https://api.nettix.fi/docs/car/swagger.yaml",
+   "https://api.nettix.fi/docs/release-notes.html"
+  ],
+  "unofficial": [
+   "github.com/timoanttila/Nettix-API-Client",
+   "Apify nettiauto scrapers"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Duplicate of automotive/nettiauto (same site nettiauto.com), which serves the Nettix REST API (search_listings, get_listing)."
+}

@@ -1,0 +1,108 @@
+{
+ "id": "wayfair_partner",
+ "category": "ecommerce_suppliers",
+ "label": "Wayfair — Sell with Wayfair (Partner Home)",
+ "lane": "manual",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://partners.wayfair.com/",
+ "url": "https://sell.wayfair.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "supplier Code of Conduct + drop-ship agreement; not a sourcing channel for a storefront",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "edi"
+  ],
+  "auth": "Partner Home login (supplier-side API / EDI after onboarding — see the sales-channel audit `wayfair`)",
+  "access": "apply",
+  "capabilities": [
+   "orders",
+   "stock_feed",
+   "tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Supplier agreement + drop-ship agreement.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://partners.wayfair.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Wrong direction for this category (docs now readable, 2026-09-25, headless Chromium): the Wayfair Developer Portal introduction (https://developer.wayfair.io/posts/introduction) says 'this Developer Portal supports integration for suppliers who are already selling with Wayfair and have Partner Home access' and lists supplier-facing GraphQL APIs - Catalog (manage your product listings), Inventory (Drop-Ship and CastleGate stock), Orders ('handle purchase orders, registrations, labels, cancellations'), CastleGate Fulfillment/Forwarding and Advertising - with applications and keys created after signing in with Partner Home credentials. Wayfair is the buyer on these APIs (it sends you purchase orders); there is no API for buying from Wayfair, so this category's supplier catalogue search, shipping quote and create_order have no counterpart. An adapter would belong with the sales channels, and even there app creation needs a Partner Home (seller) login."
+}

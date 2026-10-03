@@ -1,0 +1,153 @@
+{
+ "id": "nettiauto",
+ "category": "automotive",
+ "label": "Nettiauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.nettiauto.com",
+ "domain": "nettiauto.com",
+ "country": "Finland",
+ "official_api": true,
+ "docs_url": "https://api.nettix.fi/docs/car/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 client_credentials (client_id/secret) -> X-Access-Token JWT",
+  "access": "apply",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "list_dealers",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Nettix (Alma Media) publishes an OpenAPI-documented Nettiauto REST API (ads CRUD, search, dealers) available to business customers on application.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://api.nettix.fi/docs/car/",
+   "https://api.nettix.fi/docs/car/swagger.yaml",
+   "https://api.nettix.fi/docs/release-notes.html"
+  ],
+  "unofficial": [
+   "github.com/timoanttila/Nettix-API-Client",
+   "Apify nettiauto scrapers"
+  ]
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.nettix.fi/rest/car",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://auth.nettix.fi/oauth2/token",
+   "client_auth": "body",
+   "header": "X-Access-Token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Nettix API client id (Alma Media grants API access to business customers on application); used with grant_type=client_credentials at https://auth.nettix.fi/oauth2/token."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The client's secret. The 24-hour JWT it mints is sent as the X-Access-Token header."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "terms": "Nettix REST API (Alma Media) common guidelines: https://api.nettix.fi/docs/api-common.html. Prices in EUR, mileage in km.",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/search",
+    "params": {
+     "searchText": "query",
+     "make": "make",
+     "model": "model",
+     "yearFrom": "year_min",
+     "yearTo": "year_max",
+     "priceFrom": "price_min",
+     "priceTo": "price_max",
+     "kilometersTo": "mileage_max",
+     "page": "page",
+     "rows": "limit"
+    },
+    "default_limit": 30,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "listings",
+     "fields": {
+      "id": "id",
+      "make": "make.name",
+      "model": "model.name",
+      "year": "year",
+      "price": "price",
+      "currency": "=EUR",
+      "mileage": "kilometers",
+      "mileage_unit": "=km",
+      "location": "town.en",
+      "url": "adUrl",
+      "dealer": "userName",
+      "posted_at": "dateCreated"
+     }
+    },
+    "docs": "https://api.nettix.fi/docs/car/#/Search",
+    "note": "GET https://api.nettix.fi/rest/car/search (OpenAPI https://api.nettix.fi/docs/car/swagger.yaml): an array of ads for sale. make and model are Nettix option ids (integers from /options/make and /options/model, e.g. make=4), not names; query is free text (searchText); location/condition are not mapped (region/town take option ids). rows ≤ 100."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/ad/{listing_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "make": "make.name",
+      "model": "model.name",
+      "year": "year",
+      "price": "price",
+      "currency": "=EUR",
+      "mileage": "kilometers",
+      "mileage_unit": "=km",
+      "location": "town.en",
+      "url": "adUrl",
+      "dealer": "userName",
+      "posted_at": "dateCreated",
+      "description": "description",
+      "vin": "vin"
+     }
+    },
+    "docs": "https://api.nettix.fi/docs/car/#/Car%20ad",
+    "note": "GET https://api.nettix.fi/rest/car/ad/{id}: the full car ad (options as {id, fi, en}, images, equipment, seller info in raw)."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "No VIN decoder in the Nettiauto REST API (vin is a search filter and ad field).",
+   "get_valuation": "The pricing-tool schemas are not exposed as a documented read operation for arbitrary vehicles.",
+   "list_dealers": "/my-dealers lists only the caller's own dealers, not a dealer directory.",
+   "me": "No identity endpoint for a client-credentials token."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.nettix.fi: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token auth.nettix.fi/oauth2/token: 401 invalid_client",
+   "spec https://api.nettix.fi/docs/car/swagger.yaml: 2/2 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

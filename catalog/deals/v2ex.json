@@ -1,0 +1,133 @@
+{
+ "id": "v2ex",
+ "category": "deals",
+ "label": "V2EX",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "cn",
+  "global"
+ ],
+ "docs_url": "https://www.v2ex.com/help/api",
+ "url": "https://www.v2ex.com/go/outsourcing",
+ "verified_at": "2026-09-25",
+ "terms_note": "PAT; 600/h per IP; no write endpoints for replies.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "bearer (Personal Access Token, API 2.0 Beta)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (API 2.0 Beta, read-only topics / replies). Lane `assist` → **api for search**. Confidence high.",
+  "base_urls": [
+   "https://www.v2ex.com/api/v2/"
+  ],
+  "auth": [
+   "1. Settings → Tokens → Personal Access Token → `Authorization: Bearer <token>`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v2/nodes/jobs/topics?p=",
+    "purpose": "search",
+    "notes": "topics in the 酷工作 node"
+   },
+   {
+    "call": "GET /api/v2/topics/{id}",
+    "purpose": "details",
+    "notes": "title, content, member, created"
+   },
+   {
+    "call": "GET /api/v2/topics/{id}/replies",
+    "purpose": "thread",
+    "notes": "—"
+   }
+  ],
+  "limits": " - 600 requests/hour per IP (X-Rate-Limit-Limit / -Remaining / -Reset); no reply-posting endpoint. - PAT; 600/h per IP; no write endpoints for replies.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.v2ex.com/help/api"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "API 2.0 Beta (https://www.v2ex.com/help/api, re-opened 2026-09-25 in headless Chromium; the page is server-rendered and identical to the plain fetch) documents paths and the PAT header (Authorization: Bearer; GET nodes/:node_name/topics?p=, topics/:topic_id, topics/:topic_id/replies, member, token, notifications; 600 requests/hour per IP) but gives only request examples, no response bodies or field names, and without a token the API answers {\"message\": \"Token not found\", \"success\": false}. Topic fields (title/content/member/created) cannot be cited, so nothing is mapped; there is also no reply/message write endpoint and no search."
+}

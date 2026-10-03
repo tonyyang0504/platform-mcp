@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bybit-mcp",
+ "description": "Bybit (Unified) (trading): me, list_markets, get_ticker, get_candles, get_balances, list_orders, pla",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://bybit-exchange.github.io/docs/v5/guide",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bybit"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BYBIT_API_KEY",
+     "description": "Bybit API key (system-generated HMAC key) with Read + Trade (Spot/Contract) and NO Wallet/Transfer/Withdraw permission. Testnet keys come from https://testnet.bybit.com and work only against https://api-testnet.bybit.com (set adapter.base_url to it).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BYBIT_API_SECRET",
+     "description": "The key's secret: HMAC-SHA256 over timestamp + api_key + recv_window (5000) + query string (GET) or JSON body (POST), sent as X-BAPI-SIGN. Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BYBIT_CATEGORY",
+     "description": "Bybit product category every tool works on: `spot` or `linear` (USDT/USDC perpetuals and futures).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

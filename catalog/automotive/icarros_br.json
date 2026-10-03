@@ -1,0 +1,45 @@
+{
+ "id": "icarros_br",
+ "category": "automotive",
+ "label": "Icarros",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.icarros.com.br",
+ "domain": "icarros.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "iCarros account credentials via integrator",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "leads"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). iCarros (Itau) inventory/lead API is used by homologated DMS integrators (Revenda Mais, Cockpit etc.); no public iCarros docs found.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://ajuda.olx.com.br/s/article/lista-de-integradores-olx"
+  ],
+  "unofficial": [
+   "https://github.com/pensadorsolucoes/IcarrosAPI",
+   "https://ajuda.revendamais.com.br/pt-BR/articles/7925336-integrador-adicionar-icarros-para-integracao-de-estoque"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): iCarros (Itau) inventory/lead API is used by homologated DMS integrators (Revenda Mais, Cockpit etc.); no public iCarros docs found."
+}

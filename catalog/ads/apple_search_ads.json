@@ -1,0 +1,324 @@
+{
+ "id": "apple_search_ads",
+ "category": "ads",
+ "label": "Apple Ads (formerly Apple Search Ads)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.apple.com/documentation/apple-ads-platform-api",
+ "url": "https://ads.apple.com/app-store/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Campaign Management API requires an Apple Ads Advanced account with API certificate authentication",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 client credentials with an ES256 client secret JWT (public key uploaded to the Apple Ads account; X-AP-Context: orgId header)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "reports",
+   "recommendations",
+   "bulk"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**. Two generations: the **Apple Ads Campaign Management API v5** (`api.searchads.apple.com/api/v5`)",
+  "base_urls": [
+   "https://api.searchads.apple.com/api/v5/…"
+  ],
+  "auth": [
+   "1. Account administrator: Apple Ads → Sign In → **Advanced** → Account Settings → User Management → **Invite Users**, choosing an **API user role**.",
+   "2. The API user generates a key pair: `openssl ecparam -genkey -name prime256v1 -noout -out private-key.pem`, extracts the public key (`openssl ec -in private-key.pem -pubout -out public-key.pem`) and uploads it in the account (Users → API).",
+   "3. Create a **client secret**: a JWT signed with the private key (ES256), then request an access token (OAuth 2 client credentials). \"OAuth 2 replaces key and certificate credentials authentication in previous versions of the API.\"",
+   "4. Every call: `Authorization: Bearer {access_token}` and `X-AP-Context: orgId={orgId}` (not needed on the user-ACL / me endpoints).",
+   "5. Errors: 401 token invalid or expired; 403 higher privileges required than the token provides."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/v5/acls` · `GET /api/v5/me",
+    "purpose": "org ids + roles for the caller",
+    "notes": "`orgId, orgName, roleNames`"
+   },
+   {
+    "call": "POST /api/v5/campaigns` · `GET /campaigns` · `PUT /campaigns/{id}` · `POST /campaigns/find",
+    "purpose": "campaigns + daily budget",
+    "notes": "`name, adamId, countriesOrRegions[], budgetAmount{amount,currency}, dailyBudgetAmount, status, supplySources[], adChannelType`"
+   },
+   {
+    "call": "POST /campaigns/{cid}/adgroups` · `PUT …/{agId}` · `POST …/find",
+    "purpose": "ad groups, default bid, schedule, audience refinement",
+    "notes": "`name, defaultBidAmount{amount,currency}, cpaGoal, automatedKeywordsOptIn, targetingDimensions{}, startTime, status`"
+   },
+   {
+    "call": "POST /campaigns/{cid}/adgroups/{agId}/targetingkeywords/bulk` · `PUT …/bulk` · negative keywords `…/negativekeywords/bulk",
+    "purpose": "keywords + bids",
+    "notes": "`text, matchType EXACT/BROAD, bidAmount{amount,currency}, status`"
+   },
+   {
+    "call": "POST /campaigns/{cid}/adgroups/{agId}/ads` · creatives `POST /creatives",
+    "purpose": "ads + custom product page creatives",
+    "notes": "`creativeId, name, status`; creative `{adamId, productPageId, type CUSTOM_PRODUCT_PAGE}`"
+   },
+   {
+    "call": "POST /budgetorders` · `PUT /budgetorders/{id}",
+    "purpose": "budget orders (invoiced accounts)",
+    "notes": "`budget{amount,currency}, startDate, endDate, orderNumber`"
+   },
+   {
+    "call": "POST /reports/campaigns` · `/reports/campaigns/{cid}/adgroups` · `/keywords` · `/searchterms` · `/impressionshare",
+    "purpose": "reports",
+    "notes": "`startTime, endTime, granularity DAILY/HOURLY, selector{}, returnRowTotals, groupBy`"
+   },
+   {
+    "call": "Platform API: Insights, Recommendations, Suggestions, Bulk Operations, Assets, Geo Targeting, Change History",
+    "purpose": "successor surface",
+    "notes": "TODO(verify) paths once the Platform API reference is read"
+   },
+   {
+    "call": "audiences upload · conversions upload",
+    "purpose": "not in API (attribution via Apple Ads Attribution / AdServices framework in-app)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - \"Rate limits exist in the Apple Ads Campaign Management API\"; Apple prescribes exponential back-off (2 → 4 → 8 → 16 s cap) on failures; no numeric quota published on the pages read. - Access: Apple Ads Advanced account (not Basic); free API. Terms: Apple Ads Terms of Service + Apple Developer terms. - Sunset: Campaign Management API on **2027-01-26** — build against the Apple Ads Platform API.",
+  "mcp_sdk": [
+   "None official on the pages read; community SDKs (e.g. Node / Python wrappers) were not opened this pass."
+  ],
+  "sources": [
+   "https://developer.apple.com/tutorials/data/documentation/apple_ads.json",
+   "https://developer.apple.com/tutorials/data/documentation/apple_ads/calling-the-apple-search-ads-api.json",
+   "https://developer.apple.com/tutorials/data/documentation/apple_ads/implementing-oauth-for-the-apple-search-ads-api.json",
+   "https://developer.apple.com/tutorials/data/documentation/apple-ads-platform-api.json"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.ads.apple.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://appleid.apple.com/auth/oauth2/token",
+   "client_auth": "body",
+   "scope": "searchadsorg",
+   "extra_headers": {
+    "X-AP-Context": "ap_context"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Apple Ads API clientId (SEARCHADS.…) shown after uploading your public key under Account Settings > API (https://developer.apple.com/documentation/apple-ads-platform-api/implementing-oauth-for-the-apple-ads-platform-api)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The client secret JWT you sign yourself with your ES256 private key (header kid=keyId; claims sub=clientId, iss=teamId, aud=https://appleid.apple.com, exp at most 180 days after iat). The runtime does not sign it: regenerate and replace it before it expires."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "ap_context",
+    "required": true,
+    "help": "The full X-AP-Context header value for ad-account-scoped calls, exactly `adAccountId=<ad account id>` (ids from GET /v1/acls, i.e. list_accounts)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/me",
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/get-current-user-details",
+    "note": "GET /v1/me: {result: {userId, orgId}} of the API user."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v1/acls",
+    "result": {
+     "items": "result.acls",
+     "key": "accounts",
+     "fields": {
+      "id": "adAccount.id",
+      "name": "adAccount.name"
+     }
+    },
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/get-user-acls",
+    "note": "GET /v1/acls: ad accounts the token can manage with the user's roles (raw.roles). Put the chosen id in the ap_context config as adAccountId=<id>."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/v1/campaigns/query",
+    "body": {
+     "pagination.offset": "offset",
+     "pagination.pageSize": "limit",
+     "pagination.fetchTotalCount": "json:true"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "result",
+     "key": "campaigns",
+     "total": "pagination.totalCount",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "dailyBudget.value.amount",
+      "currency": "dailyBudget.value.currency",
+      "start": "startTime",
+      "end": "endTime"
+     }
+    },
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/post-campaigns-query",
+    "note": "POST /v1/campaigns/query {pagination: {offset, pageSize, fetchTotalCount: true}} in the ad account named by the ap_context config (X-AP-Context header); account_id is not sent and `status` is not applied (filter raw.status: ENABLED / PAUSED). `budget` is the daily budget amount (a decimal string)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/v1/reports/apps/campaigns/query",
+    "body": {
+     "filters.0.field": "=campaignId",
+     "filters.0.operator": "=EQUALS",
+     "filters.0.value": "str:campaign_id",
+     "timeRange.start": "date:date_from",
+     "timeRange.end": "date:date_to",
+     "timeRange.timeZone": "=ORTZ"
+    },
+    "result": {
+     "items": "result.rows",
+     "key": "rows",
+     "fields": {
+      "campaign_id": "metadata.id",
+      "campaign": "metadata.name",
+      "impressions": "totalMetrics.impressions",
+      "taps": "totalMetrics.taps",
+      "installs": "totalMetrics.tapInstalls",
+      "spend": "totalMetrics.localSpend.amount",
+      "currency": "totalMetrics.localSpend.currency"
+     }
+    },
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/get-app-campaign-reports",
+    "note": "POST /v1/reports/apps/campaigns/query {filters: [{field: campaignId, operator: EQUALS, value}], timeRange: {start, end, timeZone: ORTZ}}: App Store campaign totals over the range. Apple requires a campaignId filter on every apps report, so pass campaign_id. Daily granularMetrics are not requested (DAILY needs a start within the last 90 days)."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/v1/campaigns/{campaign_id}",
+    "body": {
+     "dailyBudget.value.amount": "str:daily_budget",
+     "dailyBudget.value.currency": "currency"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated",
+      "daily_budget": "dailyBudget.value.amount"
+     }
+    },
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/put-campaigns-_id_",
+    "note": "PUT /v1/campaigns/{id} {dailyBudget: {value: {amount, currency}}} (partial update): changes the daily spend limit of a live campaign. Pass `currency` (the ad account currency)."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/v1/campaigns/{campaign_id}",
+    "body": {
+     "status": "map:action:pause=PAUSED,resume=ENABLED"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "campaign_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.apple.com/documentation/apple-ads-platform-api/put-campaigns-_id_",
+    "note": "PUT /v1/campaigns/{id} {status: PAUSED|ENABLED}. Resuming restarts spending."
+   }
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.ads.apple.com: DNS ok, TLSv1.3 (Apple Inc.)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 503 (server_error), so the answers are path-specific",
+   "token appleid.apple.com/auth/oauth2/token: 400 invalid_client",
+   "HTML docs spot-check (render-doc): 6/6 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "id": "emol_cl",
+ "category": "automotive",
+ "label": "Autos",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://autos.emol.com",
+ "domain": "autos.emol.com",
+ "country": "Chile",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). Emol Automóviles has a B2B login portal for dealers to manage ads, but no documented API or feed spec found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://b2b.automoviles.emol.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

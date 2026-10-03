@@ -1,0 +1,129 @@
+{
+ "id": "g2_marketing",
+ "category": "ads",
+ "label": "G2 Marketing Solutions",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://documentation.g2.com/",
+ "url": "https://sell.g2.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Developer portal covers review and intent data only; no advertising API.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (G2 API token for vendors)",
+  "access": "paid",
+  "capabilities": [
+   "reports",
+   "audiences"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (vendor APIs: buyer intent + product/review data; placements are subscriptions) Confidence: **medium**.",
+  "base_urls": [
+   "https://data.g2.com/api/v1/…"
+  ],
+  "auth": [
+   "1. Paid Marketing Solutions plan.",
+   "2. API token from the vendor portal.",
+   "3. Intent + reviews endpoints."
+  ],
+  "endpoints": [
+   {
+    "call": "buyer intent API",
+    "purpose": "audiences / signals",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "reviews / products API",
+    "purpose": "reports / content",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "sponsored placements",
+    "purpose": "subscription via sales",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Paid plan; G2 API terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://sell.g2.com/",
+   "https://documentation.g2.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the G2 API v2 Swagger UI (https://data.g2.com/api/v2/docs/index.html) lists Buyer Intent, Categories, Competitors, Credit Account, Data Subscriptions, Discussions, Downloads, G2 Activate, products, reviews and review campaigns, but no advertising resource. Paid Promotions are bought and managed in my.G2 > G2 Advertising (https://documentation.g2.com/docs/paid-promotions: 'go to my.G2 … select Create Campaign'), behind the vendor login, with no API for campaigns, budgets, status or ad reporting. None of the ads verbs has a documented call."
+}

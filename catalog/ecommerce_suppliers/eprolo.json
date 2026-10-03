@@ -1,0 +1,109 @@
+{
+ "id": "eprolo",
+ "category": "ecommerce_suppliers",
+ "label": "Eprolo",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://eprolo.com/eprolo-api/",
+ "url": "https://eprolo.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api credentials + document handed out by the account support rep on request (dashboard message box)",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Free platform (no monthly fee); API by request to the account rep; terms & conditions linked (not read).",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://eprolo.com/",
+   "https://eprolo.com/eprolo-api/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://eprolo.com/eprolo-api/ on 2026-09-25: '1. Signup an EPROLO account ... 2. Contact Account Support Rep to request API ... 3. Get API document: ... Your support agent will send the API document to you'; no public reference (developer.eprolo.com does not resolve, api.eprolo.com answers 404). Docs only inside the logged-in dashboard."
+}

@@ -1,0 +1,33 @@
+{
+ "id": "napista_br",
+ "category": "automotive",
+ "label": "Napista",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://napista.com.br",
+ "domain": "napista.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official API docs; dealer stock enters via integrators (e.g. Revenda Mais) and the NaPista Lojas app.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

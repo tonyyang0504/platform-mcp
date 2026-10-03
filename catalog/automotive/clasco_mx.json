@@ -1,0 +1,35 @@
+{
+ "id": "clasco_mx",
+ "category": "automotive",
+ "label": "Clasco",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://clasco.mx",
+ "domain": "clasco.mx",
+ "country": "Mexico",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). feed.clasco.mx/api/vehicles is the site's front-end JSON; no developer docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://clasco.mx/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

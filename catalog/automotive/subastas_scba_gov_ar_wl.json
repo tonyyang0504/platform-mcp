@@ -1,0 +1,35 @@
+{
+ "id": "subastas_scba_gov_ar_wl",
+ "category": "automotive",
+ "label": "Subastas Electronicas SCBA (Suprema Corte Buenos Aires)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://subastas.scba.gov.ar",
+ "domain": "subastas.scba.gov.ar",
+ "country": "Argentina",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auction (Argentina); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://subastas.scba.gov.ar/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

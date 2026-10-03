@@ -1,0 +1,43 @@
+{
+ "id": "biltorvet_dk",
+ "category": "automotive",
+ "label": "Biltorvet",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.biltorvet.dk",
+ "domain": "biltorvet.dk",
+ "country": "Denmark",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "Auto IT / AutoDesktop dealer account",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Biltorvet is run by Auto IT; dealers push listings via the AutoDesktop DMS (and B2B wholesale); no public API docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.biltorvet.dk/b2b",
+   "https://www.autoit.dk/autodesktop/",
+   "https://biltorvet.dk/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Biltorvet is run by Auto IT; dealers push listings via the AutoDesktop DMS (and B2B wholesale); no public API docs."
+}

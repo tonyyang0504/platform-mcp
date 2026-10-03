@@ -1,0 +1,141 @@
+{
+ "id": "qoo10_jp",
+ "category": "ecommerce_channels",
+ "label": "Qoo10 (JP)",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "jp"
+ ],
+ "docs_url": "https://developer.qoo10.jp/GMKT.INC.Gsm.Web/APIDev/APIDevelopPage.aspx",
+ "url": "https://www.qoo10.jp/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Qoo10 Japan seller (QSM) account in good standing — API key granted after review (store verification complete, non-negative service / delivery ratings, no pending shipment delays / complaints); key valid one year (re-authenticate); official docs behind the QSM login; rate limits not read.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (API key issued in QSM › 'API Keyの発行/照会' after Qoo10's review; certification key; annual re-authentication)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "secret",
+  "config.seller_id"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official developer page is login-walled; facts come f",
+  "base_urls": [
+   "https://api.qoo10.jp/GMKT.INC.Front.QAPIService/ebayjapan.qapi/<Group>.<Method>"
+  ],
+  "auth": [
+   "1. Seller applies in QSM › API Keyの発行/照会 with store id, category and purpose; Qoo10 reviews.",
+   "2. Receive the API key + certification key; register the renewal date (1 year).",
+   "3. Send the certification key on each call."
+  ],
+  "endpoints": [
+   {
+    "call": "ItemsBasic.SetNewGoods · ItemsBasic.UpdateGoods",
+    "purpose": "list / update items",
+    "notes": "(integrator sources)"
+   },
+   {
+    "call": "ItemsBasic.SetGoodsPriceQty · ItemsOptions stock",
+    "purpose": "price + stock",
+    "notes": ""
+   },
+   {
+    "call": "ItemsOrder.GetShippingInfo / order queries",
+    "purpose": "orders (new, confirmed)",
+    "notes": ""
+   },
+   {
+    "call": "ShippingBasic.SetSendingInfo",
+    "purpose": "tracking number + ship date",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read. - Key issuance is reviewed; annual renewal. - Japanese market; docs Japanese, login-walled.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://r.jina.ai/https://developer.qoo10.jp/GMKT.INC.Gsm.Web/APIDev/APIDevelopPage.aspx",
+   "https://ec.smaregi.jp/oms/faq/article-list/qoo10_api_manual/",
+   "https://qxguide.oopy.io/94fe94e7-5de1-4380-9773-d8f730322e23"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: the QSM API reference (https://developer.qoo10.jp/GMKT.INC.Gsm.Web/APIDev/APIDevelopPage.aspx) redirects to the reCAPTCHA-protected 'QSM LOGIN' page (qsm.qoo10.jp/GMKT.INC.Gsm.Web/login.aspx), and the API key is issued only after Qoo10 reviews an application in QSM (renewed yearly). No public method reference could be read, so no call can be mapped from official docs."
+}

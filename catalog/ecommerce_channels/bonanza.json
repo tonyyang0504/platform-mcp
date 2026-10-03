@@ -1,0 +1,303 @@
+{
+ "id": "bonanza",
+ "category": "ecommerce_channels",
+ "label": "Bonanza",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://api.bonanza.com/docs/",
+ "url": "https://www.bonanza.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Apply for an API account at api.bonanza.com/accounts/new (dev_id + cert_id); each seller grants a user token through the fetchToken URL (valid about a year or until revoked); no rate limit and no fee published; no sandbox; large booths (>40k items) get asynchronous queued processing.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (dev_id + cert_id headers; per-seller user token via fetchToken URL flow, ~1-year lifetime)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "messages"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official code samples .NET / Python / PHP / Java / Ruby / Perl on api.bonanza.com/docs"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.dev_id",
+  "secret",
+  "token"
+ ],
+ "rate_limits": "not published on the docs index",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://api.bonanza.com/api_requests/secure_request"
+  ],
+  "auth": [
+   "1. Apply for an API account → dev_id and cert_id; send them as `X-BONANZLE-API-DEV-NAME` / `X-BONANZLE-API-CERT-NAME` headers.",
+   "2. Call fetchToken → returns a URL; the seller opens it, approves access on bonanza.com; the token is then returned (getTokenStatus).",
+   "3. Put the token in `requesterCredentials.bonanzleAuthToken` on every secure call; tokens live ~1 year or until the user deactivates them."
+  ],
+  "endpoints": [
+   {
+    "call": "addFixedPriceItem · addMultipleFixedPriceItems",
+    "purpose": "create listing(s)",
+    "notes": "title ≤ 80 chars, description ≤ 60,000 chars HTML, price, quantity, up to 4 picture URLs or multipart, domestic + international shipping; response itemId, categoryId, sellingState"
+   },
+   {
+    "call": "reviseFixedPriceItem · updateInventory",
+    "purpose": "update listing / stock + price",
+    "notes": "itemId + changed fields"
+   },
+   {
+    "call": "getOrders",
+    "purpose": "orders",
+    "notes": "by date / status"
+   },
+   {
+    "call": "completeSale",
+    "purpose": "mark a sale processed",
+    "notes": ""
+   },
+   {
+    "call": "getMessages",
+    "purpose": "buyer messages",
+    "notes": ""
+   },
+   {
+    "call": "getBoothItems · findItemsByKeywords · findItemsByCategory",
+    "purpose": "read booth / search",
+    "notes": "getBoothItems needs no user token"
+   },
+   {
+    "call": "fetchToken · getTokenStatus",
+    "purpose": "seller authorisation",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on any page opened. - API account application (free); user tokens granted by each seller. - Pictures given by URL must be reachable by bonanza.com. - Booths with more than 40k items are processed asynchronously (queued response).",
+  "mcp_sdk": [
+   "SDK: official code samples .NET / Python / PHP / Java / Ruby / Perl on api.bonanza.com/docs"
+  ],
+  "sources": [
+   "https://api.bonanza.com/docs/",
+   "https://api.bonanza.com/docs/getting_started",
+   "https://api.bonanza.com/docs/getting_started/developers",
+   "https://api.bonanza.com/docs/basics/user_tokens",
+   "https://api.bonanza.com/docs/reference/add_fixed_price_item"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.bonanza.com",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "X-BONANZLE-API-DEV-NAME": "dev_id",
+    "X-BONANZLE-API-CERT-NAME": "cert_id"
+   },
+   "fields": [
+    {
+     "name": "dev_id",
+     "required": true,
+     "help": "Developer id (dev_id) of your approved Bonanza API account (api.bonanza.com > Apply for an API account); sent as the X-BONANZLE-API-DEV-NAME header."
+    },
+    {
+     "name": "cert_id",
+     "required": true,
+     "help": "Certificate id (cert_id) of the same API account; sent as the X-BONANZLE-API-CERT-NAME header."
+    },
+    {
+     "name": "auth_token",
+     "required": true,
+     "help": "The seller's verified user token (fetchToken, then the seller approves it at the returned authentication URL); sent in every request body as requesterCredentials.bonanzleAuthToken. Tokens expire a year after issue or when the seller deactivates them."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "ack",
+   "ok_value": "Success",
+   "error_field": "errorMessage"
+  },
+  "rate_per_second": 1,
+  "terms": "Bonapitit (Bonanza's API) takes one JSON object per call, {\"<callName>Request\": {...}}, POSTed to /api_requests/secure_request; the answer carries ack (Success|Failure|Warning) and <callName>Response.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/api_requests/secure_request",
+    "body": {
+     "getTokenStatusRequest.requesterCredentials.bonanzleAuthToken": "@auth_token"
+    },
+    "docs": "https://api.bonanza.com/docs/reference/get_token_status",
+    "note": "getTokenStatus returns getTokenStatusResponse {verified, hardExpirationTime} for the configured seller token."
+   },
+   "create_listing": {
+    "method": "POST",
+    "path": "/api_requests/secure_request",
+    "body": {
+     "addFixedPriceItemRequest.requesterCredentials.bonanzleAuthToken": "@auth_token",
+     "addFixedPriceItemRequest.item.title": "title",
+     "addFixedPriceItemRequest.item.description": "description",
+     "addFixedPriceItemRequest.item.price": "price",
+     "addFixedPriceItemRequest.item.quantity": "quantity",
+     "addFixedPriceItemRequest.item.sku": "sku",
+     "addFixedPriceItemRequest.item.pictureDetails.pictureURL": "image_urls",
+     "addFixedPriceItemRequest.item.allowForSale": "json:true"
+    },
+    "result": {
+     "root": "addFixedPriceItemResponse",
+     "fields": {
+      "listing_id": "itemId",
+      "status": "sellingState"
+     }
+    },
+    "docs": "https://api.bonanza.com/docs/reference/add_fixed_price_item",
+    "note": "addFixedPriceItem with allowForSale=true: the item is PUBLISHED for sale in the seller's booth immediately when it has every required field (sellingState Active). `price` is in US dollars; title at most 80 characters; up to 4 image URLs fetched by Bonanza. Category is guessed by Bonanza and no shipping is sent, so an item without a shipping setting comes back as 'Missing required fields' with the missing fields in raw.message. `currency` is not a field of the call."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/api_requests/secure_request",
+    "body": {
+     "endFixedPriceItemRequest.requesterCredentials.bonanzleAuthToken": "@auth_token",
+     "endFixedPriceItemRequest.itemID": "int:listing_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=ended"
+     }
+    },
+    "docs": "https://api.bonanza.com/docs/reference/end_fixed_price_item",
+    "note": "endFixedPriceItem removes the item from the seller's booth; endFixedPriceItemResponse.itemsRemoved (in raw) is the number actually removed (0 means nothing was ended)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/api_requests/secure_request",
+    "body": {
+     "getOrdersRequest.requesterCredentials.bonanzleAuthToken": "@auth_token",
+     "getOrdersRequest.orderRole": "=seller",
+     "getOrdersRequest.orderStatus": "status",
+     "getOrdersRequest.createTimeFrom": "since",
+     "getOrdersRequest.paginationInput.entriesPerPage": "limit",
+     "getOrdersRequest.paginationInput.pageNumber": "page"
+    },
+    "default_limit": 100,
+    "max_limit": 100,
+    "result": {
+     "items": "getOrdersResponse.orderArray",
+     "key": "orders",
+     "total": "getOrdersResponse.paginationResult.totalNumberOfEntries",
+     "fields": {
+      "id": "order.orderID",
+      "status": "order.orderStatus",
+      "total": "order.total",
+      "created_at": "order.createdTime"
+     }
+    },
+    "docs": "https://api.bonanza.com/docs/reference/get_orders",
+    "note": "getOrders as seller: orderStatus (Active|Cancelled|Completed|Incomplete|InProcess|Invoiced|Proposed|Shipped; Completed = paid, not yet shipped), createTimeFrom (dateTime), entriesPerPage (max 100) and pageNumber (max 100). Each row is orderArray[].order; `total` is order.total (a decimal string, US dollars), items and shipping address in raw."
+   },
+   "mark_shipped": {
+    "method": "POST",
+    "path": "/api_requests/secure_request",
+    "body": {
+     "completeSaleRequest.requesterCredentials.bonanzleAuthToken": "@auth_token",
+     "completeSaleRequest.transactionID": "int:order_id",
+     "completeSaleRequest.shipped": "json:true",
+     "completeSaleRequest.shipment.shippingTrackingNumber": "tracking_number",
+     "completeSaleRequest.shipment.shippingCarrierUsed": "carrier"
+    },
+    "result": {
+     "fields": {
+      "status": "=shipped"
+     }
+    },
+    "docs": "https://api.bonanza.com/docs/reference/complete_sale",
+    "note": "completeSale {transactionID (= order id), shipped: true, shipment {shippingTrackingNumber, shippingCarrierUsed}} marks the order shipped. `carrier` must be one of usps, ups, fedex, other."
+   }
+  },
+  "not_offered": {
+   "update_listing": "reviseFixedPriceItem documents only itemId and discardOldVariations as inputs (https://api.bonanza.com/docs/reference/revise_fixed_price_item); which item fields it accepts is not documented. Price/quantity changes go through updateInventory, whose body is keyed by the item id itself ('updates.itemId.price') — an object key built from an argument, which the declarative body cannot express.",
+   "set_inventory": "updateInventory takes 'updates.itemId.quantity', i.e. a JSON object whose KEY is the item id ({\"updates\": {\"<itemId>\": {\"quantity\": n}}}); the declarative body builds only fixed keys, and there is no SKU-addressed stock call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.bonanza.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 301 (redirect), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

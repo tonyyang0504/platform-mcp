@@ -1,0 +1,39 @@
+{
+ "id": "copart_com_br_wl",
+ "category": "automotive",
+ "label": "Copart Brasil",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.copart.com.br",
+ "domain": "copart.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Copart publishes no public API; third-party resellers only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://copart.com.br/"
+  ],
+  "unofficial": [
+   "https://apify.com/parseforge/copart-public-search-scraper/api",
+   "https://github.com/Sac-Associates/copart-api",
+   "https://github.com/michaail/autka-api"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/udbud_dk-mcp",
+ "description": "Udbud (deals): me, search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://udbud.dk/hjaelp/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "udbud_dk"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_UDBUD_DK_CLIENT_ID",
+     "description": "client_id issued by Udbud.dk / Erhvervsstyrelsen after registering your system (registration form linked from the SDK README) with the MU_API_DATASYNK role.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UDBUD_DK_PRIVATE_KEY",
+     "description": "PEM RSA private key whose public key you expose in the JWKS endpoint registered with Udbud.dk (private_key_jwt client assertion, RS256).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UDBUD_DK_KEY_ID",
+     "description": "kid of that key in your JWKS.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

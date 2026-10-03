@@ -1,0 +1,40 @@
+{
+ "id": "mobilebg",
+ "category": "automotive",
+ "label": "Mobile",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.mobile.bg",
+ "domain": "mobile.bg",
+ "country": "Bulgaria",
+ "official_api": "unknown",
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **unresolved** (confidence low). No public API docs found; mobile.bg is known to offer dealer import, but no official documentation could be located.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.mobile.bg/help",
+   "https://q1import.mobile.bg/",
+   "https://mobile.bg/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://github.com/tasevrosen86-cpu/auto-import-control-center/pull/14"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Audit 2026-09-25 could not resolve an API: No public API docs found; mobile.bg is known to offer dealer import, but no official documentation could be located."
+}

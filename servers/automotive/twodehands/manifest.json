@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "twodehands-mcp",
+ "display_name": "2dehands MCP",
+ "version": "0.1.0",
+ "description": "2dehands (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "twodehands"
+   ],
+   "env": {
+    "PLATFORM_MCP_TWODEHANDS_CLIENT_ID": "${user_config.platform_mcp_twodehands_client_id}",
+    "PLATFORM_MCP_TWODEHANDS_CLIENT_SECRET": "${user_config.platform_mcp_twodehands_client_secret}",
+    "PLATFORM_MCP_TWODEHANDS_CATEGORY_ID": "${user_config.platform_mcp_twodehands_category_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_twodehands_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWODEHANDS_CLIENT_ID",
+   "description": "Client id assigned by 2dehands (API clients are registered by the platform for business/advertiser use); grant_type=client_credentials at https://auth.2dehands.be/accounts/oauth/token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twodehands_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWODEHANDS_CLIENT_SECRET",
+   "description": "Client secret assigned with it. A client token reaches public resources (categories, search, advertisements) only.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_twodehands_category_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TWODEHANDS_CATEGORY_ID",
+   "description": "Category id to restrict searches to (e.g. the cars category id from GET /v1/categories); without it `query` is mandatory.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET /v1/search?query&categoryId&postCode&offset&limit (limit ≤ 200, offset a multiple of limit, offset*limit ≤ 5000); query supports and/or and '-' negation; 400 query-missing when neither query nor categoryId is given. location is a 6-character Dutch/Belgian postcode. make/model/year/price filters are not query parameters (the documented price filter lives in a GET request body, which is not sent). priceModel.askingPrice is in EURO CENTS and stays in raw."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /v1/advertisements/{itemId} (ids like m1234): title, description, categoryId, priceModel (euro cents), attributes and image links in raw."
+  }
+ ]
+}

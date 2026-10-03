@@ -1,0 +1,41 @@
+{
+ "id": "coches_com",
+ "category": "automotive",
+ "label": "Coches",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.coches.com",
+ "domain": "coches.com",
+ "country": "Spain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Coches.com accepts real-time dealer stock via API through multipublisher integrators (inventario.pro); no public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "https://www.inventario.pro/inventario-pro-y-coches-com-ya-conectan-a-tiempo-real-via-api/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Coches.com accepts real-time dealer stock via API through multipublisher integrators (inventario.pro); no public docs."
+}

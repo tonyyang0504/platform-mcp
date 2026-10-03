@@ -1,0 +1,258 @@
+{
+ "id": "contrado",
+ "category": "ecommerce_suppliers",
+ "label": "Contrado",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.contrado.app/helix/docs/",
+ "url": "https://www.contrado.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "api_encouraged (private store/account tokens self-service; 429 rate-limit semantics and HMAC-signed webhooks documented)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "api_key header `X-API-KEY` (store / account key)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI (Scalar) https://api.contrado.app/helix/swagger/v1/swagger.json"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by t",
+  "base_urls": [
+   "https://api.contrado.app"
+  ],
+  "auth": [
+   "1. Tenant creates a Contrado store and generates an API key",
+   "2. Send `X-API-KEY: <key>` on every request"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /helix/v1/stores · /stores/collections · /stores/collections/{id}/products",
+    "purpose": "store + collections",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/v1/stores/products · /{storeProductId} · /{id}/option-variants",
+    "purpose": "the user's designed products + variants",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/v1/shipping/{cultureCode} · GET /helix/v1/countries",
+    "purpose": "shipping price groups / rates",
+    "notes": ""
+   },
+   {
+    "call": "POST /helix/v1/orders/create",
+    "purpose": "place order for a registered customer",
+    "notes": ""
+   },
+   {
+    "call": "GET /helix/v1/orders · /{orderId} · /{orderId}/status · /by-reference/{ref}/status · /{orderId}/shipment/status",
+    "purpose": "order + shipment status",
+    "notes": ""
+   }
+  ],
+  "limits": " Not in the spec. - Self-serve key - POD: products must exist in the user's Contrado store first",
+  "mcp_sdk": [
+   "OpenAPI (Scalar) https://api.contrado.app/helix/swagger/v1/swagger.json"
+  ],
+  "sources": [
+   "https://api.contrado.app/helix/docs/",
+   "https://api.contrado.app/helix/swagger/v1/swagger.json"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.contrado.app",
+  "auth": {
+   "type": "header",
+   "header": "X-API-KEY",
+   "field": "api_key",
+   "extra_headers": {
+    "X-Store-Id": "store_id"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Contrado Helix private token (Contrado Store Account > API Integration; shown once at creation), sent as `X-API-Key`. Scopes: StoresRead, StoreProductsRead, StoreOrdersRead."
+    },
+    {
+     "name": "store_id",
+     "required": false,
+     "help": "Store id sent as `X-Store-Id`; needed only with an account-level token (a store-level token already names its store)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "message"
+  },
+  "rate_per_second": 1.5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/helix/v1/stores",
+    "docs": "https://api.contrado.app/helix/docs/",
+    "note": "GET /helix/v1/stores returns the envelope {success, message, data: {storeId, storeName, storeURL, cultureCode, ...}} for the stores the token can access (scope StoresRead). Rate limit 100 requests/minute."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/helix/v1/stores/products",
+    "params": {
+     "PageNumber": "page",
+     "PageSize": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "storeProductId",
+      "title": "storeProductName",
+      "description": "storeProductDescription",
+      "url": "storeProductURL",
+      "image_url": "productThumb",
+      "base_product_id": "baseProductId",
+      "collection_id": "collectionId",
+      "is_out_of_stock": "isOutOfStock"
+     }
+    },
+    "docs": "https://api.contrado.app/helix/docs/",
+    "note": "GET /helix/v1/stores/products (scope StoreProductsRead): the store's designed products [{storeProductId, baseProductId, storeProductName, storeProductDescription, productThumb, productImages, storeProductURL, collectionId, isOutOfStock}] inside the {success, data} envelope; `query` and `category` are not accepted (products of one collection come from /stores/collections/{collectionId}/products, not mapped). Prices come from /stores/products/{id}/option-variants (not mapped)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/helix/v1/stores/products/{storeProductId}",
+    "path_params": {
+     "storeProductId": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "storeProductId",
+      "title": "storeProductName",
+      "description": "storeProductDescription",
+      "url": "storeProductURL",
+      "image_url": "productThumb",
+      "base_product_id": "baseProductId",
+      "production_time": "productionTime",
+      "is_out_of_stock": "isOutOfStock"
+     }
+    },
+    "docs": "https://api.contrado.app/helix/docs/",
+    "note": "GET /helix/v1/stores/products/{storeProductId}: data {storeProductId, storeProductName, productThumb, productImages, product3dImages, productSpecification, sizeChart, productionTime, shippingPriceGroupId, isOutOfStock}."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/helix/v1/orders/{orderId}",
+    "path_params": {
+     "orderId": "id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "orderId",
+      "status": "orderStatus",
+      "total": "totalPrice",
+      "currency": "currencyCode",
+      "created_at": "orderedUtcDateTime",
+      "tracking_number": "trackingId",
+      "tracking_url": "trackingUrl",
+      "reference_id": "referenceId",
+      "external_reference_id": "externalReferenceId"
+     }
+    },
+    "docs": "https://api.contrado.app/helix/docs/",
+    "note": "GET /helix/v1/orders/{orderId} (scope StoreOrdersRead; orderId is Contrado's integer order id): data {orderId, orderStatus, referenceId, externalReferenceId, orderedUtcDateTime, orderTrackingStatus, trackingId, trackingUrl, totalPrice, currencyCode, deliveryAddress, orderLineItems, orderSummary}."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /helix/v1/orders/create takes StoreOrderRequestModel {externalReferenceId, recipient, lineItem[{storeProductId, variantId, selectedOptions, quantity, price}], totalAmount, currencyCode, cultureCode} and rejects 'Invalid quantity or pricing format'; the vocabulary carries no order total or currency, so the body cannot be built without inventing values.",
+   "quote_shipping": "GET /helix/v1/shipping/{cultureCode} returns the store's shipping price groups and regional rates per culture code, not a quote for a product_id/country/quantity.",
+   "track": "GET /helix/v1/orders/{orderId}/shipment/status answers a single object {courierName, shippingService, trackingId, shipmentStatus, deliveryEstimateDate, trackingUrl}, not a list of events; the tracking id and URL are part of get_order."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.contrado.app: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 502 (server_error), so the answers are path-specific",
+   "spec https://api.contrado.app/helix/swagger/v1/swagger.json: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "Response envelope unresolved: the swagger has no data wrapper, the docs page describes {success, data}. list_products: spec says \"response path items='data' is not in the response schema\"; waived: the Helix swagger describes the payload inside Contrado's {success, data} envelope (the adapter follows https://api.contrado.app/helix/docs/); which one the live API returns needs a real key get_product: spec says \"response path root='data' is not in the response schema\"; waived: the Helix swagger describes the payload inside Contrado's {success, data} envelope (the adapter follows https://api.contrado.app/helix/docs/); which one the live API returns needs a real key get_order: spec says \"response path root='data' is not in the response schema\"; waived: the Helix swagger describes the payload inside Contrado's {success, data} envelope (the adapter follows https://api.contrado.app/helix/docs/); which one the live API returns needs a real key"
+ }
+}

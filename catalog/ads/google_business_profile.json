@@ -1,0 +1,135 @@
+{
+ "id": "google_business_profile",
+ "category": "ads",
+ "label": "Google Business Profile (+ Local Services Ads)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/my-business",
+ "url": "https://business.google.com/en-all/business-profile/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Business Profile API: request access via the Google Cloud project (API access form), OAuth2 scope business.manage; LSA API: for aggregators / multi-account managers (application). Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Google Cloud project; Business Profile API access request; Local Services Ads API for aggregators)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Business Profile APIs for listings; Local Services Ads API for aggregators' account + lead management) Confidence: **high**.",
+  "base_urls": [
+   "https://mybusinessbusinessinformation.googleapis.com/v1/…",
+   "https://localservices.googleapis.com/v1/…"
+  ],
+  "auth": [
+   "1. Google Cloud project → request Business Profile API access (form) → enable APIs; OAuth scope `https://www.googleapis.com/auth/business.manage`.",
+   "2. LSA API: available to aggregators managing multiple accounts (application).",
+   "3. Bearer tokens."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/accounts` · `/locations` · `PATCH locations",
+    "purpose": "listing management",
+    "notes": "title, categories, hours, attributes"
+   },
+   {
+    "call": "POST /v1/{parent}/localPosts` · reviews / replies",
+    "purpose": "posts, reviews",
+    "notes": "summary, media, cta"
+   },
+   {
+    "call": "LSA `GET /v1/accountReports:search` · `detailedLeadReports:search",
+    "purpose": "LSA reports (spend, leads)",
+    "notes": "query filters, date range"
+   },
+   {
+    "call": "campaign / budget management",
+    "purpose": "Google Ads UI (LSA budgets)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Access form; free; quotas per project.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developers.google.com/my-business",
+   "https://developers.google.com/local-services-ads"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: the Business Profile APIs home (https://developers.google.com/my-business) describes creating and verifying locations, managing listings at scale, Reviews and Posts and engagement metrics ('From calls to bookings'), i.e. listing management, not ad campaigns, budgets or ad reports; access needs an approved Business Profile API request, and Local Services Ads are managed through the Google Ads API (served by the `google` entry). No ads verb maps to a documented call."
+}

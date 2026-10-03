@@ -1,0 +1,36 @@
+{
+ "id": "g2",
+ "category": "sales",
+ "label": "G2",
+ "lane": "assist",
+ "kind": "review_site",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.g2.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (88 Disallow, review-filter URLs); www.g2.com answers 403 to curl and WebFetch; the Learn hub opened. G2 sells its data through a partner API (not verified this pass).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

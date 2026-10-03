@@ -1,0 +1,39 @@
+{
+ "id": "superbid_com_pe_wl",
+ "category": "automotive",
+ "label": "Superbid Exchange Peru",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.superbid.com.pe",
+ "domain": "superbid.com.pe",
+ "country": "Peru",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auction (Peru); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://superbid.com.pe/"
+  ],
+  "unofficial": [
+   "https://github.com/SUPERBIDWS",
+   "https://apify.com/stealth_mode/superbid-product-search-scraper/api",
+   "https://github.com/sbwebservices"
+  ]
+ },
+ "official_mcp": []
+}

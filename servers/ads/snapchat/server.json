@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/snapchat-mcp",
+ "description": "Snapchat Ads (Snapchat Ads Manager) (ads): me, list_accounts, list_campaigns, get_report, pause_resu",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.snap.com/api/marketing-api/Ads-API/introduction",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "snapchat"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_CLIENT_ID",
+     "description": "OAuth client id of your Snap Business Manager app (Business Details > OAuth apps).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_CLIENT_SECRET",
+     "description": "The OAuth app's client secret (form body of the refresh request).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_REFRESH_TOKEN",
+     "description": "Refresh token from one authorization-code consent with scope snapchat-marketing-api (https://developers.snap.com/api/marketing-api/Ads-API/authentication); 60-minute access tokens are minted from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_ORGANIZATION_ID",
+     "description": "Snap organization id whose ad accounts list_accounts returns (GET /v1/me/organizations).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_AD_ACCOUNT_ID",
+     "description": "Ad account id used by pause_resume (the campaign PATCH path is /v1/adaccounts/{ad_account_id}/campaigns/{campaign_id}).",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_SNAPCHAT_TZ_OFFSET",
+     "description": "UTC offset of the ad account time zone, e.g. -07:00 or +01:00, used to build day-aligned start_time/end_time for get_report (Snap requires daily boundaries in the account time zone).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

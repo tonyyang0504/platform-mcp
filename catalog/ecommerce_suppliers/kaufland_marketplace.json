@@ -1,0 +1,250 @@
+{
+ "id": "kaufland_marketplace",
+ "category": "ecommerce_suppliers",
+ "label": "Kaufland Global Marketplace (sales channel) + Marketplace Seller API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "europe"
+ ],
+ "docs_url": "https://sellerapi.kaufland.com/",
+ "url": "https://www.kaufland-marketplace.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "rate limits documented; signature-authenticated calls",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "csv",
+   "webhooks"
+  ],
+  "auth": "hmac (Client Key + Secret Key from the seller account; every request signed — Signature Calculator in the docs)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "OpenAPI endpoint reference + Playground on sellerapi.kaufland.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Kaufland seller account; HMAC-signed calls; documented rate limits; Technology Partner registration optional.",
+  "mcp_sdk": [
+   "OpenAPI endpoint reference + Playground on sellerapi.kaufland.com"
+  ],
+  "sources": [
+   "https://sellerapi.kaufland.com/",
+   "https://sellerapi.kaufland.com/?page=rest-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://sellerapi.kaufland.com/v2",
+  "auth": {
+   "type": "header",
+   "header": "Shop-Client-Key",
+   "field": "client_key",
+   "fields": [
+    {
+     "name": "client_key",
+     "required": true,
+     "help": "Kaufland Marketplace Client Key (32 characters, seller portal API settings), sent as the Shop-Client-Key header."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The Secret Key (64 characters): signs every request (hex HMAC-SHA256 over METHOD, full URI, body and Unix timestamp joined by newlines, sent as Shop-Signature with Shop-Timestamp). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{method}\nhttps://sellerapi.kaufland.com{path}{query_q}\n{body}\n{timestamp_s}",
+    "key_field": "secret_key",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "Shop-Timestamp": "{timestamp_s}",
+     "Shop-Signature": "{signature}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "storefront",
+    "required": true,
+    "help": "Kaufland storefront for product calls: de, cz, sk, pl, at, fr, it, es or nl (GET /v2/info/storefront lists yours)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Kaufland's Marketplace Seller API is SELLER-side: it searches the marketplace catalogue, manages your offers (units) and processes customer orders; it cannot buy.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/info/storefront",
+    "docs": "https://sellerapi.kaufland.com/?page=endpoints",
+    "note": "GET /v2/info/storefront: the storefronts created for the signed-in seller ({data: [\"de\", ...]})."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products/search",
+    "params": {
+     "q": "query",
+     "storefront": "@storefront",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "total": "pagination.total",
+     "fields": {
+      "id": "id_product",
+      "title": "title",
+      "url": "url",
+      "image_url": "main_picture",
+      "manufacturer": "manufacturer",
+      "category_id": "id_category",
+      "eans": "eans"
+     }
+    },
+    "docs": "https://sellerapi.kaufland.com/?page=endpoints",
+    "note": "Searches the Kaufland MARKETPLACE catalogue of the configured storefront; `query` (q) is required by the endpoint and `category` is not a filter here. Offers and prices are not embedded in search results."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{id}",
+    "params": {
+     "storefront": "@storefront"
+    },
+    "fixed_params": {
+     "embedded": "units"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id_product",
+      "title": "title",
+      "url": "url",
+      "image_url": "main_picture",
+      "manufacturer": "manufacturer",
+      "eans": "eans",
+      "first_offer_price": "units.0.price",
+      "first_offer_amount": "units.0.amount"
+     }
+    },
+    "docs": "https://sellerapi.kaufland.com/?page=endpoints",
+    "note": "GET /v2/products/{id_product}?embedded=units: the product with its offers units[{id_unit, condition, amount, price, delivery_time_min/max, seller}]. Unit prices are the API's integer price values, returned as first_offer_price rather than the decimal `price`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/orders/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id_order",
+      "status": "order_units.0.status",
+      "currency": "order_units.0.currency",
+      "created_at": "ts_created_iso",
+      "storefront": "storefront",
+      "fulfillment_type": "fulfillment_type"
+     }
+    },
+    "docs": "https://sellerapi.kaufland.com/?page=endpoints",
+    "note": "A customer order placed with you: {id_order, ts_created_iso, storefront, order_units[{id_order_unit, status (need_to_be_sent, sent, received, cancelled, returned, ...), price, currency, product}], shipping_address, billing_address, buyer}. Status is tracked per order unit; `status` is the first unit's."
+   }
+  },
+  "not_offered": {
+   "create_order": "Seller-side API: customers buy on kaufland.de; the API sends, cancels and refunds order units but cannot place an order.",
+   "quote_shipping": "No rate quote endpoint; shipping is configured per offer through shipping groups (GET /v2/shipping-groups).",
+   "track": "No tracking-events endpoint; the seller supplies carrier and tracking numbers when marking an order unit as sent (PATCH /v2/order-units/{id}/send)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host sellerapi.kaufland.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; names not found on the page: get_product:embedded, list_products:limit, list_products:offset, list_products:q"
+  ],
+  "notes": "-"
+ }
+}

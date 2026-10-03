@@ -1,0 +1,214 @@
+{
+ "id": "koneps",
+ "category": "deals",
+ "label": "KONEPS",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "kr"
+ ],
+ "docs_url": "https://www.data.go.kr/data/15129394/openapi.do",
+ "url": "https://www.g2b.go.kr/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public data portal key; KONEPS bidding requires Korean registration.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (data.go.kr service key)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (data.go.kr open API for bid notices). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. data.go.kr account → apply for the service → serviceKey."
+  ],
+  "endpoints": [
+   {
+    "call": "bid notice list (TODO(verify) operation names)",
+    "purpose": "search",
+    "notes": "notice no, title, agency, deadline"
+   }
+  ],
+  "limits": " - Korean registration + certificate to bid. - Public data portal key; KONEPS bidding requires Korean registration.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.pps.go.kr/eng/index.do",
+   "https://www.data.go.kr/data/15129394/openapi.do"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://apis.data.go.kr/1230000/ad/BidPublicInfoService",
+  "auth": {
+   "type": "query",
+   "params": {
+    "serviceKey": "service_key"
+   },
+   "fields": [
+    {
+     "name": "service_key",
+     "required": true,
+     "help": "공공데이터포털 (data.go.kr) 일반 인증키 (Decoding) for 조달청_나라장터 입찰공고정보서비스 (dataset 15129394), issued after an 활용신청."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "terms": "Korea Public Data Portal open API (조달청). Bidding on KONEPS/나라장터 requires Korean G2B supplier registration.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/getBidPblancListInfoServcPPSSrch",
+    "params": {
+     "pageNo": "page",
+     "numOfRows": "limit",
+     "inqryDiv": "=1",
+     "inqryBgnDt": "datefmt:%Y%m%d%H%M:days_ago:30",
+     "inqryEndDt": "datefmt:%Y%m%d%H%M:now",
+     "bidNtceNm": "query",
+     "presmptPrceBgn": "str:min_budget",
+     "bidClseExcpYn": "=Y"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "response.body.items.item",
+     "key": "postings",
+     "fields": {
+      "id": "bidNtceNo",
+      "title": "bidNtceNm",
+      "buyer": "dminsttNm",
+      "url": "bidNtceDtlUrl",
+      "posted_at": "bidNtceDt",
+      "deadline": "bidClseDt",
+      "currency": "=KRW"
+     }
+    },
+    "docs": "https://www.data.go.kr/data/15129394/openapi.do",
+    "note": "나라장터검색조건에 의한 입찰공고용역조회 (services tenders): inqryDiv=1 (공고게시일시) over the last 30 days (inqryBgnDt/inqryEndDt 'YYYYMMDDHHMM'), bidNtceNm = query (입찰공고명), presmptPrceBgn = min_budget (추정가격, KRW), bidClseExcpYn=Y (입찰마감제외여부: leave out closed bids). XML response (response.body.items.item); totalCount is text so total is null. presmptPrce (추정가격), asignBdgtAmt, ntceInsttNm (공고기관), bidNtceOrd (차수), opengDt and the spec document URLs stay in raw (numbers are strings in the XML). A portal-level error (e.g. SERVICE_KEY_IS_NOT_REGISTERED_ERROR) answers an OpenAPI_ServiceResponse document instead, so postings is empty — check raw via get_posting if in doubt."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/getBidPblancListInfoServc",
+    "params": {
+     "inqryDiv": "=2",
+     "bidNtceNo": "id",
+     "pageNo": "=1",
+     "numOfRows": "=1"
+    },
+    "result": {
+     "root": "response.body.items.item",
+     "fields": {
+      "id": "bidNtceNo",
+      "title": "bidNtceNm",
+      "buyer": "dminsttNm",
+      "url": "bidNtceDtlUrl",
+      "posted_at": "bidNtceDt",
+      "deadline": "bidClseDt",
+      "currency": "=KRW"
+     }
+    },
+    "docs": "https://www.data.go.kr/data/15129394/openapi.do",
+    "note": "입찰공고목록 정보에 대한 용역조회 with inqryDiv=2 (입찰공고번호) and bidNtceNo = id (e.g. R25BK00934017); returns the first 차수. Services tenders only (goods/works use other operations)."
+   }
+  },
+  "not_offered": {
+   "me": "The portal key has no account/introspection operation in this service.",
+   "submit_bid": "Bids (투찰) are made in 나라장터 with a registered supplier certificate; the open API is read-only.",
+   "withdraw_bid": "Read-only open API (see submit_bid).",
+   "bid_status": "Read-only open API; bid results are a separate service (낙찰정보서비스) not mapped here.",
+   "list_messages": "No messaging in the open API.",
+   "send_message": "No messaging in the open API.",
+   "credits": "The portal's daily call quota is shown only in the data.go.kr mypage; no API."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host apis.data.go.kr: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 400 (client_error), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; names not found on the page: get_posting:bidNtceNo, get_posting:inqryDiv, get_posting:numOfRows, get_posting:pageNo, search_postings:bidClseExcpYn, search_postings:bidNtceNm, search_postings:inqryBgnDt, search_postings:inqryDiv, "
+  ],
+  "notes": "-"
+ }
+}

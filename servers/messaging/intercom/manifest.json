@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "intercom-mcp",
+ "display_name": "Intercom MCP",
+ "version": "0.1.0",
+ "description": "Intercom (messaging): me, send, reply, list_inbound, get_thread, mark_read. Every tool maps to a doc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "intercom"
+   ],
+   "env": {
+    "PLATFORM_MCP_INTERCOM_ACCESS_TOKEN": "${user_config.platform_mcp_intercom_access_token}",
+    "PLATFORM_MCP_INTERCOM_ADMIN_ID": "${user_config.platform_mcp_intercom_admin_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_intercom_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INTERCOM_ACCESS_TOKEN",
+   "description": "Access Token of the app (Developer Hub > Configure > Authentication, or an OAuth install), sent as 'Authorization: Bearer <access_token>' (https://developers.intercom.com/docs/build-an-integration/learn-more/authentication). Workspaces hosted in the EU / AU are served from https://api.eu.intercom.io / https://api.au.intercom.io (OpenAPI servers list), which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_intercom_admin_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_INTERCOM_ADMIN_ID",
+   "description": "Intercom id of the admin (teammate) who authors replies and outbound messages — 'admin_id: The id of the admin who is authoring the comment' (https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation); GET /me (the `me` tool) shows the token's own admin id. Env: PLATFORM_MCP_INTERCOM_ADMIN_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "'You can view the currently authorised admin along with the embedded app object' — account carries type admin, id, name, email, email_verified and app{id_code, name, region}."
+  },
+  {
+   "name": "send",
+   "description": "Admin-initiated in-app message ('You can create a message that has been initiated by an admin'): `to` is the contact's Intercom id ('The identifier for the contact which is given by Intercom') with role `user` — leads (recipient type lead) cannot be addressed; `from` is the per-install admin_id; message_type is fixed to in_app, so `subject` and `channel` are ignored (email messages also need template + subject). `text` is `body`, 'HTML and plaintext are supported'. UNCONFIRMED: the OpenAPI types from.id as an integer while the runtime sends the config value as a string. The result is the Message (id, conversation_id, body under raw); 'there will be no conversation present until the contact responds'."
+  },
+  {
+   "name": "reply",
+   "description": "Public admin comment (message_type comment, type admin, admin_id from the per-install config): `thread_id` is the conversation id 'or the string \"last\" to reply to the last part of the conversation'; `channel` is ignored. The response is the whole Conversation (under raw); message_id is not set because the new part is only identifiable as the last entry of raw.conversation_parts.conversation_parts."
+  },
+  {
+   "name": "list_inbound",
+   "description": "'You can fetch a list of all conversations' — one row per conversation: `id` = `thread_id` = conversation id, `text` is the source (opening) message body (HTML), `from` its author's email (author object under raw.source.author). Intercom pages by cursor (pages.next.starting_after), so `page` is ignored and only the first `limit` (per_page, 'default 20', max 150) conversations are returned — next_page is not meaningful; `since` and `channel` are not sent (filters need POST /conversations/search, not offered). created_at / updated_at are Unix seconds under raw; total is raw.total_count on the response (not mapped)."
+  },
+  {
+   "name": "get_thread",
+   "description": "'You can fetch the details of a single conversation' with display_as=plaintext ('Set to plaintext to retrieve conversation messages in plain text'): rows are the conversation parts (comments, notes, assignments... — part_type under raw), `from` is the part author's email (author under raw.author). The opening message is NOT a part (it is the conversation's source, see list_inbound). The endpoint has no paging parameters, so `limit`, `page` and `channel` are ignored; Intercom returns at most the 500 most recent parts. created_at is Unix seconds under raw."
+  },
+  {
+   "name": "mark_read",
+   "description": "PUT /conversations/{id} with `read: true` — 'Mark a conversation as read within Intercom' (a JSON boolean, sent as such). `thread_id` is the conversation id and is required; `message_id` and `channel` are not used (Intercom tracks read state per conversation). The response is the updated Conversation (under raw)."
+  }
+ ]
+}

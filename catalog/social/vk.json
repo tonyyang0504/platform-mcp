@@ -1,0 +1,200 @@
+{
+ "id": "vk",
+ "category": "social",
+ "label": "VK",
+ "lane": "manual",
+ "kind": null,
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://dev.vk.com/",
+ "url": "https://vk.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "VK Developer Terms; free. 3 rps per user token / 20 rps per community token; per-method limits are undisclosed and answer with error 6/9 or a captcha (14). Russian law requires ERID labelling on advertising.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "schedule",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "analytics",
+   "delete",
+   "edit",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "vk-api (Python, community), official VK SDKs (Android / iOS / JS)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (complete).",
+  "base_urls": [
+   "https://api.vk.com/method/{method}?v=5.199&access_token=…"
+  ],
+  "auth": [
+   "1. VK ID / Standalone app → user token (OAuth 2.0 / VK ID SDK) with scopes `wall`, `photos`, `video`, `groups`,",
+   "2. Callback API (server URL per community, confirmation string, secret) or Long Poll for events."
+  ],
+  "endpoints": [
+   {
+    "call": "Method",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "wall.post` {owner_id (negative = community), from_group=1, message, attachments `photo{owner}_{id},video…,link`, publish_date (unix → scheduled / postponed), signed, copyright, photo_attachments_crop ",
+    "purpose": "→ post_id",
+    "notes": ""
+   },
+   {
+    "call": "wall.edit`, `wall.delete`, `wall.pin",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "photos.getWallUploadServer` → POST file → `photos.saveWallPhoto`; `video.save` → upload URL",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "wall.parseAttachedLink",
+    "purpose": "image for link snippets",
+    "notes": ""
+   },
+   {
+    "call": "wall.getComments`, `wall.createComment` {owner_id, post_id, message, reply_to_comment}, `wall.deleteComment",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "wall.get` {owner_id, filter=owner}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "messages.getConversations`, `messages.send` (community token, `random_id`)",
+    "purpose": "24 h / user-initiated rules",
+    "notes": ""
+   },
+   {
+    "call": "stats.get` {group_id}, `stats.getPostReach` {owner_id, post_ids}",
+    "purpose": "",
+    "notes": ""
+   },
+   {
+    "call": "newsfeed.search` {q} (user token)",
+    "purpose": "research",
+    "notes": ""
+   }
+  ],
+  "limits": " - 3 requests/s per user token; 20 requests/s per community token; service token 5–20 rps by audience size; undisclosed quantitative per-method limits → temporary unavailability or captcha (error 14). - Content rules for audio / polls / files; advertising must carry ERID labelling under Russian law. - Free; VK Developer Terms. Sanctions compliance may restrict its use.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dev.vk.com/en/method/wall.post",
+   "https://dev.vk.com/en/api/api-requests"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: wall.post, wall.createComment and wall.delete still require 'ключ доступа пользователя, полученный в Standalone-приложении через Implicit Flow (требуется право доступа: wall — выдаётся в исключительных случаях через запрос в поддержку по электронной почте devsupport@corp.vk.com)' (https://dev.vk.com/ru/method/wall.post), and a user access key lives 1 hour ('Срок действия ключа доступа пользователя — 1 час', https://dev.vk.com/ru/api/access-token/implicit-flow-user). Without that exceptional grant no posting call can be made, and the runtime has no flow that renews a 1-hour VK user key."
+}

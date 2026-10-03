@@ -1,0 +1,39 @@
+{
+ "id": "ankorstore",
+ "category": "sales",
+ "label": "Ankorstore",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "eu",
+  "fr",
+  "de",
+  "gb"
+ ],
+ "docs_url": null,
+ "url": "https://www.ankorstore.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Brand and retailer directories are behind the account login; robots.txt (9 Disallow). Tenant session only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

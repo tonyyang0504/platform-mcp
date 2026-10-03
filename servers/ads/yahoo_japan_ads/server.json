@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yahoo_japan_ads-mcp",
+ "description": "LINEヤフー広告 (formerly Yahoo! JAPAN Ads) (ads): me, list_accounts, list_campaigns, update_budget, pause",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://ads-developers.yahoo.co.jp/ja/ads-api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yahoo_japan_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YAHOO_JAPAN_ADS_CLIENT_ID",
+     "description": "Client ID of your approved LINEヤフー広告 API application (API管理ツール).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_JAPAN_ADS_CLIENT_SECRET",
+     "description": "The application's client secret.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_JAPAN_ADS_REFRESH_TOKEN",
+     "description": "Refresh token from one authorization-code login with a Business ID (scope yahooads, https://ads-developers.yahoo.co.jp/ja/ads-api/startup-guide/api-call.html); valid until the user revokes the app. One-hour access tokens are minted from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_JAPAN_ADS_BASE_ACCOUNT_ID",
+     "description": "Account the Business ID directly holds rights on (MCC or ad account id from BaseAccountService/get), sent as the x-z-base-account-id header on every call.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_JAPAN_ADS_ACCOUNT_ID",
+     "description": "Search ad account id used by update_budget and pause_resume (CampaignService/set requires accountId in the body).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

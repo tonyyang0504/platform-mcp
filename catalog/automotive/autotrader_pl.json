@@ -1,0 +1,35 @@
+{
+ "id": "autotrader_pl",
+ "category": "automotive",
+ "label": "Autotrader",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autotrader.pl",
+ "domain": "autotrader.pl",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No developer/API/partner-feed pages found on homepage or common paths (/developers,/api,/docs,/partners); Poland cars_marketplace with no official API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autotrader.pl/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

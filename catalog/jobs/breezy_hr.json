@@ -1,0 +1,196 @@
+{
+ "id": "breezy_hr",
+ "category": "jobs",
+ "label": "Breezy HR",
+ "lane": "assist",
+ "kind": "ats",
+ "regions": [
+  "us",
+  "global"
+ ],
+ "docs_url": "https://developer.breezy.hr/",
+ "url": "https://breezy.hr/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Career portals *.breezy.hr with a public positions JSON; apply form web-only.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token",
+  "access": "partner_only",
+  "capabilities": [
+   "job_search (undocumented public /json per company)",
+   "job_details",
+   "employer_posting"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the per-company public positions JSON (GET https://{company}.breezy.hr/json — live-verified on breezy.breezy.hr: id, friendly_id, name, url, published_date, type, location, department, salary, company",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   },
+   {
+    "call": "the documented Public API v3 (https://api.breezy.hr/v3, /signin → token, /company/{id}/positions, /company/{id}/position/{id}/candidates) is the EMPLOYER's account",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. Breezy HR Public API requires signing in with a Breezy customer account (/signin returns the access token); positions / candidates endpoints act on the company's own data. The public careers JSON is not documented on developer.breezy.hr (guessed doc pages 404) — treat it as an undocumented courtesy endpoint. No terms text was readable (breezy.hr answered 202 with an empty body).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://breezy.hr/",
+   "https://developer.breezy.hr/reference/overview",
+   "https://developer.breezy.hr/reference/signin",
+   "https://breezy.breezy.hr/json",
+   "https://developer.breezy.hr/docs/careers-page-json"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.breezy.hr/v3",
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Breezy Personal Access Token (prefix breezy_pat_) from the Breezy app: user icon > My Settings > API Keys > Create API Key; sent as `Authorization: Bearer`. It acts as the Breezy user who created it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "company_id",
+    "required": true,
+    "help": "The Breezy company id (12-14 character hex `_id` from GET /v3/companies) whose positions are read."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/user",
+    "docs": "https://developer.breezy.hr/reference/getuser",
+    "note": "GET /v3/user returns the authenticated user (_id, email_address, name, username)."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/company/{company_id}/positions",
+    "path_params": {
+     "company_id": "@company_id"
+    },
+    "params": {
+     "page_size": "limit",
+     "page": "page"
+    },
+    "fixed_params": {
+     "state": "published"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "_id",
+      "title": "name",
+      "location": "location.name",
+      "posted_at": "creation_date",
+      "salary_min": "salary.from",
+      "salary_max": "salary.to",
+      "currency": "salary.currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://developer.breezy.hr/reference/listpositions",
+    "note": "Employer ATS API: GET /v3/company/{company_id}/positions?state=published lists the configured company's OWN published positions (not a cross-company job search). There is no keyword or location filter, so query/location are not sent — filter client-side. Paging: page_size ('capped at 50') + page (1-based). id is the position _id (use it with get_posting); salary period is in raw.salary.period; department, type, experience, friendly_id and location.is_remote are in raw. There is no public posting URL field, so url is null."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/company/{company_id}/position/{id}",
+    "path_params": {
+     "company_id": "@company_id"
+    },
+    "result": {
+     "fields": {
+      "id": "_id",
+      "title": "name",
+      "location": "location.name",
+      "posted_at": "creation_date",
+      "salary_min": "salary.from",
+      "salary_max": "salary.to",
+      "currency": "salary.currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://developer.breezy.hr/reference/getposition",
+    "note": "GET /v3/company/{company_id}/position/{position_id}: 'full details (name, type, state, location, department, description, application form configuration, salary range, custom attributes, and team/admin…)'."
+   }
+  },
+  "not_offered": {
+   "apply": "The API is for the employer's own account: POST /company/{id}/position/{id}/candidates 'Creates a candidate on the specified position' as the recruiter (origin sourced/applied), which is not a job seeker applying; candidates apply on the company's Breezy careers page.",
+   "list_messages": "Candidate conversations are per candidate (GET /company/{id}/position/{id}/candidate/{id}/conversation needs both a position and a candidate id), so there is no single inbox call that fits list_messages(thread_id)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.breezy.hr: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/paddle-mcp",
+ "description": "Paddle (marketplaces): me, list_products, get_product, create_product, update_price, list_sales, lis",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.paddle.com",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "paddle"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_PADDLE_API_KEY",
+     "description": "Paddle API key (Paddle > Developer tools > Authentication; live keys look like pdl_live_apikey_...) sent as Authorization: Bearer. Give it product.read, product.write, price.write, transaction.read, adjustment.read and adjustment.write permissions for the full tool set. Sandbox keys (pdl_sdbx_apikey_...) need base https://sandbox-api.paddle.com, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_PADDLE_TAX_CATEGORY",
+     "description": "Tax category for create_product (POST /products requires it): standard, digital-goods, ebooks, implementation-services, professional-services, saas, software-programming-services, training-services or website-hosting. Only create_product needs it.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_PADDLE_ENV",
+     "description": "Vendor environment (default production): sandbox = https://sandbox-api.paddle.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_PADDLE_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

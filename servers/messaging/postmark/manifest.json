@@ -1,0 +1,74 @@
+{
+ "manifest_version": "0.2",
+ "name": "postmark-mcp",
+ "display_name": "Postmark MCP",
+ "version": "0.1.0",
+ "description": "Postmark (messaging): me, send, list_inbound. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "postmark"
+   ],
+   "env": {
+    "PLATFORM_MCP_POSTMARK_SERVER_TOKEN": "${user_config.platform_mcp_postmark_server_token}",
+    "PLATFORM_MCP_POSTMARK_SENDER": "${user_config.platform_mcp_postmark_sender}",
+    "PLATFORM_MCP_POSTMARK_ENV": "${user_config.platform_mcp_postmark_env}",
+    "PLATFORM_MCP_POSTMARK_BASE_URL": "${user_config.platform_mcp_postmark_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_postmark_server_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_POSTMARK_SERVER_TOKEN",
+   "description": "Postmark server API token, sent as the X-Postmark-Server-Token header ('requests that require server level privileges'; 401 'Missing or incorrect API token in header', https://postmarkapp.com/developer/api/overview).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_postmark_sender": {
+   "type": "string",
+   "title": "PLATFORM_MCP_POSTMARK_SENDER",
+   "description": "Sender address used as `From` on every send: 'Sender email address. Registered and confirmed Sender Signature is required' (https://postmarkapp.com/developer/api/email-api). Env: PLATFORM_MCP_POSTMARK_SENDER.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_postmark_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_POSTMARK_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_postmark_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_POSTMARK_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /server ('requires server level privileges') describes the server the token belongs to (ID, Name, DeliveryType, InboundAddress, ...)."
+  },
+  {
+   "name": "send",
+   "description": "`From` comes from the per-install `sender` config field; `to` may be a comma-separated list (max 50 recipients); `text` is sent as TextBody; `channel`, when given, is the MessageStream id. status is Postmark's `Message` ('OK'); 422 on invalid fields → isError."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Inbound message search (`count` 'Number of messages to return per request. Max 500', `offset` 'Number of messages to skip'; status defaults to processed). The search list carries no body: `text` is unset (subject under raw.Subject; TextBody on GET /messages/inbound/{messageid}/details). `since` and `channel` are not sent."
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/shopify_app_store-mcp",
+ "description": "Shopify App Store (marketplaces): me, get_product, list_sales, list_refunds. Every tool maps to a do",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://shopify.dev/docs/apps/launch",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "shopify_app_store"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SHOPIFY_APP_STORE_ACCESS_TOKEN",
+     "description": "Partner API client access token (Partner Dashboard > Settings > Partner API clients, with the View financials permission for transactions and Manage apps for app data); 'The API client access token must belong to the organization that you're querying'. Sent as X-Shopify-Access-Token (https://shopify.dev/docs/api/partner/latest).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SHOPIFY_APP_STORE_ORGANIZATION_ID",
+     "description": "Partner organization id from the Partners Dashboard URL (https://partners.shopify.com/{organization_id}/...); part of every endpoint URL.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

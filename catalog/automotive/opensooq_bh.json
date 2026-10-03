@@ -1,0 +1,39 @@
+{
+ "id": "opensooq_bh",
+ "category": "automotive",
+ "label": "Bh",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://bh.opensooq.com",
+ "domain": "bh.opensooq.com",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OpenSooq publishes no public listings API (api.opensooq.com is the app backend); consistent with other country subdomains.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://bh.opensooq.com/"
+  ],
+  "unofficial": [
+   "https://github.com/OpenSooq",
+   "https://github.com/OpenSooq/WebService",
+   "https://github.com/MDALAEEN1/openSooq/blob/main/README.md"
+  ]
+ },
+ "official_mcp": []
+}

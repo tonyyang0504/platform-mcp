@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "freelancer_com-mcp",
+ "display_name": "Freelancer.com MCP",
+ "version": "0.1.0",
+ "description": "Freelancer.com (jobs): search, get_posting, list_messages. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "freelancer_com"
+   ],
+   "env": {
+    "PLATFORM_MCP_FREELANCER_COM_ACCESS_TOKEN": "${user_config.platform_mcp_freelancer_com_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_freelancer_com_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCER_COM_ACCESS_TOKEN",
+   "description": "Freelancer OAuth access token sent as the freelancer-oauth-v1 header: a Personal Access Token from https://accounts.freelancer.com/settings/develop ('valid for thirty days') or a token from your registered OAuth app.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET /projects/0.1/projects/active/ ('Searches for active projects', scope basic): query is space-separated terms over names and descriptions; limit/offset page the results; full_description=true returns the whole text. Freelancer projects are contracts, not employment: salary_min/max are budget.minimum/maximum in currency.code (fixed or hourly per `type`). time_submitted (Unix), owner_id, seo_url and jobs stay in raw. No location text filter (latitude/longitude only)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /projects/0.1/projects/{project_id}/ with full_description=true."
+  },
+  {
+   "name": "list_messages",
+   "description": "GET /messages/0.1/messages/ (scope fln:messaging) filtered by threads[]=thread_id. The sender (from_user) is a numeric user id and time_created is Unix time; both stay in raw."
+  }
+ ]
+}

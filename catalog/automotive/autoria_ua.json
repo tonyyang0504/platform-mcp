@@ -1,0 +1,46 @@
+{
+ "id": "autoria_ua",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://auto.ria.com",
+ "domain": "auto.ria.com",
+ "country": "Ukraine",
+ "official_api": true,
+ "docs_url": "https://developers.ria.com/auto_ria",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key query param issued in developer cabinet",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "get_valuation",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). RIA.com runs an official developer portal with freemium/paid JSON APIs for AUTO.RIA search, listing info, average price (valuation) and ad posting.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.ria.com/auto_ria",
+   "https://auto.ria.com/ (footer links developers.ria.com)",
+   "https://auto.ria.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Duplicate of automotive/autoria (same site auto.ria.com), which serves the AUTO.RIA developer API (get_listing, get_valuation)."
+}

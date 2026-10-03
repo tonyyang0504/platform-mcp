@@ -1,0 +1,120 @@
+{
+ "id": "freelance_nl",
+ "category": "deals",
+ "label": "Freelance (NL)",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "nl"
+ ],
+ "docs_url": "https://www.freelance.nl/algemene-voorwaarden",
+ "url": "https://www.freelance.nl/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Terms explicitly contemplate APIs for automated use by counterparties under Freelance.nl's instructions; no public docs found.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api (provided by Freelance.nl to counterparties on request)",
+  "access": "apply",
+  "capabilities": [
+   "details",
+   "profile_sync"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (APIs for counterparties, per the terms; no public docs). Lane `assist` → **keep** until access is granted. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. Contact Freelance.nl (FF) for API access; follow their instructions for automated exchange (terms)."
+  ],
+  "endpoints": [
+   {
+    "call": "(TODO(verify))",
+    "purpose": "—",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Terms: API users act per FF's instructions; misuse → termination. - Terms explicitly contemplate APIs for automated use by counterparties under Freelance.nl's instructions; no public docs found.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.freelance.nl/algemene-voorwaarden"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: the only API mention is in https://www.freelance.nl/algemene-voorwaarden ('alle API's die gebruikt kunnen worden door Wederpartijen …'; 'Indien Gebruiker gebruik maakt van een door FF ter beschikking gestelde API … conform de instructie van FF'); the site navigation (Freelance opdrachten, Oplossingen, marktmonitor) links no developer or API page. No public endpoint, parameter or authentication reference exists; access and instructions come from Freelance.nl on request."
+}

@@ -1,0 +1,42 @@
+{
+ "id": "chevrolet_bh",
+ "category": "automotive",
+ "label": "Chevrolet",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://chevrolet.nmc.com.bh",
+ "domain": "chevrolet.nmc.com.bh",
+ "country": "Bahrain",
+ "official_api": false,
+ "docs_url": "https://production-api.search-api.netdirector.auto/docs/vehicle.html",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "graphql"
+  ],
+  "auth": "OAuth2 JWT (server) or clientToken issued by G-Forces",
+  "access": "partner_only",
+  "capabilities": [
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Dealer site runs on the G-Forces NetDirector platform, whose GraphQL Vehicle Search API is documented but tokens are only issued by G-Forces to the dealer/its partners.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://production-api.search-api.netdirector.auto/docs/vehicle.html"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Dealer site runs on the G-Forces NetDirector platform, whose GraphQL Vehicle Search API is documented but tokens are only issued by G-Forces to the dealer/its partners."
+}

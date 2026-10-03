@@ -1,0 +1,46 @@
+{
+ "id": "yapo_cl",
+ "category": "automotive",
+ "label": "Yapo",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.yapo.cl",
+ "domain": "yapo.cl",
+ "country": "Chile",
+ "official_api": false,
+ "docs_url": "https://github.com/yapo/example_partners",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "app_id + hash signature (partner credentials)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Yapo's official GitHub shows a partner ad-insert/delete API authenticated with app_id+hash; no public docs or self-signup.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://github.com/yapo/example_partners",
+   "https://github.com/yapo/"
+  ],
+  "unofficial": [
+   "https://github.com/Eitol/yapo",
+   "https://docs.carapis.com/platforms/latam/yapo-cl",
+   "https://github.com/yapo/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Yapo's official GitHub shows a partner ad-insert/delete API authenticated with app_id+hash; no public docs or self-signup."
+}

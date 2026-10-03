@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/apliiq-mcp",
+ "description": "Apliiq (ecommerce suppliers): me, list_products, get_product, get_order, track. Every tool maps to a",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://help.apliiq.com/portal/en/kb/help/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "apliiq"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_APLIIQ_APP_ID",
+     "description": "API Key (APPID) of an Apliiq custom store (https://www.apliiq.com/verified/stores > custom store > API Key).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_APLIIQ_SHARED_SECRET",
+     "description": "The store's Shared_SECRET: signs every request (base64 HMAC-SHA256 over APPID + RTS + STATE + base64(body), empty for GET). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

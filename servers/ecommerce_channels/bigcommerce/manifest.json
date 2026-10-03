@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "bigcommerce-mcp",
+ "display_name": "BigCommerce MCP",
+ "version": "0.1.0",
+ "description": "BigCommerce (ecommerce channels): me, create_listing, update_listing, end_listing, set_inventory, li",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bigcommerce"
+   ],
+   "env": {
+    "PLATFORM_MCP_BIGCOMMERCE_ACCESS_TOKEN": "${user_config.platform_mcp_bigcommerce_access_token}",
+    "PLATFORM_MCP_BIGCOMMERCE_STORE_HASH": "${user_config.platform_mcp_bigcommerce_store_hash}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bigcommerce_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BIGCOMMERCE_ACCESS_TOKEN",
+   "description": "Store-level API account access token (Settings > Store-level API accounts; scopes Products modify, Orders modify) sent as the X-Auth-Token header.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bigcommerce_store_hash": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BIGCOMMERCE_STORE_HASH",
+   "description": "Permanent store hash from the API path (https://api.bigcommerce.com/stores/{store_hash}/...), shown with the API account.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /stores/{store_hash}/v2/store returns the store's global settings {id, domain, secure_url, name, admin_email, currency, plan_name, ...}."
+  },
+  {
+   "name": "create_listing",
+   "description": "POST /v3/catalog/products (required: name, type, weight, price): type=physical and weight=0 as in the documented example request; price, sku, description and inventory_level from the arguments. Response {data: product, meta}; `url` is the product's custom_url.url path on the storefront and `status` its availability (available|disabled|preorder). inventory_level only counts once inventory_tracking is `product` — set_inventory enables it. Stores with the V2 product experience also require `categories` (not sent); `currency`/`image_urls` are ignored (store currency; images via /images)."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /v3/catalog/products/{product_id} with the given fields only (name, price, description, inventory_level); inventory_level applies when inventory_tracking is `product`. Response {data: product, meta}."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /v3/catalog/products/{product_id} {is_visible: false} hides the product from customers browsing the store (documented flag; reversible with is_visible=true). DELETE /v3/catalog/products/{id} (204) is irreversible and not used."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /v3/catalog/products/{product_id} {inventory_tracking: product, inventory_level} sets product-level stock at the default location. `listing_id` (product id) is required: there is no update-by-SKU path (a GET /v3/catalog/products?sku= lookup is a second call), and variant-level stock uses /v3/catalog/products/{id}/variants/{vid} (not mapped)."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /v2/orders?page&limit&status_id&min_date_created (RFC-2822 or ISO-8601). `status` must be the numeric BigCommerce status id (status_id) from GET /v2/order_statuses, e.g. 2 Shipped, 10 Completed, 11 Awaiting Fulfillment; `total` is total_inc_tax, a decimal string, and date_created is RFC-2822. The V2 API answers 204 No Content when no order matches (an empty list)."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "PUT /v2/orders/{order_id} {status_id: 2} — status id 2 is `Shipped` in GET /v2/order_statuses. `carrier` and `tracking_number` are NOT recorded: the shipment endpoint POST /v2/orders/{id}/shipments needs order_address_id and items[{order_product_id, quantity}] taken from the order, which the body form cannot supply."
+  }
+ ]
+}

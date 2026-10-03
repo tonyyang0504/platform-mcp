@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "dingtalk-mcp",
+ "display_name": "DingTalk (钉钉) MCP",
+ "version": "0.1.0",
+ "description": "DingTalk (钉钉) (messaging): send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "dingtalk"
+   ],
+   "env": {
+    "PLATFORM_MCP_DINGTALK_APP_KEY": "${user_config.platform_mcp_dingtalk_app_key}",
+    "PLATFORM_MCP_DINGTALK_APP_SECRET": "${user_config.platform_mcp_dingtalk_app_secret}",
+    "PLATFORM_MCP_DINGTALK_ROBOT_CODE": "${user_config.platform_mcp_dingtalk_robot_code}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_dingtalk_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DINGTALK_APP_KEY",
+   "description": "Client ID (formerly AppKey) of the internal enterprise app that owns the robot; exchanged at POST https://api.dingtalk.com/v1.0/oauth2/accessToken for a 7200-second accessToken.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dingtalk_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DINGTALK_APP_SECRET",
+   "description": "Client Secret (formerly AppSecret) of the same app (developer console, 凭证与基础信息).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_dingtalk_robot_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DINGTALK_ROBOT_CODE",
+   "description": "robotCode of the internal-app robot (developer console robot page; usually equals the app key).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "send",
+   "description": "One-to-one robot message (msgKey sampleText, msgParam serialized {\"content\": …}) to the user whose userId is `to`; message_id is processQueryKey (for the read-status and recall APIs). Users the robot may not reach come back in raw.invalidStaffIdList / flowControlledStaffIdList. `subject`/`channel` are ignored."
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "id": "olx",
+ "category": "automotive",
+ "label": "Olx",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.olx.ua",
+ "domain": "olx.ua",
+ "country": "Ukraine",
+ "official_api": true,
+ "docs_url": "https://developer.olx.ua/api/doc",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (client credentials / authorization code)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing",
+   "list_categories",
+   "messaging"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). OLX Partner API v2 (developer.olx.ua): register an app with an OLX account; post/manage own adverts, messaging, categories/cities; no public search of all listings.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.olx.ua/en",
+   "https://developer.olx.ua/api/doc"
+  ],
+  "unofficial": [
+   "https://github.com/matasarei/olx-api-client-v2",
+   "https://github.com/vt-parhomenko/olx-ua-api-sdk",
+   "https://apify.com (olx scrapers)"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://developer.olx.ua/api/doc): OLX Partner API v2 (developer.olx.ua): register an app with an OLX account; post/manage own adverts, messaging, categories/cities; no public search of all listings. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

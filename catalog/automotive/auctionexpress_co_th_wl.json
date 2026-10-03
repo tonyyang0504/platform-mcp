@@ -1,0 +1,35 @@
+{
+ "id": "auctionexpress_co_th_wl",
+ "category": "automotive",
+ "label": "Auction Express",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.auctionexpress.co.th",
+ "domain": "auctionexpress.co.th",
+ "country": "Thailand",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auction site; homepage/footer scan and dev-path probes found no developer, API or partner-feed pages.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://auctionexpress.co.th/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

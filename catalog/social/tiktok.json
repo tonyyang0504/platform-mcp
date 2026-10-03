@@ -1,0 +1,296 @@
+{
+ "id": "tiktok",
+ "category": "social",
+ "label": "TikTok",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.tiktok.com/docs/en/content-posting-api-get-started",
+ "url": "https://www.tiktok.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free; app must pass TikTok's Content Posting API AUDIT — unaudited clients can only post to PRIVATE accounts / SELF_ONLY and are capped to test users (error unaudited_client_can_only_post_to_private_accounts); scopes video.publish (direct post) and video.upload (upload to the creator's inbox / drafts); 6 requests per minute per user access token; spam_risk_too_many_posts daily cap; PULL_FROM_URL needs a verified domain; UX rules (creator must see privacy options, commercial-content disclosure via brand_content_toggle / brand_organic_toggle, is_aigc label).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "analytics",
+   "read_comments"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 4000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (TikTok has no text-only post)",
+   "docs": "https://developers.tiktok.com/doc/content-posting-api-get-started/"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://open.tiktokapis.com/v2/post/publish/content/init/ (photo post; photos must come from a verified domain/URL prefix)",
+   "docs": "https://developers.tiktok.com/doc/content-posting-api-get-started/"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /v2/post/publish/creator_info/query/ → POST /v2/post/publish/video/init/ (FILE_UPLOAD or PULL_FROM_URL) → PUT chunks → GET /v2/post/publish/status/fetch/",
+   "docs": "https://developers.tiktok.com/doc/content-posting-api-reference-direct-post/"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST https://open.tiktokapis.com/v2/research/video/comment/list/ (Research API)",
+   "docs": "https://developers.tiktok.com/doc/research-api-specs-query-video-comments"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no comment write API outside the Research API / Business API)",
+   "docs": "https://developers.tiktok.com/doc/research-api-specs-query-video-comments"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.tiktok.com/doc/display-api-specification/"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "— (no DM API)",
+   "docs": "https://developers.tiktok.com/doc/display-api-specification/"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://developers.tiktok.com/doc/display-api-specification/"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "— (no delete endpoint in the Content Posting API)",
+   "docs": "https://developers.tiktok.com/doc/content-posting-api-get-started/"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "POST /v2/video/query/?fields=like_count,comment_count,share_count,view_count (Display API)",
+   "docs": "https://developers.tiktok.com/doc/display-api-specification/"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /v2/user/info/?fields=follower_count,likes_count,video_count",
+   "docs": "https://developers.tiktok.com/doc/display-api-specification/"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (gated by audit).",
+  "base_urls": [
+   "https://open.tiktokapis.com/v2/"
+  ],
+  "auth": [
+   "1. TikTok for Developers app → add the Content Posting API product → Login Kit (web) OAuth 2.0 with scopes",
+   "2. Access token 24 h, refresh token 365 days (`POST /v2/oauth/token/`).",
+   "3. **Audit:** until the app passes TikTok's Content Posting audit, posts can only be made to private accounts /"
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Notes",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/post/publish/creator_info/query/",
+    "purpose": "privacy options, duet/stitch/comment flags, max video length",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/post/publish/video/init/",
+    "purpose": "`post_info{title ≤ 2200, privacy_level, disable_duet, disable_comment, disable_stitch, video_cover_timestamp_ms, brand_content_toggle, brand_organic_toggle, is_aigc}`, `source_info{source FILE_UPLOAD",
+    "notes": "PULL_FROM_URL, video_url"
+   },
+   {
+    "call": "PUT <upload_url>` with `Content-Range",
+    "purpose": "5–64 MB chunks",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/post/publish/content/init/",
+    "purpose": "`post_mode=DIRECT_POST`, `media_type=PHOTO`, `photo_images[]` (URLs from a verified domain)",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/post/publish/inbox/video/init/",
+    "purpose": "`video.upload` scope; creator finishes in-app",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/post/publish/status/fetch/",
+    "purpose": "`PROCESSING_UPLOAD` → `PUBLISH_COMPLETE` / `FAILED`",
+    "notes": ""
+   },
+   {
+    "call": "Display API (`/v2/video/list/`, `/v2/video/query/` with like/comment/share/view counts); comment management needs the Commercial / Research programs",
+    "purpose": "separate approvals",
+    "notes": ""
+   }
+  ],
+  "limits": " - 6 requests per minute per user access token; `spam_risk_too_many_posts` daily cap; `reached_active_user_cap` for unaudited apps. - `PULL_FROM_URL` only from a domain verified in the developer portal. - Free; TikTok Developer Terms + Content Posting API guidelines (no automated engagement, disclose branded content).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.tiktok.com/docs/content-posting-api-get-started",
+   "https://developers.tiktok.com/doc/content-posting-api-reference-direct-post"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://open.tiktokapis.com",
+  "rate_per_second": 0.1,
+  "config_fields": [
+   {
+    "name": "privacy_level",
+    "required": true,
+    "help": "privacy_level for direct photo posts: one of the creator's privacy_level_options from /v2/post/publish/creator_info/query/ (PUBLIC_TO_EVERYONE, MUTUAL_FOLLOW_FRIENDS, FOLLOWER_OF_CREATOR, SELF_ONLY). Unaudited apps can only use SELF_ONLY."
+   }
+  ],
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://open.tiktokapis.com/v2/oauth/token/",
+   "client_auth": "body",
+   "client_id_field": "client_key",
+   "token_fields": {
+    "client_id": "client_key"
+   },
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "refresh_token_path": "refresh_token",
+   "fields": [
+    {
+     "name": "client_key",
+     "required": true,
+     "help": "Client key of your TikTok for Developers app (https://developers.tiktok.com/apps)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same app."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "The creator's refresh_token from the Login Kit authorization-code exchange (POST /v2/oauth/token/, valid 365 days) with scopes user.info.basic, video.publish, video.list. Access tokens (24 h) are minted from it; a rotated refresh_token replaces it (persisted when PLATFORM_MCP_STATE_DIR is set)."
+    }
+   ]
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/v2/user/info/",
+    "fixed_params": {
+     "fields": "open_id,union_id,avatar_url,display_name"
+    },
+    "docs": "https://developers.tiktok.com/doc/tiktok-api-v2-get-user-info",
+    "note": "GET /v2/user/info/ (user.info.basic): open_id, union_id, avatar_url, display_name of the authorised creator."
+   },
+   "publish_image": {
+    "method": "POST",
+    "path": "/v2/post/publish/content/init/",
+    "headers": {
+     "Content-Type": "application/json; charset=UTF-8"
+    },
+    "body": {
+     "media_type": "=PHOTO",
+     "post_mode": "=DIRECT_POST",
+     "post_info.description": "text",
+     "post_info.privacy_level": "@privacy_level",
+     "source_info.source": "=PULL_FROM_URL",
+     "source_info.photo_images": "image_urls",
+     "source_info.photo_cover_index": "json:0"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "publish_id",
+      "status": "=processing"
+     }
+    },
+    "docs": "https://developers.tiktok.com/doc/content-posting-api-reference-photo-post",
+    "note": "POST /v2/post/publish/content/init/ (video.publish) direct-posts up to 35 photos pulled from URLs (the domain or URL prefix must be verified for your app; url_ownership_unverified otherwise), `text` as the description (≤4000). `id` is the publish_id; publishing is asynchronous (poll /v2/post/publish/status/fetch/). Unaudited apps can only post SELF_ONLY; 6 requests/minute per token; the creator must have been shown TikTok's posting UX (creator_info/query) first."
+   },
+   "analytics_post": {
+    "method": "POST",
+    "path": "/v2/video/query/",
+    "fixed_params": {
+     "fields": "id,title,create_time,share_url,like_count,comment_count,share_count,view_count"
+    },
+    "body": {
+     "filters.video_ids.0": "post_id"
+    },
+    "result": {
+     "root": "data.videos.0",
+     "fields": {
+      "post_id": "id",
+      "metrics": "$"
+     }
+    },
+    "docs": "https://developers.tiktok.com/doc/tiktok-api-v2-video-query",
+    "note": "POST /v2/video/query/ (video.list) for one of the creator's own videos: like_count, comment_count, share_count, view_count, title, share_url."
+   }
+  },
+  "not_offered": {
+   "publish_text": "The Content Posting API posts only video or photo content ('media_type ... Currently only PHOTO is allowed' for /v2/post/publish/content/init/, https://developers.tiktok.com/doc/content-posting-api-reference-photo-post); there is no text-only post.",
+   "read_comments": "Comment data is not in the Display API video object (fields: id, create_time, cover_image_url, share_url, video_description, duration, …, like_count, comment_count, share_count, view_count; https://developers.tiktok.com/doc/tiktok-api-v2-video-query); comment lists are only in the separately approved Research API.",
+   "reply_comment": "No comment-reply endpoint exists in the Login Kit / Display / Content Posting APIs (https://developers.tiktok.com/doc/tiktok-api-v2-video-query lists only counts).",
+   "read_mentions": "No mentions endpoint exists in the Display or Content Posting APIs (https://developers.tiktok.com/docs/en/content-posting-api-get-started).",
+   "delete": "The Content Posting API has no delete call (https://developers.tiktok.com/docs/en/content-posting-api-get-started: init, upload, status fetch only); posts are deleted in the TikTok app."
+  },
+  "terms": "TikTok Developer Terms and Content Posting API guidelines: app audit required before public posting; show the creator's privacy options and commercial-content disclosures before posting."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host open.tiktokapis.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token open.tiktokapis.com/v2/oauth/token/: 200 invalid_client",
+   "authorize https://www.tiktok.com/v2/auth/authorize/: 302",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Fixed: TikTok Business API answers HTTP 200 {code: 40105, message} for errors; without an envelope the tools returned empty successes. Envelope code=0 added."
+ }
+}

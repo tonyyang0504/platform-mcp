@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "useq-mcp",
+ "display_name": "US Equities (Alpaca) MCP",
+ "version": "0.1.0",
+ "description": "US Equities (Alpaca) (trading): me, list_markets, get_ticker, get_balances, list_orders, place_order",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "useq"
+   ],
+   "env": {
+    "PLATFORM_MCP_USEQ_API_KEY": "${user_config.platform_mcp_useq_api_key}",
+    "PLATFORM_MCP_USEQ_API_SECRET": "${user_config.platform_mcp_useq_api_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_useq_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_USEQ_API_KEY",
+   "description": "Alpaca API key id (APCA-API-KEY-ID). Paper keys (paper dashboard) work only on https://paper-api.alpaca.markets, the default here; live keys need adapter.base_url https://api.alpaca.markets.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_useq_api_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_USEQ_API_SECRET",
+   "description": "Alpaca API secret key (APCA-API-SECRET-KEY).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Account status (must be ACTIVE), cash, buying_power, equity, trading_blocked."
+  },
+  {
+   "name": "list_markets",
+   "description": "Every active US equity in one (large) response; `query` is not sent."
+  },
+  {
+   "name": "get_ticker",
+   "description": "Market-data snapshot from data.alpaca.markets (same keys); the default feed is IEX unless the account has a SIP subscription."
+  },
+  {
+   "name": "get_balances",
+   "description": "Open positions (holdings per symbol); cash and buying power are in `me`."
+  },
+  {
+   "name": "list_orders",
+   "description": "`status` is open (Alpaca's default), closed or all; up to 500 orders."
+  },
+  {
+   "name": "place_order",
+   "description": "Places an order on the account behind the configured keys and host: paper trading by default (https://paper-api.alpaca.markets); if adapter.base_url is the live host it PLACES A REAL ORDER WITH REAL FUNDS. Keep testing on paper and never place an order the user has not explicitly confirmed. Orders are DAY orders; limit orders need `price`, omit it for market orders. Insufficient buying power is answered with HTTP 403 and surfaces as auth_error."
+  },
+  {
+   "name": "cancel_order",
+   "description": "Accepted with HTTP 204; an order that is no longer cancelable is rejected with 422."
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/meta_shops-mcp",
+ "description": "Facebook & Instagram Shops (ecommerce channels): me, update_listing, set_inventory, end_listing, lis",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/commerce-platform/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "meta_shops"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_META_SHOPS_ACCESS_TOKEN",
+     "description": "System-user (or long-lived user) access token of a Meta app with catalog_management and, for orders, commerce_account_manage_orders / commerce_account_read_orders permissions on the commerce account; sent as Authorization: Bearer.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_META_SHOPS_CATALOG_ID",
+     "description": "Product catalog id (Commerce Manager > Catalog > Settings).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_META_SHOPS_CMS_ID",
+     "description": "Commerce account (CMS) id; required for list_orders.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_META_SHOPS_CURRENCY",
+     "description": "ISO currency of the catalog prices, e.g. USD; required when update_listing sends a price ('9.99 USD').",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "alibaba_com-mcp",
+ "display_name": "Alibaba.com MCP",
+ "version": "0.1.0",
+ "description": "Alibaba.com (ecommerce channels): me, list_orders, set_inventory, update_listing, end_listing. Every",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "alibaba_com"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALIBABA_COM_APP_KEY": "${user_config.platform_mcp_alibaba_com_app_key}",
+    "PLATFORM_MCP_ALIBABA_COM_APP_SECRET": "${user_config.platform_mcp_alibaba_com_app_secret}",
+    "PLATFORM_MCP_ALIBABA_COM_ACCESS_TOKEN": "${user_config.platform_mcp_alibaba_com_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_alibaba_com_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_COM_APP_KEY",
+   "description": "App Key of your Alibaba.com Open Platform app (https://openapi.alibaba.com/ App Console; admin-reviewed).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_com_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_COM_APP_SECRET",
+   "description": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API path without '/rest' (e.g. /alibaba/order/get) + the parameters sorted by name as name+value (docId=61). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_alibaba_com_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALIBABA_COM_ACCESS_TOKEN",
+   "description": "access_token from the authorisation-code exchange /auth/token/create (https://openapi.alibaba.com/doc/api.htm#/api?cid=4&path=/auth/token/create). It expires after expires_in seconds; renew it with /auth/token/refresh (a signed call) and update this value — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "alibaba order list (role=seller, one row): verifies the app signature and the seller's access_token."
+  },
+  {
+   "name": "list_orders",
+   "description": "alibaba order list with role=seller: the GGS seller's orders (trade_id, trade_status, create/modify timestamps in ms). `status` is an Alibaba trade status (e.g. unpay, undeliver, delivering, completed; list at docId=131); `since` filters by creation time. Amounts and products: /alibaba/order/get (not mapped for channels)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "Edit Product Inventory: sets the PRODUCT-level real-time inventory of `listing_id` (product_id). Check `success`/`error` (result.success, result.message); SKU-level stock (sku_inventory) is not mapped."
+  },
+  {
+   "name": "update_listing",
+   "description": "Edit Product Price: sets a single USD tier (from 1 unit) as the product-level price of `listing_id` ('Currency, USD only'). Tiered, range and SKU prices beyond that are not mapped; title/description edits are not mapped."
+  },
+  {
+   "name": "end_listing",
+   "description": "Change listing status (action=offline): takes product `listing_id` offline; `success` is false with per-product errors otherwise."
+  }
+ ]
+}

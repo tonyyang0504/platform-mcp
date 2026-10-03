@@ -1,0 +1,141 @@
+{
+ "id": "jobspresso",
+ "category": "jobs",
+ "label": "Jobspresso",
+ "lane": "assist",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobspresso.co/?feed=job_feed",
+ "url": "https://jobspresso.co/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Curated remote board; external apply or e-mail.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the WP Job Manager RSS feeds (site feed + per-category /feed/) are usable public feeds",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Curated remote jobs. WordPress board (WP Job Manager + Indeed integration plugin); public RSS feeds, no developer API. robots.txt 4 rules; no terms page linked from the home page.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://jobspresso.co/",
+   "https://jobspresso.co/robots.txt",
+   "https://jobspresso.co/feed/",
+   "https://jobspresso.co/remote-jobs-programming-marketing-support/feed/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobspresso.co",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/",
+    "params": {
+     "search_keywords": "query",
+     "search_location": "location",
+     "posts_per_page": "limit",
+     "paged": "page"
+    },
+    "fixed_params": {
+     "feed": "job_feed"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "encoded",
+      "company": "company",
+      "location": "location"
+     }
+    },
+    "docs": "https://jobspresso.co/?feed=job_feed",
+    "note": "WP Job Manager job feed (?feed=job_feed, RSS 2.0). WP Job Manager's job_feed() reads search_keywords, search_location (';'-separated), job_types, job_categories and posts_per_page (default 10) and pages with paged (https://github.com/Automattic/WP-Job-Manager/blob/trunk/includes/class-wp-job-manager-post-types.php). company / location come from the job_listing:company / job_listing:location elements, description is the full post (content:encoded, HTML); job_type and job_category stay in raw. id is the posting's permalink. Jobspresso's /feed/ is an empty blog feed; ?feed=job_feed carries the remote jobs."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

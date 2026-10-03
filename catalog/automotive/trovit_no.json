@@ -1,0 +1,41 @@
+{
+ "id": "trovit_no",
+ "category": "automotive",
+ "label": "Bil",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://bil.trovit.no",
+ "domain": "bil.trovit.no",
+ "country": "Norway",
+ "official_api": false,
+ "docs_url": "https://corporate.trovit.com/feed-in-cars/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence medium). Trovit (Lifull Connect/Thribee) aggregator only ingests partner XML car feeds per its published spec; no outbound listings API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://corporate.trovit.com/feed-in-cars/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): Trovit (Lifull Connect/Thribee) aggregator only ingests partner XML car feeds per its published spec; no outbound listings API. No request/response API to serve."
+}

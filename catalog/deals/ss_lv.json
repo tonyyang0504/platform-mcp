@@ -1,0 +1,120 @@
+{
+ "id": "ss_lv",
+ "category": "deals",
+ "label": "SS",
+ "lane": "human",
+ "kind": "board",
+ "regions": [
+  "lv"
+ ],
+ "docs_url": "https://www.ss.lv/lv/api/",
+ "url": "https://www.ss.lv/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API offered for portal integration under SS.LV's conditions (page in Latvian; pricing / key process not extracted).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api (SS.LV API for portal integration — terms on the page)",
+  "access": "apply",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (classifieds integration API). Lane `assist` → **keep**. Confidence medium.",
+  "base_urls": [],
+  "auth": [
+   "1. Request access per the API page; key issued by SS.LV."
+  ],
+  "endpoints": [
+   {
+    "call": "ads export / search (TODO(verify))",
+    "purpose": "search",
+    "notes": "ad title, price, link"
+   }
+  ],
+  "limits": " - Integration terms on the page (Latvian). - API offered for portal integration under SS.LV's conditions (page in Latvian; pricing / key process not extracted).",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.ss.lv/lv/api/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: 'API SS.LV' (https://www.ss.lv/lv/api/) is an embed widget ('tas ir instruments, lai integrētu sludinājumus Jūsu portālā'): choose a colour scheme (Standarta, Sarkans, …) and a section (Darbs un bizness, Transports, …) and paste the generated code, which loads an ss.lv/frame iframe. No REST endpoint, parameter or response reference is published."
+}

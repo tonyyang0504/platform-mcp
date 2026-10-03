@@ -1,0 +1,136 @@
+{
+ "id": "myntra",
+ "category": "ecommerce_channels",
+ "label": "Myntra",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://mmip.myntrainfo.com/",
+ "url": "https://www.myntra.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Myntra seller (PPMP / Omni) or Myntra Global Partner Program brand; API access via partner onboarding (no self-serve key visible); fashion-only marketplace (India); auth, rate limits and sandbox are in the Postman collections which were not opened.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (partner credentials issued by Myntra; details in the Postman collections linked from the developer centre — not read)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "orders",
+   "returns",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "Postman API documentation collections per module (linked from mmip.myntrainfo.com)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.partner_id",
+  "token",
+  "secret",
+  "config.base_url"
+ ],
+ "rate_limits": "n/a",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official developer centre home was opened; the Postman collections holding au",
+  "base_urls": [],
+  "auth": [
+   "1. Onboard as a Myntra seller (PPMP / Omni) or MGPP brand.",
+   "2. Receive integration credentials from Myntra's partner team.",
+   "3. Follow the Postman collection for the token / header scheme."
+  ],
+  "endpoints": [
+   {
+    "call": "Listing Management APIs",
+    "purpose": "create product listings, update images, update attributes, search listing status, activate / deactivate",
+    "notes": ""
+   },
+   {
+    "call": "Omni + PPMP APIs",
+    "purpose": "inventory, orders, returns, reconciliation",
+    "notes": ""
+   },
+   {
+    "call": "B2B International Brand APIs",
+    "purpose": "inventory, back orders, purchase orders (MGPP)",
+    "notes": ""
+   }
+  ],
+  "limits": " Not read. - Partner / seller onboarding gates API access. - Fashion & lifestyle only.",
+  "mcp_sdk": [
+   "SDK: Postman API documentation collections per module (linked from mmip.myntrainfo.com)"
+  ],
+  "sources": [
+   "https://mmip.myntrainfo.com/",
+   "https://r.jina.ai/https://mmip.myntrainfo.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Myntra MMIP Omni/PPMP API (Postman collection https://documenter.getpostman.com/view/34879541/2sA3JNbLQG, collection JSON re-read 2026-09-25): the token flow is now expressible (POST {{api-domain}}/authorization/generate_token, form merchant_id + secret_key header, access_token returned in a RESPONSE HEADER → session login with login.headers + token_from_header, then an access_token header and x-partner-store), but the calls the vocabulary needs are not documented precisely enough to map without guessing: (1) Update Inventory (PUT /partner/v4/inventory/update, \"Maximum number of SKUs allowed in one call is 10\") is documented as a Postman form-data body (inventoryCount, sku, processingSla, storeCode) while sending \"Content-Type: application/json\", and its partial-failure example echoes different names (quantity, store_code) — the wire encoding (form vs JSON object vs JSON array) is contradictory; (2) OrderSearch (GET /partner/v4/order/getOrderList?page&statusCode&startDate&endDate) documents only a 500 error example, no success shape; (3) Ready To Ship is keyed by Myntra's tracking number, not the order id; (4) the {{api-domain}} host is not published (issued at partner onboarding). Needs: a documented inventory request encoding and an OrderSearch success schema (docs gap, not a runtime gap)."
+}

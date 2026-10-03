@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "viber-messaging-mcp",
+ "display_name": "Viber MCP",
+ "version": "0.1.0",
+ "description": "Viber (messaging): me, send. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "messaging/viber"
+   ],
+   "env": {
+    "PLATFORM_MCP_VIBER_AUTH_TOKEN": "${user_config.platform_mcp_viber_auth_token}",
+    "PLATFORM_MCP_VIBER_SENDER_NAME": "${user_config.platform_mcp_viber_sender_name}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_viber_auth_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VIBER_AUTH_TOKEN",
+   "description": "Bot authentication token ('Each API request must include an HTTP Header called X-Viber-Auth-Token containing the account's authentication token'), shown in the bot's edit-info screen / Viber Admin Panel.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_viber_sender_name": {
+   "type": "string",
+   "title": "PLATFORM_MCP_VIBER_SENDER_NAME",
+   "description": "sender.name shown with every message ('required. Max 28 characters').",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "get_account_info: id, name, uri, icon, subscribers_count, webhook."
+  },
+  {
+   "name": "send",
+   "description": "`to` is the Viber user id of a subscriber (from a webhook callback); only subscribed users can be messaged. message_id is Viber's message_token. A non-zero Viber status (e.g. 6 notSubscribed) is an isError result."
+  }
+ ]
+}

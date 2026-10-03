@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "zendesk-mcp",
+ "display_name": "Zendesk MCP",
+ "version": "0.1.0",
+ "description": "Zendesk (messaging): me, list_inbound, get_thread, send, reply. Every tool maps to a documented endp",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "zendesk"
+   ],
+   "env": {
+    "PLATFORM_MCP_ZENDESK_EMAIL_TOKEN": "${user_config.platform_mcp_zendesk_email_token}",
+    "PLATFORM_MCP_ZENDESK_API_TOKEN": "${user_config.platform_mcp_zendesk_api_token}",
+    "PLATFORM_MCP_ZENDESK_SUBDOMAIN": "${user_config.platform_mcp_zendesk_subdomain}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_zendesk_email_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZENDESK_EMAIL_TOKEN",
+   "description": "Agent email followed by /token, e.g. jdoe@example.com/token: API-token auth is Basic '{email_address}/token:{api_token}' (https://developer.zendesk.com/api-reference/introduction/security-and-auth/).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zendesk_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZENDESK_API_TOKEN",
+   "description": "API token from Admin Center > Apps and integrations > APIs > Zendesk API.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_zendesk_subdomain": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ZENDESK_SUBDOMAIN",
+   "description": "Zendesk subdomain: the `acme` of acme.zendesk.com.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Show Self: account.user is the authenticated agent (an anonymous user without id means the credentials were not accepted)."
+  },
+  {
+   "name": "list_inbound",
+   "description": "Tickets (one row per ticket, most recently updated first; offset pagination, max 100 per page). text is the ticket description (first comment); thread_id is the ticket id for get_thread / reply. `since` is not sent."
+  },
+  {
+   "name": "get_thread",
+   "description": "Comments of ticket `thread_id`, oldest first (public replies and internal notes; raw.public tells them apart)."
+  },
+  {
+   "name": "send",
+   "description": "Creates a ticket with requester `to` (email; Zendesk creates the user if unknown) and `text` as the first comment, which notifies the requester per the account's triggers. message_id is the ticket id."
+  },
+  {
+   "name": "reply",
+   "description": "Adds a PUBLIC comment to ticket `thread_id` (Update Ticket with ticket.comment); message_id is the id of the audit the update produced."
+  }
+ ]
+}

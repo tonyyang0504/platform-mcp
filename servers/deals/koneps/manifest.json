@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "koneps-mcp",
+ "display_name": "KONEPS MCP",
+ "version": "0.1.0",
+ "description": "KONEPS (deals): search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "koneps"
+   ],
+   "env": {
+    "PLATFORM_MCP_KONEPS_SERVICE_KEY": "${user_config.platform_mcp_koneps_service_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_koneps_service_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_KONEPS_SERVICE_KEY",
+   "description": "공공데이터포털 (data.go.kr) 일반 인증키 (Decoding) for 조달청_나라장터 입찰공고정보서비스 (dataset 15129394), issued after an 활용신청.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "나라장터검색조건에 의한 입찰공고용역조회 (services tenders): inqryDiv=1 (공고게시일시) over the last 30 days (inqryBgnDt/inqryEndDt 'YYYYMMDDHHMM'), bidNtceNm = query (입찰공고명), presmptPrceBgn = min_budget (추정가격, KRW), bidClseExcpYn=Y (입찰마감제외여부: leave out closed bids). XML response (response.body.items.item); totalCount is text so total is null. presmptPrce (추정가격), asignBdgtAmt, ntceInsttNm (공고기관), bidNtceOrd (차수), opengDt and the spec document URLs stay in raw (numbers are strings in the XML). A portal-level error (e.g. SERVICE_KEY_IS_NOT_REGISTERED_ERROR) answers an OpenAPI_ServiceResponse document instead, so postings is empty — check raw via get_posting if in doubt."
+  },
+  {
+   "name": "get_posting",
+   "description": "입찰공고목록 정보에 대한 용역조회 with inqryDiv=2 (입찰공고번호) and bidNtceNo = id (e.g. R25BK00934017); returns the first 차수. Services tenders only (goods/works use other operations)."
+  }
+ ]
+}

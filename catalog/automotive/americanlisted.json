@@ -1,0 +1,37 @@
+{
+ "id": "americanlisted",
+ "category": "automotive",
+ "label": "Autolist",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.autolist.com",
+ "domain": "autolist.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Autolist (CarGurus-owned aggregator) has no public developer API; inventory comes from dealer feeds via third parties.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://autolist.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://www.marketcheck.com/"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,1628 @@
+[
+ {
+  "name": "star path: first value of an object keyed by an unknown name",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/t",
+     "params": {
+      "pair": "symbol"
+     },
+     "result": {
+      "root": "result.*",
+      "fields": {
+       "symbol": "arg:symbol",
+       "last": "num:c.0"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "error": [],
+     "result": {
+      "XXBTZUSD": {
+       "c": [
+        "1.5",
+        "1"
+       ]
+      }
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "XBTUSD"
+  },
+  "expect": {
+   "symbol": "XBTUSD",
+   "last": 1.5
+  }
+ },
+ {
+  "name": "fail_if_present: a non-empty error list fails",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/t",
+     "result": {
+      "root": "result",
+      "fields": {
+       "symbol": "arg:symbol"
+      }
+     }
+    }
+   },
+   "envelope": {
+    "fail_if_present": [
+     "error.0"
+    ],
+    "error_field": "error.0"
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "error": [
+      "EQuery:Unknown asset pair"
+     ]
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "X"
+  },
+  "error": {
+   "kind": "upstream_error",
+   "message": "EQuery:Unknown asset pair"
+  }
+ },
+ {
+  "name": "fail_if_present: an empty error list passes",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/t",
+     "result": {
+      "root": "result",
+      "fields": {
+       "symbol": "arg:symbol",
+       "last": "last"
+      }
+     }
+    }
+   },
+   "envelope": {
+    "fail_if_present": [
+     "error.0"
+    ],
+    "error_field": "error.0"
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "error": [],
+     "result": {
+      "last": 2
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "X"
+  },
+  "expect": {
+   "symbol": "X",
+   "last": 2
+  }
+ },
+ {
+  "name": "cap tail keeps the newest rows of an answer that ignores the page size",
+  "category": "trading",
+  "verb": "get_candles",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_candles": {
+     "method": "GET",
+     "path": "/c",
+     "max_limit": 720,
+     "result": {
+      "items": "$",
+      "key": "candles",
+      "cap": "tail",
+      "fields": {
+       "time": "iso:0",
+       "open": "1",
+       "high": "1",
+       "low": "1",
+       "close": "1"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     [
+      1790000000,
+      0
+     ],
+     [
+      1790000001,
+      1
+     ],
+     [
+      1790000002,
+      2
+     ],
+     [
+      1790000003,
+      3
+     ],
+     [
+      1790000004,
+      4
+     ],
+     [
+      1790000005,
+      5
+     ],
+     [
+      1790000006,
+      6
+     ],
+     [
+      1790000007,
+      7
+     ],
+     [
+      1790000008,
+      8
+     ],
+     [
+      1790000009,
+      9
+     ]
+    ],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "X",
+   "interval": "1h",
+   "limit": 3
+  },
+  "expect": {
+   "candles.length": 3,
+   "candles.0.close": 7
+  }
+ },
+ {
+  "name": "scalar_rows maps a list of strings",
+  "category": "trading",
+  "verb": "list_markets",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "list_markets": {
+     "method": "GET",
+     "path": "/s",
+     "result": {
+      "items": "$",
+      "scalar_rows": true,
+      "slice": true,
+      "key": "markets",
+      "fields": {
+       "symbol": "$"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     "b",
+     "a",
+     null,
+     true
+    ],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {},
+  "expect": {
+   "markets.length": 2,
+   "markets.0.symbol": "b",
+   "markets.0.raw.values": "b"
+  }
+ },
+ {
+  "name": "offset uses the capped limit (no rows skipped when limit > max_limit)",
+  "category": "jobs",
+  "verb": "search",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search": {
+     "method": "GET",
+     "path": "/j",
+     "params": {
+      "offset": "offset",
+      "count": "limit"
+     },
+     "max_limit": 50,
+     "result": {
+      "items": "r",
+      "key": "postings",
+      "fields": {
+       "id": "id",
+       "title": "t"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "r": [
+      {
+       "id": 1,
+       "t": "x"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "query": "q",
+   "page": 2,
+   "limit": 200
+  },
+  "request": {
+   "query": {
+    "offset": "50",
+    "count": "50"
+   }
+  }
+ },
+ {
+  "name": "a digit-string total (XML, Jolpica) is read",
+  "category": "jobs",
+  "verb": "search",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search": {
+     "method": "GET",
+     "path": "/j",
+     "params": {
+      "page": "page"
+     },
+     "result": {
+      "items": "r",
+      "key": "postings",
+      "total": "n",
+      "fields": {
+       "id": "id",
+       "title": "t"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "n": "2",
+     "r": [
+      {
+       "id": 1,
+       "t": "a"
+      },
+      {
+       "id": 2,
+       "t": "b"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "query": "q",
+   "limit": 2
+  },
+  "expect": {
+   "total": 2,
+   "next_page": null
+  }
+ },
+ {
+  "name": "fail_when null matches an explicit null only",
+  "category": "trading",
+  "verb": "list_markets",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "list_markets": {
+     "method": "GET",
+     "path": "/m",
+     "result": {
+      "items": "data",
+      "key": "markets",
+      "fields": {
+       "symbol": "s"
+      }
+     }
+    }
+   },
+   "envelope": {
+    "fail_when": {
+     "data.last": null
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "data": [
+      {
+       "s": "A"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {},
+  "expect": {
+   "markets.0.symbol": "A"
+  }
+ },
+ {
+  "name": "fail_when null with an explicit null fails and names the path",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/t",
+     "result": {
+      "root": "data",
+      "fields": {
+       "symbol": "s"
+      }
+     }
+    }
+   },
+   "envelope": {
+    "fail_when": {
+     "data.last": null
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "data": {
+      "s": "A",
+      "last": null
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "A"
+  },
+  "error": {
+   "kind": "upstream_error",
+   "message": "data.last is null"
+  }
+ },
+ {
+  "name": "fail_when false never equals 0 (JavaScript ===)",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/t",
+     "result": {
+      "root": "data",
+      "fields": {
+       "symbol": "s"
+      }
+     }
+    }
+   },
+   "envelope": {
+    "fail_when": {
+     "ok": false
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "ok": 0,
+     "data": {
+      "s": "A"
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "A"
+  },
+  "expect": {
+   "symbol": "A"
+  }
+ },
+ {
+  "name": "a same-origin redirect is followed",
+  "category": "market_data",
+  "verb": "search_symbols",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search_symbols": {
+     "method": "GET",
+     "path": "/search",
+     "params": {
+      "q": "query"
+     },
+     "result": {
+      "items": "c",
+      "key": "results",
+      "fields": {
+       "symbol": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 301,
+    "text": "Moved",
+    "headers": {
+     "content-type": "text/plain",
+     "location": "/search/?q=btc"
+    }
+   },
+   {
+    "status": 200,
+    "body": {
+     "c": [
+      {
+       "id": "btc"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "query": "btc"
+  },
+  "expect": {
+   "results.0.symbol": "btc"
+  },
+  "request": {
+   "path": "/search/",
+   "count": 2
+  }
+ },
+ {
+  "name": "a cross-origin redirect is refused",
+  "category": "market_data",
+  "verb": "search_symbols",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search_symbols": {
+     "method": "GET",
+     "path": "/search",
+     "params": {
+      "q": "query"
+     },
+     "result": {
+      "items": "c",
+      "key": "results",
+      "fields": {
+       "symbol": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 302,
+    "text": "",
+    "headers": {
+     "content-type": "text/plain",
+     "location": "https://evil.example/x"
+    }
+   }
+  ],
+  "args": {
+   "query": "btc"
+  },
+  "error": {
+   "kind": "upstream_error",
+   "contains": "evil.example"
+  },
+  "request": {
+   "count": 1
+  }
+ },
+ {
+  "name": "an HTML 200 page is an error, not an empty list",
+  "category": "market_data",
+  "verb": "search_symbols",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search_symbols": {
+     "method": "GET",
+     "path": "/s",
+     "result": {
+      "items": "c",
+      "key": "results",
+      "fields": {
+       "symbol": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "text": "<!DOCTYPE html><html><head><title>Just a moment</title></head><body></body></html>",
+    "headers": {
+     "content-type": "text/html"
+    }
+   }
+  ],
+  "args": {
+   "query": "x"
+  },
+  "error": {
+   "kind": "upstream_error",
+   "contains": "text/html"
+  }
+ },
+ {
+  "name": "a throttle notice served as a 200 page is rate_limited",
+  "category": "market_data",
+  "verb": "search_symbols",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "search_symbols": {
+     "method": "GET",
+     "path": "/s",
+     "result": {
+      "items": "c",
+      "key": "results",
+      "fields": {
+       "symbol": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "text": "Please limit requests to one every 5 seconds",
+    "headers": {
+     "content-type": "text/plain"
+    }
+   }
+  ],
+  "args": {
+   "query": "x"
+  },
+  "error": {
+   "kind": "rate_limited"
+  }
+ },
+ {
+  "name": "error_kinds apply to a 200 HTML page",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/s/{series_id}",
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "d",
+       "value": "v"
+      }
+     }
+    }
+   },
+   "error_kinds": [
+    {
+     "status": 200,
+     "match": "Requisição inválida",
+     "kind": "not_found"
+    }
+   ]
+  },
+  "responses": [
+   {
+    "status": 200,
+    "text": "<html><head><title>Requisição inválida!</title></head></html>",
+    "headers": {
+     "content-type": "text/html"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "9"
+  },
+  "error": {
+   "kind": "not_found"
+  }
+ },
+ {
+  "name": "path arguments are encoded: '?' and '#' cannot change the request",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/p/{symbol}/t",
+     "result": {
+      "fields": {
+       "symbol": "arg:symbol"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "x": 1
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "a b?c#d"
+  },
+  "request": {
+   "path": "/p/a%20b%3Fc%23d/t"
+  }
+ },
+ {
+  "name": "path arguments keep '/' and existing escapes",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/p/{symbol}",
+     "result": {
+      "fields": {
+       "symbol": "arg:symbol"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "x": 1
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "owner/repo%2Fx"
+  },
+  "request": {
+   "path": "/p/owner/repo%2Fx"
+  }
+ },
+ {
+  "name": "path arguments refuse dot segments",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/p/{symbol}/t",
+     "result": {
+      "fields": {
+       "symbol": "arg:symbol"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "x": 1
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "BTC/../../accounts"
+  },
+  "error": {
+   "kind": "invalid_input"
+  },
+  "request": {
+   "count": 0
+  }
+ },
+ {
+  "name": "path arguments refuse encoded dot segments",
+  "category": "trading",
+  "verb": "get_ticker",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_ticker": {
+     "method": "GET",
+     "path": "/p/{symbol}/t",
+     "result": {
+      "fields": {
+       "symbol": "arg:symbol"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "x": 1
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "symbol": "a/%2E%2E/b"
+  },
+  "error": {
+   "kind": "invalid_input"
+  },
+  "request": {
+   "count": 0
+  }
+ },
+ {
+  "name": "fmt [?...] groups drop when an expression is missing",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/s",
+     "params": {
+      "filter": "fmt:id:eq:{series_id}[?,date:gte:{date:start}][?,date:lte:{date:end}]"
+     },
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "d"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "{start}",
+   "end": "2026-01-31"
+  },
+  "request": {
+   "query": {
+    "filter": "id:eq:{start},date:lte:2026-01-31"
+   }
+  }
+ },
+ {
+  "name": "fmt keeps literal JSON arrays",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/s",
+     "params": {
+      "q": "fmt:{\"ids\":[{series_id}]}"
+     },
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "d"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "7"
+  },
+  "request": {
+   "query": {
+    "q": "{\"ids\":[7]}"
+   }
+  }
+ },
+ {
+  "name": "part: splits a two-dimensional series id",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/c/{a}/i/{b}",
+     "path_params": {
+      "a": "part:0:series_id",
+      "b": "part:1:series_id"
+     },
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "d"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "USA/NY.GDP"
+  },
+  "request": {
+   "path": "/c/USA/i/NY.GDP"
+  }
+ },
+ {
+  "name": "a missing computed placeholder names its expression",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/c/{a}/i/{b}",
+     "path_params": {
+      "a": "part:0:series_id",
+      "b": "part:1:series_id"
+     },
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "d"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "USA"
+  },
+  "error": {
+   "kind": "invalid_input",
+   "contains": "part:1:series_id"
+  }
+ },
+ {
+  "name": "{arg} in field, items and root paths",
+  "category": "competitions",
+  "verb": "standings",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "standings": {
+     "method": "GET",
+     "path": "/r",
+     "result": {
+      "items": "{competition_id}.scores",
+      "key": "standings",
+      "fields": {
+       "rank": "place",
+       "score": "num:{competition_id}x"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "42": {
+      "scores": [
+       {
+        "place": 1,
+        "42x": "9.5"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "competition_id": "42"
+  },
+  "expect": {
+   "standings.0.rank": 1,
+   "standings.0.score": 9.5
+  }
+ },
+ {
+  "name": "isodate with %d.%m.%Y and num_comma",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/s",
+     "result": {
+      "items": "$",
+      "key": "points",
+      "fields": {
+       "time": "isodate:%d.%m.%Y:d",
+       "value": "num_comma:v"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     {
+      "d": "02.01.2026",
+      "v": "1 234,5"
+     },
+     {
+      "d": "x",
+      "v": "1,2,3"
+     }
+    ],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "s"
+  },
+  "expect": {
+   "points.0.time": "2026-01-02",
+   "points.0.value": 1234.5,
+   "points.1.time": "x",
+   "points.1.value": null
+  }
+ },
+ {
+  "name": "isodate with RFC 822 (%a, %d %b %Y %H:%M:%S GMT)",
+  "category": "market_data",
+  "verb": "get_news",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_news": {
+     "method": "GET",
+     "path": "/n",
+     "result": {
+      "items": "$",
+      "key": "articles",
+      "fields": {
+       "id": "i",
+       "title": "i",
+       "published_at": "isodate:%a, %d %b %Y %H:%M:%S GMT:p"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     {
+      "i": "a",
+      "p": "Wed, 30 Sep 2026 13:00:00 GMT"
+     },
+     {
+      "i": "b",
+      "p": "Wed, 30 Foo 2026 13:00:00 GMT"
+     }
+    ],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {},
+  "expect": {
+   "articles.0.published_at": "2026-09-30T13:00:00Z",
+   "articles.1.published_at": "Wed, 30 Foo 2026 13:00:00 GMT"
+  }
+ },
+ {
+  "name": "csv option: delimiter, skipped preamble, BOM, missing cells null",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/s",
+     "csv": {
+      "delimiter": ";",
+      "skip_lines": 2
+     },
+     "result": {
+      "items": "rows",
+      "key": "points",
+      "fields": {
+       "time": "Date",
+       "value": "num:Value"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "text": "﻿\"CubeId\";\"x\"\r\n\r\n\"Date\";\"Value\";\"Note\"\r\n\"2026-08\";\"0.9\"\r\n;;\r\n\"2026-09\";\"1.1\";\"n\"\r\n",
+    "headers": {
+     "content-type": "text/plain"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "s"
+  },
+  "expect": {
+   "points.length": 2,
+   "points.0.time": "2026-08",
+   "points.0.value": 0.9,
+   "points.0.raw.Note": null,
+   "points.1.value": 1.1
+  }
+ },
+ {
+  "name": "filter gte on ISO dates and filters on a verb that does not page",
+  "category": "market_data",
+  "verb": "get_news",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_news": {
+     "method": "GET",
+     "path": "/n",
+     "result": {
+      "items": "$",
+      "key": "articles",
+      "slice": true,
+      "filter": [
+       {
+        "arg": "since",
+        "fields": [
+         "published_at"
+        ],
+        "match": "gte"
+       }
+      ],
+      "fields": {
+       "id": "i",
+       "title": "i",
+       "published_at": "p"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     {
+      "i": "a",
+      "p": "2026-09-30T13:00:00Z"
+     },
+     {
+      "i": "b",
+      "p": "2026-09-29T23:00:00Z"
+     }
+    ],
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "since": "2026-09-30"
+  },
+  "expect": {
+   "articles.length": 1,
+   "articles.0.id": "a"
+  }
+ },
+ {
+  "name": "link: cursor from the Link header",
+  "category": "builder_tools",
+  "verb": "list_items",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "list_items": {
+     "method": "GET",
+     "path": "/p",
+     "params": {
+      "id_after": "cursor"
+     },
+     "result": {
+      "items": "$",
+      "key": "items",
+      "next_cursor": "link:id_after",
+      "total": "header:X-Total",
+      "fields": {
+       "id": "str:id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": [
+     {
+      "id": 1
+     }
+    ],
+    "headers": {
+     "content-type": "application/json",
+     "link": "<https://api.example.test/p?id_after=1&x=2>; rel=\"next\", <https://api.example.test/p>; rel=\"first\"",
+     "x-total": "7"
+    }
+   }
+  ],
+  "args": {},
+  "expect": {
+   "next_cursor": "1",
+   "total": 7,
+   "next_page": null
+  }
+ },
+ {
+  "name": "403 with rate-limit wording is rate_limited",
+  "category": "builder_tools",
+  "verb": "list_items",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "list_items": {
+     "method": "GET",
+     "path": "/s",
+     "result": {
+      "items": "i",
+      "key": "items",
+      "fields": {
+       "id": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 403,
+    "body": {
+     "message": "API rate limit exceeded for 1.2.3.4."
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {},
+  "error": {
+   "kind": "rate_limited"
+  }
+ },
+ {
+  "name": "a null record on a POST read is not_found (read judged by the vocabulary)",
+  "category": "builder_tools",
+  "verb": "get_item",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_item": {
+     "method": "POST",
+     "path": "",
+     "body": {
+      "query": "=q",
+      "variables.code": "item_id"
+     },
+     "result": {
+      "root": "data.country",
+      "fields": {
+       "id": "code"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "body": {
+     "data": {
+      "country": null
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    }
+   }
+  ],
+  "args": {
+   "item_id": "ZZ"
+  },
+  "error": {
+   "kind": "not_found"
+  }
+ },
+ {
+  "name": "an HTML error page is summarised by its title",
+  "category": "builder_tools",
+  "verb": "get_item",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_item": {
+     "method": "GET",
+     "path": "/x/{item_id}",
+     "result": {
+      "fields": {
+       "id": "id"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 404,
+    "text": "<!DOCTYPE html>\n<html><head><title>Site / 404</title></head><body>long markup</body></html>",
+    "headers": {
+     "content-type": "text/html"
+    }
+   }
+  ],
+  "args": {
+   "item_id": "1"
+  },
+  "error": {
+   "kind": "not_found",
+   "message": "not found (404): HTML page: Site / 404"
+  }
+ },
+ {
+  "name": "windows-1251 XML is decoded by its declaration",
+  "category": "market_data",
+  "verb": "get_series",
+  "adapter": {
+   "base_url": "https://api.example.test",
+   "auth": {
+    "type": "none"
+   },
+   "rate_per_second": 50,
+   "tools": {
+    "get_series": {
+     "method": "GET",
+     "path": "/x",
+     "result": {
+      "items": "ValCurs.Valute",
+      "key": "points",
+      "fields": {
+       "time": "Name",
+       "value": "num_comma:Value"
+      }
+     }
+    }
+   }
+  },
+  "responses": [
+   {
+    "status": 200,
+    "bytes_b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0id2luZG93cy0xMjUxIj8+PFZhbEN1cnM+PFZhbHV0ZT48TmFtZT7E7uvr4PAg0djAPC9OYW1lPjxWYWx1ZT44MSwxPC9WYWx1ZT48L1ZhbHV0ZT48L1ZhbEN1cnM+",
+    "headers": {
+     "content-type": "application/xml"
+    }
+   }
+  ],
+  "args": {
+   "series_id": "x"
+  },
+  "expect": {
+   "points.0.time": "Доллар США",
+   "points.0.value": 81.1
+  }
+ }
+]

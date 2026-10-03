@@ -1,0 +1,45 @@
+{
+ "manifest_version": "0.2",
+ "name": "smartrecruiters-mcp",
+ "display_name": "SmartRecruiters MCP",
+ "version": "0.1.0",
+ "description": "SmartRecruiters (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "smartrecruiters"
+   ],
+   "env": {
+    "PLATFORM_MCP_SMARTRECRUITERS_COMPANY_IDENTIFIER": "${user_config.platform_mcp_smartrecruiters_company_identifier}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_smartrecruiters_company_identifier": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SMARTRECRUITERS_COMPANY_IDENTIFIER",
+   "description": "The company identifier as it appears at the end of its SmartRecruiters career site, e.g. 'smartrecruiters' in https://careers.smartrecruiters.com/smartrecruiters.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Public Posting API for ONE company (config company_identifier): GET /v1/companies/{companyIdentifier}/postings 'Lists active postings published by given company' without credentials (public postings only). q is the 'full-text search query based on a job title, location'; location is sent as the exact city filter and country as the country-code filter; limit ('max value is 100') and offset page the results (total = totalFound). id is the posting id (use it with get_posting, which adds the job-ad text and URLs). List rows carry no description or URL; department, function, typeOfEmployment, experienceLevel, location.remote/hybrid, uuid and customField[] are in raw."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v1/companies/{companyIdentifier}/postings/{postingId} (posting id or uuid). description is the job-ad 'Job Description' section as HTML; companyDescription, qualifications and additionalInformation sections, applyUrl and referralUrl are in raw."
+  }
+ ]
+}

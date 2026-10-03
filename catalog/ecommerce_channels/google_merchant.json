@@ -1,0 +1,289 @@
+{
+ "id": "google_merchant",
+ "category": "ecommerce_channels",
+ "label": "Google Merchant Center",
+ "lane": "api",
+ "kind": "social_commerce",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.google.com/merchant/api/overview",
+ "url": "https://merchants.google.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Merchant Center account with a verified + claimed website (our storefront domain), product data must meet the Product data specification and Shopping policies; API data source required before productInputs; quotas per method (numbers not read — quota pages 404); no fee; Content API for Shopping stopped 2026-08-18 so only the Merchant API is valid.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "grpc",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2 (OAuth client id/secret with scope https://www.googleapis.com/auth/content, or a service account added to the Merchant Center account)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "reports",
+   "webhooks",
+   "promotions",
+   "order_tracking_signals"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Google API client libraries (Java, Python, PHP, .NET, Node, Go, Ruby) for the Merchant API"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "refresh",
+  "token",
+  "config.account_id",
+  "config.data_source",
+  "config.feed_label",
+  "config.language"
+ ],
+ "rate_limits": "per-method quotas, auto-adjusted for products/accounts; products updatable ≤2×/day; increases via MC support; Content API for Shopping SUNSET 2026-08-18 (errors from 2026-09-01)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://merchantapi.googleapis.com/products/v1/accounts/{account}/productInputs",
+   "https://www.googleapis.com/auth/content"
+  ],
+  "auth": [
+   "1. Tenant creates / verifies a Merchant Center account and claims the storefront domain.",
+   "2. Either: OAuth 2 consent for our Google Cloud OAuth client (scope auth/content) — or the tenant adds our service account e-mail as a Merchant Center user.",
+   "3. Create an API-type data source (DataSources sub-API) — only API data sources accept programmatic product inputs.",
+   "4. Insert productInputs; read processed products for issues (Products sub-API)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST products/v1/accounts/{a}/productInputs:insert · PATCH …/productInputs/{id} · DELETE",
+    "purpose": "create / update / delete a product input (offerId, contentLanguage, feedLabel, attributes: title, description, link, imageLink, price, availability, gtin, brand, condition, shipping)",
+    "notes": "dataSource query param; partial updates for price / availability"
+   },
+   {
+    "call": "GET products/v1/accounts/{a}/products/{id} · GET …/products",
+    "purpose": "processed product + data-quality issues",
+    "notes": ""
+   },
+   {
+    "call": "inventories/v1 … localInventories / regionalInventories",
+    "purpose": "per-store / per-region price + availability",
+    "notes": ""
+   },
+   {
+    "call": "POST datasources/v1/accounts/{a}/dataSources",
+    "purpose": "create the API data source",
+    "notes": "primaryProductDataSource"
+   },
+   {
+    "call": "POST reports/v1/accounts/{a}/reports:search",
+    "purpose": "performance + price competitiveness + best sellers (Merchant Center Query Language)",
+    "notes": ""
+   },
+   {
+    "call": "notifications/v1 … notificationsubscriptions",
+    "purpose": "product / account change notifications (webhook)",
+    "notes": ""
+   },
+   {
+    "call": "promotions/v1 · ordertracking/v1 (order tracking signals)",
+    "purpose": "promotions; shipping-speed signals",
+    "notes": "no order management"
+   }
+  ],
+  "limits": " Per-method quotas exist (overview: 'quotas and rate limits apply'); the quota guide pages returned 404 in this pass — read the Merchant Center quota page before sizing the sync. - Shopping ads / free listings policies + Product data specification. - Website claim required; account suspensions for policy violations are common — surface product issues from products.list as tenant cards. - Buy on Google (checkout on Google) has ended — no orders.",
+  "mcp_sdk": [
+   "SDK: Google API client libraries (Java, Python, PHP, .NET, Node, Go, Ruby) for the Merchant API"
+  ],
+  "sources": [
+   "https://developers.google.com/merchant/api/overview",
+   "https://developers.google.com/merchant/api/guides/products/overview",
+   "https://developers.google.com/merchant/api/guides/quotas"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://merchantapi.googleapis.com",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://oauth2.googleapis.com/token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 client ID of your Google Cloud project (with the Merchant API enabled and the project registered with the Merchant Center account)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "OAuth client secret of the same client."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time consent with scope https://www.googleapis.com/auth/content by a user of the Merchant Center account; the runtime mints access tokens at https://oauth2.googleapis.com/token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "Numeric Merchant Center account id."
+   },
+   {
+    "name": "data_source",
+    "required": true,
+    "help": "API product data source to write to, in the form accounts/<account>/dataSources/<id> (Merchant Center > Data sources, or the Data Sources API); only API data sources can be edited."
+   },
+   {
+    "name": "content_language",
+    "required": true,
+    "help": "Two-letter content language of your products, e.g. en; part of the product input id <language>~<feedLabel>~<offerId>."
+   },
+   {
+    "name": "feed_label",
+    "required": true,
+    "help": "Feed label of your products, e.g. US; part of the product input id."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Google Merchant API (the Content API for Shopping successor). Product changes take a few minutes to be reflected in processed products.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/accounts/v1/accounts/{acct}",
+    "path_params": {
+     "acct": "@account_id"
+    },
+    "docs": "https://developers.google.com/merchant/api/reference/rest/accounts_v1/accounts/get",
+    "note": "accounts.get: {name, accountId, accountName, adultContent, timeZone, languageCode} of the configured Merchant Center account."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/products/v1/accounts/{acct}/productInputs/{pi}",
+    "path_params": {
+     "acct": "@account_id",
+     "pi": "fmt:{@content_language}~{@feed_label}~{listing_id}"
+    },
+    "params": {
+     "dataSource": "@data_source"
+    },
+    "body": {
+     "productAttributes.title": "title",
+     "productAttributes.description": "description"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.google.com/merchant/api/reference/rest/products_v1/accounts.productInputs/patch",
+    "note": "productInputs.patch on accounts/{account}/productInputs/{language}~{feedLabel}~{offerId} (listing_id = your offerId) without an updateMask, so only the attributes sent (title, description) change. `price` is NOT applied: Merchant API prices are amountMicros (price x 1,000,000 as an integer string), which cannot be derived here; `quantity` has no Merchant Center equivalent."
+   },
+   "end_listing": {
+    "method": "DELETE",
+    "path": "/products/v1/accounts/{acct}/productInputs/{pi}",
+    "path_params": {
+     "acct": "@account_id",
+     "pi": "fmt:{@content_language}~{@feed_label}~{listing_id}"
+    },
+    "params": {
+     "dataSource": "@data_source"
+    },
+    "result": {
+     "fields": {
+      "status": "=deleted"
+     }
+    },
+    "docs": "https://developers.google.com/merchant/api/reference/rest/products_v1/accounts.productInputs/delete",
+    "note": "productInputs.delete removes the product input (offerId = listing_id) from the configured data source; the product stops serving on Google once processed. Not reversible (insert it again to restore)."
+   }
+  },
+  "not_offered": {
+   "create_listing": "productInputs.insert requires the price as Price {amountMicros (int64 string), currencyCode} plus link, imageLink and availability; converting the vocabulary's decimal price into micros needs arithmetic the declarative adapter does not have, and the vocabulary has no product page link.",
+   "set_inventory": "Merchant Center products carry an availability state, not a stock quantity (quantities exist only for local inventory per store code); no call sets a stock count for an online offer.",
+   "list_orders": "The Merchant API has no orders resource (checkout happens on the merchant's own site).",
+   "mark_shipped": "No orders or shipments in the Merchant API."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host merchantapi.googleapis.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token oauth2.googleapis.com/token: 401 invalid_client",
+   "authorize https://accounts.google.com/o/oauth2/v2/auth: 302",
+   "spec https://merchantapi.googleapis.com/$discovery/rest?version=accounts_v1, https://merchantapi.googleapis.com/$discovery/rest?version=products_v1: 3/3 tools match (path, method, parameters, body keys, response paths)",
+   "scopes content: all listed in the discovery document"
+  ],
+  "notes": "-"
+ }
+}

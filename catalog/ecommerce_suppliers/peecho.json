@@ -1,0 +1,218 @@
+{
+ "id": "peecho",
+ "category": "ecommerce_suppliers",
+ "label": "Peecho (Prodigi Group)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.peecho.com/print-api-documentation",
+ "url": "https://www.peecho.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (\"Unlock our API's robust printing features at no cost\"; reference is an Apiary embed that did not render; developers.peecho.com DNS dead)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Peecho merchant API credentials (reference is an Apiary embed — unreadable headless)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Registry: 'Unlock our API's robust printing features at no cost'.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.peecho.com/print-api-documentation",
+   "https://r.jina.ai/https://peecho.docs.apiary.io/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.peecho.com/rest/v3",
+  "auth": {
+   "type": "query",
+   "params": {
+    "merchantApiKey": "merchant_api_key"
+   },
+   "fields": [
+    {
+     "name": "merchant_api_key",
+     "required": true,
+     "help": "Peecho Merchant API key (dashboard > Settings > API), sent as the merchantApiKey query parameter and inside order/quote bodies. Test-environment keys belong to https://test.www.peecho.com/rest/v3/, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency for create_order (required by Peecho, e.g. EUR or USD) and quote_shipping prices (EUR when unset)."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/offering/list",
+    "docs": "https://peechoapiv3.docs.apiary.io/",
+    "note": "No account endpoint; the probe lists the offerings active on the account (grouped by category and sub-category codes)."
+   },
+   "quote_shipping": {
+    "method": "POST",
+    "path": "/quote",
+    "body": {
+     "apiKey": "@merchant_api_key",
+     "countryCode": "country",
+     "currency": "@currency",
+     "items.0.offeringId": "int:product_id",
+     "items.0.quantity": "quantity"
+    },
+    "result": {
+     "items": "quotedItems",
+     "key": "options",
+     "fields": {
+      "offering_id": "offeringId",
+      "quantity": "quantity",
+      "product_price": "productPrice",
+      "shipping_wholesale": "shippingWholesale",
+      "total_item_price": "totalItemPrice",
+      "vat": "vat"
+     }
+    },
+    "docs": "https://peechoapiv3.docs.apiary.io/",
+    "note": "POST /rest/v3/quote for one offering (product_id = offeringId from Settings > Products) shipped to `country` (ISO-2): quotedItems[{productPrice, shippingWholesale, totalItemPrice, vat}] with quoteDetails and quoteSummary{totalWholesalePrice, totalShippingPrice} in `raw`. numberOfPages is not sent, so Peecho quotes the product's minimum page count; the default STANDARD shipping option is used."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/order/",
+    "body": {
+     "merchant_api_key": "@merchant_api_key",
+     "currency": "@currency",
+     "item_details": "items",
+     "address_details": "shipping_address",
+     "shipping_option": "shipping_option"
+    },
+    "result": {
+     "fields": {
+      "id": "order_id"
+     }
+    },
+    "docs": "https://peechoapiv3.docs.apiary.io/",
+    "note": "Creates an OPEN (unpaid) order: nothing is produced or charged until the order is paid with POST /order/payment, which this server does not call. `items` are Peecho item_details [{offering_id, quantity, item_reference, file_details{content_url, content_width, content_height, number_of_pages}}]; `shipping_address` is Peecho's address_details {email_address, shipping_address{first_name, last_name, address_line_1, address_line_2, zip_code, city, state, country_code (ISO-2)}}; `shipping_option` is STANDARD or EXPEDITED. The currency setting is required by Peecho. Answers 201 {order_id}."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/order/details",
+    "params": {
+     "orderId": "id"
+    },
+    "result": {
+     "fields": {
+      "id": "order_id",
+      "status": "order_state",
+      "currency": "currency",
+      "created_at": "created_date",
+      "tracking_number": "tracking_code",
+      "tracking_url": "tracking_url",
+      "wholesale_total_inc_taxes": "order_price_data.total_wholesale_price_inc_taxes"
+     }
+    },
+    "docs": "https://peechoapiv3.docs.apiary.io/",
+    "note": "GET /rest/v3/order/details?orderId=: {order_id, order_state (OPEN, PAID, PAYMENT_ERROR, IN_PRINT_QUEUE, SHIPPED, ...), created_date, currency, tracking_code, tracking_url, order_price_data (decimal strings, so the wholesale total is returned as wholesale_total_inc_taxes), item_price_data, address_details, fulfilment_location}."
+   }
+  },
+  "not_offered": {
+   "list_products": "GET /offering/list answers offerings nested under category and sub-category code keys ({\"BO\": {\"SC\": [...]}}) rather than one list, so rows cannot be addressed by a fixed path.",
+   "get_product": "No single-offering endpoint; offerings are only listed per category (GET /offering/list).",
+   "track": "No tracking-events endpoint; the order carries tracking_code and tracking_url once shipped (see get_order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.peecho.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 1/4 tool paths found verbatim on their docs pages, 2 by their last segments; names not found on the page: get_order:orderId, create_order:address_details, create_order:item_details, create_order:merchant_api_key, create_order:shipping_option, quote_shipping:apiKey, quote_shipping:countryCode"
+  ],
+  "notes": "inconclusive: quote_shipping: server_error 500; create_order: server_error 500"
+ }
+}

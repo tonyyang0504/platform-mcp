@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bol_com-mcp",
+ "description": "bol.com (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_ship",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.bol.com/retailer/public/Retailer-API/v10/releasenotes.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bol_com"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BOL_COM_CLIENT_ID",
+     "description": "Client ID of Retailer API credentials created in the bol Seller Dashboard (Settings > API settings); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a short-lived (~5 minute) JWT.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BOL_COM_CLIENT_SECRET",
+     "description": "The matching client secret. The token is cached until expiry (bol blocks clients that request a token for every call).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

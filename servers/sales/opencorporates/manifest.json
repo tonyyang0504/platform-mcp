@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "opencorporates-mcp",
+ "display_name": "OpenCorporates MCP",
+ "version": "0.1.0",
+ "description": "OpenCorporates (sales): me, search, get_company. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "opencorporates"
+   ],
+   "env": {
+    "PLATFORM_MCP_OPENCORPORATES_API_TOKEN": "${user_config.platform_mcp_opencorporates_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_opencorporates_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_OPENCORPORATES_API_TOKEN",
+   "description": "OpenCorporates API token ('available from your account page on OpenCorporates'), sent as the api_token query parameter on every request.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /account_status returns the plan, expiry and calls_remaining (today / this_month) for the token."
+  },
+  {
+   "name": "search",
+   "description": "Name search ('companies whose name matches the given search term'); `country` maps to country_code. `country` in the result is the OpenCorporates jurisdiction_code (ISO alpha-2, or alpha-2 plus subdivision such as us_de). Company numbers are only unique per jurisdiction: pass `<jurisdiction_code>/<company_number>` (raw.company.jurisdiction_code + raw.company.company_number) to get_company. per_page max 100, page ≤ 100. industry_codes[] is documented but its inner shape is not, so `industry` stays in raw."
+  },
+  {
+   "name": "get_company",
+   "description": "GET /companies/:jurisdiction_code/:company_number — `id` must be `<jurisdiction_code>/<company_number>`, e.g. gb/00102498."
+  }
+ ]
+}

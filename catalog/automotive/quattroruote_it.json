@@ -1,0 +1,43 @@
+{
+ "id": "quattroruote_it",
+ "category": "automotive",
+ "label": "Quattroruote",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.quattroruote.it",
+ "domain": "quattroruote.it",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": "https://www.quattroruotepro.it/banche-dati/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": null,
+  "access": "paid",
+  "capabilities": [
+   "get_valuation",
+   "decode_vin"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Quattroruote Professional licenses its Infocar vehicle database and used-car quotations (plate/VIN identification) to professionals commercially; no public API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.quattroruotepro.it/banche-dati/",
+   "https://www.quattroruotepro.it/prodotto/quotazioni-on-line/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Quattroruote Professional licenses its Infocar vehicle database and used-car quotations (plate/VIN identification) to professionals commercially; no public API documentation."
+}

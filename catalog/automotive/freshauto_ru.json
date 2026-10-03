@@ -1,0 +1,43 @@
+{
+ "id": "freshauto_ru",
+ "category": "automotive",
+ "label": "Freshauto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://freshauto.ru",
+ "domain": "freshauto.ru",
+ "country": "Russia",
+ "official_api": false,
+ "docs_url": "https://partner.freshauto.ru/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "partner portal account",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "search_listings"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). Fresh Auto runs a B2B stock-exchange partner program (partner.freshauto.ru, 30+ dealer companies); no public API documentation.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://freshauto.ru/services/partnerskaya-programma-po-obmenu-stokami/",
+   "https://freshauto.ru/services/partners/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Fresh Auto runs a B2B stock-exchange partner program (partner.freshauto.ru, 30+ dealer companies); no public API documentation."
+}

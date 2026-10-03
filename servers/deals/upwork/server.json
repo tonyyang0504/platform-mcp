@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/upwork-mcp",
+ "description": "Upwork (deals): me, search_postings, get_posting, bid_status, list_messages, send_message. Every too",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "upwork"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_UPWORK_CLIENT_ID",
+     "description": "Client ID of an approved Upwork API key (apply at https://www.upwork.com/developer/keys/apply; Upwork reviews every key).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UPWORK_CLIENT_SECRET",
+     "description": "Client secret of the same API key (form body of the refresh_token grant).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UPWORK_REFRESH_TOKEN",
+     "description": "Refresh token from the Authorization Code Grant for the freelancer/agency account; the runtime mints access tokens (TTL 86400 s) at https://www.upwork.com/api/v3/oauth2/token and keeps the rotated refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_UPWORK_TENANT_ID",
+     "description": "Optional organization id sent as X-Upwork-API-TenantId (the execution context; without it the user's default organization is used).",
+     "isRequired": false,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

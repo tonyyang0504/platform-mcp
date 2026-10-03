@@ -1,0 +1,38 @@
+{
+ "id": "cars24",
+ "category": "automotive",
+ "label": "Cars24",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.cars24.ae",
+ "domain": "cars24.ae",
+ "country": "UAE",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars24.ae/docs is an exposed internal Ambassador gateway portal listing undocumented microservices; the partner portal is for Cars24 Network business partners, not a documented third-party API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.cars24.ae/docs/",
+   "https://partner.cars24network.com/"
+  ],
+  "unofficial": [
+   "https://providers.apievangelist.com/providers/cars24/"
+  ]
+ },
+ "official_mcp": []
+}

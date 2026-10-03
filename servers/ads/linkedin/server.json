@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/linkedin-ads-mcp",
+ "description": "LinkedIn Ads (Campaign Manager) (ads): me, list_accounts, list_campaigns, update_budget, pause_resum",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://learn.microsoft.com/en-us/linkedin/marketing/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "ads/linkedin"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LINKEDIN_CLIENT_ID",
+     "description": "Client id of a LinkedIn app with the Advertising API product (scopes r_ads, rw_ads).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LINKEDIN_CLIENT_SECRET",
+     "description": "The app's client secret (form body of the refresh_token grant at https://www.linkedin.com/oauth/v2/accessToken).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LINKEDIN_REFRESH_TOKEN",
+     "description": "Programmatic refresh token from the 3-legged flow (available to approved Marketing API partners; valid about one year). The runtime mints 60-day access tokens from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LINKEDIN_AD_ACCOUNT_ID",
+     "description": "Sponsored ad account id (digits) that owns the campaigns update_budget and pause_resume change (POST /rest/adAccounts/{adAccountId}/adCampaigns/{campaignId}); those verbs take only a campaign id.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

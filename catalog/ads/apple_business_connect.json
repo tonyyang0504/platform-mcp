@@ -1,0 +1,115 @@
+{
+ "id": "apple_business_connect",
+ "category": "ads",
+ "label": "Apple Business Connect (now Apple Business)",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://business.apple.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Business Connect account (free); partner API by agreement (TODO(verify)).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 / API key (Apple Business Connect API for listing partners — TODO(verify))",
+  "access": "partner_only",
+  "capabilities": [
+   "account_management",
+   "catalog_products"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (listing-management API for partners; not advertising) Confidence: **low**.",
+  "base_urls": [],
+  "auth": [
+   "1. Apple Business Connect account.",
+   "2. Partner API agreement (TODO(verify)).",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "place card create / update",
+    "purpose": "listings",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Free listings.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.apple.com/tutorials/data/documentation/businessconnectapi.json"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://businessconnect.apple.com/ now redirects to Apple Business (https://business.apple.com/), which links Run/Grow/Partners/Support and a sign-in only; its partners page (https://business.apple.com/partners/) lists partners with 'Shared API Access', i.e. the API is granted to approved listing partners, and no public API reference is linked. It manages place/brand listings rather than ad campaigns (Apple Ads is the separate apple_search_ads entry). Nothing can be mapped."
+}

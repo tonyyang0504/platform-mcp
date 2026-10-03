@@ -1,0 +1,54 @@
+[project]
+name = "platform-mcp-hub"
+version = "0.1.0"
+description = "MCP servers for 450+ platform APIs (jobs, freelance, ads, e-commerce, messaging, social, sales, trading, market data, automotive) from one evidence-only catalog: one package, one CLI, `platform-mcp-hub serve <id>`."
+readme = "runtime/python/README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "platform-mcp contributors" }]
+keywords = ["mcp", "model-context-protocol", "mcp-server", "api", "catalog", "llm", "agents"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = ["mcp>=2.2,<3", "httpx>=0.27", "pyjwt[crypto]>=2.8"]
+
+[project.optional-dependencies]
+# live verification validates every result against the vocabulary's JSON Schemas
+verify = ["jsonschema>=4"]
+dev = ["jsonschema>=4", "pyyaml>=6", "pytest>=8", "pytest-asyncio>=0.23", "respx>=0.21", "build"]
+
+[project.scripts]
+platform-mcp-hub = "platform_mcp_hub.cli:entry"
+
+[project.urls]
+Homepage = "https://github.com/tonyyang0504/platform-mcp"
+Source = "https://github.com/tonyyang0504/platform-mcp"
+Issues = "https://github.com/tonyyang0504/platform-mcp/issues"
+Changelog = "https://github.com/tonyyang0504/platform-mcp/blob/main/CHANGELOG.md"
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["runtime/python/platform_mcp_hub"]
+exclude = ["**/__pycache__"]
+
+# the whole catalog (entries, vocabularies, directory snapshot) and the adapter contract ship inside the package
+[tool.hatch.build.targets.wheel.force-include]
+"catalog" = "platform_mcp_hub/catalog"
+"docs/ADAPTER_CONTRACT.md" = "platform_mcp_hub/ADAPTER_CONTRACT.md"
+
+[tool.hatch.build.targets.sdist]
+include = ["/runtime/python/platform_mcp_hub", "/runtime/python/README.md", "/catalog", "/docs/ADAPTER_CONTRACT.md", "/LICENSE", "/NOTICE", "/README.md"]
+exclude = ["**/__pycache__"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

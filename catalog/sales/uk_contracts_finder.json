@@ -1,0 +1,36 @@
+{
+ "id": "uk_contracts_finder",
+ "category": "sales",
+ "label": "Contracts Finder",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "gb"
+ ],
+ "docs_url": "https://www.contractsfinder.service.gov.uk/apidocumentation",
+ "url": "https://www.contractsfinder.service.gov.uk/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Open API (OCDS + notice search) without a key, Open Government Licence.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

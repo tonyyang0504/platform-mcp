@@ -1,0 +1,44 @@
+{
+ "id": "avtocod_ru",
+ "category": "automotive",
+ "label": "Cars",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://cars.avtocod.ru",
+ "domain": "cars.avtocod.ru",
+ "country": "Russia",
+ "official_api": true,
+ "docs_url": "https://b2bapi.avtocod.ru/docs/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk"
+  ],
+  "auth": "API token / user credentials on B2B account with balance",
+  "access": "paid",
+  "capabilities": [
+   "decode_vin",
+   "vehicle_history_report"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Avtocod offers a paid B2B REST API (with SDK and Swagger) for VIN/plate vehicle history reports; no listings search API for cars.avtocod.ru.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://b2bapi.avtocod.ru/docs/about/overview",
+   "https://github.com/avtocod/specs"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "needs_runtime",
+ "reason": "Avtocod B2B API (https://b2bapi.avtocod.ru/docs/, read 2026-09-25) is documented but (1) reports are generated asynchronously (create a report, then poll it until sources finish), and (2) the Authorization: AR-REST header is base64(user:stamp:age:base64(md5(stamp:age:base64(md5(pass))))) — a base64 of a composed string that the signing modes cannot build. It sells VIN/plate history reports, not listings."
+}

@@ -1,0 +1,296 @@
+{
+ "id": "atlassian_marketplace",
+ "category": "marketplaces",
+ "label": "Atlassian Marketplace",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.atlassian.com/platform/marketplace/",
+ "url": "https://marketplace.atlassian.com/manage",
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation of versions/reporting allowed with a partner Atlassian account + API token (Basic auth); NEW listing is UI-only with 5-10 business-day human approval; Marketplace Partner Agreement must be accepted (acceptedAgreements field); Atlassian is MoR (75-85% share); token traffic under burst rate limits (no published number).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "cli",
+   "sdk"
+  ],
+  "auth": "basic",
+  "access": "signup",
+  "capabilities": [
+   "upload_file",
+   "create_version",
+   "update_listing",
+   "set_visibility",
+   "sales_stats",
+   "licenses",
+   "reviews"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developer.atlassian.com/platform/forge/cli-reference/register/ (Forge CLI: forge deploy / forge register; no listing command)"
+  ]
+ },
+ "official_mcp": [
+  "https://github.com/rustem-shiriiazdanov/atlassian-marketplace-mcp (community, vendor reporting + promotions)"
+ ],
+ "auth_fields": [
+  "atlassian_api_token",
+  "partner_id"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict**: has_api **partial**.",
+  "base_urls": [
+   "https://api.atlassian.com/marketplace/rest/3",
+   "https://marketplace.atlassian.com/rest/2"
+  ],
+  "auth": [
+   "1. Tenant has a Marketplace **partner account** (marketplace.atlassian.com/manage → \"Manage vendor account\"); paid apps need bank",
+   "2. Tenant creates an Atlassian **API token** at id.atlassian.com (Security → API tokens); tokens have a set expiry chosen at creation.",
+   "3. Every call: HTTP Basic — username = Atlassian account e-mail, password = the API token. No OAuth scopes."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Fields from the docs",
+    "notes": ""
+   },
+   {
+    "call": "**none** — UI only: `https://marketplace.atlassian.com/manage/apps/create",
+    "purpose": "name, description, branding, security/privacy info, bank details; 5–10 business-day review",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/3/artifacts` (Basic auth, binary body)",
+    "purpose": "returns artifact details referenced by the version call",
+    "notes": ""
+   },
+   {
+    "call": "POST /rest/3/app-software/{appSoftwareId}/versions",
+    "purpose": "`buildNumber`, `versionNumber`, `compatibilities`, `supportedPaymentModel` (free / vendor / atlassian), `frameworkDetails`, `licenseType`, `acceptedAgreements` (partner-agreement URL)",
+    "notes": ""
+   },
+   {
+    "call": "POST` / `PUT /rest/3/app-software/{appSoftwareId}/versions/{buildNumber}/listing",
+    "purpose": "`screenshots[]`, `highlights[]`, `moreDetails`, `heroImage`, `youtubeId`, `deploymentInstructions[]`, `developerLinks` (documentation / EULA / purchase), `state` PUBLIC \\",
+    "notes": "PRIVATE, `approvalStatus`, `revision`"
+   },
+   {
+    "call": "GET /rest/3/app-software/{appSoftwareId}/listings/all",
+    "purpose": "—",
+    "notes": ""
+   },
+   {
+    "call": "v3 apps group (`GET /rest/3/apps…`)",
+    "purpose": "app key, name, partner",
+    "notes": ""
+   },
+   {
+    "call": "v3 reporting group (sales / transactions / licenses / churn / conversion / renewal)",
+    "purpose": "as exposed by the community MCP server's 95 tools",
+    "notes": ""
+   },
+   {
+    "call": "set on the version through Manage listings / `supportedPaymentModel`; Atlassian is merchant of record",
+    "purpose": "—",
+    "notes": ""
+   }
+  ],
+  "limits": " No number published for the Marketplace API. Atlassian applies **burst rate limits to API-token traffic** and since 2025-03-13 sends beta quota headers; back off on 429 with the `Retry-After` header. - Automation allowed for partners on their own listings; the NEW-listing form and the Marketplace Partner Agreement are human steps. - Every new app is reviewed against the app-approval guidelines (security, privacy, Forge/Connect requirements); new versions of an already-approved app do NOT need approval (\"new versions don't require approval\"). - Atlassian collects payment (75–85 % partner share",
+  "mcp_sdk": [
+   "Community MCP: https://github.com/rustem-shiriiazdanov/atlassian-marketplace-mcp (MIT; wraps v3 reporting + v1 promotions with",
+   "Official Atlassian MCP (https://github.com/atlassian/atlassian-mcp-server) covers Jira / Confluence / Bitbucket — NOT the Marketplace.",
+   "Forge CLI (`forge deploy`, `forge register`) deploys the app; it has **no** Marketplace-listing command."
+  ],
+  "sources": [
+   "https://developer.atlassian.com/platform/marketplace/rest/v3/intro/",
+   "https://developer.atlassian.com/platform/marketplace/rest/v2/intro/",
+   "https://developer.atlassian.com/platform/marketplace/listing-an-app-version-using-rest/",
+   "https://developer.atlassian.com/platform/marketplace/rest/v4/api-group-app-version-listing/",
+   "https://developer.atlassian.com/platform/marketplace/rest/v4/intro/",
+   "https://developer.atlassian.com/platform/marketplace/creating-a-marketplace-listing/",
+   "https://developer.atlassian.com/platform/marketplace/listing-and-managing-apps/",
+   "https://developer.atlassian.com/platform/forge/distribute-your-apps/",
+   "https://developer.atlassian.com/platform/forge/cli-reference/register/",
+   "https://community.developer.atlassian.com/t/marketplace-rest-api-v3/102354",
+   "https://community.developer.atlassian.com/t/api-token-rate-limiting/92292",
+   "https://github.com/rustem-shiriiazdanov/atlassian-marketplace-mcp"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://marketplace.atlassian.com/rest/2",
+  "auth": {
+   "type": "basic",
+   "username_field": "email",
+   "password_field": "api_token",
+   "fields": [
+    {
+     "name": "email",
+     "required": true,
+     "help": "Email of the Atlassian account that belongs to the Marketplace partner (vendor) with reporting access; Basic auth username (securitySchemes mpac_authed http basic in https://developer.atlassian.com/platform/marketplace/rest/v2/ swagger.v3.json)."
+    },
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Atlassian API token of that account (https://id.atlassian.com/manage-profile/security/api-tokens), used as the Basic auth password."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "vendor_id",
+    "required": true,
+    "help": "Numeric Marketplace partner (vendor) id, shown in the Marketplace partner portal URL (/manage/vendors/{vendorId})."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Marketplace reporting APIs are for the partner's own data; amounts are reported in USD.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/vendors/{vendor_id}/reporting/sales/transactions",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "fixed_params": {
+     "limit": "1"
+    },
+    "docs": "https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-reporting/#api-vendors-vendorid-reporting-sales-transactions-get",
+    "note": "There is no 'current user' resource: the probe reads one sales transaction of config vendor_id ('This resource requires authentication'), which proves the credentials have reporting access to that partner."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/addons/vendor/{vendor_id}",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "includePrivate": "=true"
+    },
+    "default_limit": 25,
+    "max_limit": 50,
+    "result": {
+     "items": "_embedded.addons",
+     "key": "products",
+     "total": "count",
+     "fields": {
+      "id": "key",
+      "name": "name",
+      "description": "summary",
+      "status": "status"
+     }
+    },
+    "docs": "https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-apps/#api-addons-vendor-vendorid-get",
+    "note": "Get apps (by vendor) for config vendor_id, private listings included (includePrivate=true with the partner's credentials). `id` is the app key; status is the listing status (e.g. public, private, rejected). Pricing is not part of the app record; `status` input is not a filter and is not sent."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/addons/{product_id}",
+    "result": {
+     "fields": {
+      "id": "key",
+      "name": "name",
+      "description": "summary",
+      "status": "status",
+      "updated_at": "lastModified"
+     }
+    },
+    "docs": "https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-apps/#api-addons-addonkey-get",
+    "note": "Get app by app key (`product_id` = addonKey): name, summary, tagLine, status, lastModified, marketing and _embedded details under raw; no price."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/vendors/{vendor_id}/reporting/sales/transactions",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "params": {
+     "addon": "product_id",
+     "startDate": "date:since",
+     "offset": "offset",
+     "limit": "limit",
+     "sortBy": "=date",
+     "order": "=desc"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "transactions",
+     "key": "sales",
+     "fields": {
+      "id": "transactionId",
+      "product_id": "addonKey",
+      "product_name": "addonName",
+      "amount": "purchaseDetails.purchasePrice",
+      "currency": "=USD",
+      "status": "paymentStatus",
+      "customer_email": "customerDetails.technicalContact.email",
+      "created_at": "purchaseDetails.saleDate"
+     }
+    },
+    "docs": "https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-reporting/#api-vendors-vendorid-reporting-sales-transactions-get",
+    "note": "Get transactions (newest first) for config vendor_id, filtered by `product_id` (addon key) and `since` (startDate, YYYY-MM-DD only). `amount` is purchasePrice ('The sale price in USD'); vendorAmount (your share), saleType (new, renewal, upgrade, refund), licenseType and hosting are under raw.purchaseDetails. Refund transactions appear here too (saleType refund, negative amounts)."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/vendors/{vendor_id}/reporting/sales/transactions",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "params": {
+     "startDate": "date:since",
+     "offset": "offset",
+     "limit": "limit",
+     "sortBy": "=date",
+     "order": "=desc"
+    },
+    "fixed_params": {
+     "saleType": "refund"
+    },
+    "default_limit": 50,
+    "max_limit": 50,
+    "result": {
+     "items": "transactions",
+     "key": "refunds",
+     "fields": {
+      "id": "transactionId",
+      "sale_id": "purchaseDetails.originalTransactionDetails.transactionId",
+      "amount": "purchaseDetails.purchasePrice",
+      "currency": "=USD",
+      "reason": "purchaseDetails.refundReason",
+      "status": "paymentStatus",
+      "created_at": "purchaseDetails.saleDate"
+     }
+    },
+    "docs": "https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-reporting/#api-vendors-vendorid-reporting-sales-transactions-get",
+    "note": "Get transactions with saleType=refund since `since` (YYYY-MM-DD). amount is the (negative) USD purchasePrice; refundReason under purchaseDetails; sale_id is the original transaction when Atlassian reports originalTransactionDetails."
+   }
+  },
+  "not_offered": {
+   "create_product": "App listings are created through the Marketplace partner portal / app submission flow, not a create call in the REST API v2 reporting / apps groups (https://developer.atlassian.com/platform/marketplace/rest/v2/).",
+   "update_price": "Paid-via-Atlassian app prices are set per tier in the partner portal; the Apps API exposes no pricing write (https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-apps/).",
+   "get_sales_stats": "Aggregated sales (GET /vendors/{vendorId}/reporting/sales/transactions/{metric}) return per-period series ({total: {name, series[]}, addons[]}) by country / hosting / tier / type, not a single revenue total the vocabulary can report (https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-reporting/).",
+   "refund": "Refunds are processed by Atlassian (customer requests to Atlassian); the REST API only reports refund transactions (https://developer.atlassian.com/platform/marketplace/rest/v2/api-group-reporting/)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host marketplace.atlassian.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

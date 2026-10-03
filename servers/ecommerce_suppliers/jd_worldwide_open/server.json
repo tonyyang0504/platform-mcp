@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/jd_worldwide_open-mcp",
+ "description": "JD Worldwide (京东全球购) + JD Open Platform (宙斯) (ecommerce suppliers): me, list_products, get_product, ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://jos.jd.com/apilist",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "jd_worldwide_open"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_KEY",
+     "description": "app_key of your JD Open Platform (宙斯/JOS) app, https://jos.jd.com/.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_APP_SECRET",
+     "description": "appSecret of the same app; signs every call: upper(MD5(appSecret + sorted name+value of all parameters + appSecret)). Never sent on the wire.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_JD_WORLDWIDE_OPEN_ACCESS_TOKEN",
+     "description": "The merchant's access_token from the JOS OAuth authorisation (https://jos.jd.com/commondoc?listId=32); renew it before it expires and update this value — the runtime does not refresh it.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

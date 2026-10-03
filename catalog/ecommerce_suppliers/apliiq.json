@@ -1,0 +1,228 @@
+{
+ "id": "apliiq",
+ "category": "ecommerce_suppliers",
+ "label": "Apliiq",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://help.apliiq.com/portal/en/kb/help/api",
+ "url": "https://www.apliiq.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "n/s (REST API advertised for \"custom apps, bulk ops\"; reference lives in a JS help portal that did not render)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (API section lists 'Authentication'; article bodies are login / JS-rendered)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "product_import",
+   "store_app_only"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference it",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Dropship pricing tiers + VIP programme; API reserved for custom-store integrations; no automation clause readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://help.apliiq.com/portal/en/kb/help/api",
+   "https://r.jina.ai/https://help.apliiq.com/portal/en/kb/help/api",
+   "https://r.jina.ai/https://help.apliiq.com/portal/en/kb/help"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.apliiq.com",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "API Key (APPID) of an Apliiq custom store (https://www.apliiq.com/verified/stores > custom store > API Key)."
+    },
+    {
+     "name": "shared_secret",
+     "required": true,
+     "help": "The store's Shared_SECRET: signs every request (base64 HMAC-SHA256 over APPID + RTS + STATE + base64(body), empty for GET). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{@app_id}{timestamp_s}{timestamp}",
+    "key_field": "shared_secret",
+    "algorithm": "sha256",
+    "encoding": "base64",
+    "headers": {
+     "Authorization": "x-apliiq-auth {timestamp_s}:{signature}:{@app_id}:{timestamp}"
+    }
+   }
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v1/Order",
+    "fixed_params": {
+     "yearOrlastNoMonth": "1"
+    },
+    "docs": "https://help.apliiq.com/portal/en/kb/articles/get-order",
+    "note": "Apliiq has no account endpoint; the probe lists the last month's orders (an array), so `account` is empty on success. A 401 means the APPID/Shared_SECRET signature was refused."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/v1/Product",
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "Id",
+      "title": "Name",
+      "sku": "SKU",
+      "price": "Price",
+      "currency": "Currency_Code",
+      "code": "Code"
+     }
+    },
+    "docs": "https://help.apliiq.com/portal/en/kb/articles/product-api",
+    "note": "GET /v1/Product returns the whole blank catalogue as one array [{Id, Name, Code, SKU, Price, Currency_Code, Sizes[{Id, Name, Weight, PlusSize_Fee}], Colors[{Id, Name}], Services, Locations}]; `query`, `category`, `page` and `limit` are not accepted by the endpoint."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/v1/Product/{id}",
+    "result": {
+     "fields": {
+      "id": "Id",
+      "title": "Name",
+      "sku": "SKU",
+      "price": "Price",
+      "currency": "Currency_Code",
+      "code": "Code",
+      "description": "Description"
+     }
+    },
+    "docs": "https://help.apliiq.com/portal/en/kb/articles/product-api",
+    "note": "One blank product by its numeric Id with Sizes, Colors, Services (screen print, embroidery, digital print ...), Locations (placement areas) and Subscriptions in `raw`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v1/Order/{id}",
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "OrderId",
+      "status": "Status",
+      "created_at": "OrderDate",
+      "tracking_number": "SN.0.TrackingNumber",
+      "expected_date": "ExpectedDate",
+      "store_order_id": "StoreOrderId"
+     }
+    },
+    "docs": "https://help.apliiq.com/portal/en/kb/articles/get-order",
+    "note": "GET /v1/Order/{OrderId} answers a one-element array [{OrderId, OrderDate, ExpectedDate, TotalQty, SN[shipment notices], StoreOrderId, Status (New, In Production, Ready To Ship, Shipped, Canceled, ...), AwaitingGarment, AwaitingArtwork, CanChangeShipAddress}]. No totals are returned."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/v1/Order/{order_id}",
+    "result": {
+     "items": "0.SN",
+     "key": "events",
+     "fields": {
+      "tracking_number": "TrackingNumber",
+      "carrier": "Service",
+      "tracking_url": "Carrier",
+      "status": "Helptext"
+     }
+    },
+    "docs": "https://help.apliiq.com/portal/en/kb/articles/get-order",
+    "note": "The order's shipment notices SN[{TrackingNumber, Service (e.g. USPS First Class Mail), Carrier (tracking URL), Helptext (\"your package shipped on ...\"), Items}]; empty until shipped."
+   }
+  },
+  "not_offered": {
+   "create_order": "POST /v1/Order must be signed over base64(request body) ('base64_encode(HMACSHA256([APPId][RTS][STATE][Base64_ReqContent]...))', https://help.apliiq.com/portal/en/kb/articles/authentication); the runtime's signing templates have {body} but no base64 transform of it, so a POST cannot be signed.",
+   "quote_shipping": "No shipping-rate endpoint is documented in the Apliiq API sections (Orders, Products, Warehouse, Add to store)."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_id, shared_secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

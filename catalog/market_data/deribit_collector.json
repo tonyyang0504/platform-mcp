@@ -1,0 +1,71 @@
+{
+ "id": "deribit_collector",
+ "category": "market_data",
+ "label": "Deribit options API",
+ "provider": "Deribit",
+ "lane": "api",
+ "base_urls": [
+  "https://www.deribit.com/api/v2"
+ ],
+ "data_kinds": [
+  "options chain (instruments)",
+  "ticker snapshots with greeks/IV",
+  "trade history",
+  "order book summaries",
+  "historical volatility",
+  "settlement/delivery prices"
+ ],
+ "auth": "none (public endpoints)",
+ "docs_url": "https://docs.deribit.com/",
+ "verified_at": "2026-09-24",
+ "adapter": {
+  "base_url": "https://www.deribit.com/api/v2",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "No numeric limit on the pages read; JSON-RPC overview: 'Unauthenticated HTTP requests have stricter rate limits' and error 10028 too_many_requests means 'Allowed request rate has been exceeded' (https://docs.deribit.com/articles/errors). Two requests per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/public/test",
+    "docs": "https://docs.deribit.com/api-reference/supporting/public-test",
+    "note": "Public API, no credentials: the probe is GET /public/test ({jsonrpc, id, result.version})."
+   },
+   "search_symbols": {
+    "method": "GET",
+    "path": "/public/get_instruments",
+    "params": {
+     "currency": "query"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result",
+     "key": "results",
+     "fields": {
+      "symbol": "instrument_name",
+      "name": "price_index",
+      "type": "kind"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/market-data/public-get_instruments",
+    "note": "get_instruments has no text search: `query` is sent as the REQUIRED `currency` parameter (BTC, ETH, USDC, USDT, EURR or any) and every non-expired instrument of that currency comes back in one response (kind future/option/spot/…; expired=false default; no pagination, `page`/`limit` ignored). `type` is the instrument kind; base_currency, quote_currency, is_active, expiration_timestamp, strike, option_type, tick_size, contract_size stay in `raw`. JSON-RPC errors arrive as {error: {code, message}} — 10028 is the rate limit."
+   }
+  },
+  "not_offered": {
+   "get_candles": "public/get_tradingview_chart_data (instrument_name, start_timestamp, end_timestamp in ms, resolution) returns parallel arrays result.ticks[]/open[]/high[]/low[]/close[]/volume[] rather than one record per candle; the runtime cannot zip parallel arrays.",
+   "get_series": "public/get_funding_rate_history and get_historical_volatility need integer-millisecond timestamps and return positional/parallel rows; not mappable by the runtime.",
+   "get_news": "No news endpoint on this API."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

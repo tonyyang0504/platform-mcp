@@ -1,0 +1,242 @@
+{
+ "id": "nextdoor",
+ "category": "ads",
+ "label": "Nextdoor Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": "https://developer.nextdoor.com/reference",
+ "url": "https://business.nextdoor.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Ads API access is by application (\"Apply for access\") on developer.nextdoor.com",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Nextdoor developer app; 'Apply for access')",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "conversions_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Nextdoor Ads API) Confidence: **high** — official portal read (endpoint list via OpenAPI TODO(verify)).",
+  "base_urls": [
+   "https://ads.nextdoor.com/v2/api/…"
+  ],
+  "auth": [
+   "1. Create a developer account and 'Apply for access' to the Advertise product.",
+   "2. OAuth2 app credentials → advertiser authorization → token.",
+   "3. Campaigns → ad groups → ads → scheduled reports; conversion API for attribution."
+  ],
+  "endpoints": [
+   {
+    "call": "campaign create / update / list",
+    "purpose": "campaigns + budget",
+    "notes": "name, objective, budget, schedule, status"
+   },
+   {
+    "call": "ad group create / update",
+    "purpose": "ad groups + bid + targeting",
+    "notes": "targeting (zip / neighborhood), bid"
+   },
+   {
+    "call": "ad + creative create",
+    "purpose": "ads / creatives",
+    "notes": "media, copy, cta"
+   },
+   {
+    "call": "scheduled reports",
+    "purpose": "reports",
+    "notes": "report definition, cadence"
+   },
+   {
+    "call": "conversion events",
+    "purpose": "conversions upload",
+    "notes": "event, user data"
+   }
+  ],
+  "limits": " - Access by application; free; Nextdoor developer terms.",
+  "mcp_sdk": [
+   "OpenAPI + llms.txt (developer.nextdoor.com/llms.txt)."
+  ],
+  "sources": [
+   "https://developer.nextdoor.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://ads.nextdoor.com",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "bearer",
+   "field": "api_token",
+   "fields": [
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "Nextdoor Ads Manager API token (NAM > settings > API, https://ads.nextdoor.com/v2/manage/api) for an account granted Ads API access; one token per user, valid for one year, acting for every advertiser tied to the NAM account."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": false,
+    "help": "Nextdoor advertiser id used by pause_resume (the status path is /api/v3/advertisers/{advertiserId}/campaigns/{campaignId}/status)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/v3/me",
+    "docs": "https://developer.nextdoor.com/reference/get_api-v3-me",
+    "note": "GET /api/v3/me: {profile {id, name, is_ad_agency}, user {id, email, advertisers_with_access [{id, role}]}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/api/v3/me",
+    "result": {
+     "items": "user.advertisers_with_access",
+     "key": "accounts",
+     "fields": {
+      "id": "id",
+      "role": "role"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/get_api-v3-me",
+    "note": "The advertisers the token's user can reach, from GET /api/v3/me (user.advertisers_with_access: id and role only; names and currency come from GET /api/v3/advertisers/{id})."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/api/v3/advertisers/{account_id}/campaigns",
+    "params": {
+     "pageSize": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 500,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "data.id",
+      "name": "data.name",
+      "status": "data.status",
+      "start": "data.start_time",
+      "end": "data.end_time"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/get_api-v3-advertisers-advertiserid-campaigns",
+    "note": "GET /api/v3/advertisers/{advertiserId}/campaigns?pageSize= (archived excluded). `status` is the computed status (ACTIVE, PAUSED, NO_ACTIVE_AD_GROUPS, PAUSED_FOR_BILLING…; raw.data.user_status is the user setting) and is not a filter here. Budgets live on ad groups. Cursor paging: only the first page is returned."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/api/v3/advertisers/{advertiser_id}/campaigns/{campaign_id}/status",
+    "path_params": {
+     "advertiser_id": "@advertiser_id"
+    },
+    "body": {
+     "user_status": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "status",
+      "user_status": "user_status"
+     }
+    },
+    "docs": "https://developer.nextdoor.com/reference/put_api-v3-advertisers-advertiserid-campaigns-campaignid-status",
+    "note": "PUT /api/v3/advertisers/{advertiser_id config}/campaigns/{campaign_id}/status {user_status: PAUSED|ACTIVE}; returns the updated campaign. Resuming restarts spending on its ad groups."
+   }
+  },
+  "not_offered": {
+   "get_report": "Synchronous stats (\"GET /api/v3/advertisers/{advertiserId}/stats\" and \".../campaigns/{campaignId}/stats\", https://developer.nextdoor.com/reference/get_api-v3-advertisers-advertiserid-stats) return a single totals object rather than rows, which the adapter's list mapping cannot wrap; row reports (\"POST /api/v3/advertisers/{advertiserId}/reports\") are generated asynchronously.",
+   "update_budget": "Nextdoor budgets are set on ad groups (\"PUT /api/v3/advertisers/{advertiserId}/adgroups/{adGroupId}\", https://developer.nextdoor.com/reference/put_api-v3-advertisers-advertiserid-adgroups-adgroupid); campaigns carry no budget field."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ads.nextdoor.com: DNS ok, TLSv1.2 (Amazon)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

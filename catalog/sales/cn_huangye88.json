@@ -1,0 +1,36 @@
+{
+ "id": "cn_huangye88",
+ "category": "sales",
+ "label": "黄页88网",
+ "lane": "public",
+ "kind": "directory",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": null,
+ "url": "https://www.huangye88.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (7 Disallow) blocks .do endpoints only; listing pages public.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

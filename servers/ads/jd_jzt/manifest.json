@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "jd_jzt-mcp",
+ "display_name": "京准通 JD JZT MCP",
+ "version": "0.1.0",
+ "description": "京准通 JD JZT (ads): me, list_campaigns, update_budget, pause_resume. Every tool maps to a documented e",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "jd_jzt"
+   ],
+   "env": {
+    "PLATFORM_MCP_JD_JZT_APP_KEY": "${user_config.platform_mcp_jd_jzt_app_key}",
+    "PLATFORM_MCP_JD_JZT_APP_SECRET": "${user_config.platform_mcp_jd_jzt_app_secret}",
+    "PLATFORM_MCP_JD_JZT_ACCESS_TOKEN": "${user_config.platform_mcp_jd_jzt_access_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_jd_jzt_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_JZT_APP_KEY",
+   "description": "app_key of the JOS (京东宙斯) application approved for the 京准通 API permission package (https://opendoc.jd.com/ads_api/jzt/api/word/settle.html).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_jd_jzt_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_JZT_APP_SECRET",
+   "description": "appSecret of that application; never sent, used for the MD5 request signature.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_jd_jzt_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_JD_JZT_ACCESS_TOKEN",
+   "description": "OAuth access_token of the 京准通 PIN that authorised the app (https://jos.jd.com/commondoc?listId=32); renew it through the JOS authorisation flow when it expires.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No profile call is documented for the 京准通 API; the probe lists one 搜索快车 campaign (jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2, pageSize 1)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "查询普通计划列表 (jingdong.ads.dsp.rtb.kuaiche.campaign.list.v2): 京东搜索快车 campaigns (普通快车商品计划, 腰带店铺计划, 门店商品计划) with today's metrics (startDay = endDay = today, clickOrOrderDay 0, click caliber, gifts excluded). Each row is {item: {campaignId, campaignName, campaignType, status (1 暂停, 2 启动, 3 预算用完, 4 不在投放时间段), budget (a string, left in raw), cost, clicks, impressions, CTR, CPC, totalOrderSum, totalOrderROI, …}}. account_id and status are not sent (the access_token's PIN selects the account)."
+  },
+  {
+   "name": "update_budget",
+   "description": "修改预算 (jingdong.ads.dsp.rtb.kuaiche.campaign.updatebudget.v2, data {id, dayBudget}) sets the daily budget in 元 of one 搜索快车 campaign. This spends money. The 京准通 result {code, success, msg} comes back inside a successful gateway response (success = false when it was rejected). currency is ignored (CNY)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "修改状态 (jingdong.ads.dsp.rtb.kuaiche.campaign.updatestatus.v2, data {ids: [campaign_id], operateType}) with pause → 1 (暂停) and resume → 2 (启动). success = false in the result means the platform rejected it. Resuming restarts spend."
+  }
+ ]
+}

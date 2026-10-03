@@ -1,0 +1,35 @@
+{
+ "id": "truck_ichi",
+ "category": "automotive",
+ "label": "Truck Ichi",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.truck-ichi.co.jp",
+ "domain": "truck-ichi.co.jp",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). cars_marketplace site (homepage HTTP 000 to probe); no developer/API/partner-feed presence known or found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://truck-ichi.co.jp/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

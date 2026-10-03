@@ -1,0 +1,260 @@
+{
+ "id": "temu_seller",
+ "category": "ecommerce_suppliers",
+ "label": "Temu Seller Center",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china"
+ ],
+ "docs_url": "https://seller.temu.com/",
+ "url": "https://seller.temu.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "Temu Partner Platform app (via listed partner ERPs)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://seller.temu.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://openapi-b-{region}.temu.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "success",
+   "error_field": "errorMsg"
+  },
+  "config_fields": [
+   {
+    "name": "region",
+    "required": true,
+    "help": "API host region of the store: us (United States), eu (EU/UK sites) or global (Mexico, Japan, …) → https://openapi-b-<region>.temu.com/openapi/router."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "app_key of your TEMU Partner Platform app (partner.temu.com > App management)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "app_secret of the same app; signs every call (upper-case MD5 of app_secret + body parameters sorted by name as name+value + app_secret) and is never sent."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "The store's access_token from the Seller Center authorisation (Seller Center > open platform > authorise app, or bg.open.accesstoken.create with the callback code); valid about one year (see expiredTime from me)."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "algorithm": "md5",
+    "encoding": "hex",
+    "case": "upper",
+    "payload": "{@app_secret}{sorted_body}{@app_secret}",
+    "body_field": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.open.accesstoken.info.get",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "timestamp": "now_epoch",
+     "data_type": "=JSON"
+    },
+    "docs": "https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a&sub_menu_code=93de550b56c8417caccb88824be3e614",
+    "note": "bg.open.accesstoken.info.get: the authorised mall (mallId, regionId, mallType), token expiredTime and the API scopes granted."
+   },
+   "list_products": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.local.goods.list.query",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "timestamp": "now_epoch",
+     "data_type": "=JSON",
+     "pageNo": "page",
+     "pageSize": "limit",
+     "searchText": "query",
+     "goodsSearchType": "json:1",
+     "catIdList.0": "int:category"
+    },
+    "max_limit": 100,
+    "result": {
+     "items": "result.goodsList",
+     "key": "products",
+     "total": "result.total",
+     "fields": {
+      "id": "goodsId",
+      "title": "goodsName",
+      "price": "retailPrice.amount",
+      "currency": "retailPrice.currency",
+      "sku": "outGoodsSn",
+      "image_url": "thumbUrl",
+      "stock": "quantity",
+      "status": "status4VO",
+      "category_id": "catId"
+     }
+    },
+    "docs": "https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a",
+    "note": "bg.local.goods.list.query (Product > Manage Products): the STORE'S OWN listings on Temu (a seller API, not a wholesale catalogue), status 1 = available/off the shelf; `query` searches goods name or id, `category` is a Temu catId. SKUs (skuId, stock, specs) are in raw.skuInfoList."
+   },
+   "get_product": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.local.goods.detail.query",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "timestamp": "now_epoch",
+     "data_type": "=JSON",
+     "goodsId": "int:id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "goodsId",
+      "title": "goodsName",
+      "price": "skuList.0.retailPrice.amount",
+      "currency": "skuList.0.retailPrice.currency",
+      "sku": "skuList.0.outSkuSn",
+      "category_id": "catId"
+     }
+    },
+    "docs": "https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a",
+    "note": "bg.local.goods.detail.query: one listing with skuList (skuId, outSkuSn, specs, retail/list price, images, package weight/volume), properties, size charts and service promise; price/sku are the first SKU's."
+   },
+   "get_order": {
+    "method": "POST",
+    "path": "/openapi/router",
+    "body": {
+     "type": "=bg.order.detail.v2.get",
+     "app_key": "@app_key",
+     "access_token": "@access_token",
+     "timestamp": "now_epoch",
+     "data_type": "=JSON",
+     "parentOrderSn": "id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "id": "parentOrderMap.parentOrderSn",
+      "status": "parentOrderMap.parentOrderStatus",
+      "created_at": "parentOrderMap.parentOrderTime",
+      "shipped_at": "parentOrderMap.parentShippingTime",
+      "latest_delivery_at": "parentOrderMap.latestDeliveryTime"
+     }
+    },
+    "docs": "https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a",
+    "note": "bg.order.detail.v2.get by parent order number (PO-…): parentOrderMap (status code, order/confirm/shipping times in epoch seconds, region) and orderList lines (orderSn, goodsId, skuId, quantity, fulfillmentType, packageSnInfo) in raw. Buyer address needs bg.order.shippinginfo.v2.get / decrypt permissions."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "Temu is a sales channel: the seller ships Temu's buyer orders; the Partner Platform (https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a) has no API that quotes shipping for buying goods.",
+   "create_order": "Orders are placed by Temu shoppers; the Order APIs (bg.order.list.v2.get, bg.order.detail.v2.get, … in https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a) read them and no API creates one.",
+   "track": "Tracking is written by the seller through the Fulfillment APIs (bg.logistics.shipment.* in https://partner.temu.com/documentation?menu_code=fb16b05f7a904765aac4af3a24b87d4a); a buyer-side tracking read for an order id alone is not documented."
+  },
+  "terms": "TEMU Partner Platform (https://partner.temu.com/documentation?menu_code=38e79b35d2cb463d85619c1c786dd303&sub_menu_code=8311de2b2d434e4d805e88413ab815d8): POST-only JSON gateway https://openapi-b-{us|eu|global}.temu.com/openapi/router; common body parameters type, app_key, access_token, timestamp (unix seconds ±300 s), data_type JSON; sign = upper-case MD5(app_secret + all body parameters sorted by name as name+value, nested values as JSON + app_secret) inserted into the body (https://partner.temu.com/documentation?menu_code=38e79b35d2cb463d85619c1c786dd303&sub_menu_code=4a821c90d06442a09e061b0d4316fbf3)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, region; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

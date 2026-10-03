@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/xiaomi_getapps_ads-mcp",
+ "description": "小米营销 Xiaomi Ads (ads): me, list_campaigns, update_budget. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "xiaomi_getapps_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_ID",
+     "description": "appId of the external application your Xiaomi account manager (AM) created when Marketing API access was approved ('申请通过后，AM提供appId、appKey等应用信息').",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_KEY",
+     "description": "appKey of that application; exchanged for an access token with POST /foreign/token/createToken.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "luno-mcp",
+ "display_name": "Luno MCP",
+ "version": "0.1.0",
+ "description": "Luno (trading): list_markets, get_ticker. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "luno"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "GET /api/exchange/1/markets returns every market (market_id such as XBTZAR, base/counter currency, trading_status, min/max volume and price, scales in raw); the server sorts by symbol and pages locally. `query` is not sent: the API only filters by exact pair codes."
+  },
+  {
+   "name": "get_ticker",
+   "description": "symbol is a Luno pair code without separator, e.g. XBTZAR, ETHZAR, XBTMYR (see list_markets). Prices are in the counter currency; volume is the rolling 24h base volume. An unknown pair answers HTTP 400 ErrMarketUnavailable."
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "unreal_forums_jobs-deals-mcp",
+ "display_name": "Unreal Engine Forums — Job Offerings MCP",
+ "version": "0.1.0",
+ "description": "Unreal Engine Forums — Job Offerings (deals): search_postings, get_posting. Every tool maps to a doc",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/unreal_forums_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /search.json?q=<query> category:76 order:latest&page=<page> (Discourse 'Search for a term'), restricted to the Got Skills? Looking for Talent? › Job Offerings ('Post your open positions here!') category (id 76) and newest first. `query` is REQUIRED in practice: without it no q is sent and Discourse returns no topics. Discourse search takes at least 3 characters and supports its advanced filters inside the query (e.g. tags:scripter, after:2026-09-01). category and min_budget are not sent (no budget field on forum topics). Pages hold up to 50 topics (limit is not sent). title/posted_at are the topic's; description is the search excerpt; the topic URL is https://forums.unrealengine.com/t/<id>. Posters are matched in the response's separate posts[] list (raw is per topic), so buyer is null here — use get_posting."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /t/{id}.json ('Get a single topic'): buyer = the topic creator's username, description = the first post's HTML (post_stream.posts[0].cooked); tags are {id, name, slug} objects on this forum and stay in raw.tags. The topic URL is https://forums.unrealengine.com/t/<id>."
+  }
+ ]
+}

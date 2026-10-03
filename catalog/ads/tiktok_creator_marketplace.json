@@ -1,0 +1,207 @@
+{
+ "id": "tiktok_creator_marketplace",
+ "category": "ads",
+ "label": "TikTok One (Creator Marketplace)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://business-api.tiktok.com/portal/docs/get-tto-creator-marketplace-campaigns/v1.3",
+ "url": "https://ads.tiktok.com/creative/creatormarketplace",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access needs an approved TikTok for Business developer app and the Creator Marketplace permission (docs portal); ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (TikTok Marketing API developer app + advertiser / TTO authorization; Access-Token)",
+  "access": "apply",
+  "capabilities": [
+   "reports",
+   "campaigns"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (read endpoints for TTO Creator Marketplace campaigns inside the Marketing API v1.3) Confidence: **medium**.",
+  "base_urls": [
+   "https://business-api.tiktok.com/open_api/v1.3/tto/…"
+  ],
+  "auth": [
+   "1. TikTok Marketing API developer app + TTO scope (see tiktok.md).",
+   "2. Advertiser authorization → Access-Token.",
+   "3. GET TTO Creator Marketplace campaigns."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /open_api/v1.3/tto/campaign/get/` (TODO(verify))",
+    "purpose": "creator marketplace campaigns",
+    "notes": "advertiser_id, filters"
+   },
+   {
+    "call": "create briefs / hire creators",
+    "purpose": "UI only",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Marketing API terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://business-api.tiktok.com/portal/docs/get-tto-creator-marketplace-campaigns/v1.3"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://business-api.tiktok.com/open_api/v1.3",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "header",
+   "header": "Access-Token",
+   "field": "access_token",
+   "fields": [
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Access token authorized by a TikTok One Creator Marketplace account (auth_code exchanged at /oauth2/access_token/); it does not expire unless the account revokes it (https://business-api.tiktok.com/portal/docs/obtain-authorization-and-authentication-from-a-tto-creator-marketplace-account/v1.3)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "Secret of your TikTok for Business developer app, needed by the account-listing call used by me."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "app_id",
+    "required": true,
+    "help": "App ID of your TikTok for Business developer app (My Apps > App Detail > Basic Information)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/tto/oauth2/tcm/",
+    "params": {
+     "app_id": "@app_id",
+     "secret": "@app_secret"
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs?id=1815693478150146",
+    "note": "GET /tto/oauth2/tcm/?app_id&secret: {data: {tto_tcm_account_ids: [...]}}, the TTO Creator Marketplace accounts that authorised the app (use one as account_id)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/tto/tcm/campaign/",
+    "params": {
+     "tto_tcm_account_id": "account_id",
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 5,
+    "max_limit": 5,
+    "result": {
+     "items": "data.campaigns",
+     "key": "campaigns",
+     "total": "data.page_info.total_number",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name",
+      "brand": "brand_name",
+      "type": "campaign_type"
+     }
+    },
+    "docs": "https://business-api.tiktok.com/portal/docs/get-tto-creator-marketplace-campaigns/v1.3",
+    "note": "GET /tto/tcm/campaign/?tto_tcm_account_id={account_id} (page_size at most 5). These are creator-collaboration campaigns (brand, creators invited, video ids), not paid ad campaigns: there is no budget or delivery status."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The account listing \"GET /tto/oauth2/tcm/\" returns a bare array of id strings (data.tto_tcm_account_ids, https://business-api.tiktok.com/portal/docs?id=1815693478150146), which the adapter cannot map to account records; me returns it.",
+   "get_report": "TTO Creator Marketplace reports are video-level per campaign and region (\"/tto/tcm/report/\" with a Country-Code header, https://business-api.tiktok.com/portal/docs?id=1815693573340162), not campaign spend over a date range.",
+   "update_budget": "TTO Creator Marketplace campaigns have no budget field (https://business-api.tiktok.com/portal/docs/get-tto-creator-marketplace-campaigns/v1.3); paid delivery is managed through the TikTok Ads API (the `tiktok` entry).",
+   "pause_resume": "TTO Creator Marketplace campaigns have no pause/resume status (https://business-api.tiktok.com/portal/docs/get-tto-creator-marketplace-campaigns/v1.3)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host business-api.tiktok.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 308 (redirect), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; names not found on the page: me:app_id, me:secret"
+  ],
+  "notes": "-"
+ }
+}

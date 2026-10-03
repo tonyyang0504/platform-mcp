@@ -1,0 +1,95 @@
+{
+ "id": "gemini",
+ "category": "trading",
+ "label": "Gemini (spot)",
+ "lane": "api",
+ "docs_url": "https://docs.gemini.com/rest/market-data",
+ "url": "https://www.gemini.com",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public market-data endpoints only (no API key). The docs are HTML only (no OpenAPI; the only machine-readable description Gemini publishes is an AsyncAPI document for the WebSocket feed). Public REST is limited to 120 requests per minute ('we recommend that you not exceed 1 request per second'). /v1/symbols answers a bare list of strings; /v2/candles answers positional rows newest first with millisecond times and ignores any count. An unknown symbol answers 404 {\"error\":\"no ticker data for NOPEUSD\"} (live 2026-10-01).",
+ "adapter": {
+  "base_url": "https://api.gemini.com",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "list_markets": {
+    "method": "GET",
+    "path": "/v1/symbols",
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "scalar_rows": true,
+     "slice": true,
+     "sort": "symbol",
+     "key": "markets",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "$"
+     }
+    },
+    "docs": "https://docs.gemini.com/rest/market-data#list-symbols",
+    "note": "Every trading symbol in Gemini's lower-case form (btcusd, ethbtc); base/quote are not in this list (see the symbol details page). Paged locally; `query` is a substring of the symbol."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/v1/pubticker/{symbol}",
+    "result": {
+     "fields": {
+      "symbol": "arg:symbol",
+      "last": "num:last",
+      "bid": "num:bid",
+      "ask": "num:ask",
+      "volume": "num:volume.*"
+     }
+    },
+    "docs": "https://docs.gemini.com/rest/market-data#ticker",
+    "note": "volume is the 24h volume in the base currency (the first key of the volume object, e.g. BTC for btcusd)."
+   },
+   "get_candles": {
+    "method": "GET",
+    "path": "/v2/candles/{symbol}/{interval}",
+    "default_limit": 100,
+    "max_limit": 1500,
+    "result": {
+     "items": "$",
+     "key": "candles",
+     "cap": "head",
+     "fields": {
+      "time": "iso:0",
+      "open": "1",
+      "high": "2",
+      "low": "3",
+      "close": "4",
+      "volume": "5"
+     }
+    },
+    "docs": "https://docs.gemini.com/rest/market-data#candles",
+    "note": "interval is Gemini's time frame: 1m, 5m, 15m, 30m, 1hr, 6hr, 1day. Candles come newest first; the newest `limit` are returned."
+   }
+  },
+  "not_offered": {
+   "me": "Private endpoints need an API key and an HMAC-SHA384 signature over a base64 payload (X-GEMINI-APIKEY/X-GEMINI-PAYLOAD/X-GEMINI-SIGNATURE); public-data entry only.",
+   "get_balances": "POST /v1/balances needs an API key with the Fund Manager or Trader role; public-data entry only.",
+   "list_orders": "POST /v1/orders needs an API key with the Trader role; public-data entry only.",
+   "place_order": "POST /v1/order/new needs an API key and spends money; not mapped in this public-data entry.",
+   "cancel_order": "POST /v1/order/cancel needs an API key; not mapped in this public-data entry."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

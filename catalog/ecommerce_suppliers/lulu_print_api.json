@@ -1,0 +1,237 @@
+{
+ "id": "lulu_print_api",
+ "category": "ecommerce_suppliers",
+ "label": "Lulu Print API",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.lulu.com/docs/",
+ "url": "https://developers.lulu.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged (\"Automate Book Printing\")",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "oauth",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "same OAuth2 client credentials as `lulu`",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - See lulu.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://api.lulu.com/api-docs/openapi-specs/openapi_public.yml",
+   "https://developers.lulu.com/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.lulu.com",
+  "environments": {
+   "sandbox": {
+    "base_url": "https://api.sandbox.lulu.com",
+    "token_url": "https://api.sandbox.lulu.com/auth/realms/glasstree/protocol/openid-connect/token",
+    "docs": "https://api.lulu.com/docs/",
+    "verified_at": "2026-09-27",
+    "notes": "Lulu Print API sandbox: 'The sandbox API endpoint URL is https://api.sandbox.lulu.com/' with a separate account at https://developers.sandbox.lulu.com/ and its own client key/secret; print jobs are never produced and can be paid with test cards. The docs show the token path only on the production host (/auth/realms/glasstree/protocol/openid-connect/token); the same path on the documented sandbox host answered the OAuth error invalid_client to a dummy client on 2026-09-27."
+   }
+  },
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client key of your Lulu Print API account (developers.lulu.com > API Keys); sent with the secret as HTTP Basic on the client-credentials token request."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret from the same page. Sandbox keys belong to https://api.sandbox.lulu.com, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "contact_email",
+    "required": false,
+    "help": "contact_email sent with create_order (required by POST /print-jobs/): who Lulu contacts about the Print-Job."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/print-jobs/statistics/",
+    "docs": "https://api.lulu.com/docs/#tag/Print-Jobs",
+    "note": "No account endpoint; the probe mints a client-credentials token and reads GET /print-jobs/statistics/ (the number of Print-Jobs in each status)."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/print-jobs/",
+    "body": {
+     "line_items": "items",
+     "shipping_address": "shipping_address",
+     "shipping_level": "shipping_option",
+     "contact_email": "@contact_email",
+     "external_id": "uuid"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status.name",
+      "status_message": "status.message",
+      "total_incl_tax": "costs.total_cost_incl_tax",
+      "currency": "costs.currency",
+      "created_at": "date_created",
+      "tracking_number": "line_items.0.status.messages.tracking_id",
+      "shipping_level": "shipping_level",
+      "external_id": "external_id"
+     }
+    },
+    "docs": "https://api.lulu.com/docs/#tag/Print-Jobs/operation/Print-Jobs_create",
+    "note": "POST /print-jobs/ creates a Print-Job (201). It 'will remain in an UNPAID state until it is paid for through the developer portal'; with a credit card on file it moves on automatically and 'your card will [be] charged when the Print-Job is sent to production' — so this can SPEND MONEY. `items` are line_items [{title, quantity, printable_normalization: {pod_package_id, cover: {source_url}, interior: {source_url}}} or {printable_id, quantity} for reorders]; `shipping_address` is {name, street1, street2, city, state_code, postcode, country_code, phone_number (required), email}; `shipping_option` is the shipping_level (MAIL, PRIORITY_MAIL, GROUND_HD, GROUND_BUS, GROUND, EXPEDITED, EXPRESS) and is required by Lulu. external_id is a fresh UUID. Costs are decimal strings (total_incl_tax)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/print-jobs/{id}/",
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status.name",
+      "status_message": "status.message",
+      "total_incl_tax": "costs.total_cost_incl_tax",
+      "currency": "costs.currency",
+      "created_at": "date_created",
+      "tracking_number": "line_items.0.status.messages.tracking_id",
+      "shipping_level": "shipping_level",
+      "external_id": "external_id"
+     }
+    },
+    "docs": "https://api.lulu.com/docs/#tag/Print-Jobs",
+    "note": "GET /print-jobs/{id}/: status.name is CREATED, REJECTED, UNPAID, PAYMENT_IN_PROGRESS, PRODUCTION_READY, PRODUCTION_DELAYED, IN_PRODUCTION, ERROR, SHIPPED or CANCELED; costs {total_cost_incl_tax, currency, shipping_cost} are decimal strings; tracking_number is the first line item's status.messages.tracking_id once shipped."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/print-jobs/{order_id}/status/",
+    "result": {
+     "items": "line_item_statuses",
+     "key": "events",
+     "fields": {
+      "status": "name",
+      "line_item_id": "line_item_id",
+      "tracking_number": "messages.tracking_id",
+      "tracking_url": "messages.tracking_urls.0",
+      "carrier": "messages.carrier_name"
+     }
+    },
+    "docs": "https://api.lulu.com/docs/#section/Shipping-Notification",
+    "note": "GET /print-jobs/{id}/status/ — once shipped the status carries line_item_statuses [{name: SHIPPED, messages: {tracking_id, tracking_urls[], carrier_name}, line_item_id}] (one event per line item); before shipping the list is empty."
+   }
+  },
+  "not_offered": {
+   "list_products": "No product catalogue endpoint: printables are defined per Print-Job by a pod_package_id (trim size, colour, paper, binding) chosen with Lulu's product spec sheet / pricing calculator, not listed through the API.",
+   "get_product": "No product endpoint (see list_products); cover dimensions and file validation endpoints exist but describe files, not products.",
+   "quote_shipping": "POST /shipping-options/ requires line_items[{pod_package_id, page_count, quantity}] and page_count (the book's page count) has no counterpart in the vocabulary's product_id/country/quantity input."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.lulu.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token: 401 invalid_client",
+   "spec https://api.lulu.com/api-docs/openapi-specs/openapi_public.yml: 4/4 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "Spec schemas are incomplete; paths and methods match. create_order: spec says \"spec requires body field 'id', adapter does not send it\"; waived: id and status are read-only fields the spec lists as required create_order: spec says \"spec requires body field 'status', adapter does not send it\"; waived: id and status are read-only fields the spec lists as required create_order: spec says \"response path fields.currency='costs.currency' is not in the response schema\"; waived: Lulu's inline Print-Job schemas list only a few properties (the rest is in the examples); costs/tracking paths follow the examples and the Shipping-Notification section create_order: spec says \"response path fields.tracking_number='line_items.0.status.messages.tracking_id' is not in the response schema\"; waived: Lulu's inline Print-Job schemas list only a few properties (the rest is in the examples); costs/tracking paths follow the examples and the Shipping-Notification section get_order: spec says \"response path fields.tracking_number='line_items.0.status.messages.tracking_id' is not in the response schema\"; waived: Lulu's inline Print-Job schemas list only a few properties (the rest is in the examples); costs/tracking paths follow the examples and the Shipping-Notification section track: spec says \"response path items='line_item_statuses' is not in the response schema\"; waived: Lulu's inline Print-Job schemas list only a few properties (the rest is in the examples); costs/tracking paths follow the examples and the Shipping-Notification section"
+ }
+}

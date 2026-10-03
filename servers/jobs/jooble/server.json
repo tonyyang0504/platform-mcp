@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/jooble-mcp",
+ "description": "Jooble (jobs): search. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://jooble.org/api/about",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "jooble"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_JOOBLE_API_KEY",
+     "description": "Jooble REST API key issued after the request form on https://jooble.org/api/about; it is the last path segment of every call (POST https://jooble.org/api/{api_Key}). Each Jooble country domain has its own key; the free plan is limited to 500 requests per key in total.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

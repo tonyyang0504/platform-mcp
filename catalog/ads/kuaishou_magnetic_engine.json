@@ -1,0 +1,308 @@
+{
+ "id": "kuaishou_magnetic_engine",
+ "category": "ads",
+ "label": "磁力引擎 Kuaishou Magnetic Engine",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2539&menuId=3765",
+ "url": "https://e.kuaishou.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "Register as a developer on the 磁力引擎开放平台, create an app, request permission packages (报表 / 账户 / 广告创编 / 人群), have advertisers authorize the app; Access-Token per advertiser. Rate limits: not readable. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (app_id + secret → advertiser authorization → access_token; Access-Token header)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Kuaishou Marketing API on the 磁力引擎开放平台).",
+  "base_urls": [
+   "https://ad.e.kuaishou.com/rest/openapi/v1/…"
+  ],
+  "auth": [
+   "1. Register as a developer at developers.e.kuaishou.com, create an application, request permission packages (report / account / ad management / audience).",
+   "2. Advertiser authorizes the app → `auth_code` → `/rest/openapi/oauth2/authorize/access_token` (app_id, secret) → `access_token` + `refresh_token` (TODO(verify)).",
+   "3. Header `Access-Token` on every request; JSON body with `advertiser_id`."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /rest/openapi/v1/advertiser/info",
+    "purpose": "advertiser info + balance",
+    "notes": "advertiser_id"
+   },
+   {
+    "call": "POST /rest/openapi/v1/campaign/create` · `/campaign/update` · `/campaign/update/status` · `/campaign/list",
+    "purpose": "campaigns + day budget",
+    "notes": "advertiser_id, campaign_name, type, day_budget, put_status"
+   },
+   {
+    "call": "POST /rest/openapi/v1/unit/create` · `/unit/update` · `/unit/update/bid` · `/unit/list",
+    "purpose": "units: bid, targeting, schedule",
+    "notes": "campaign_id, unit_name, bid, bid_type, target{region, age, gender, interest}, day_budget, begin_time"
+   },
+   {
+    "call": "POST /rest/openapi/v1/creative/create` · `/creative/update` · `/creative/list` · `POST /rest/openapi/v2/file/ad/image",
+    "purpose": "video/upload`",
+    "notes": "creatives + material upload"
+   },
+   {
+    "call": "POST /rest/openapi/v1/report/campaign_report` · `/unit_report` · `/creative_report",
+    "purpose": "reports",
+    "notes": "advertiser_id, start_date, end_date, temporal_granularity DAILY"
+   },
+   {
+    "call": "POST /rest/openapi/v1/dmp/population/…` (upload / create / push)",
+    "purpose": "audiences",
+    "notes": "advertiser_id, population_name, file"
+   },
+   {
+    "call": "conversion callback (转化回传 API)",
+    "purpose": "conversions upload",
+    "notes": "callback URL params (TODO(verify))"
+   }
+  ],
+  "limits": " - Rate limits: not readable (TODO(verify)). Developer registration + permission review; free API.",
+  "mcp_sdk": [
+   "None found (portal JS-only)."
+  ],
+  "sources": [
+   "https://developers.e.kuaishou.com/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ad.e.kuaishou.com/rest/openapi",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/refresh_token",
+   "token_body": "json",
+   "client_auth": "body",
+   "token_fields": {
+    "client_id": "app_id",
+    "client_secret": "secret",
+    "grant_type": null
+   },
+   "token_path": "data.access_token",
+   "refresh_token_path": "data.refresh_token",
+   "expires_path": "data.access_token_expires_in",
+   "state_key": "kuaishou_magnetic_engine",
+   "header": "Access-Token",
+   "prefix": "",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "app_id returned when the 磁力引擎 MAPI developer application was approved (开发者平台 > 应用)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The application's secret; sent as `secret` in the refresh call."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "refresh_token from 获取token (auth_code exchange after the advertiser authorised the app); valid 30 days and replaced on every refresh ('刷新后会生成新的 token，老的 access_token 和 refresh_token 将不可再使用'). Set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "advertiser_id",
+    "required": true,
+    "help": "广告主 ID returned with the access token at authorisation; used by the probe, update_budget and pause_resume."
+   }
+  ],
+  "terms": "快手磁力引擎 Marketing API (https://developers.e.kuaishou.com/docs?docType=DSP): JSON calls to https://ad.e.kuaishou.com/rest/openapi/… with an Access-Token header (valid 1 day); refresh with POST /rest/openapi/oauth2/authorize/refresh_token {app_id, secret, refresh_token} (token 有效期&续期: https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2057). Answers {code (0 = OK), message, data}. Requires an approved MAPI developer app and advertiser authorisation.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/gw/dsp/campaign/list",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "page": "json:1",
+     "page_size": "json:1"
+    },
+    "docs": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2261&menuId=2806",
+    "note": "No profile call takes a POST/query form, so the probe lists one campaign of the configured advertiser (POST /rest/openapi/gw/dsp/campaign/list, page_size 1)."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/gw/dsp/campaign/list",
+    "body": {
+     "advertiser_id": "int:account_id",
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "data.details",
+     "key": "campaigns",
+     "total": "data.total_count",
+     "fields": {
+      "id": "campaign_id",
+      "name": "campaign_name"
+     }
+    },
+    "docs": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2261&menuId=2806",
+    "note": "查询广告计划 (POST /rest/openapi/gw/dsp/campaign/list {advertiser_id, page, page_size}): campaign_id, campaign_name, put_status (1 投放中, 2 暂停, 3 删除), status (1 暂停, 3 超预算, 4 有效, 5 删除, 6 余额不足), day_budget (厘, 0 = 不限), campaign_type, bid_type, create_time, update_time. The numeric status codes and the budget in 厘 stay in raw. status is not sent (put_status_list/status are numeric codes)."
+   },
+   "get_report": {
+    "method": "POST",
+    "path": "/v1/report/campaign_report",
+    "body": {
+     "advertiser_id": "int:account_id",
+     "start_date": "date:date_from",
+     "end_date": "date:date_to",
+     "campaign_ids.0": "int:campaign_id",
+     "temporal_granularity": "=DAILY",
+     "page": "json:1",
+     "page_size": "json:2000"
+    },
+    "result": {
+     "items": "data.details",
+     "key": "rows",
+     "total": "data.total_count"
+    },
+    "docs": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2025&menuId=2407",
+    "note": "广告计划数据 (POST /rest/openapi/v1/report/campaign_report {advertiser_id, start_date, end_date, campaign_ids?, temporal_granularity: DAILY, page_size ≤ 2000}): one row per campaign and day with stat_date, campaign_id, charge (花费, 元), show, photo_click, aclick, bclick, conversion metrics. Only the first 2000 rows are returned."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/gw/dsp/campaign/update",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "campaign_id": "int:campaign_id",
+     "day_budget": "mul:1000:daily_budget"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2260&menuId=2805",
+    "note": "修改广告计划 (POST /rest/openapi/gw/dsp/campaign/update {advertiser_id, campaign_id, day_budget}) with daily_budget in 元 converted to 厘 (×1000); 0 means unlimited, otherwise ≥ 500 元, and a cut may not go below 120% of today's spend. Uses the configured advertiser_id. This spends money; currency is ignored (CNY)."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/v1/campaign/update/status",
+    "body": {
+     "advertiser_id": "int:@advertiser_id",
+     "campaign_id": "int:campaign_id",
+     "put_status": "map:action:pause=json:2,resume=json:1"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://developers.e.kuaishou.com/docs?docType=DSP&documentId=1930&menuId=2382",
+    "note": "修改广告计划状态 (POST /rest/openapi/v1/campaign/update/status {advertiser_id, campaign_id, put_status}) with pause → 2 (暂停) and resume → 1 (投放); 3 (删除) is never sent. Partial failures are listed in data.errors. Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "拉取token下授权广告账户接口 (POST /rest/openapi/oauth2/authorize/approval/list, https://developers.e.kuaishou.com/docs?docType=DSP&documentId=1995&menuId=3797) takes 'app_id', 'secret' and 'access_token | 查询的 access_token' inside the JSON body; the runtime cannot put the token it minted into a request body, so the advertiser is configured as advertiser_id instead."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host ad.e.kuaishou.com: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token ad.e.kuaishou.com/rest/openapi/oauth2/authorize/refresh_token: 200 402012",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

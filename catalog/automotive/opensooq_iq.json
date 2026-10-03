@@ -1,0 +1,35 @@
+{
+ "id": "opensooq_iq",
+ "category": "automotive",
+ "label": "Iq",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://iq.opensooq.com",
+ "domain": "iq.opensooq.com",
+ "country": "Iraq",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OpenSooq publishes no public listings API; GitHub org has no API SDK.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://github.com/opensooq"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

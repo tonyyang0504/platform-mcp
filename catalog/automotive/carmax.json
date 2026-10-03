@@ -1,0 +1,39 @@
+{
+ "id": "carmax",
+ "category": "automotive",
+ "label": "Carmax",
+ "vertical": "dealer",
+ "lane": "api",
+ "url": "https://www.carmax.com",
+ "domain": "carmax.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). CarMax has no public API; only unofficial scrapers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://carmax.com/"
+  ],
+  "unofficial": [
+   "https://crawlora.net/docs/carmax",
+   "https://parse.bot/marketplace/8c65847a-d029-4c10-9747-9811761e6df3/carmax-com-api",
+   "https://github.com/SISYN/CarMax-API"
+  ]
+ },
+ "official_mcp": []
+}

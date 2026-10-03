@@ -1,0 +1,50 @@
+{
+ "id": "twoememain",
+ "category": "automotive",
+ "label": "Autoscout24",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.autoscout24.be",
+ "domain": "autoscout24.be",
+ "country": "Belgium",
+ "official_api": true,
+ "docs_url": "https://listing-creation.api.autoscout24.com/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql"
+  ],
+  "auth": "OAuth2 client credentials (Listing Creation API); Search API credentials issued by AutoScout24 on contract",
+  "access": "apply",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). autoscout24.be is part of AutoScout24 GmbH, which documents a Listing Creation API for dealers/DMS partners and sells a GraphQL SEARCH API (search/filter/view listings) via searchapi@autoscout24.com.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://listing-creation.api.autoscout24.com/docs",
+   "https://www.autoscout24.de/haendlerportal/api/",
+   "https://www.autoscout24.de/haendlerportal/schnittstelle-search-api/",
+   "https://autoscout24.be/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com/fayoussef/autoscout24/api",
+   "https://auto-api.com/autoscout24"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "autoscout24.be is part of AutoScout24 GmbH, which documents a Listing Creation API for dealers/DMS partners and sells a GraphQL SEARCH API (search/filter/view listings) via searchapi@autoscout24.com. The read side (search/valuation) is only issued on contract or to approved partners and its reference is not public, so no adapter was generated."
+}

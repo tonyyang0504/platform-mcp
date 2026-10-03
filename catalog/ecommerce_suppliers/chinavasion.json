@@ -1,0 +1,113 @@
+{
+ "id": "chinavasion",
+ "category": "ecommerce_suppliers",
+ "label": "Chinavasion",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "china",
+  "global"
+ ],
+ "docs_url": "https://support.chinavasion.com/index.php?/Knowledgebase/Article/View/556/52/chinavasion-api-faq",
+ "url": "https://www.chinavasion.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_encouraged",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "api_key (My Account › My API Keys; HTTPS POST calls, PHP example)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "orders"
+  ],
+  "confidence": "medium",
+  "sdks": [
+   "PHP example in the FAQ"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Account required; API reference behind login; no automation restriction stated; feeds for import.",
+  "mcp_sdk": [
+   "PHP example in the FAQ"
+  ],
+  "sources": [
+   "https://support.chinavasion.com/index.php?/Knowledgebase/Article/View/556/52/chinavasion-api-faq",
+   "https://secure.chinavasion.com/myaccount/my_api_keys.php"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "The API FAQ (https://support.chinavasion.com/index.php?/Knowledgebase/Article/View/556/52/chinavasion-api-faq, rendered 2026-09-25) still says the calls are described at https://secure.chinavasion.com/myaccount/my_api_keys.php; that page and the sample https://secure.chinavasion.com/api/getProductDetails.php both answer HTTP 404 on 2026-09-25 while www.chinavasion.com answers 200, so the API appears retired and there is no reference to map (not a login wall)."
+}

@@ -1,0 +1,156 @@
+{
+ "id": "microsoft_marketplace",
+ "category": "marketplaces",
+ "label": "Microsoft Marketplace / AppSource",
+ "lane": "browser",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://learn.microsoft.com/en-us/partner-center/marketplace-offers/product-ingestion-api",
+ "url": "https://partner.microsoft.com/dashboard",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "partner_program"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "create_offer",
+   "update_offer",
+   "publish_offer",
+   "plans_pricing",
+   "listing_assets",
+   "technical_configuration"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "tenant_id",
+  "client_id",
+  "client_secret"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": []
+ },
+ "adapter": {
+  "base_url": "https://graph.microsoft.com/rp/product-ingestion",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token",
+   "client_auth": "body",
+   "scope": "https://graph.microsoft.com/.default",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Microsoft Entra application (client) ID added to the Partner Center account."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of that Entra application."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "tenant_id",
+    "required": true,
+    "help": "Microsoft Entra tenant ID of the publisher (Partner Center > Account settings)."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/product",
+    "params": {
+     "$maxpagesize": "=1"
+    },
+    "fixed_params": {
+     "$version": "2022-03-01-preview3"
+    },
+    "docs": "https://learn.microsoft.com/en-us/partner-center/marketplace-offers/product-ingestion-api",
+    "note": "No account endpoint; the probe lists one product (GET product?$maxpagesize=1&$version=...) to confirm the Entra app is authorised on the Partner Center account."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/product",
+    "params": {
+     "$maxpagesize": "limit",
+     "continuationToken": "cursor"
+    },
+    "fixed_params": {
+     "$version": "2022-03-01-preview3"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "value",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "name": "alias"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/partner-center/marketplace-offers/product-ingestion-api",
+    "query_safe": "$",
+    "note": "GET product?$maxpagesize=&$version= ('Query string parameters are used to query details pertaining to your products'). name is the product alias; type (softwareAsAService, azureContainer, ...) and identity.externalID is in raw; id is the durable id 'product/<guid>'. A continuationToken from a previous response may be passed as cursor; the response field that carries it is not named in the docs, so next_cursor is not set - read raw if a further page exists."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/{product_id}",
+    "fixed_params": {
+     "$version": "2022-03-01-preview3"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "name": "alias"
+     }
+    },
+    "docs": "https://learn.microsoft.com/en-us/partner-center/marketplace-offers/product-ingestion-api",
+    "query_safe": "$",
+    "note": "GET <resource-durableID>?$version= returns the draft configuration of the product; pass the id returned by list_products ('product/<guid>'). Plans, listings and price-and-availability live in GET resource-tree/<product-durableID>."
+   }
+  },
+  "not_offered": {
+   "create_product": "Products are created through POST configure?$version= with a configure document of typed resources (product, property, listing, plan, price-and-availability...) that runs as an asynchronous job ('Configure status ... GET configure/<jobID>/status') - one call cannot build or confirm it.",
+   "update_price": "Prices live in each plan's price-and-availability resource submitted through the asynchronous configure job (retrieve the resource tree, change it, POST configure, poll configure/<jobID>/status), not a single price call.",
+   "list_sales": "Marketplace orders come from the Partner Center analytics programmatic-access API, an asynchronous scheduled-report flow (create query, schedule report, poll, download CSV) the adapter cannot follow.",
+   "get_sales_stats": "Revenue is only available as scheduled Partner Center analytics reports (asynchronous report polling and CSV download).",
+   "list_refunds": "No refund collection in the Product Ingestion API; refunds appear only in Partner Center payout reports.",
+   "refund": "Customers' marketplace purchases are refunded by Microsoft support, not by a publisher API."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host graph.microsoft.com: DNS ok, TLSv1.3 (Microsoft Corporation)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token login.microsoftonline.com/common/oauth2/v2.0/token: 400 invalid_grant",
+   "authorize https://login.microsoftonline.com/common/oauth2/v2.0/authorize: 200",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

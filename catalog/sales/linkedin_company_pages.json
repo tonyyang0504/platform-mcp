@@ -1,0 +1,36 @@
+{
+ "id": "linkedin_company_pages",
+ "category": "sales",
+ "label": "LinkedIn company pages",
+ "lane": "assist",
+ "kind": "social",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.linkedin.com/company/",
+ "verified_at": "2026-09-05",
+ "terms_note": "User Agreement §8.2 forbids scrapers / bots / automation; robots.txt is Disallow: / for every agent. The team only records a company's LinkedIn URL when the company published it (website footer, directories); pages are opened in the user's session.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

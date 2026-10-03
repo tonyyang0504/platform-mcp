@@ -1,0 +1,270 @@
+{
+ "id": "lazada_open_platform",
+ "category": "ecommerce_suppliers",
+ "label": "Lazada Seller Center + Lazada Open Platform",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "sea"
+ ],
+ "docs_url": "https://open.lazada.com/apps/doc/api",
+ "url": "https://open.lazada.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated (JS shell)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "not readable (app key / secret + seller authorization)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "orders"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not readable.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://open.lazada.com/apps/doc/api"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.lazada.{domain}",
+  "rate_per_second": 5,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": "0",
+   "error_field": "message"
+  },
+  "config_fields": [
+   {
+    "name": "domain",
+    "required": true,
+    "help": "Country gateway of the seller's shop: sg, com.my, co.th, co.id, com.ph or vn → https://api.lazada.{domain}/rest (Service Endpoints on every API page)."
+   }
+  ],
+  "auth": {
+   "type": "none",
+   "params": {
+    "app_key": "app_key",
+    "access_token": "access_token"
+   },
+   "fields": [
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "App Key of your Lazada Open Platform app (App Console)."
+    },
+    {
+     "name": "app_secret",
+     "required": true,
+     "help": "App Secret of the same app; signs every call: uppercase hex HMAC-SHA256 over the API name (e.g. /order/get) + the parameters sorted by name as name+value. Never sent on the wire."
+    },
+    {
+     "name": "access_token",
+     "required": true,
+     "help": "Seller access_token from the seller-authorisation code exchange (/auth/token/create). It expires (see expires_in); renew it with the signed system API /auth/token/refresh and update this value — the runtime does not refresh it."
+    }
+   ],
+   "sign": {
+    "mode": "hmac",
+    "algorithm": "sha256",
+    "key_field": "app_secret",
+    "case": "upper",
+    "path_strip": "/rest",
+    "payload": "{path}{sorted_params}",
+    "timestamp_param": "timestamp",
+    "timestamp_value": "timestamp",
+    "params": {
+     "sign_method": "sha256"
+    },
+    "signature_param": "sign"
+   }
+  },
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/rest/seller/get",
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fseller%2Fget",
+    "note": "GetSeller: the authorised seller (seller_id, name, short_code, status)."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/rest/products/get",
+    "params": {
+     "filter": "=all",
+     "offset": "offset",
+     "limit": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "data.products",
+     "key": "products",
+     "fields": {
+      "id": "item_id",
+      "title": "attributes.name",
+      "price": "skus.0.price",
+      "sku": "skus.0.SellerSku",
+      "url": "skus.0.Url",
+      "image_url": "skus.0.Images.0",
+      "stock": "skus.0.quantity",
+      "status": "status",
+      "special_price": "skus.0.special_price"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fproducts%2Fget",
+    "note": "GetProducts: the AUTHORISED SELLER's own products (Lazada's open platform is seller-side), all statuses, 50 per page at most (offset up to 10,000). Price/SKU/stock are the FIRST SKU's, in the shop's local currency; `id` is the item_id for get_product. No keyword search (sku_seller_list matches whole Seller SKUs only)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/rest/product/item/get",
+    "params": {
+     "item_id": "int:id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "item_id",
+      "title": "attributes.name",
+      "price": "skus.0.price",
+      "sku": "skus.0.SellerSku",
+      "url": "skus.0.Url",
+      "image_url": "skus.0.Images.0",
+      "stock": "skus.0.quantity",
+      "status": "status"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Fproduct%2Fitem%2Fget",
+    "note": "GetProductItem: one product of the authorised seller by item_id; every SKU is in raw.skus."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/rest/order/get",
+    "params": {
+     "order_id": "int:id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "order_id",
+      "status": "statuses.0",
+      "total": "price",
+      "created_at": "created_at",
+      "order_number": "order_number",
+      "payment_method": "payment_method"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Forder%2Fget",
+    "note": "GetOrder: an order RECEIVED by the authorised seller. `status` is the first of statuses[] (pending, ready_to_ship, shipped, delivered, canceled, …); `total` is the order price in local currency; `created_at` is '2014-10-15 18:36:05 +0800' style. Line items: /order/items/get (not mapped)."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/rest/logistic/order/trace",
+    "params": {
+     "order_id": "order_id"
+    },
+    "result": {
+     "items": "result.module.0.package_detail_info_list",
+     "key": "events",
+     "fields": {
+      "tracking_number": "tracking_number",
+      "package_id": "ofc_package_id",
+      "latest": "logistic_detail_info_list.0.title",
+      "latest_description": "logistic_detail_info_list.0.description",
+      "latest_at": "logistic_detail_info_list.0.event_time",
+      "details": "logistic_detail_info_list"
+     }
+    },
+    "docs": "https://open.lazada.com/apps/doc/api?path=%2Flogistic%2Forder%2Ftrace",
+    "note": "GetOrderTrace: one row per package with its tracking number and logistic_detail_info_list[{title, description, status_code, event_time (ms)}]."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "The Lazada Open Platform APIs (https://open.lazada.com/apps/doc/api) are seller-side (Seller, Product, Order, Logistics …); there is no buyer-side freight quote for sourcing.",
+   "create_order": "Orders are placed by shoppers; the Order API group (GetOrder, GetOrders, GetOrderItems, SetInvoiceNumber …, https://open.lazada.com/apps/doc/api?path=%2Forder%2Fget) has no order creation."
+  },
+  "terms": "Lazada Open Platform: GET/POST https://api.lazada.{domain}/rest{api_name} with app_key, timestamp (ms, within 7200 s), sign_method=sha256, access_token and sign = uppercase hex HMAC-SHA256(app_secret, api_name + sorted name+value) where api_name excludes the /rest gateway prefix ('Signature algorithm', https://open.lazada.com/apps/doc/doc?nodeId=10450&docId=108068)."
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires app_key, app_secret, access_token, domain; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

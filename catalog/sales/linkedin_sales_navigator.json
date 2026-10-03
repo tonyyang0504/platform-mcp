@@ -1,0 +1,36 @@
+{
+ "id": "linkedin_sales_navigator",
+ "category": "sales",
+ "label": "LinkedIn Sales Navigator",
+ "lane": "assist",
+ "kind": "social",
+ "regions": [
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://business.linkedin.com/sales-solutions",
+ "verified_at": "2026-09-05",
+ "terms_note": "Tenant's own Sales Navigator seat in a human-assisted browser session; the team prepares the saved search, the person runs it and exports; no people-search API exists.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

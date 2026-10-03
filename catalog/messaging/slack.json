@@ -1,0 +1,327 @@
+{
+ "id": "slack",
+ "category": "messaging",
+ "label": "Slack",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.slack.dev/",
+ "url": "https://slack.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed through an installed Slack app (bot token xoxb-…, OAuth scopes chat:write, channels:history, groups:history, im:history, mpim:history, im:write, reactions:write, channels:manage …). Web API rate-limit tiers per method per workspace: Tier 1 ≈1+/min, Tier 2 20+/min, Tier 3 50+/min, Tier 4 100+/min; chat.postMessage 1 message per second per channel (short bursts tolerated); HTTP 429 + Retry-After. Since 29 May 2025 NEW commercially distributed apps that are not Marketplace-approved get conversations.history / conversations.replies at 1 request per minute with limit ≤15 objects (Marketplace apps and internal customer-built apps are exempt; existing installs unaffected). Events API: acknowledge with 2xx within 3 seconds, retries at 0 / 1 / 5 min (x-slack-retry-num), 30,000 event deliveries per workspace per app per hour, verify X-Slack-Signature with the signing secret, keep ≥5 % success or the app is disabled; Socket Mode is the no-public-URL alternative.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "events",
+   "socket_mode",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "reply",
+   "read_inbox",
+   "threads",
+   "group_admin",
+   "dm_initiate",
+   "reactions",
+   "media",
+   "webhooks",
+   "search"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Bolt (JS / Python / Java) and slack_sdk Python — docs.slack.dev"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 40000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET conversations.list (channels) + GET conversations.history",
+   "docs": "https://api.slack.com/methods/conversations.history"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST chat.postMessage",
+   "docs": "https://api.slack.com/methods/chat.postMessage"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST conversations.mark",
+   "docs": "https://api.slack.com/methods/conversations.mark"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://slack.com/api/<method>"
+  ],
+  "auth": [
+   "1. Slack app (manifest) with bot scopes → OAuth v2 install (`oauth.v2.access`) → bot token `xoxb-…` per workspace.",
+   "2. Scopes: `chat:write`, `channels:history`, `groups:history`, `im:history`, `mpim:history`, `im:write`, `reactions:write`,",
+   "3. Events requests verified with the signing secret (`X-Slack-Signature`, `X-Slack-Request-Timestamp`)."
+  ],
+  "endpoints": [
+   {
+    "call": "chat.postMessage` `{channel, text",
+    "purpose": "blocks, thread_ts?}`",
+    "notes": "send / reply in thread"
+   },
+   {
+    "call": "conversations.open` `{users}` → DM channel",
+    "purpose": "initiate DM",
+    "notes": "Tier 3"
+   },
+   {
+    "call": "conversations.history` · `conversations.replies",
+    "purpose": "read inbox / thread",
+    "notes": "Tier 3 for Marketplace / internal apps; **1 request / minute, limit ≤ 15** for new non-Marketplace commercial apps (since 2025-05-29)"
+   },
+   {
+    "call": "Events API: `message.channels`, `message.groups`, `message.im`, `message.mpim`, `app_mention`, `reaction_added",
+    "purpose": "inbound push",
+    "notes": "ack 2xx within 3 s; retries 0 / 1 / 5 min; 30,000 events / workspace / app / hour"
+   },
+   {
+    "call": "reactions.add` · `chat.update` · `chat.delete",
+    "purpose": "engagement / edits",
+    "notes": ""
+   },
+   {
+    "call": "conversations.create` · `invite` · `kick` · `archive` · `setTopic` · `setPurpose",
+    "purpose": "group admin",
+    "notes": "`channels:manage`"
+   },
+   {
+    "call": "files.getUploadURLExternal` → `files.completeUploadExternal",
+    "purpose": "media",
+    "notes": ""
+   },
+   {
+    "call": "users.info` · `users.lookupByEmail` · `conversations.list",
+    "purpose": "directory",
+    "notes": ""
+   }
+  ],
+  "limits": " - Tiers per method per workspace: Tier 1 ≈ 1+/min, Tier 2 20+/min, Tier 3 50+/min, Tier 4 100+/min; 429 + `Retry-After`. - Events success rate must stay ≥ 5 % per hour or the app is disabled; `x-slack-no-retry: 1` opts out of retries. - Non-Marketplace history throttle: applies to apps created after 29 May 2025 that are distributed commercially; internal customer-built apps and Marketplace-approved apps are exempt.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.slack.dev/apis/web-api/rate-limits",
+   "https://docs.slack.dev/apis/events-api",
+   "https://docs.slack.dev/reference/methods/conversations.history"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://slack.com/api",
+  "auth": {
+   "type": "bearer",
+   "field": "token",
+   "fields": [
+    {
+     "name": "token",
+     "required": true,
+     "help": "Bot token (xoxb-…) of an installed Slack app, sent as 'Authorization: Bearer' ('You must transmit your token as a bearer token in the Authorization HTTP header', https://docs.slack.dev/apis/web-api/). Scopes: chat:write (send, reply); channels:history, groups:history, im:history, mpim:history (list_inbound, get_thread); channels:manage, channels:write, groups:write, im:write or mpim:write (mark_read)."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "ok",
+   "error_field": "error"
+  },
+  "envelope_note": "'All Web API responses contain a JSON object, which will always contain a top-level boolean property ok that indicates success or failure'; on failure 'the error property will contain a short machine-readable error code' (https://docs.slack.dev/apis/web-api/). ok:false answers (HTTP 200) become isError results.",
+  "rate_per_second": 0.8,
+  "rate_note": "Tightest tier among the mapped methods: conversations.history / conversations.replies / conversations.mark are 'Tier 3: 50+ per minute' = 0.8/s; chat.postMessage 'will generally allow an app to post 1 message per second to a specific channel'; HTTP 429 + Retry-After (https://docs.slack.dev/apis/web-api/rate-limits). Not modelled client-side: apps created after 2025-05-29 and distributed commercially outside the Marketplace get conversations.history / conversations.replies at '1 request per minute' with limit <= 15.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/auth.test",
+    "docs": "https://docs.slack.dev/reference/methods/auth.test",
+    "note": "auth.test 'checks authentication and tells you who you are' (no scopes required); account carries url, team, user, team_id, user_id, bot_id."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/chat.postMessage",
+    "body": {
+     "channel": "to",
+     "text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "ts",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://docs.slack.dev/reference/methods/chat.postMessage",
+    "note": "`to` is the Slack channel argument: 'an encoded ID or channel name that represents a channel, private group, or IM channel'. `subject` and `channel` are ignored. message_id is the message `ts`. Slack allows about 1 message per second per channel."
+   },
+   "reply": {
+    "method": "POST",
+    "path": "/chat.postMessage",
+    "body": {
+     "channel": "channel",
+     "thread_ts": "thread_id",
+     "text": "text"
+    },
+    "result": {
+     "fields": {
+      "message_id": "ts",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://docs.slack.dev/reference/methods/chat.postMessage",
+    "note": "`thread_id` is the parent message `ts` (sent as thread_ts); `channel` is REQUIRED by Slack alongside thread_ts — without it Slack answers ok:false (isError)."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/conversations.replies",
+    "params": {
+     "channel": "channel",
+     "ts": "thread_id",
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "fields": {
+      "id": "ts",
+      "thread_id": "thread_ts",
+      "from": "user",
+      "text": "text"
+     }
+    },
+    "docs": "https://docs.slack.dev/reference/methods/conversations.replies",
+    "note": "`thread_id` is the parent message `ts`; `channel` ('Conversation ID to fetch thread from') is REQUIRED by Slack. Slack pages by cursor (response_metadata.next_cursor), not by page number: `page` is ignored and only the first `limit` messages are returned; `id` is the message ts (Unix time with fraction). New non-Marketplace commercial apps: 1 request/minute, limit <= 15."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/conversations.history",
+    "params": {
+     "channel": "channel",
+     "limit": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "messages",
+     "key": "messages",
+     "fields": {
+      "id": "ts",
+      "thread_id": "thread_ts",
+      "from": "user",
+      "text": "text"
+     }
+    },
+    "docs": "https://docs.slack.dev/reference/methods/conversations.history",
+    "note": "Lists ONE channel: `channel` ('Conversation ID to fetch history for') is REQUIRED by Slack — there is no cross-conversation inbox method. `since` is not sent (Slack's `oldest` is a Unix timestamp, not ISO-8601); Slack pages by cursor, so `page` is ignored and only the newest `limit` messages are returned. New non-Marketplace commercial apps: 1 request/minute, limit <= 15."
+   },
+   "mark_read": {
+    "method": "POST",
+    "path": "/conversations.mark",
+    "body": {
+     "channel": "channel",
+     "ts": "message_id"
+    },
+    "result": {
+     "fields": {
+      "status": "=ok"
+     }
+    },
+    "docs": "https://docs.slack.dev/reference/methods/conversations.mark",
+    "note": "'Sets the read cursor in a channel': `channel` and `message_id` (the message `ts`, 'Unique identifier of message you want marked as most recently seen') are both required by Slack; `thread_id` is not used. Slack asks not to 'make calls to this method very often'."
+   }
+  },
+  "not_offered": {}
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host slack.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 6/6 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json: 5/6 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "me: spec says \"method: adapter POST /api/auth.test; spec defines GET only\"; waived: Slack Web API methods accept POST as well as GET (api.slack.com/web#basics); the 2019 OpenAPI lists GET only"
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "id": "hatla2ee_om",
+ "category": "automotive",
+ "label": "Oman",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://oman.hatla2ee.com",
+ "domain": "oman.hatla2ee.com",
+ "country": "Oman",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). oman.hatla2ee.com (Hatla2ee) publishes no developer/API or feed documentation; JS/Cloudflare-fronted site only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://oman.hatla2ee.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "https://apify.com (hatla2ee scrapers)"
+  ]
+ },
+ "official_mcp": []
+}

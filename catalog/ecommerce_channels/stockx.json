@@ -1,0 +1,287 @@
+{
+ "id": "stockx",
+ "category": "ecommerce_channels",
+ "label": "StockX",
+ "lane": "api",
+ "kind": "niche",
+ "regions": [
+  "global",
+  "eu",
+  "us"
+ ],
+ "docs_url": "https://developer.stockx.com/portal/getting-started/",
+ "url": "https://stockx.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "StockX seller account; developer application reviewed (5–7 business days) → x-api-key; OAuth per seller (offline_access for refresh); listings are asks on existing catalogue items (no custom products); StockX authenticates goods (ship to StockX); seller fees per level; rate limits documented (numbers not read); sandbox exists.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "oauth",
+   "sandbox"
+  ],
+  "auth": "oauth2 authorization-code via accounts.stockx.com (audience gateway.stockx.com, scopes offline_access openid; access 12 h + refresh) plus an `x-api-key` issued after developer approval (5–7 business days)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "webhooks",
+   "sandbox",
+   "catalog_search"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "token",
+  "refresh",
+  "secret",
+  "config.client_id",
+  "config.api_key",
+  "config.currency"
+ ],
+ "rate_limits": "1 request per second and 25,000 requests per day per API key (API Introduction); access tokens last 12 hours",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation op",
+  "base_urls": [
+   "https://api.stockx.com/v2/…",
+   "https://accounts.stockx.com/authorize"
+  ],
+  "auth": [
+   "1. Platform: StockX account → developer signup → approval (5–7 business days) → x-api-key → create an application (client id/secret, redirect).",
+   "2. Tenant authorises via authorization-code with scopes `offline_access openid` → access token (12 h) + refresh token.",
+   "3. Every call carries both the bearer JWT and x-api-key."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/catalog/search · /v2/catalog/products/{id}/variants",
+    "purpose": "find the catalogue product + size variant",
+    "notes": ""
+   },
+   {
+    "call": "POST /v2/selling/listings",
+    "purpose": "create an ask (variantId, amount, currency, expiresAt)",
+    "notes": ""
+   },
+   {
+    "call": "PATCH /v2/selling/listings/{id} · DELETE",
+    "purpose": "reprice / cancel ask",
+    "notes": "batch endpoints exist"
+   },
+   {
+    "call": "GET /v2/selling/orders/active · GET /v2/selling/orders/{orderNumber}",
+    "purpose": "orders + status",
+    "notes": ""
+   },
+   {
+    "call": "shipping document endpoints",
+    "purpose": "shipping label to StockX",
+    "notes": ""
+   },
+   {
+    "call": "webhooks",
+    "purpose": "listing / order events",
+    "notes": ""
+   }
+  ],
+  "limits": " Rate limiting applies (portal); numbers not read. - Developer approval + seller account; StockX API terms. - Goods ship to StockX for verification; asks only on catalogued products.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developer.stockx.com/portal/getting-started/",
+   "https://r.jina.ai/https://developer.stockx.com/portal/authentication/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.stockx.com/v2",
+  "headers": {
+   "Content-Type": "application/json"
+  },
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://accounts.stockx.com/oauth/token",
+   "client_auth": "body",
+   "token_params": {
+    "audience": "gateway.stockx.com"
+   },
+   "extra_headers": {
+    "x-api-key": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "StockX API key from the Developer Portal Keys page (issued after developer access approval), sent as x-api-key on every call."
+    },
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of your StockX application (Developer Portal > Applications; one application per StockX account)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client Secret of the same application."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time Authorization Code consent (https://accounts.stockx.com/authorize with scope 'offline_access openid' and audience gateway.stockx.com, then POST /oauth/token grant_type=authorization_code). The runtime exchanges it for 12-hour access tokens (grant_type=refresh_token, audience=gateway.stockx.com)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "currency",
+    "required": false,
+    "help": "Currency code of your asks (AUD, CAD, CHF, EUR, GBP, HKD, JPY, KRW, MXN, NZD, SGD, USD); StockX defaults to USD when omitted."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "StockX Public API v2 (seller listings = asks, orders). Developer access requires StockX approval; 1 request/second and 25,000/day. Listing writes are asynchronous operations: poll GET /selling/listings/{listingId}/operations/{operationId}.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/selling/listings",
+    "fixed_params": {
+     "pageNumber": "1",
+     "pageSize": "1"
+    },
+    "docs": "https://developer.stockx.com/portal/api-reference#tag/Listings/operation/GetAllListings",
+    "note": "There is no account endpoint; the probe reads one listing (GET /selling/listings?pageSize=1) with the minted token and x-api-key."
+   },
+   "update_listing": {
+    "method": "PATCH",
+    "path": "/selling/listings/{listing_id}",
+    "body": {
+     "amount": "str:price",
+     "currencyCode": "@currency"
+    },
+    "result": {
+     "fields": {
+      "status": "operationStatus"
+     }
+    },
+    "docs": "https://developer.stockx.com/portal/api-reference#tag/Listings/operation/Update",
+    "note": "PATCH /selling/listings/{listingId} {amount (string), currencyCode} changes the ask price. Asynchronous: returns {listingId, operationId, operationStatus}. `title`, `description` and `quantity` are ignored (a listing is one ask on a catalogue variant)."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/selling/listings/{listing_id}/deactivate",
+    "result": {
+     "fields": {
+      "status": "operationStatus"
+     }
+    },
+    "docs": "https://developer.stockx.com/portal/api-reference#tag/Listings/operation/DeactivateListing",
+    "note": "PUT /selling/listings/{listingId}/deactivate removes the ask from the marketplace (asynchronous operation; the listing can be re-activated with PUT …/activate)."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/selling/orders/active",
+    "params": {
+     "pageNumber": "page",
+     "pageSize": "limit",
+     "orderStatus": "status"
+    },
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "total": "count",
+     "fields": {
+      "id": "orderNumber",
+      "status": "status",
+      "total": "amount",
+      "currency": "currencyCode",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://developer.stockx.com/portal/api-reference#tag/Order/operation/GetOrders",
+    "note": "GET /selling/orders/active?pageNumber&pageSize(≤100)&orderStatus: orders from creation until payout. status: CREATED, CCAUTHORIZATIONFAILED, SHIPPED, RECEIVED, AUTHENTICATING, AUTHENTICATED, PAYOUTPENDING, PAYOUTCOMPLETED, SYSTEMFULFILLED, PAYOUTFAILED, SUSPENDED, PENDING, DONOTSHIP. `since` is ignored (only the historical-orders endpoint filters by date). amount is a string; product, variant and payout are in raw."
+   }
+  },
+  "not_offered": {
+   "create_listing": "POST /selling/listings requires a StockX catalogue variantId (UUID) plus amount ('required': ['amount', 'variantId'], https://developer.stockx.com/portal/api-reference#tag/Listings/operation/Create); the vocabulary's title/sku cannot identify a variant.",
+   "set_inventory": "A StockX listing is a single ask for one unit of a variant; there is no quantity or stock field on CreateListingInput/UpdateListingInput (https://developer.stockx.com/portal/api-reference#tag/Listings).",
+   "mark_shipped": "Sellers ship with StockX-generated shipping documents (GET /selling/orders/{orderNumber}/shipping-document); the API has no call to submit a carrier or tracking number (https://developer.stockx.com/portal/api-reference#tag/Order)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.stockx.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 4/4 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token accounts.stockx.com/oauth/token: 401 access_denied",
+   "authorize https://accounts.stockx.com/authorize: 302",
+   "HTML docs spot-check (render-doc): 4/4 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

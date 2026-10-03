@@ -1,0 +1,64 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/x_ads-mcp",
+ "description": "X Ads (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Every tool ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.x.com/x-ads-api/introduction",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "x_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_X_ADS_CONSUMER_KEY",
+     "description": "API Key (consumer key) of an X developer app approved for Ads API access (Ads API Access Form, https://docs.x.com/forms/ads-api-access).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_ADS_CONSUMER_SECRET",
+     "description": "API Key Secret (consumer secret) of the same app.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_ADS_ACCESS_TOKEN",
+     "description": "OAuth 1.0a user access token of an X user with access to the ads account (app management UI or the 3-legged OAuth flow).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_ADS_ACCESS_TOKEN_SECRET",
+     "description": "OAuth 1.0a access token secret belonging to that access token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_X_ADS_ACCOUNT_ID",
+     "description": "Ads account id (e.g. 18ce54d4x5t) used by update_budget and pause_resume, whose inputs carry only the campaign id; list_accounts shows the ids.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

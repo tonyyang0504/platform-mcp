@@ -1,0 +1,35 @@
+{
+ "id": "wapcar",
+ "category": "automotive",
+ "label": "Apcar",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.wapcar.my",
+ "domain": "apcar.my",
+ "country": "Malaysia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). /docs exposes a generic FastAPI file-upload backend, not a listings API or partner offering.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://apcar.my/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

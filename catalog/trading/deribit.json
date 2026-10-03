@@ -1,0 +1,284 @@
+{
+ "id": "deribit",
+ "category": "trading",
+ "label": "Deribit Options & Futures",
+ "lane": "api",
+ "kind": "options",
+ "docs_url": "https://docs.deribit.com/articles/authentication",
+ "url": "https://www.deribit.com/",
+ "verified_at": "2026-09-24",
+ "auth_fields": [
+  "client_id",
+  "client_secret"
+ ],
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://www.deribit.com/api/v2",
+  "ws": "wss://www.deribit.com/ws/api/v2",
+  "ccxt_exchange_id": "deribit",
+  "sandbox": "ccxt set_sandbox_mode(True) (test.deribit.com)"
+ },
+ "notes": "The key's scopes must include trade:read_write and must NOT include wallet:read_write or account:read_write.",
+ "regions": [
+  "global"
+ ],
+ "terms_note": "JSON-RPC over HTTP GET (/api/v2/<method>?params); private methods take HTTP Basic client credentials. Errors are HTTP 400 JSON-RPC error objects. place_order and cancel_order move real funds.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "websocket"
+  ],
+  "auth": "client_id + client_secret (HTTP Basic, or public/auth bearer)",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "balances",
+   "orders",
+   "trading"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "adapter": {
+  "base_url": "https://www.deribit.com/api/v2",
+  "auth": {
+   "type": "basic",
+   "username_field": "client_id",
+   "password_field": "client_secret",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of a Deribit API key (Account > API). Give it trade:read_write and NOT wallet:read_write or account:read_write. A test-environment key comes from https://test.deribit.com and works only against https://test.deribit.com/api/v2 (set adapter.base_url to it)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The key's Client Secret; sent as HTTP Basic credentials (Authorization: Basic base64(client_id:client_secret)) on each request over TLS."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/private/get_account_summaries",
+    "fixed_params": {
+     "extended": "true"
+    },
+    "docs": "https://docs.deribit.com/api-reference/account-management/private-get_account_summaries",
+    "note": "Extended account summaries: account id, username, type (main/subaccount) and per-currency balances."
+   },
+   "list_markets": {
+    "method": "GET",
+    "path": "/public/get_instruments",
+    "fixed_params": {
+     "currency": "any"
+    },
+    "default_limit": 100000,
+    "max_limit": 100000,
+    "result": {
+     "items": "result",
+     "key": "markets",
+     "fields": {
+      "symbol": "instrument_name",
+      "base": "base_currency",
+      "quote": "quote_currency",
+      "type": "kind",
+      "status": "state",
+      "settlement": "settlement_currency",
+      "contract_size": "contract_size"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/market-data/public-get_instruments",
+    "note": "Every unexpired instrument across currencies (options, futures, perpetuals, spot) in one response; `query` is not sent. Cached by Deribit for about a minute."
+   },
+   "get_ticker": {
+    "method": "GET",
+    "path": "/public/ticker",
+    "params": {
+     "instrument_name": "symbol"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "symbol": "instrument_name",
+      "last": "last_price",
+      "bid": "best_bid_price",
+      "ask": "best_ask_price",
+      "volume": "stats.volume",
+      "high": "stats.high",
+      "low": "stats.low",
+      "change_percent": "stats.price_change",
+      "mark": "mark_price",
+      "index": "index_price"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/market-data/public-ticker",
+    "note": "`symbol` is a Deribit instrument name such as BTC-PERPETUAL or BTC-27DEC26-100000-C."
+   },
+   "get_balances": {
+    "method": "GET",
+    "path": "/private/get_account_summaries",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "result.summaries",
+     "key": "balances",
+     "fields": {
+      "asset": "currency",
+      "balance": "balance",
+      "equity": "equity",
+      "available": "available_funds",
+      "margin_balance": "margin_balance"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/account-management/private-get_account_summaries",
+    "note": "One row per currency."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/private/get_open_orders",
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "result",
+     "key": "orders",
+     "fields": {
+      "order_id": "order_id",
+      "symbol": "instrument_name",
+      "side": "direction",
+      "type": "order_type",
+      "status": "order_state",
+      "price": "price",
+      "quantity": "amount",
+      "filled": "filled_amount",
+      "time": "creation_timestamp"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/trading/private-get_open_orders",
+    "note": "All open orders across currencies; `symbol` and `status` are not sent (the method has no instrument filter)."
+   },
+   "place_order": {
+    "method": "GET",
+    "path": "/private/{order_side}",
+    "path_params": {
+     "order_side": "map:side:buy=buy,sell=sell"
+    },
+    "params": {
+     "instrument_name": "symbol",
+     "amount": "quantity",
+     "type": "map:type:market=market,limit=limit",
+     "price": "price"
+    },
+    "result": {
+     "root": "result.order",
+     "fields": {
+      "order_id": "order_id",
+      "status": "order_state",
+      "symbol": "instrument_name",
+      "side": "direction",
+      "type": "order_type",
+      "price": "price",
+      "quantity": "amount",
+      "filled": "filled_amount"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/trading/private-buy",
+    "note": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the Deribit test environment https://test.deribit.com/api/v2 first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. `side` selects private/buy or private/sell. `quantity` is Deribit's `amount`: USD for perpetuals and inverse futures (multiples of the contract size, e.g. 10), the base coin for options and linear futures. Limit orders need `price` (good_til_cancelled); omit it for market orders."
+   },
+   "cancel_order": {
+    "method": "GET",
+    "path": "/private/cancel",
+    "params": {
+     "order_id": "order_id"
+    },
+    "result": {
+     "root": "result",
+     "fields": {
+      "order_id": "order_id",
+      "status": "order_state",
+      "symbol": "instrument_name"
+     }
+    },
+    "docs": "https://docs.deribit.com/api-reference/trading/private-cancel",
+    "note": "Only the order id is needed."
+   }
+  },
+  "not_offered": {
+   "get_candles": "public/get_tradingview_chart_data returns columnar arrays (result.ticks[], result.open[], result.high[] ...) rather than one record per candle, and start_timestamp/end_timestamp are mandatory; the result mapper reads row lists and the vocabulary carries no time range."
+  }
+ },
+ "reference": {
+  "verdict": "has_api: yes.",
+  "base_urls": [
+   "https://www.deribit.com/api/v2",
+   "https://test.deribit.com/api/v2 (test environment)"
+  ],
+  "auth": [
+   "Private methods over HTTP accept 'Authorization: Basic BASE64(ClientId + : + ClientSecret)' (docs: 'Every private method can be accessed by providing an HTTP Authorization: Basic XXX header'), a deri-hmac-sha256 signature, or a bearer token from public/auth.",
+   "Basic is used: a public/auth bearer token expires with HTTP 400 (13009 unauthorized, checked live), which the runtime's re-login-on-401 would not catch, and its expires_in sits under result."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /public/get_instruments?currency=any",
+    "purpose": "instruments",
+    "notes": "currency required (or any); kind, expired optional"
+   },
+   {
+    "call": "GET /public/ticker?instrument_name=",
+    "purpose": "ticker",
+    "notes": "last_price, best_bid_price, best_ask_price, mark_price, stats{volume, high, low, price_change}"
+   },
+   {
+    "call": "GET /private/get_account_summaries",
+    "purpose": "balances",
+    "notes": "result.summaries[{currency, balance, equity, available_funds, margin_balance}]; extended=true adds id/username/type"
+   },
+   {
+    "call": "GET /private/get_open_orders",
+    "purpose": "open orders",
+    "notes": "kind, type filters only"
+   },
+   {
+    "call": "GET /private/buy | /private/sell",
+    "purpose": "new order",
+    "notes": "instrument_name, amount or contracts, type (default limit), price, time_in_force; result.order{order_id, order_state}"
+   },
+   {
+    "call": "GET /private/cancel?order_id=",
+    "purpose": "cancel",
+    "notes": "result is the cancelled order"
+   }
+  ],
+  "limits": "Credit-based rate limits per account (non-matching-engine vs matching-engine methods); error 10028 too_many_requests arrives as HTTP 400.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.deribit.com/articles/authentication",
+   "https://docs.deribit.com/api-reference/trading/private-buy",
+   "https://docs.deribit.com/api-reference/trading/private-sell",
+   "https://docs.deribit.com/api-reference/trading/private-cancel",
+   "https://docs.deribit.com/api-reference/trading/private-get_open_orders",
+   "https://docs.deribit.com/api-reference/account-management/private-get_account_summaries",
+   "https://docs.deribit.com/api-reference/market-data/public-get_instruments",
+   "https://docs.deribit.com/api-reference/market-data/public-ticker",
+   "https://docs.deribit.com/articles/errors"
+  ]
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host www.deribit.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 400 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)",
+   "live read without credentials: get_ticker, list_markets returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

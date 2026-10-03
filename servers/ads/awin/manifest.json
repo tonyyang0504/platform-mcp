@@ -1,0 +1,49 @@
+{
+ "manifest_version": "0.2",
+ "name": "awin-mcp",
+ "display_name": "Awin MCP",
+ "version": "0.1.0",
+ "description": "Awin (ads): me, list_accounts, get_report. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "awin"
+   ],
+   "env": {
+    "PLATFORM_MCP_AWIN_API_TOKEN": "${user_config.platform_mcp_awin_api_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_awin_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AWIN_API_TOKEN",
+   "description": "Personal Awin API token (https://ui.awin.com/awin-api > 'Show my API token'), sent as `Authorization: Bearer`. It is user-level: it reaches every advertiser account the user has at least viewer access to. Advertiser API access requires an Accelerate or Advanced plan.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /accounts: the user behind the token and the publisher/advertiser accounts it can access."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /accounts?type=advertiser: advertiser programmes the token's user can access (accountId, accountName = programme name, accountType, userRole). `id` is the advertiserId the report takes as account_id. No currency on this record."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /advertisers/{advertiserId}/reports/publisher?startDate&endDate&timezone=UTC&dateType=transaction: impressions, clicks and transactions per publisher over the window (publishers without activity are omitted). `spend` is totalComm (commission of approved + pending + bonus transactions; the Awin override is not included); pending/confirmed/declined splits are in raw. Awin has no campaigns, so `campaign_id` is not applied."
+  }
+ ]
+}

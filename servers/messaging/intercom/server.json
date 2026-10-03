@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/intercom-mcp",
+ "description": "Intercom (messaging): me, send, reply, list_inbound, get_thread, mark_read. Every tool maps to a doc",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.intercom.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "intercom"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_INTERCOM_ACCESS_TOKEN",
+     "description": "Access Token of the app (Developer Hub > Configure > Authentication, or an OAuth install), sent as 'Authorization: Bearer <access_token>' (https://developers.intercom.com/docs/build-an-integration/learn-more/authentication). Workspaces hosted in the EU / AU are served from https://api.eu.intercom.io / https://api.au.intercom.io (OpenAPI servers list), which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_INTERCOM_ADMIN_ID",
+     "description": "Intercom id of the admin (teammate) who authors replies and outbound messages — 'admin_id: The id of the admin who is authoring the comment' (https://developers.intercom.com/docs/references/rest-api/api.intercom.io/conversations/replyconversation); GET /me (the `me` tool) shows the token's own admin id. Env: PLATFORM_MCP_INTERCOM_ADMIN_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "bytbil",
+ "category": "automotive",
+ "label": "Bytbil",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.bytbil.com",
+ "domain": "bytbil.com",
+ "country": "Sweden",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth2 (Blocket API 5.0)",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence medium). Blocket/Bytbil provide an official dealer ad API (API 5.0, REST+OAuth2) included in dealer packages; docs only via dealer account/integration partners.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.bytbil.com/"
+  ],
+  "unofficial": [
+   "https://swapi.se/tjanster/bytbil-api-wordpress/",
+   "https://tokovmedia.se/blocket-api-digital-bilhall-for-bilhandlares-hemsida/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): Blocket/Bytbil provide an official dealer ad API (API 5.0, REST+OAuth2) included in dealer packages; docs only via dealer account/integration partners."
+}

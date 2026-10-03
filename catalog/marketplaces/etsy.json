@@ -1,0 +1,356 @@
+{
+ "id": "etsy",
+ "category": "marketplaces",
+ "label": "Etsy",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global",
+  "na",
+  "eu"
+ ],
+ "docs_url": "https://developers.etsy.com",
+ "url": "https://www.etsy.com/your/shops/me/dashboard",
+ "verified_at": "2026-09-25",
+ "terms_note": "Automation allowed under the API Terms of Use; three app tiers since 2026-07 — Seller App (own shop, automated near-instant approval, no commercial use), Personal App (reviewed), Commercial Access (manual review, needed to serve OTHER sellers via OAuth); per-app QPS/QPD limits shown in the portal (x-limit-per-second / x-limit-per-day headers, 429 + retry-after); items must be seller-designed, AI use disclosed",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "apply",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "upload_file",
+   "upload_image",
+   "set_price",
+   "publish",
+   "unpublish",
+   "orders",
+   "sales_stats",
+   "inventory",
+   "shop_sections",
+   "taxonomy"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://www.etsy.com/openapi/generated/oas/3.0.0.json (OpenAPI 3 spec; no official SDK)"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.api.etsycloud.com/mcp (official, docs-only)",
+  "https://developers.etsy.com/documentation/mcp_server/devmcpserver/",
+  "https://github.com/DColl/etsy-mcp-server",
+  "https://github.com/aserper/etsy-mcp",
+  "https://github.com/BusyBee3333/etsy-mcp-2026-complete"
+ ],
+ "auth_fields": [
+  "api_key",
+  "shop_id",
+  "access_token",
+  "refresh_token",
+  "taxonomy_id",
+  "shared_secret?",
+  "default_price_cents?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full listing API, verdict A stands).",
+  "base_urls": [
+   "https://openapi.etsy.com/v3/application/...",
+   "https://api.etsy.com/v3/public/oauth/token"
+  ],
+  "auth": [
+   "1. Tenant registers an app at https://www.etsy.com/developers (Developer Portal). Tiers since 2026-07: **Seller App** — own",
+   "2. OAuth 2.0 + PKCE: `GET https://www.etsy.com/oauth/connect?response_type=code&client_id=<keystring>&redirect_uri=…&scope=listings_w%20listings_r%20transactions_r%20shops_r&state=…&code_challenge=…&code_challenge_method=S256`",
+   "3. Access token lifetime **3600 s**; refresh token **90 days** (`grant_type=refresh_token`) — the connector's `_etsy_refresh` already does this.",
+   "4. Scopes: `listings_r listings_w listings_d shops_r shops_w transactions_r transactions_w profile_r profile_w email_r address_r address_w`."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /v3/application/shops/{shop_id}/listings` (`createDraftListing`, `listings_w`)",
+    "purpose": "create DRAFT listing",
+    "notes": "required `quantity`, `title`, `description`, `price`, `who_made` (i_did / someone_else / collective), `when_made` (made_to_order / 2020_2026 …), `taxonomy_id`; `type` = physical / **download** / both; optional `tags[]` (13), `materials[]`, `image_ids[]`, `shop_section_id`, `should_auto_renew`, `is_t"
+   },
+   {
+    "call": "POST …/listings/{listing_id}/files` (`uploadListingFile`, `listings_w`)",
+    "purpose": "attach the build",
+    "notes": "multipart `file` (binary) or `listing_file_id`, `name`, `rank`; digital-file limit 20 MB (help centre; the connector already enforces `_ETSY_FILE_MAX`)"
+   },
+   {
+    "call": "POST …/listings/{listing_id}/images` (`uploadListingImage`, `listings_w`)",
+    "purpose": "the required image",
+    "notes": "multipart `image` (binary, required) or `listing_image_id`, `rank` (default 1), `overwrite`, `is_watermarked`, `alt_text` — a build screenshot / cover satisfies \"at least one image before activation\""
+   },
+   {
+    "call": "PATCH …/listings/{listing_id}` (`updateListing`, `listings_w`)",
+    "purpose": "copy / price / **publish**",
+    "notes": "`title`, `description`, `tags[]`, `taxonomy_id`, `image_ids[]`, `should_auto_renew`, `type`, `state` ∈ {`active`, `inactive`} — \"Setting a `draft` listing to `active` will also publish the listing on etsy.com\" (a $0.20 listing fee applies)"
+   },
+   {
+    "call": "PUT …/listings/{listing_id}/inventory` (`updateListingInventory`)",
+    "purpose": "price / quantity / SKU per offering",
+    "notes": "`products[].offerings[].price`, `quantity`, `is_enabled`, `sku`"
+   },
+   {
+    "call": "GET /v3/application/shops/{shop_id}/listings` (`getListingsByShop`, `listings_r`)",
+    "purpose": "list our listings",
+    "notes": "`state`, `limit`, `offset`, `sort_on`, `sort_order`, `includes`"
+   },
+   {
+    "call": "GET /v3/application/shops/{shop_id}/receipts` (`getShopReceipts`, `transactions_r`)",
+    "purpose": "orders",
+    "notes": "`min_created`, `max_created`, `min_last_modified`, `was_paid`, `was_shipped`, `was_delivered`, `was_canceled`, `limit`, `offset`; receipt → `receipt_id`, `grandtotal`, `transactions[].listing_id`"
+   },
+   {
+    "call": "GET …/shops/{shop_id}/transactions` (`getShopReceiptTransactionsByShop`)",
+    "purpose": "line items",
+    "notes": "`limit`, `offset`"
+   },
+   {
+    "call": "GET …/shops/{shop_id}/payment-account/ledger-entries` (`getShopPaymentAccountLedgerEntries`, `transactions_r`)",
+    "purpose": "revenue / fees ledger",
+    "notes": "`min_created`, `max_created`, `limit`, `offset`"
+   },
+   {
+    "call": "GET /v3/application/seller-taxonomy/nodes",
+    "purpose": "`taxonomy_id` lookup (digital → \"Digital Prints\" / \"Software\" nodes)",
+    "notes": "—"
+   }
+  ],
+  "limits": " Per app key: QPS + rolling-24 h QPD, values shown in the Developer Portal (examples in the docs: 150 / s, 100 000 / day); headers `x-limit-per-second`, `x-remaining-this-second`, `x-limit-per-day`, `x-remaining-today`; 429 carries `retry-after`. - API Terms of Use (caching policy §1, no scraping, one app per purpose); Commercial Access reviewed by Etsy for any app that serves multiple sellers. Seller Apps: own shop only, automated approval. - Marketplace policy: items must be designed / made by the seller (`who_made = i_did`), AI involvement disclosed in the listing; digital downloads allowed",
+  "mcp_sdk": [
+   "**Official (docs-only):** `https://mcp.api.etsycloud.com/mcp` (HTTP, no key) — `learn_etsy_api`, `search_etsy_api`,",
+   "Community live-API MCPs: https://github.com/DColl/etsy-mcp-server, https://github.com/aserper/etsy-mcp (37 tools),",
+   "No official SDK; the OpenAPI 3 spec is the contract."
+  ],
+  "sources": [
+   "https://developers.etsy.com/documentation/reference/",
+   "https://www.etsy.com/openapi/generated/oas/3.0.0.json",
+   "https://developers.etsy.com/documentation/essentials/requests",
+   "https://developers.etsy.com/documentation/tutorials/listings",
+   "https://developers.etsy.com/documentation/mcp_server/devmcpserver/",
+   "https://vorplabs.com/agent-tools/etsy-api",
+   "https://help.etsy.com/hc/en-us/articles/41918478450967",
+   "https://help.etsy.com/hc/en-us/articles/360025870013",
+   "https://github.com/DColl/etsy-mcp-server",
+   "https://github.com/aserper/etsy-mcp"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.etsy.com/v3/application",
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.etsy.com/v3/public/oauth/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "x-api-key": "api_key"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Etsy App API Key keystring (etsy.com/developers/your-apps); sent as client_id in the refresh grant form body (Etsy's refresh grant takes no client secret)."
+    },
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Value of the x-api-key header required on every v3 request: the keystring and the shared secret joined by a colon, e.g. 1aa2bb33c44d55eeeeee6fff:a1b2c3d4e5 (both on the Your Apps page)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token (numeric user id prefix, e.g. 12345678.JNGI...) from a one-time OAuth 2.0 authorization-code + PKCE consent at etsy.com/oauth/connect with scopes shops_r listings_r listings_w transactions_r; valid 90 days, after which the seller consents again. Access tokens (1 h) are minted from it. A refresh grant also returns a new refresh token, which replaces the old one. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. The state file is keyed by platform id, so it is shared with ecommerce_channels/etsy: give each server its own PLATFORM_MCP_STATE_DIR (or its own consent) so they never race on one rotating refresh token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "shop_id",
+    "required": true,
+    "help": "Numeric Etsy shop id (GET /v3/application/users/me returns it as shop_id)."
+   },
+   {
+    "name": "taxonomy_id",
+    "required": false,
+    "help": "Seller taxonomy id every created listing is filed under (GET /v3/application/seller-taxonomy/nodes); required by create_product."
+   },
+   {
+    "name": "who_made",
+    "required": false,
+    "help": "createDraftListing who_made for new listings: i_did | someone_else | collective; required by create_product."
+   },
+   {
+    "name": "when_made",
+    "required": false,
+    "help": "createDraftListing when_made for new listings, e.g. made_to_order, 2020_2026, 2010_2019, before_2007; required by create_product."
+   },
+   {
+    "name": "shipping_profile_id",
+    "required": false,
+    "help": "Shipping profile id for new physical listings (GET /v3/application/shops/{shop_id}/shipping-profiles); required for physical listings."
+   },
+   {
+    "name": "readiness_state_id",
+    "required": false,
+    "help": "Processing profile id for new physical listings (GET /v3/application/shops/{shop_id}/readiness-state-definitions); required for physical listings."
+   },
+   {
+    "name": "return_policy_id",
+    "required": false,
+    "help": "Optional return policy id for new listings (GET /v3/application/shops/{shop_id}/policies/return)."
+   }
+  ],
+  "rate_per_second": 5,
+  "terms": "Etsy Open API v3 (per-app rate limits apply; 429 when exceeded); money values are {amount, divisor, currency_code} in minor units.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developers.etsy.com/documentation/reference#operation/getMe",
+    "note": "GET /v3/application/users/me (scope shops_r) returns {user_id, shop_id} for the seller who granted the token."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/shops/{shop_id}/listings",
+    "path_params": {
+     "shop_id": "@shop_id"
+    },
+    "params": {
+     "state": "status",
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "products",
+     "total": "count",
+     "fields": {
+      "id": "listing_id",
+      "name": "title",
+      "description": "description",
+      "price": "price.amount",
+      "currency": "price.currency_code",
+      "status": "state",
+      "url": "url",
+      "created_at": "created_timestamp",
+      "updated_at": "updated_timestamp"
+     }
+    },
+    "docs": "https://developers.etsy.com/documentation/reference#operation/getListingsByShop",
+    "note": "GET /v3/application/shops/{shop_id}/listings?state (active|inactive|sold_out|draft|expired; Etsy defaults to active)&limit(1-100)&offset (scope listings_r). `price` is price.amount in MINOR units - divide by price.divisor (usually 100): 1999 = 19.99 in price.currency_code. created_at / updated_at are epoch seconds."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/listings/{product_id}",
+    "result": {
+     "fields": {
+      "id": "listing_id",
+      "name": "title",
+      "description": "description",
+      "price": "price.amount",
+      "currency": "price.currency_code",
+      "status": "state",
+      "url": "url",
+      "created_at": "created_timestamp",
+      "updated_at": "updated_timestamp"
+     }
+    },
+    "docs": "https://developers.etsy.com/documentation/reference#operation/getListing",
+    "note": "GET /v3/application/listings/{listing_id}; `price` is in minor units (see list_products)."
+   },
+   "create_product": {
+    "method": "POST",
+    "path": "/shops/{shop_id}/listings",
+    "path_params": {
+     "shop_id": "@shop_id"
+    },
+    "body_format": "form",
+    "body": {
+     "title": "name",
+     "description": "description",
+     "price": "price",
+     "quantity": "=1",
+     "who_made": "@who_made",
+     "when_made": "@when_made",
+     "taxonomy_id": "@taxonomy_id",
+     "type": "=physical",
+     "shipping_profile_id": "@shipping_profile_id",
+     "readiness_state_id": "@readiness_state_id",
+     "return_policy_id": "@return_policy_id"
+    },
+    "result": {
+     "fields": {
+      "id": "listing_id",
+      "name": "title",
+      "description": "description",
+      "price": "price.amount",
+      "currency": "price.currency_code",
+      "status": "state",
+      "url": "url",
+      "created_at": "created_timestamp",
+      "updated_at": "updated_timestamp"
+     }
+    },
+    "docs": "https://developers.etsy.com/documentation/reference#operation/createDraftListing",
+    "note": "Creates a DRAFT listing (not published) with createDraftListing (form-encoded, scope listings_w): title = name, description (REQUIRED by Etsy - always pass it), price in the shop's currency as a decimal (e.g. 19.99; `currency` is ignored because the shop currency applies), quantity fixed at 1, type physical, and who_made / when_made / taxonomy_id / shipping_profile_id / readiness_state_id / return_policy_id from config. `url` is ignored. Publishing needs an image upload (multipart, not mapped) and then state=active."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/shops/{shop_id}/transactions",
+    "path_params": {
+     "shop_id": "@shop_id"
+    },
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "sales",
+     "total": "count",
+     "fields": {
+      "id": "transaction_id",
+      "product_id": "listing_id",
+      "product_name": "title",
+      "amount": "price.amount",
+      "currency": "price.currency_code",
+      "created_at": "created_timestamp"
+     }
+    },
+    "docs": "https://developers.etsy.com/documentation/reference#operation/getShopReceiptTransactionsByShop",
+    "note": "GET /v3/application/shops/{shop_id}/transactions?limit&offset (scope transactions_r): one row per sold listing line (transaction_id, receipt_id, listing_id, title, quantity, price {amount, divisor, currency_code} per unit in MINOR units, buyer_user_id, created_timestamp epoch seconds). The endpoint has no date or listing filter, so `since` and `product_id` are not sent; buyer emails are not exposed."
+   }
+  },
+  "not_offered": {
+   "update_price": "Listing prices live in the inventory offerings: updateListingInventory (PUT /v3/application/listings/{listing_id}/inventory) must resend the entire products array with every offering's price, quantity and is_enabled (https://developers.etsy.com/documentation/reference#operation/updateListingInventory), which one call from a product id and price cannot build.",
+   "get_sales_stats": "Open API v3 has no revenue summary; the payment ledger (getShopPaymentAccountLedgerEntries) lists individual entries between required min_created / max_created epoch bounds (https://developers.etsy.com/documentation/reference#operation/getShopPaymentAccountLedgerEntries).",
+   "list_refunds": "There is no refunds collection; refunds appear inside each ShopReceipt's refunds[] (https://developers.etsy.com/documentation/reference#operation/getShopReceipts).",
+   "refund": "The Open API v3 reference has no refund operation; refunds are issued in Shop Manager (https://developers.etsy.com/documentation/reference)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.etsy.com: DNS ok, TLSv1.2 (GlobalSign nv-sa)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.etsy.com/v3/public/oauth/token: 403 API key not found or not active",
+   "authorize https://www.etsy.com/oauth/connect: 302",
+   "spec https://www.etsy.com/openapi/generated/oas/3.0.0.json: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

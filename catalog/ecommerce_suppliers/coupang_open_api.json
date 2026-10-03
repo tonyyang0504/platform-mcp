@@ -1,0 +1,258 @@
+{
+ "id": "coupang_open_api",
+ "category": "ecommerce_suppliers",
+ "label": "Coupang Wing (seller) + Coupang Open API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "korea"
+ ],
+ "docs_url": "https://developers.coupang.com/ko/api",
+ "url": "https://developers.coupang.com/ko",
+ "verified_at": "2026-09-25",
+ "terms_note": "HMAC signing + IP allowlist required; developer portal renewed 2026-07; product-ID (GTIN/MPN) policy notices",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "hmac (Access Key + Secret Key issued in WING after business verification; HMAC-SHA256 signed requests; up to 10 allow-listed IPs; keys expire and are re-issued from 14 days before expiry)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "stock_feed",
+   "price_feed",
+   "orders",
+   "tracking",
+   "returns"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Business-verified WING seller; HMAC keys + IP allow-list; no sandbox; per-API rate limits in the docs.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://developers.coupang.com/ko/api",
+   "https://developers.coupang.com/ko/getting-started/issue-open-api-keynew"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api-gateway.coupang.com",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "access_key",
+     "required": true,
+     "help": "Coupang Open API Access Key issued in WING (판매자정보 > 추가판매정보 > OPEN API 키 발급) after business verification; calls must come from one of the (up to 10) allow-listed IPs, and keys expire and must be re-issued."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The matching Secret Key: signs every request (HMAC-SHA256 hex over signed-date + method + path + query, sent as `Authorization: CEA algorithm=HmacSHA256, access-key=..., signed-date=..., signature=...`). Never sent on the wire."
+    }
+   ],
+   "sign": {
+    "payload": "{datetime_compact}{method}{path}{query}",
+    "key_field": "secret_key",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "Authorization": "CEA algorithm=HmacSHA256, access-key={@access_key}, signed-date={datetime_compact}, signature={signature}"
+    }
+   }
+  },
+  "config_fields": [
+   {
+    "name": "vendor_id",
+    "required": true,
+    "help": "Coupang vendorId (업체코드, e.g. A00012345), shown in WING after login; used in every path/query."
+   }
+  ],
+  "rate_per_second": 5,
+  "terms": "Coupang's Open API is SELLER-side (WING): it reads the seller's own listings and the customer orders placed with the seller. There is no buyer/sourcing API, so nothing here buys from Coupang.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/seller-products",
+    "params": {
+     "vendorId": "@vendor_id"
+    },
+    "fixed_params": {
+     "maxPerPage": 1
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/product-list-paging-query",
+    "note": "No account endpoint; the probe lists one registered product ({code, message, nextToken, data[]}) to verify the HMAC keys, IP allow-list and vendorId."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/seller-products",
+    "params": {
+     "vendorId": "@vendor_id",
+     "nextToken": "page",
+     "maxPerPage": "limit",
+     "sellerProductName": "query"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "sellerProductId",
+      "title": "sellerProductName",
+      "brand": "brand",
+      "status": "statusName",
+      "display_category_code": "displayCategoryCode",
+      "product_id": "productId",
+      "created_at": "createdAt"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/product-list-paging-query",
+    "note": "The seller's OWN registered products (GET_PRODUCTS_BY_QUERY). `query` searches sellerProductName (20 characters at most); `category` is not a filter of this endpoint. nextToken is the page key (1 or absent for the first page, the response's nextToken is the next one; empty when there is none)."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/v2/providers/seller_api/apis/api/v1/marketplace/seller-products/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "sellerProductId",
+      "title": "sellerProductName",
+      "price": "items.0.salePrice",
+      "sku": "items.0.externalVendorSku",
+      "brand": "brand",
+      "status": "statusName",
+      "display_name": "displayProductName"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/products/querying-product",
+    "note": "GET_PRODUCT_BY_PRODUCT_ID: the full listing (delivery and return settings, items[{vendorItemId, itemName, originalPrice, salePrice, maximumBuyCount, externalVendorSku, images}]). `price` is the first item's salePrice in the market currency (KRW in Korea); vendorItemId (옵션ID) per item is in `raw`."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/v2/providers/openapi/apis/api/v5/vendors/{vendor_id}/{id}/ordersheets",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "result": {
+     "root": "data.0",
+     "fields": {
+      "id": "orderId",
+      "status": "status",
+      "created_at": "orderedAt",
+      "tracking_number": "invoiceNumber",
+      "carrier": "deliveryCompanyName",
+      "shipment_box_id": "shipmentBoxId",
+      "paid_at": "paidAt"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/shipments/single-po-query-using-orderid",
+    "note": "GET_ORDERSHEET_BY_ORDERID: a customer order placed with the seller; the first shipment box (data[0]) of that orderId. status is ACCEPT (결제완료), INSTRUCT (상품준비중), DEPARTURE, DELIVERING, FINAL_DELIVERY or NONE_TRACKING. Prices are {currencyCode, units, nanos} objects (orderItems[].orderPrice), so no numeric `total` is mapped; receiver and orderItems are in `raw`."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/v2/providers/openapi/apis/api/v5/vendors/{vendor_id}/{order_id}/ordersheets",
+    "path_params": {
+     "vendor_id": "@vendor_id"
+    },
+    "result": {
+     "items": "data",
+     "key": "events",
+     "fields": {
+      "shipment_box_id": "shipmentBoxId",
+      "status": "status",
+      "carrier": "deliveryCompanyName",
+      "tracking_number": "invoiceNumber",
+      "shipped_at": "inTrasitDateTime",
+      "delivered_at": "deliveredDate"
+     }
+    },
+    "docs": "https://developers.coupang.com/ko/api/shipments/single-po-query-using-orderid",
+    "note": "One row per shipment box of the order with its delivery status, carrier (deliveryCompanyName), invoiceNumber (운송장번호), shipped and delivered dates. The per-box status history endpoint (/ordersheets/{shipmentBoxId}/history) is not used: its documented schema (data[].details[]) and example (data[] of events) disagree."
+   }
+  },
+  "not_offered": {
+   "create_order": "Seller-side API: customers order on coupang.com; the Open API only processes those orders (상품준비중, 운송장 업로드) and cannot place one.",
+   "quote_shipping": "No shipping-rate endpoint: delivery charges are fields of the seller's own listing (deliveryChargeType, deliveryCharge), not a quote for a destination."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires access_key, secret_key, vendor_id; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

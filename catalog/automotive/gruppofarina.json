@@ -1,0 +1,35 @@
+{
+ "id": "gruppofarina",
+ "category": "automotive",
+ "label": "Gruppofarina",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://www.gruppofarina.com",
+ "domain": "gruppofarina.com",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). B2B page is a dealer partnership offer, no API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://gruppofarina.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "supabase-mcp",
+ "display_name": "Supabase MCP",
+ "version": "0.1.0",
+ "description": "Supabase (builder tools): list_items, get_item, create_item, update_item, delete_item. Every tool ma",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "supabase"
+   ],
+   "env": {
+    "PLATFORM_MCP_SUPABASE_SECRET_KEY": "${user_config.platform_mcp_supabase_secret_key}",
+    "PLATFORM_MCP_SUPABASE_PROJECT_REF": "${user_config.platform_mcp_supabase_project_ref}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_supabase_secret_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SUPABASE_SECRET_KEY",
+   "description": "Project secret key (sb_secret_…, Project Settings > API Keys), sent in the apikey header as Supabase documents for publishable/secret keys. It bypasses Row Level Security: keep it server-side.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_supabase_project_ref": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SUPABASE_PROJECT_REF",
+   "description": "Project reference (the subdomain of https://<ref>.supabase.co).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "list_items",
+   "description": "GET /rest/v1/{table}?select=*&limit&offset: rows of the table named by collection (required). Each row is in raw; id/title/updated_at are read from columns of those names when present. query is not sent (PostgREST filters are column-specific)."
+  },
+  {
+   "name": "get_item",
+   "description": "GET /rest/v1/{table}?id=eq.{item_id}&select=*: the row whose id column equals item_id (the table needs an `id` column)."
+  },
+  {
+   "name": "create_item",
+   "description": "POST /rest/v1/{table} [fields] with Prefer: return=representation: inserts one row whose columns are the keys of fields; title/content are not columns and are not sent."
+  },
+  {
+   "name": "update_item",
+   "description": "Upsert: POST /rest/v1/{table} [{id: item_id, …fields}] with Prefer: resolution=merge-duplicates: updates the given columns of the row whose primary key `id` equals item_id (inserts it when missing)."
+  },
+  {
+   "name": "delete_item",
+   "description": "DELETE /rest/v1/{table}?id=eq.{item_id}: deletes the row(s) whose id equals item_id."
+  }
+ ]
+}

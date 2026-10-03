@@ -1,0 +1,36 @@
+{
+ "id": "un_comtrade",
+ "category": "sales",
+ "label": "UN Comtrade Plus",
+ "lane": "api",
+ "kind": "customs",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://comtradedeveloper.un.org/",
+ "url": "https://comtradeplus.un.org/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Free subscription key from the developer portal (rate-limited, no company data) → platform-key; the developer portal redirects to a sign-in page.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

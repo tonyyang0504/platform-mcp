@@ -1,0 +1,111 @@
+{
+ "id": "artisan_furniture_uk",
+ "category": "ecommerce_suppliers",
+ "label": "Artisan Furniture UK (Global Vision Direct Ltd)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://aboutus.artisanfurniture.net/api-data-syncing/",
+ "url": "https://www.artisanfurniture.net/",
+ "verified_at": "2026-09-25",
+ "terms_note": "integration encouraged (\"Data Syncing & ERP Integration\"); strictly B2B",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "app"
+  ],
+  "auth": "store credentials or API keys entered in the Flo app (app.artisanflo.net); 'Universal API' details not published",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "stock_feed",
+   "price_feed",
+   "product_import",
+   "store_app_only"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Trade (B2B) account; annual data-sync subscription £119 + VAT (US $119, EU €119, CA $119, AU $119), non-refundable; 'syncing support is limited to our side; resellers are responsible for their own store setup and API configuration'.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://aboutus.artisanfurniture.net/api-data-syncing/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://aboutus.artisanfurniture.net/api-data-syncing/ describes a 'Universal API' and data syncing through the paid Flo platform ('Add your store and select your platform (Shopify, WooCommerce, Wix, BigCommerce, or API)'; 'Subscriptions are non-refundable'); no endpoint, authentication or payload reference is published, so no verb can be mapped from official docs."
+}

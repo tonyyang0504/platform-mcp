@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "web3_career-deals-mcp",
+ "display_name": "web3.career MCP",
+ "version": "0.1.0",
+ "description": "web3.career (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "deals/web3_career"
+   ],
+   "env": {
+    "PLATFORM_MCP_WEB3_CAREER_TOKEN": "${user_config.platform_mcp_web3_career_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_web3_career_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_WEB3_CAREER_TOKEN",
+   "description": "Web3.career API token generated at https://web3.career/web3-jobs-api after signing in ('Your token is for your use only … Do not share it'), sent as the token query parameter.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET https://web3.career/api/v1?token=&tag=&limit=&show_description=true (the single documented endpoint). `category` → tag, which must be ONE exact slug from the documented list (solidity, rust, defi, engineering, marketing, …) — 'Invalid tags silently return empty results'. There is no free-text, budget or offset parameter, so query and min_budget are not sent and page is ignored (limit 1–100). The body is a mixed array '[string, string, Job[]]'; jobs are read from element 2 ('typically'). url is apply_url — the required attribution link, never modify it; salary is free text in raw.salary; location/remote in raw."
+  }
+ ]
+}

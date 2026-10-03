@@ -1,0 +1,39 @@
+{
+ "id": "carsensor",
+ "category": "automotive",
+ "label": "Carsensor",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.carsensor.net",
+ "domain": "carsensor.net",
+ "country": "Japan",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence high). The official Carsensor Web Service API (Recruit Web Service) was discontinued in Dec 2020; its docs now 404 and the portal lists only HotPepper.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://webservice.recruit.co.jp/",
+   "https://webservice.recruit.co.jp/doc/carsensor/",
+   "https://carsensor.net/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": [
+   "http://koolweb37.com/wp/2021/03/08/carsensorapi-closed-wpplugin/"
+  ]
+ },
+ "official_mcp": []
+}

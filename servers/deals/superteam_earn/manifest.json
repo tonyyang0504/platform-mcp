@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "superteam_earn-mcp",
+ "display_name": "Superteam Earn MCP",
+ "version": "0.1.0",
+ "description": "Superteam Earn (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "superteam_earn"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "The documented URL https://earn.superteam.fun/api/listings/ answers 308 to https://superteam.fun/api/listings (the base used here; opened 2026-09-24). Keyless JSON array with no documented query parameters: `query`, `category`, `min_budget`, `page` and `limit` are not sent and every open listing is returned (filter client-side). Fields per the feed: id, title, slug, type (bounty|project), rewardAmount, token, compensationType, minRewardAsk, maxRewardAsk, deadline, status, isFeatured, agentAccess, _count.Submission, sponsor{name,…}. `budget_min`/`budget_max` are the range asks (null for fixed rewards — read `raw.rewardAmount`). No URL field: the listing page is https://earn.superteam.fun/listing/<raw.slug>. Honour `raw.agentAccess`: HUMAN_ONLY listings must not receive agent-made submissions."
+  }
+ ]
+}

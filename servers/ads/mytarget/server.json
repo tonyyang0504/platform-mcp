@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/mytarget-mcp",
+ "description": "myTarget (folded into VK Ads) (ads): me, list_campaigns, get_report, update_budget, pause_resume. Ev",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://ads.vk.ru/doc/api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "mytarget"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_MYTARGET_CLIENT_ID",
+     "description": "VK Ads (formerly myTarget) API client_id (issued on request in the ad account settings; https://ads.vk.ru/ru/doc/api/info/Авторизация в API).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MYTARGET_CLIENT_SECRET",
+     "description": "The API client's client_secret (form body of the token request).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_MYTARGET_REFRESH_TOKEN",
+     "description": "refresh_token from one POST /api/v2/oauth2/token.json with grant_type=client_credentials (your own account) or agency_client_credentials (an agency client). Refreshing does not create a new token instance, which keeps you under VK's per-user token limit; a token unused for a month is deleted and must be issued again.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

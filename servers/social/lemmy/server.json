@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/lemmy-mcp",
+ "description": "Lemmy (social): me, read_comments, read_mentions, analytics_post, publish_text, publish_image, delet",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://github.com/LemmyNet/lemmy-js-client",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "lemmy"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_LEMMY_USERNAME_OR_EMAIL",
+     "description": "Username or e-mail of the account on its instance; sent as `username_or_email` to POST https://<instance>/api/v3/user/login (Login {username_or_email, password, totp_2fa_token?}, https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/Login.ts).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LEMMY_PASSWORD",
+     "description": "The account's password. The runtime exchanges it for the LoginResponse `jwt` (https://raw.githubusercontent.com/LemmyNet/lemmy-js-client/0.19.4/src/types/LoginResponse.ts) and sends 'Authorization: Bearer <jwt>' (lemmy-js-client setHeaders pattern); the token is cached for a day and re-issued on expiry or 401. Accounts with TOTP enabled cannot log in this way (totp_2fa_token is not sent). Mark automated accounts as bot_account in the profile settings.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_LEMMY_INSTANCE",
+     "description": "Host of the account's Lemmy instance without scheme, e.g. lemmy.ml; every call (including the login) goes to https://<instance>/api/v3/... (the v3 API served by the 0.19.x release line that public instances run; Lemmy 1.0's /api/v4 is not covered).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_LEMMY_COMMUNITY_ID",
+     "description": "Numeric id of the community the account posts to (CreatePost.community_id, an integer: shown by GET https://<instance>/api/v3/community?name=<name> as community_view.community.id); sent as a JSON integer on publish_text / publish_image. Env PLATFORM_MCP_LEMMY_COMMUNITY_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

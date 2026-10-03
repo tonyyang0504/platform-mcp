@@ -1,0 +1,135 @@
+{
+ "id": "working_nomads",
+ "category": "jobs",
+ "label": "Working Nomads",
+ "lane": "assist",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://www.workingnomads.com/api/exposed_jobs/",
+ "url": "https://www.workingnomads.com/jobs",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public exposed-jobs JSON; external apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search (public JSON list)",
+   "job_details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "GET https://www.workingnomads.com/api/exposed_jobs/ (linked from the site, keyless JSON: url, title, description HTML, company, category, tags, location, pub_date …) is a usable public feed, but no do",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " The exposed_jobs endpoint is undocumented — treat as courtesy access, poll gently. Terms and conditions (no bot / scraping clause in the extracted text; premium subscriptions renew automatically). robots.txt one rule. The exposed_jobs endpoint is undocumented — treat as courtesy access, poll gently.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.workingnomads.com/jobs",
+   "https://www.workingnomads.com/robots.txt",
+   "https://www.workingnomads.com/api/exposed_jobs/",
+   "https://www.workingnomads.com/terms-and-conditions"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://www.workingnomads.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "rate_note": "No rate limit is published; one call returns the whole feed, so one request every two seconds.",
+  "terms": "The site footer links 'API' to https://www.workingnomads.com/api/exposed_jobs/ (rendered home page, 2026-09-25) and robots.txt allows all paths ('User-agent: * / Disallow:' empty). The Terms and conditions (https://www.workingnomads.com/terms-and-conditions) say nothing specific about the feed; no parameters or rate limits are published.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api/exposed_jobs/",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "url",
+      "title": "title",
+      "company": "company_name",
+      "location": "location",
+      "url": "url",
+      "posted_at": "pub_date",
+      "description": "description"
+     }
+    },
+    "docs": "https://www.workingnomads.com/api/exposed_jobs/",
+    "note": "Single keyless JSON array linked as 'API' from the site footer, with no documented query, location, page or limit parameters: nothing is sent and the whole current feed (a few dozen to a few hundred rows) is returned - filter client-side. Fields per the feed: url, title, description (HTML), company_name, category_name, tags (comma-separated string), location, pub_date. The feed has no id field, so id is the posting url."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is published; re-read the record from the search hit (url).",
+   "apply": "No application endpoint; the posting url leads to the employer's application page.",
+   "list_messages": "No messaging endpoint; only the public job feed is published."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

@@ -1,0 +1,38 @@
+{
+ "id": "carvago_pl",
+ "category": "automotive",
+ "label": "Carvago",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://carvago.com",
+ "domain": "carvago.com",
+ "country": "Poland",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). docs.carvago.com/api.carvago.com exist but are private (403); official GitHub org has no public API specs. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.carvago.com",
+   "https://api.github.com/orgs/Carvago/repos"
+  ],
+  "unofficial": [
+   "https://apify.com/stealth_mode/carvago-cars-search-scraper/api"
+  ]
+ },
+ "official_mcp": []
+}

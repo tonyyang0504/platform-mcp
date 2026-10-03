@@ -1,0 +1,108 @@
+{
+ "id": "lkq_drop_ship",
+ "category": "ecommerce_suppliers",
+ "label": "LKQ Drop Ship (Keystone Automotive / LKQ North America)",
+ "lane": "assist",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://lkqcorp.com/lkq-global_about-us/north-america/drop-ship/",
+ "url": "https://www.lkqcorp.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_by_approval (\"Partner with LKQ's drop ship division\")",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "ftp"
+  ],
+  "auth": "partner credentials issued by LKQ's drop-ship division (ordering API + FTP push)",
+  "access": "partner_only",
+  "capabilities": [
+   "order_create",
+   "tracking",
+   "catalog"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Partner application; no setup / monthly fees; flat-rate shipping; same-day ship before 3 pm local.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://lkqcorp.com/lkq-global_about-us/north-america/drop-ship/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Rendered https://lkqcorp.com/lkq-global_about-us/north-america/drop-ship/ on 2026-09-25: 'Ordering API. With our industry leading ordering API, we can integrate with your site...' plus invoice/tracking pushed to the partner's FTP server; no reference is linked. Credentials and the API specification are issued by LKQ's drop-ship division to approved partners only."
+}

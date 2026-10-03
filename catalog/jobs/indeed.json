@@ -1,0 +1,70 @@
+{
+ "id": "indeed",
+ "category": "jobs",
+ "label": "Indeed",
+ "lane": "assist",
+ "kind": "aggregator",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.indeed.com/",
+ "url": "https://www.indeed.com/",
+ "verified_at": "2026-09-04",
+ "terms_note": "Publisher/Job Search API retired; Indeed Apply is an employer integration. ToS forbids automated access — Indeed Apply forms are pre-filled by a human-assisted browser session, human submits.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "no",
+  "kinds": [
+   "partner_program",
+   "graphql"
+  ],
+  "auth": "oauth2",
+  "access": "partner_only",
+  "capabilities": [
+   "employer_posting"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

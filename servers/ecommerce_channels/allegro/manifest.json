@@ -1,0 +1,85 @@
+{
+ "manifest_version": "0.2",
+ "name": "allegro-ecommerce-channels-mcp",
+ "display_name": "Allegro MCP",
+ "version": "0.1.0",
+ "description": "Allegro (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders, mark_ship",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ecommerce_channels/allegro"
+   ],
+   "env": {
+    "PLATFORM_MCP_ALLEGRO_CLIENT_ID": "${user_config.platform_mcp_allegro_client_id}",
+    "PLATFORM_MCP_ALLEGRO_CLIENT_SECRET": "${user_config.platform_mcp_allegro_client_secret}",
+    "PLATFORM_MCP_ALLEGRO_REFRESH_TOKEN": "${user_config.platform_mcp_allegro_refresh_token}",
+    "PLATFORM_MCP_ALLEGRO_CURRENCY": "${user_config.platform_mcp_allegro_currency}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_allegro_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_CLIENT_ID",
+   "description": "Client ID of your app registered at apps.developer.allegro.pl; sent with the secret as HTTP Basic on the token call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_allegro_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_CLIENT_SECRET",
+   "description": "Client Secret of the same app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_allegro_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code (or device-flow) consent of the seller account (valid 3 months). It is SINGLE-USE: every refresh returns a new pair (access token 12 h + new refresh token) and the old refresh token stops working 60 seconds after its first use. The runtime keeps a rotated refresh token in memory; set PLATFORM_MCP_STATE_DIR to also save it (<dir>/<platform>.json, mode 0600) so it is preferred over this variable on the next start. Without the state directory, a restart after the first refresh needs a fresh refresh token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_allegro_currency": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ALLEGRO_CURRENCY",
+   "description": "Currency of your offers' base marketplace, PLN for allegro.pl; used by update_listing for sellingMode.price {amount, currency}.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /me (scope allegro:api:profile:read) returns the authorised user {id, login, firstName, lastName, email, baseMarketplace, company}."
+  },
+  {
+   "name": "update_listing",
+   "description": "PATCH /sale/product-offers/{offerId} edits only the fields sent: name (12-75 characters, at least 3 words), sellingMode.price {amount as the documented string, currency from the config field — pass `price` whenever currency is configured}, stock.available. `description` is a structured sections object and is not mapped. Answers 200 (edited) or 202 (accepted, still processing; see GET /sale/product-offers/{offerId}/operations/{operationId}); the offer body is in raw."
+  },
+  {
+   "name": "end_listing",
+   "description": "PUT /sale/offer-publication-commands/{commandId} with a fresh UUID command id and {offerCriteria: [{offers: [{id}], type: CONTAINS_OFFERS}], publication: {action: END}} ends the offer (reversible with action ACTIVATE). The command runs asynchronously: 201 returns {id, taskCount}; the result is at GET /sale/offer-publication-commands/{commandId}/tasks."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PATCH /sale/product-offers/{offerId} {stock: {available}} sets the offer's stock. `listing_id` (offer id) is required; Allegro offers are not addressed by SKU. An active offer needs stock > 0."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /order/checkout-forms?offset&limit(1-100)&fulfillment.status(NEW|PROCESSING|READY_FOR_SHIPMENT|READY_FOR_PICKUP|SENT|PICKED_UP|CANCELLED|SUSPENDED|RETURNED)&lineItems.boughtAt.gte(ISO-8601) (scope allegro:api:orders:read). Returns {checkoutForms[], count, totalCount}; `status` is the seller fulfillment status (the purchase status BOUGHT|FILLED_IN|READY_FOR_PROCESSING|CANCELLED is raw.status), `total` is summary.totalToPay.amount (a decimal string), created_at the first line item's boughtAt."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "POST /order/checkout-forms/{id}/shipments {carrierId, waybill} (scope allegro:api:orders:write) adds a parcel tracking number to every line item of the order (lineItems omitted = all items, as documented). `carrier` must be an Allegro carrier id from GET /order/carriers (e.g. INPOST, DPD, DHL, POCZTA_POLSKA); OTHER additionally needs carrierName, which is not mapped. The seller fulfillment status is a separate call (PUT /order/checkout-forms/{id}/fulfillment {status: SENT}) and is not changed here."
+  }
+ ]
+}

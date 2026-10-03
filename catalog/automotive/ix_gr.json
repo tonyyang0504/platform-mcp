@@ -1,0 +1,35 @@
+{
+ "id": "ix_gr",
+ "category": "automotive",
+ "label": "Ix",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.ix.gr",
+ "domain": "ix.gr",
+ "country": "Greece",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). /api is an open directory index (internal), no documented API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.ix.gr/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

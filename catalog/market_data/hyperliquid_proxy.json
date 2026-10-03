@@ -1,0 +1,16 @@
+{
+ "id": "hyperliquid_proxy",
+ "category": "market_data",
+ "label": "Hyperliquid candle proxy",
+ "provider": "Hyperliquid",
+ "lane": "api",
+ "base_urls": [
+  "https://api.hyperliquid.xyz/info",
+  "wss://api.hyperliquid.xyz/ws"
+ ],
+ "data_kinds": [
+  "candles (REST snapshot + WS stream)"
+ ],
+ "auth": "none",
+ "docs_url": null
+}

@@ -1,0 +1,44 @@
+{
+ "id": "chavesnamao_br",
+ "category": "automotive",
+ "label": "Chavesnamao",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.chavesnamao.com.br",
+ "domain": "chavesnamao.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": "https://cdn.chavesnamao.com.br/documents/manual_integracao_API_REST_veiculos_2022_chaves_na_mao.pdf",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "Account login/password + token from Chaves na Mão plan",
+  "access": "partner_only",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence high). Chaves na Mão publishes a vehicle REST API manual and XML integration docs for advertisers with a paid plan and partner integrators.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cdn.chavesnamao.com.br/documents/manual_integracao_API_REST_veiculos_2022_chaves_na_mao.pdf",
+   "https://www.chavesnamao.com.br/integradores-parceiros/",
+   "https://tecnologiacnm.github.io/cnm-xml-documentation/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Chaves na Mão publishes a vehicle REST API manual and XML integration docs for advertisers with a paid plan and partner integrators."
+}

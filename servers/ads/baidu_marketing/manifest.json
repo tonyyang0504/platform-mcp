@@ -1,0 +1,93 @@
+{
+ "manifest_version": "0.2",
+ "name": "baidu_marketing-mcp",
+ "display_name": "百度营销 Baidu Marketing MCP",
+ "version": "0.1.0",
+ "description": "百度营销 Baidu Marketing (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resu",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "baidu_marketing"
+   ],
+   "env": {
+    "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_ID": "${user_config.platform_mcp_baidu_marketing_client_id}",
+    "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_SECRET": "${user_config.platform_mcp_baidu_marketing_client_secret}",
+    "PLATFORM_MCP_BAIDU_MARKETING_REFRESH_TOKEN": "${user_config.platform_mcp_baidu_marketing_refresh_token}",
+    "PLATFORM_MCP_BAIDU_MARKETING_USER_ID": "${user_config.platform_mcp_baidu_marketing_user_id}",
+    "PLATFORM_MCP_BAIDU_MARKETING_USER_NAME": "${user_config.platform_mcp_baidu_marketing_user_name}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_baidu_marketing_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_ID",
+   "description": "Your application's appId (商业开发者中心 → 应用管理 → 应用详情).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_baidu_marketing_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIDU_MARKETING_CLIENT_SECRET",
+   "description": "The application's secretKey (shown in the approved application's details).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_baidu_marketing_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIDU_MARKETING_REFRESH_TOKEN",
+   "description": "refreshToken from exchanging the authorization code once at POST https://u.baidu.com/oauth/accessToken (valid 30 days; each refresh returns a new one, saved when PLATFORM_MCP_STATE_DIR is set).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_baidu_marketing_user_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIDU_MARKETING_USER_ID",
+   "description": "userId of the promotion account that authorized the app (returned by the OAuth callback / accessToken exchange).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_baidu_marketing_user_name": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BAIDU_MARKETING_USER_NAME",
+   "description": "推广账户名称 (userName) of the account to operate — sent as header.userName; with a super-admin (超管) authorization this may be any sub-account.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "AccountService/getAccountInfo with header {userName, accessToken}: account id, balance, budget and status (userStat 2 = active)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "MccFeedService/getUserListByMccid: the sub-accounts of an account manager (账户管家) authorization — 'this interface is only for account-manager permission'. A single-account authorization has only the user_name account (see me). The id is userid; pass the username as account_id."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "CampaignService/getCampaign without campaignIds ('输入空返回整个账户的计划'): every search campaign of the account. `account_id` is the 推广账户名称 (userName) sent in the header. budget is the daily budget in CNY (null = unlimited); pause true = paused. `status` and paging are not applied."
+  },
+  {
+   "name": "get_report",
+   "description": "OpenApiReportService/getReportData, 计划报告 (reportType 2290316) per DAY: impressions, clicks, cost (CNY), ctr, cpc and conversions per campaign; values are strings. `account_id` is the userName sent in the header. `campaign_id` is not applied — filter the rows by campaign_id (the report's campaignId column). Max range 731 days; up to 10,000 rows."
+  },
+  {
+   "name": "update_budget",
+   "description": "CampaignService/updateCampaign {campaignTypes: [{campaignId, budget}]}: the campaign's daily budget in CNY, range [50, min(10,000,000, account budget)]. `currency` is not applied (CNY). A refused update answers with no campaign record (the reason is in header.failures)."
+  },
+  {
+   "name": "pause_resume",
+   "description": "CampaignService/updateCampaign {campaignTypes: [{campaignId, pause}]}: pause true = 暂停, false = 启用."
+  }
+ ]
+}

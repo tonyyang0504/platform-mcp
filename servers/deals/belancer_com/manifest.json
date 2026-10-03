@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "belancer_com-mcp",
+ "display_name": "Belancer MCP",
+ "version": "0.1.0",
+ "description": "Belancer (deals): me, search_postings, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "belancer_com"
+   ],
+   "env": {
+    "PLATFORM_MCP_BELANCER_COM_USERNAME": "${user_config.platform_mcp_belancer_com_username}",
+    "PLATFORM_MCP_BELANCER_COM_PASSWORD": "${user_config.platform_mcp_belancer_com_password}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_belancer_com_username": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BELANCER_COM_USERNAME",
+   "description": "E-mail address of your Belancer account (POST /auth/login validates username as an e-mail).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_belancer_com_password": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BELANCER_COM_PASSWORD",
+   "description": "Password of the same Belancer account.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /auth/me ('Get Current User', OAuth2PasswordBearer)."
+  },
+  {
+   "name": "search_postings",
+   "description": "GET /projects/search ('Search Projects'): query, category_id (integer), min_budget, page (default 1), limit (default 10), status=open fixed. The OpenAPI gives no response schema; the live response (2026-09-24) is {total, page, limit, projects[]} with id, name, description, currency, min_budget, max_budget, posted_by, created_at — mapped from that. skills[] item shape is undocumented (raw)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /projects/{project_id} ('Get Project'; integer id); same record shape as a search hit (live response 2026-09-24)."
+  }
+ ]
+}

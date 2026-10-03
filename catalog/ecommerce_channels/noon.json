@@ -1,0 +1,321 @@
+{
+ "id": "noon",
+ "category": "ecommerce_channels",
+ "label": "noon",
+ "lane": "assist",
+ "kind": "marketplace",
+ "regions": [
+  "ae",
+  "sa"
+ ],
+ "docs_url": "https://noon-docs.noonpartners.dev/docs/getting-started/intro",
+ "url": "https://www.noon.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "noon seller account (Middle East); credentials via the partner developer portal (OAuth 2.0 service accounts / API users); sandbox; rate limiting documented (numbers not read); SLAs advertised.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "oauth2 / api_key (AUTH services: credential-based authentication, OAuth 2.0 flow for service accounts, API-user management — per the docs index; credential pages 404'd)",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.client_id",
+  "secret",
+  "config.token_url",
+  "config.base_url",
+  "config.country"
+ ],
+ "rate_limits": "\"Rate Limits & Usage\" page (opened; numbers behind JS)",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the official intro and index were opened; credential / auth / endpoint pages were not reachable.",
+  "base_urls": [],
+  "auth": [
+   "1. Seller creates API users / a service account in the noon partner portal.",
+   "2. OAuth 2.0 flow (client credentials per the AUTH section) → access token.",
+   "3. Test in the sandbox, then production."
+  ],
+  "endpoints": [
+   {
+    "call": "CATALOG: catalog creation, content, offers, pricing (marketplace + item level), stock, global product & pricing",
+    "purpose": "listings, price, stock",
+    "notes": "22+ endpoints"
+   },
+   {
+    "call": "FULFILLMENT: FBPI (partner fulfilment) + FBPO (retail-driven)",
+    "purpose": "orders / shipments",
+    "notes": "13 endpoints"
+   },
+   {
+    "call": "RETURNS: return items + barcode references",
+    "purpose": "returns",
+    "notes": ""
+   },
+   {
+    "call": "DATA: reports import / export",
+    "purpose": "bulk + reports",
+    "notes": ""
+   },
+   {
+    "call": "OTHER: event notifications",
+    "purpose": "webhooks",
+    "notes": ""
+   }
+  ],
+  "limits": " Documented in the portal; numbers not read. - noon seller agreement; API users belong to the seller account.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://noon-docs.noonpartners.dev/docs/getting-started/intro",
+   "https://r.jina.ai/https://noon-docs.noonpartners.dev/",
+   "https://r.jina.ai/https://noon-docs.noonpartners.dev/docs/getting-started/credentials"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://noon-api-gateway.noon.partners",
+  "rate_per_second": 10,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/identity/public/v1/api/login",
+    "body": {
+     "token": "{client_assertion}",
+     "default_project_code": "@project_code"
+    }
+   },
+   "token_jwt": {
+    "mode": "jwt_rs256",
+    "key_field": "private_key",
+    "claims": {
+     "sub": "{@key_id}",
+     "iat": "{timestamp_s}",
+     "jti": "{nonce}"
+    }
+   },
+   "token_from_cookie": "*",
+   "header": "",
+   "token_ttl_seconds": 1800,
+   "fields": [
+    {
+     "name": "key_id",
+     "required": true,
+     "help": "key_id from your noon service-account key file (.json), created in the noon Partner portal."
+    },
+    {
+     "name": "private_key",
+     "required": true,
+     "help": "private_key (PEM) from the same service-account key file; it signs the RS256 login JWT."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "project_code",
+    "required": false,
+    "help": "project_code from the key file, sent as default_project_code at login."
+   },
+   {
+    "name": "warehouse_code",
+    "required": false,
+    "help": "Integration warehouse code for stock updates and FBPI order listing (see ListWarehouses)."
+   },
+   {
+    "name": "country_code",
+    "required": false,
+    "help": "Marketplace country code for pricing (e.g. ae, sa, eg)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/identity/v1/whoami",
+    "docs": "https://noon-docs.noonpartners.dev/docs/api-reference/authentication/auth-service-whoami",
+    "note": "Logs in with the RS256 service-account JWT (session cookies) and returns user_code and username."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/pricing/v1/pricing/upsert",
+    "body": {
+     "items.0.partner_sku": "listing_id",
+     "items.0.country_code": "@country_code",
+     "items.0.price": "price"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "sku": "partner_sku",
+      "country": "country_code",
+      "status": "=submitted",
+      "result_code": "status.status_code",
+      "message": "status.message"
+     }
+    },
+    "docs": "https://noon-docs.noonpartners.dev/docs/api-reference/pricing/pricing-service-batch-upsert-pricing",
+    "note": "BatchUpsertPricing for one partner SKU (listing_id) in the configured country_code: sets the price. Only `price` is applied — quantities go through set_inventory and titles/descriptions through the Content API (brand, category and attributes required). The per-item result is in result_code/message."
+   },
+   "end_listing": {
+    "method": "POST",
+    "path": "/pricing/v1/pricing/upsert",
+    "body": {
+     "items.0.partner_sku": "listing_id",
+     "items.0.country_code": "@country_code",
+     "items.0.is_active": "json:false"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "status": "=submitted",
+      "result_code": "status.status_code",
+      "message": "status.message"
+     }
+    },
+    "docs": "https://noon-docs.noonpartners.dev/docs/api-reference/pricing/pricing-service-batch-upsert-pricing",
+    "note": "BatchUpsertPricing with is_active false for the partner SKU (listing_id) in the configured country_code: deactivates the offer there."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/stock/v1/stock-update",
+    "body": {
+     "items.0.warehouse_code": "@warehouse_code",
+     "items.0.partner_sku": "sku",
+     "items.0.qty": "int:quantity"
+    },
+    "result": {
+     "root": "items.0",
+     "fields": {
+      "status": "=submitted",
+      "sku": "partner_sku",
+      "result_code": "status.status_code",
+      "message": "status.message"
+     }
+    },
+    "docs": "https://noon-docs.noonpartners.dev/docs/api-reference/stock/stock-service-update-stock",
+    "note": "UpdateStock {items: [{warehouse_code, partner_sku, qty}]} for the configured warehouse_code; `sku` is the partner SKU. The per-item result is in result_code/message."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/fbpi/v1/fbpi-orders/list",
+    "params": {
+     "next_token": "cursor"
+    },
+    "body": {
+     "warehouse_code": "@warehouse_code",
+     "created_after": "datefmt:%Y-%m-%dT%H:%M:%SZ:since"
+    },
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "next_cursor": "next_token",
+     "fields": {
+      "id": "fbpi_order_nr",
+      "order_id": "fbpi_order_nr",
+      "marketplace_order": "mp_order_nr",
+      "marketplace": "mp_code",
+      "country": "mp_country_code",
+      "currency": "currency_code",
+      "created_at": "order_created_at",
+      "items": "items"
+     }
+    },
+    "docs": "https://noon-docs.noonpartners.dev/docs/api-reference/fbpi/fbpi-service-list-fbpi-orders",
+    "note": "ListFbpiOrders for the configured warehouse_code (Fulfilled By Partner orders, up to 50 per page), created after `since` when given; pass next_cursor back as `cursor` (the next_token query parameter). Item statuses (mp_status, integration_status) are under items. `status` is not applied."
+   }
+  },
+  "not_offered": {
+   "create_listing": "UpsertProduct requires 'brand (string, required)', 'category (string, required)', 'images' and an 'attributes (object map, required)' per category (https://noon-docs.noonpartners.dev/docs/api-reference/content/content-service-upsert-product); the vocabulary's create_listing has no brand, category or attributes.",
+   "mark_shipped": "CreateShipment needs 'integration_shipment_nr (string, required)' and 'items (object[], required)' with each 'mp_item_nr' of the order (https://noon-docs.noonpartners.dev/docs/api-reference/fbpi/fbpi-service-create-shipment); mark_shipped carries only order_id, carrier and tracking_number."
+  },
+  "terms": "noon Partner API (https://noon-docs.noonpartners.dev/docs/authentication/authenticating-requests): a service-account key file (key_id + RSA private key) signs an RS256 JWT {sub: key_id, iat, jti} that is exchanged at /identity/public/v1/api/login for session cookies replayed on every call. Usage plans allow 1500 requests per 60 s per endpoint."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host noon-api-gateway.noon.partners: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 0/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "login noon-api-gateway.noon.partners/identity/public/v1/api/login: 400 {",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "The gateway answers every unauthenticated call with 307 to login.noon.partners, so paths cannot be told apart without a session; the login endpoint answered 400 'No service account found or key is deactivated'. inconclusive: me: redirect 307; update_listing: redirect 307; end_listing: redirect 307; set_inventory: redirect 307; list_orders: redirect 307"
+ }
+}

@@ -1,0 +1,128 @@
+{
+ "id": "indeed_sponsored_jobs",
+ "category": "ads",
+ "label": "Indeed Sponsored Jobs",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global",
+  "us",
+  "gb",
+  "ca",
+  "de",
+  "fr",
+  "jp",
+  "in"
+ ],
+ "docs_url": "https://docs.indeed.com/",
+ "url": "https://www.indeed.com/hire/pricing",
+ "verified_at": "2026-09-04",
+ "terms_note": "Indeed Partner Platform application (ATS / job-board partners); employer sponsorship in the UI.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 (Indeed Partner Platform app)",
+  "access": "partner_only",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (partner-platform APIs for ATS integrations; employer sponsorship is UI) Confidence: **low** (docs blocked).",
+  "base_urls": [
+   "https://apis.indeed.com/…"
+  ],
+  "auth": [
+   "1. Apply to the Indeed Partner Platform.",
+   "2. OAuth2 app credentials.",
+   "3. —"
+  ],
+  "endpoints": [
+   {
+    "call": "job posting / sponsorship via partner feed",
+    "purpose": "campaigns (job ads)",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "performance",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Partner approval.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.indeed.com/"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Indeed's Sponsored Jobs API is limited to Indeed Partner Platform partners, and on 2026-09-25 https://docs.indeed.com/ still answered Cloudflare 'Additional Verification Required' (title 'Just a moment...') even in headless Chromium on a datacenter host, so no endpoint could be read; the challenge is not bypassed."
+}

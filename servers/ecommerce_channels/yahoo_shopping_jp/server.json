@@ -1,0 +1,58 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/yahoo_shopping_jp-mcp",
+ "description": "Yahoo! Shopping (JP) (ecommerce channels): me, set_inventory, update_listing, end_listing. Every too",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.yahoo.co.jp/webapi/shopping/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "yahoo_shopping_jp"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_ID",
+     "description": "Yahoo! JAPAN Client ID (アプリケーションID) of an app approved for the Shopping store APIs, linked to the store's Business ID.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_SHOPPING_JP_CLIENT_SECRET",
+     "description": "The app's シークレット (sent as HTTP Basic to the YConnect v2 token endpoint).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_SHOPPING_JP_REFRESH_TOKEN",
+     "description": "YConnect v2 refresh token from one authorization-code consent by the store's Yahoo! JAPAN ID (https://developer.yahoo.co.jp/webapi/shopping/help/#accesstoken). It lasts 4 weeks; re-consent afterwards.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_YAHOO_SHOPPING_JP_SELLER_ID",
+     "description": "ストアアカウント (store account id, lower-case letters, digits, - and _).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

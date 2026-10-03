@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/taobao_fenxiao_alimama-mcp",
+ "description": "Taobao/Tmall distribution (淘宝分销 → Tmall 供销平台) + Taobao Affiliate (淘宝联盟) (ecommerce suppliers): me, l",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.taobao.com/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "taobao_fenxiao_alimama"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_KEY",
+     "description": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_APP_SECRET",
+     "description": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TAOBAO_FENXIAO_ALIMAMA_ADZONE_ID",
+     "description": "Promotion slot id: the last number of your 淘宝联盟 PID mm_xxx_xxx_<adzone_id> (pub.alimama.com > 推广管理 > 推广位管理).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+{
+ "id": "prozorro",
+ "category": "deals",
+ "label": "Prozorro (Ukrainian public procurement)",
+ "lane": "api",
+ "country": "UA",
+ "docs_url": "https://prozorro-api-docs.readthedocs.io/uk/master/",
+ "url": "https://prozorro.gov.ua",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Public read API of the Prozorro e-procurement system (documentation in Ukrainian and English on Read the Docs), no key. The tender feed pages by an opaque `offset` token returned in next_page.offset (a cursor, not a number). Docs vs live 2026-10-01: opt_fields=title,value is silently reduced to procuringEntity,status,tenderID,tenderPeriod (visible in the answer's own next_page.path), so feed rows carry no title or value - search_postings titles fall back to the tender number and get_posting has the full record. Records include the buyer's contact person; the catalog stores none of it. Unknown id: 404 {\"status\":\"error\",\"errors\":[{\"description\":\"Not Found\"}]}.",
+ "adapter": {
+  "base_url": "https://public-api.prozorro.gov.ua/api/2.5",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/tenders",
+    "params": {
+     "limit": "limit",
+     "offset": "cursor"
+    },
+    "fixed_params": {
+     "descending": "1",
+     "opt_fields": "title,status,tenderID,value,procuringEntity,tenderPeriod"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "postings",
+     "next_cursor": "next_page.offset",
+     "cap": "head",
+     "fields": {
+      "id": "id",
+      "title": "title|tenderID",
+      "buyer": "procuringEntity.name",
+      "url": "fmt:https://prozorro.gov.ua/tender/{tenderID}",
+      "posted_at": "tenderPeriod.startDate",
+      "deadline": "tenderPeriod.endDate"
+     }
+    },
+    "docs": "https://prozorro-api-docs.readthedocs.io/uk/master/tendering/basic-actions/tender-listing.html",
+    "note": "The most recently modified tenders first (any status; raw.status). There is no search: query, category and min_budget are not applied. Pages by cursor only."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/tenders/{id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "buyer": "procuringEntity.name",
+      "budget_max": "value.amount",
+      "currency": "value.currency",
+      "url": "fmt:https://prozorro.gov.ua/tender/{tenderID}",
+      "posted_at": "date",
+      "deadline": "tenderPeriod.endDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://prozorro-api-docs.readthedocs.io/uk/master/tendering/basic-actions/tender-listing.html",
+    "note": "One tender by its 32-hex id (search_postings), in Ukrainian; budget_max is the expected value (value.amount, UAH)."
+   }
+  },
+  "not_offered": {
+   "me": "Bidding needs an accredited e-procurement platform (broker); the public API has no accounts.",
+   "submit_bid": "Bids are placed through accredited brokers, not the public API.",
+   "withdraw_bid": "Through accredited brokers only.",
+   "bid_status": "Through accredited brokers only.",
+   "list_messages": "Questions and answers are inside each tender record; no message inbox.",
+   "send_message": "Through accredited brokers only.",
+   "credits": "No credits."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

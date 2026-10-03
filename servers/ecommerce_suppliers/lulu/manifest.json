@@ -1,0 +1,86 @@
+{
+ "manifest_version": "0.2",
+ "name": "lulu-mcp",
+ "display_name": "Lulu Print API (Lulu Direct) (cross-ref lulu_print_api in Books & media) MCP",
+ "version": "0.1.0",
+ "description": "Lulu Print API (Lulu Direct) (cross-ref lulu_print_api in Books & media) (ecommerce suppliers): me, ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lulu"
+   ],
+   "env": {
+    "PLATFORM_MCP_LULU_CLIENT_ID": "${user_config.platform_mcp_lulu_client_id}",
+    "PLATFORM_MCP_LULU_CLIENT_SECRET": "${user_config.platform_mcp_lulu_client_secret}",
+    "PLATFORM_MCP_LULU_CONTACT_EMAIL": "${user_config.platform_mcp_lulu_contact_email}",
+    "PLATFORM_MCP_LULU_ENV": "${user_config.platform_mcp_lulu_env}",
+    "PLATFORM_MCP_LULU_BASE_URL": "${user_config.platform_mcp_lulu_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lulu_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LULU_CLIENT_ID",
+   "description": "Client key of your Lulu Print API account (developers.lulu.com > API Keys); sent with the secret as HTTP Basic on the client-credentials token request.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lulu_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LULU_CLIENT_SECRET",
+   "description": "Client secret from the same page. Sandbox keys belong to https://api.sandbox.lulu.com, which this server does not switch to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lulu_contact_email": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LULU_CONTACT_EMAIL",
+   "description": "contact_email sent with create_order (required by POST /print-jobs/): who Lulu contacts about the Print-Job.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_lulu_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LULU_ENV",
+   "description": "Vendor environment (default production): sandbox = https://api.sandbox.lulu.com. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_lulu_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LULU_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint; the probe mints a client-credentials token and reads GET /print-jobs/statistics/ (the number of Print-Jobs in each status)."
+  },
+  {
+   "name": "create_order",
+   "description": "POST /print-jobs/ creates a Print-Job (201). It 'will remain in an UNPAID state until it is paid for through the developer portal'; with a credit card on file it moves on automatically and 'your card will [be] charged when the Print-Job is sent to production' — so this can SPEND MONEY. `items` are line_items [{title, quantity, printable_normalization: {pod_package_id, cover: {source_url}, interior: {source_url}}} or {printable_id, quantity} for reorders]; `shipping_address` is {name, street1, street2, city, state_code, postcode, country_code, phone_number (required), email}; `shipping_option` is the shipping_level (MAIL, PRIORITY_MAIL, GROUND_HD, GROUND_BUS, GROUND, EXPEDITED, EXPRESS) and is required by Lulu. external_id is a fresh UUID. Costs are decimal strings (total_incl_tax)."
+  },
+  {
+   "name": "get_order",
+   "description": "GET /print-jobs/{id}/: status.name is CREATED, REJECTED, UNPAID, PAYMENT_IN_PROGRESS, PRODUCTION_READY, PRODUCTION_DELAYED, IN_PRODUCTION, ERROR, SHIPPED or CANCELED; costs {total_cost_incl_tax, currency, shipping_cost} are decimal strings; tracking_number is the first line item's status.messages.tracking_id once shipped."
+  },
+  {
+   "name": "track",
+   "description": "GET /print-jobs/{id}/status/ — once shipped the status carries line_item_statuses [{name: SHIPPED, messages: {tracking_id, tracking_urls[], carrier_name}, line_item_id}] (one event per line item); before shipping the list is empty."
+  }
+ ]
+}

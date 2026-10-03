@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "taobao-mcp",
+ "display_name": "Taobao MCP",
+ "version": "0.1.0",
+ "description": "Taobao (marketplaces): me, list_products, get_product, list_sales, list_refunds. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "taobao"
+   ],
+   "env": {
+    "PLATFORM_MCP_TAOBAO_APP_KEY": "${user_config.platform_mcp_taobao_app_key}",
+    "PLATFORM_MCP_TAOBAO_APP_SECRET": "${user_config.platform_mcp_taobao_app_secret}",
+    "PLATFORM_MCP_TAOBAO_SESSION": "${user_config.platform_mcp_taobao_session}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_taobao_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_APP_KEY",
+   "description": "AppKey of your Taobao Open Platform (TOP) application (open.taobao.com console).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taobao_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_APP_SECRET",
+   "description": "AppSecret of the same application; signs every call as upper-case MD5(secret + parameters sorted by name as name+value + secret) and is never sent.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_taobao_session": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TAOBAO_SESSION",
+   "description": "The seller's authorised session (access_token) from the TOP user-authorisation flow (https://open.taobao.com/doc.htm?docId=102635&docType=1); sent as the `session` parameter. Update it when it expires — the runtime does not refresh it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "taobao.user.seller.get: the authorised seller (user_id, nick, type B/C, seller_credit, status)."
+  },
+  {
+   "name": "list_products",
+   "description": "taobao.items.onsale.get: the seller's items currently on sale (出售中), newest listing first; price in CNY (元). Items in the warehouse (instock) are not included, so the `status` input is not applied."
+  },
+  {
+   "name": "get_product",
+   "description": "taobao.item.seller.get: one of the seller's items by num_iid with its SKUs (skus.sku) and description HTML."
+  },
+  {
+   "name": "list_sales",
+   "description": "taobao.trades.sold.get: trades sold in the last three months, newest first (status WAIT_BUYER_PAY, WAIT_SELLER_SEND_GOODS, TRADE_FINISHED, …; payment in CNY). `since` (ISO date/datetime) is sent as start_created in yyyy-MM-dd HH:mm:ss and is read by Taobao as GMT+8. The product fields are the first order line; `product_id` input is not applied."
+  },
+  {
+   "name": "list_refunds",
+   "description": "taobao.refunds.receive.get: refunds buyers requested from the seller (WAIT_SELLER_AGREE, WAIT_BUYER_RETURN_GOODS, WAIT_SELLER_CONFIRM_GOODS, SELLER_REFUSE_BUYER, CLOSED, SUCCESS); `since` filters start_modified (GMT+8)."
+  }
+ ]
+}

@@ -1,0 +1,271 @@
+{
+ "id": "hh_ru",
+ "category": "jobs",
+ "label": "hh.ru",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "ru"
+ ],
+ "docs_url": "https://api.hh.ru/openapi/redoc",
+ "url": "https://hh.ru/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Open API (OAuth; vacancies search + negotiations); no client yet — assisted browser applies with the resume.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth2",
+   "webhooks"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit",
+   "application_status",
+   "recruiter_messages",
+   "profile_sync",
+   "saved_jobs",
+   "alerts",
+   "similar_vacancies",
+   "suggests"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/hhru/api (official docs repo)",
+   "https://api.hh.ru/openapi/specification/public (OpenAPI 3 YAML, 131 operations)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (full candidate-side API: search, details, apply, negotiations, messages, resumes).",
+  "base_urls": [
+   "https://api.hh.ru",
+   "https://api.hh.ru/openapi/specification/public",
+   "https://api.hh.ru/openapi/redoc"
+  ],
+  "auth": [
+   "1. Register the application at dev.hh.ru (requires an hh.ru account) → `client_id`, `client_secret`.",
+   "2. OAuth 2.0 authorization code: `https://hh.ru/oauth/authorize?response_type=code&client_id=…&redirect_uri=…` → `POST https://api.hh.ru/token` (grant_type authorization_code) → `access_token`, `refresh_token`; refresh via the same token URL. Client-credentials tokens exist for application-level cal",
+   "3. Anonymous methods (vacancy search, vacancy view, dictionaries, suggests) need no token."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /vacancies",
+    "purpose": "job search (anonymous)",
+    "notes": "text, search_field, experience, employment, schedule, area, metro, professional_role, industry, employer_id, currency, salary, only_with_salary, period, date_from, date_to, order_by, per_page, page, excluded_text, work_format, education, part_time, accept_temporary, premium, responses_count_enabled,"
+   },
+   {
+    "call": "GET /vacancies/{vacancy_id}",
+    "purpose": "job details",
+    "notes": "name, description (HTML), key_skills, salary{from,to,currency,gross}, area, employer, schedule, experience, employment, published_at, alternate_url, apply_alternate_url, response_letter_required, test, has_test, suitable_resumes_url (user context)"
+   },
+   {
+    "call": "GET /vacancies/{vacancy_id}/similar_vacancies`, `GET /suggests/vacancy_search_keyword",
+    "purpose": "related jobs, keyword suggestions",
+    "notes": "same vacancy shape / suggestion items"
+   },
+   {
+    "call": "GET /me",
+    "purpose": "current user (job seeker)",
+    "notes": "id, first_name, last_name, email, is_applicant, resumes_url"
+   },
+   {
+    "call": "GET /resumes/mine`, `GET /resumes/{resume_id}",
+    "purpose": "the seeker's resumes",
+    "notes": "title, skills, experience[], education, salary, status; `with_negotiations_history`, `with_job_search_status`"
+   },
+   {
+    "call": "POST /negotiations` (operation `apply-to-vacancy`, documented in negotiations.md → redoc)",
+    "purpose": "apply to a vacancy with a resume",
+    "notes": "vacancy_id, resume_id, message (cover letter); errors limit_exceeded (daily response limit), captcha_required, test required"
+   },
+   {
+    "call": "GET /negotiations?status=active",
+    "purpose": "…`",
+    "notes": "application status list"
+   },
+   {
+    "call": "GET /negotiations/{id}` · `PUT /negotiations/{collection}/{nid}",
+    "purpose": "one negotiation / hide or act",
+    "notes": "state transitions; hide-active-response"
+   },
+   {
+    "call": "GET /negotiations/{nid}/messages` · `POST /negotiations/{nid}/messages",
+    "purpose": "recruiter chat",
+    "notes": "form field `message`; overall_limit (403) when the message limit is exceeded"
+   },
+   {
+    "call": "favourites (`vacancies_for_applicant.md`), saved searches, `POST /negotiations/read",
+    "purpose": "saved jobs, alerts, read receipts",
+    "notes": "vacancy_id; saved search criteria"
+   }
+  ],
+  "limits": " Not numerically published. Documented error families: `limit_exceeded` (negotiations — daily response limit), `overall_limit` (messages), `captcha_required` (403), `view_limit_exceeded` (employer resume views, 429). - Developer agreement (dev.hh.ru/admin/developer_agreement): the developer registers the app with their own hh.ru account; §1.4 — an app used by job seekers must show, at its own sign-up, a checkbox confirming acceptance of hh.ru's job-seeker service agreement (offer) and let the user read it on screen; HeadHunter may refuse / revoke API keys for misuse (spam, political agitation,",
+  "mcp_sdk": [
+   "Official docs repository: https://github.com/hhru/api (no official SDK; community wrappers exist on PyPI / npm, unverified).",
+   "No MCP server found."
+  ],
+  "sources": [
+   "https://api.hh.ru/openapi/redoc",
+   "https://api.hh.ru/openapi/specification/public)",
+   "https://raw.githubusercontent.com/hhru/api/master/README.md",
+   "https://raw.githubusercontent.com/hhru/api/master/docs/negotiations.md",
+   "https://raw.githubusercontent.com/hhru/api/master/docs/vacancies.md",
+   "https://raw.githubusercontent.com/hhru/api/master/docs/vacancies_for_applicant.md",
+   "https://raw.githubusercontent.com/hhru/api/master/docs/authorization.md",
+   "https://raw.githubusercontent.com/hhru/api/master/docs/errors.md",
+   "https://dev.hh.ru/admin/developer_agreement"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.hh.ru",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://api.hh.ru/token",
+   "client_auth": "body",
+   "token_path": "access_token",
+   "token_ttl_seconds": 86400,
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "client_id of an application registered at https://dev.hh.ru/admin; used to obtain an application token (grant_type=client_credentials at https://api.hh.ru/token)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "client_secret of the same hh.ru application."
+    }
+   ]
+  },
+  "user_agent_field": "user_agent",
+  "config_fields": [
+   {
+    "name": "user_agent",
+    "required": true,
+    "help": "Your application name and developer contact e-mail, e.g. 'MyApp/1.0 (me@example.com)'. hh.ru requires a User-Agent (or HH-User-Agent) naming the application and the developer's contact address ('Указание в заголовке названия приложения и контактной почты разработчика'); it is appended to the server's User-Agent."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "No numeric rate limit is published in the OpenAPI description. Two requests per second.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://api.hh.ru/openapi/redoc#tag/Informaciya-o-prilozhenii/operation/get-current-user-info",
+    "note": "GET /me with the application token answers the application profile (auth_type 'application')."
+   },
+   "search": {
+    "method": "GET",
+    "path": "/vacancies",
+    "params": {
+     "text": "query",
+     "page": "page0",
+     "per_page": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "items",
+     "key": "postings",
+     "total": "found",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "employer.name",
+      "location": "area.name",
+      "url": "alternate_url",
+      "posted_at": "published_at",
+      "salary_min": "salary.from",
+      "salary_max": "salary.to",
+      "currency": "salary.currency",
+      "description": "snippet.responsibility"
+     }
+    },
+    "docs": "https://api.hh.ru/openapi/redoc#tag/Poisk-vakansij/operation/get-vacancies",
+    "note": "GET /vacancies (Поиск по вакансиям): text supports the hh.ru query language, page is 0-based (sent as page-1), per_page ≤ 100, and page×per_page may not exceed 2000 ('глубина возвращаемых результатов не может быть больше 2000'). The docs warn that without an authorization token a captcha is requested after the first call, so the server sends an application token. Region filters take area ids from /areas, so location/country are not sent. description is the search snippet (responsibility, may contain <highlighttext>); salary is salary.from/to in salary.currency (the gross flag stays in raw)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/vacancies/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "company": "employer.name",
+      "location": "area.name",
+      "url": "alternate_url",
+      "posted_at": "published_at",
+      "salary_min": "salary.from",
+      "salary_max": "salary.to",
+      "currency": "salary.currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://api.hh.ru/openapi/redoc#tag/Vakansii/operation/get-vacancy",
+    "note": "GET /vacancies/{vacancy_id} (Просмотр вакансии); description is HTML."
+   }
+  },
+  "not_offered": {
+   "apply": "Applying (POST /negotiations) needs an applicant's user token from the authorization-code flow plus a resume_id; this server authenticates as the application (client credentials), which cannot act for a job seeker.",
+   "list_messages": "Negotiation messages belong to an applicant or employer user token (authorization-code flow); the application token used here has no user."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.hh.ru: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.hh.ru/token: 400 invalid_client",
+   "authorize https://hh.ru/oauth/authorize: 400",
+   "spec https://api.hh.ru/openapi/specification/public: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

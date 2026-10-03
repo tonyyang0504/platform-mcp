@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "shopify_app_store-mcp",
+ "display_name": "Shopify App Store MCP",
+ "version": "0.1.0",
+ "description": "Shopify App Store (marketplaces): me, get_product, list_sales, list_refunds. Every tool maps to a do",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "shopify_app_store"
+   ],
+   "env": {
+    "PLATFORM_MCP_SHOPIFY_APP_STORE_ACCESS_TOKEN": "${user_config.platform_mcp_shopify_app_store_access_token}",
+    "PLATFORM_MCP_SHOPIFY_APP_STORE_ORGANIZATION_ID": "${user_config.platform_mcp_shopify_app_store_organization_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_shopify_app_store_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPIFY_APP_STORE_ACCESS_TOKEN",
+   "description": "Partner API client access token (Partner Dashboard > Settings > Partner API clients, with the View financials permission for transactions and Manage apps for app data); 'The API client access token must belong to the organization that you're querying'. Sent as X-Shopify-Access-Token (https://shopify.dev/docs/api/partner/latest).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_shopify_app_store_organization_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SHOPIFY_APP_STORE_ORGANIZATION_ID",
+   "description": "Partner organization id from the Partners Dashboard URL (https://partners.shopify.com/{organization_id}/...); part of every endpoint URL.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "The Partner API has no organization / viewer query; the probe runs publicApiVersions against the organization endpoint to prove that organization_id and the token work."
+  },
+  {
+   "name": "get_product",
+   "description": "app(id) with `product_id` = the app's Partner gid (e.g. gid://partners/App/1234): id, name, apiKey (raw). The Partner API carries no listing text, price or status for an app."
+  },
+  {
+   "name": "list_sales",
+   "description": "transactions(types: APP_ONE_TIME_SALE, APP_SUBSCRIPTION_SALE, APP_USAGE_SALE; createdAtMin = `since` as an ISO-8601 DateTime; appId = `product_id` gid). `amount` is netAmount.amount (your earnings after Shopify's fee; a decimal string; grossAmount and shopifyFee are in raw), `status` is the transaction type; merchant emails are not exposed (the shop's myshopifyDomain and name are under raw.node.shop), so `customer_email` is null. Cursor-paginated: only the first `limit` transactions are returned (raw pageInfo.hasNextPage) and `page` is not honoured."
+  },
+  {
+   "name": "list_refunds",
+   "description": "App sale adjustments (refunds and other negative corrections of app charges) since `since` (ISO-8601 DateTime): amount is the (negative) netAmount; sale_id is the adjusted charge id. First `limit` rows only (cursor pagination)."
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+{
+ "id": "mediago",
+ "category": "ads",
+ "label": "MediaGo (Baidu Global)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global",
+  "us"
+ ],
+ "docs_url": "https://www.mediago.com/",
+ "url": "https://www.mediago.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API key requested from MediaGo support (per Voluum's integration guide); no public developer portal or terms found. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "reporting_only"
+  ],
+  "auth": "api_key (issued by MediaGo support; base64-encoded for tracker integrations)",
+  "access": "apply",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (reporting API via a support-issued key; no public campaign API docs) Confidence: **medium**.",
+  "base_urls": [],
+  "auth": [
+   "1. Open a MediaGo advertiser account (mediago.com → Start Now).",
+   "2. Request an API key from MediaGo support (base64-encode it for tracker integrations per Voluum).",
+   "3. Pull campaign cost / performance for reporting."
+  ],
+  "endpoints": [
+   {
+    "call": "reporting endpoint (via support-issued key)",
+    "purpose": "reports",
+    "notes": "campaign, date, spend, impressions, clicks (TODO(verify))"
+   },
+   {
+    "call": "campaigns / ads / budgets / audiences / conversions",
+    "purpose": "not documented publicly (Campaign Creation and Creative Hub exist in the UI)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - No public terms or rate limits; access by support request.",
+  "mcp_sdk": [
+   "None; integrations: Voluum, TheOptimizer.io."
+  ],
+  "sources": [
+   "https://www.mediago.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public API reference. Re-checked 2026-09-25 in headless Chromium: https://www.mediago.com/ and https://www.mediago.com/advertisers describe the DSP but link only Advertisers, Publishers, Blog, Company and Login, with no developer or API documentation; the reporting API key is issued by MediaGo support on request and is documented only indirectly by third-party tracker integrations, so no endpoint, parameter or response shape can be cited."
+}

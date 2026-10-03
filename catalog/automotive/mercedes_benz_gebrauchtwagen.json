@@ -1,0 +1,104 @@
+{
+ "id": "mercedes_benz_gebrauchtwagen",
+ "category": "automotive",
+ "label": "Mercedes-Benz Vehicle Specification",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://gebrauchtwagen.mercedes-benz.de",
+ "domain": "gebrauchtwagen.mercedes-benz.de",
+ "country": "Germany",
+ "official_api": true,
+ "docs_url": "https://developer.mercedes-benz.com/products/vehicle_specification/docs",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key (Mercedes-Benz /developers account)",
+  "access": "paid",
+  "capabilities": [
+   "decode_vin"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence medium). No API for the used-car locator itself, but Mercedes-Benz /developers offers an official VIN-based Vehicle Specification API (decode_vin) on a commercial plan.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.mercedes-benz.com/products/vehicle_specification"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.mercedes-benz.com/vehicle_specifications_fleet/v1",
+  "auth": {
+   "type": "header",
+   "header": "x-api-key",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Secret API key of a Mercedes-Benz /developers console project subscribed to Vehicle Specification (commercial plan); sent as x-api-key."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "locale",
+    "required": true,
+    "help": "Market locale for descriptions, e.g. de_DE or en_GB (required by the API; only some locales are supported)."
+   }
+  ],
+  "rate_per_second": 2,
+  "terms": "Mercedes-Benz /developers terms; OEM-level API that decodes any Mercedes-Benz, smart or Mercedes-Benz Vans VIN/FIN. It is the only official API behind the Mercedes-Benz used-car sites in this catalog.",
+  "tools": {
+   "decode_vin": {
+    "method": "GET",
+    "path": "/vehicles/{vin}",
+    "params": {
+     "locale": "@locale",
+     "payloadNullValues": "=false"
+    },
+    "result": {
+     "root": "vehicleData",
+     "fields": {
+      "make": "brand.text",
+      "model": "modelName",
+      "trim": "longType",
+      "body": "body.text",
+      "engine": "enginetype.text",
+      "fuel": "fuel.text"
+     }
+    },
+    "docs": "https://developer.mercedes-benz.com/products/vehicle_specification/docs",
+    "note": "GET /vehicles/{VIN or FIN}?locale&payloadNullValues=false (x-api-key): marketing specification of that exact vehicle (brand, model, longType, body, engine type, fuel, paint, options with codes, technicalData, power). modelYear is a code and stays in raw with baumuster, options and technicalData."
+   }
+  },
+  "not_offered": {
+   "search_listings": "The Mercedes-Benz used-car locators have no public API; this OEM API only decodes VINs.",
+   "get_listing": "No listing API (see search_listings).",
+   "get_valuation": "No valuation in the Vehicle Specification API.",
+   "list_dealers": "Not part of the Vehicle Specification API.",
+   "me": "No identity endpoint for an API key."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.mercedes-benz.com: DNS ok, TLSv1.3 (DigiCert Ireland Limited)",
+   "probe: 1/1 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

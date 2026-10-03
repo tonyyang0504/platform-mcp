@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/seznam_sklik-mcp",
+ "description": "Seznam Sklik (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Ever",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.sklik.cz/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "seznam_sklik"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SEZNAM_SKLIK_REFRESH_TOKEN",
+     "description": "Sklik API Fénix refresh token (log in at https://www.sklik.cz/ > Tools > API > create token; you choose its validity and access level r / rw). Exchanged at POST https://api.sklik.cz/v1/user/token (grant_type=refresh_token, form) for a 1-hour access token, re-requested on expiry or 401; the token acts on the refresh token owner's own Sklik account.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

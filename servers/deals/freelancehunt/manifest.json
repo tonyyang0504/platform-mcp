@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "freelancehunt-mcp",
+ "display_name": "Freelancehunt MCP",
+ "version": "0.1.0",
+ "description": "Freelancehunt (deals): me, search_postings, get_posting, list_messages, send_message. Every tool map",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "freelancehunt"
+   ],
+   "env": {
+    "PLATFORM_MCP_FREELANCEHUNT_TOKEN": "${user_config.platform_mcp_freelancehunt_token}",
+    "PLATFORM_MCP_FREELANCEHUNT_SAFE_TYPE": "${user_config.platform_mcp_freelancehunt_safe_type}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_freelancehunt_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCEHUNT_TOKEN",
+   "description": "Personal API token from https://freelancehunt.com/my/api2, sent as 'Authorization: Bearer <token>'.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_freelancehunt_safe_type": {
+   "type": "string",
+   "title": "PLATFORM_MCP_FREELANCEHUNT_SAFE_TYPE",
+   "description": "Default payment protection for new bids: split, employer, developer or employer_cashless (Safe), per the 'Add bid' docs; leave unset for the platform default.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v2/my/profile ('Show current profile')."
+  },
+  {
+   "name": "search_postings",
+   "description": "GET /v2/projects ('Open projects list'; by default open projects). Pagination is page[number]; filter[skill_id] takes comma-separated skill IDs (GET /v2/skills), so pass skill ids as category. No keyword or budget filter is documented, so query and min_budget are not sent and the page size is the platform's (limit is not sent). budget is a single amount (budget_max) in budget.currency; skills[] are {id, name} objects (raw)."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v2/projects/{project_id} ('Project details')."
+  },
+  {
+   "name": "list_messages",
+   "description": "GET /v2/threads/{thread_id} ('Thread messages list'); thread_id is required (GET /v2/threads lists threads). from/to are the participants' logins."
+  },
+  {
+   "name": "send_message",
+   "description": "POST /v2/threads/{thread_id} ('Add message to the thread') with {message_html}."
+  }
+ ]
+}

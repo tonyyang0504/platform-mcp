@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/jumia-mcp",
+ "description": "Jumia (ecommerce channels): me, set_inventory, list_orders. Every tool maps to a documented endpoint",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://vendorcenter.jumia.com/api-docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "jumia"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_JUMIA_CLIENT_ID",
+     "description": "Client Id of a SELF AUTHORIZATION application registered in Vendor Center > Settings > Applications (Web Applications cannot refresh unattended).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_JUMIA_REFRESH_TOKEN",
+     "description": "Refresh token from the application's 'Generate Token' action in Vendor Center. Every refresh returns a NEW refresh token; the runtime keeps it in memory and, with PLATFORM_MCP_STATE_DIR set, saves it to <dir>/jumia.json (0600) so a restart uses the latest one.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

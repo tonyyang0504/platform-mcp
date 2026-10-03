@@ -1,0 +1,39 @@
+{
+ "manifest_version": "0.2",
+ "name": "gemini-mcp",
+ "display_name": "Gemini (spot) MCP",
+ "version": "0.1.0",
+ "description": "Gemini (spot) (trading): list_markets, get_ticker, get_candles. Every tool maps to a documented endp",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gemini"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "list_markets",
+   "description": "Every trading symbol in Gemini's lower-case form (btcusd, ethbtc); base/quote are not in this list (see the symbol details page). Paged locally; `query` is a substring of the symbol."
+  },
+  {
+   "name": "get_ticker",
+   "description": "volume is the 24h volume in the base currency (the first key of the volume object, e.g. BTC for btcusd)."
+  },
+  {
+   "name": "get_candles",
+   "description": "interval is Gemini's time frame: 1m, 5m, 15m, 30m, 1hr, 6hr, 1day. Candles come newest first; the newest `limit` are returned."
+  }
+ ]
+}

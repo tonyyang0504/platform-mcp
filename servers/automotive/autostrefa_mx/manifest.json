@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "autostrefa_mx-mcp",
+ "display_name": "Autos TREFA MCP",
+ "version": "0.1.0",
+ "description": "Autos TREFA (automotive): search_listings, get_listing. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "autostrefa_mx"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_listings",
+   "description": "GET /api/public/inventory (documented base https://trefa.mx/api/public, which now 301-redirects to autostrefa.mx) with marca, modelo, ano_min/ano_max, precio_min/precio_max (MXN), km_max, ubicacion (branch), page, per_page ≤ 100. Free text search is a separate endpoint (/inventory/search?q=) and `query` is not used here. The documented example names the year field `ano`; live rows carry `año`, which is what is mapped."
+  },
+  {
+   "name": "get_listing",
+   "description": "GET /api/public/inventory/{slug or numeric id}: full vehicle (specs, prices and offers, image gallery, warranty and invoice info, financing estimates)."
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "manifest_version": "0.2",
+ "name": "saramin-mcp",
+ "display_name": "사람인 Saramin MCP",
+ "version": "0.1.0",
+ "description": "사람인 Saramin (jobs): search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "saramin"
+   ],
+   "env": {
+    "PLATFORM_MCP_SARAMIN_ACCESS_KEY": "${user_config.platform_mcp_saramin_access_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_saramin_access_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_SARAMIN_ACCESS_KEY",
+   "description": "access-key issued after Saramin approves your API application (이용신청) and you register an app at https://oapi.saramin.co.kr/.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "GET /job-search with Accept: application/json: keywords (company, title, keyword and duty text), start = 0-based page number, count ≤ 110 (default 10); fields=posting-date adds the ISO posting date. loc_cd takes region codes, so location is not sent. jobs.total is a string in the sample, so total is null. salary is a code + text range (in raw). Failures arrive as {code, message} (1/2 bad key, 3 bad parameter, 4 daily quota)."
+  }
+ ]
+}

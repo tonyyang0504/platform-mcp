@@ -1,0 +1,35 @@
+{
+ "id": "auksi_co_id_wl",
+ "category": "automotive",
+ "label": "AUKSI (formerly MPM Lelang)",
+ "vertical": "auction",
+ "lane": "waitlist",
+ "url": "https://www.auksi.co.id",
+ "domain": "auksi.co.id",
+ "country": "Indonesia",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). auction site; homepage/footer scan and dev-path probes (/developers,/api,/docs,/partners,...) found no developer, API or partner-feed pages and none is known.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://auksi.co.id/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

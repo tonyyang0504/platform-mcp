@@ -1,0 +1,35 @@
+{
+ "id": "chevrolet_seminovos_br",
+ "category": "automotive",
+ "label": "Chevroletseminovos",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://chevroletseminovos.com.br",
+ "domain": "chevroletseminovos.com.br",
+ "country": "Brazil",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OEM/brand approved-used or dealer portal; no developer/API/partner-feed link found on the site or common dev paths, and OEMs publish no third-party used-inventory API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://chevroletseminovos.com.br/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

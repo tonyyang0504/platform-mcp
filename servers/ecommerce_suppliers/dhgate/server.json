@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/dhgate-mcp",
+ "description": "DHgate (ecommerce suppliers): me, list_products, get_product, quote_shipping, create_order, get_orde",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.dhgate.com/docs/api",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "dhgate"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DHGATE_CLIENT_ID",
+     "description": "App Key of your DHgate Open Platform application (https://open.dhgate.com/console); the Dropshipping/buyer APIs must be granted to the app (API authorization level A, no public network access).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DHGATE_CLIENT_SECRET",
+     "description": "App Secret of the application, sent in the refresh_token grant to https://secure.dhgate.com/dop/oauth2/access_token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DHGATE_REFRESH_TOKEN",
+     "description": "Refresh token from the DHgate BUYER account's authorization-code consent (https://secure.dhgate.com/dop/oauth2/authorize?response_type=code&client_id=…&scope=basic, then grant_type=authorization_code). It is valid 30 days; the runtime mints 1-day access tokens from it and keeps the refresh_token each response returns (set PLATFORM_MCP_STATE_DIR to persist it).",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

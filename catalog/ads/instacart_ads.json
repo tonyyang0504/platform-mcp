@@ -1,0 +1,140 @@
+{
+ "id": "instacart_ads",
+ "category": "ads",
+ "label": "Instacart Ads",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "na",
+  "us",
+  "ca"
+ ],
+ "docs_url": "https://docs.instacart.com/ads/api/authentication/",
+ "url": "https://company.instacart.com/ads",
+ "verified_at": "2026-09-04",
+ "terms_note": "Publisher-side Carrot Ads API requires an access token; advertiser API terms not read",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 client credentials (POST /v2/oauth/token with client ID + secret from Instacart; Ads Manager user with 'API Authentication' role)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ads",
+   "budgets_bids",
+   "reports",
+   "catalog_products"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (advertiser API behind Ads Manager API-authentication users; publisher Carrot Ads API documented in full).",
+  "base_urls": [
+   "https://api.ads.instacart.com/v2/…"
+  ],
+  "auth": [
+   "1. Ads Manager account → add a user with **API Authentication**; assign Edit on Campaign Management and Read on Customer Insights Reporting.",
+   "2. Instacart issues client ID + secret; `POST /v2/oauth/token` `grant_type=client_credentials` (scope empty for all, `connect:ian` for Carrot Ads only) → bearer.",
+   "3. Call the advertiser endpoints (campaigns, ad groups, products, reports — TODO(verify) paths)."
+  ],
+  "endpoints": [
+   {
+    "call": "campaign endpoints (TODO(verify))",
+    "purpose": "campaigns + budget + status",
+    "notes": "name, objective, budget, start/end"
+   },
+   {
+    "call": "ad group / product endpoints",
+    "purpose": "products + bids",
+    "notes": "product ids, bid"
+   },
+   {
+    "call": "reporting endpoints",
+    "purpose": "reports",
+    "notes": "date range, metrics"
+   },
+   {
+    "call": "Carrot Ads (publisher): `GET /v2/ian/sp` · `/dp` · `/bp` · `/bp_block` · `POST /v2/ian/track` · `/order/log",
+    "purpose": "publisher-side ad retrieval + event tracking",
+    "notes": "placement, tracking events"
+   }
+  ],
+  "limits": " - Rate limits not stated; access by Instacart-issued credentials; free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.instacart.com/ads/api/authentication/",
+   "https://docs.instacart.com/ads/api/ads/overview/",
+   "https://docs.instacart.com/ads_manager/managing_your_account",
+   "https://docs.instacart.com/ads/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-checked 2026-09-25 in headless Chromium: https://docs.instacart.com/ads/api/authentication/ documents POST /v2/oauth/token for the Carrot Ads API ('scope … connect:ian for ads only'), which is the retailer/publisher ads-serving API (sponsored_products, display_placements, track) on a host 'Instacart assigned for your integration'. No public reference exists for an advertiser campaign, budget or report API (brands use Ads Manager), so nothing is mapped."
+}

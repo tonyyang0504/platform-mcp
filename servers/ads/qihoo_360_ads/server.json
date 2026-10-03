@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/qihoo_360_ads-mcp",
+ "description": "360 点睛营销平台 360 Ads (ads): me, get_report, update_budget, pause_resume. Every tool maps to a document",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.e.360.cn/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "qihoo_360_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_QIHOO_360_ADS_API_KEY",
+     "description": "ApiKey e-mailed after the open.e.360.cn developer application is approved; sent as the `apiKey` HTTP header on every call.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_QIHOO_360_ADS_USERNAME",
+     "description": "360 点睛 account login name (clientLogin `username`).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_QIHOO_360_ADS_ENCRYPTED_PASSWORD",
+     "description": "clientLogin `passwd`: AES-CBC(MD5(password)) with key = first 16 characters of the ApiSecret and IV = last 16, as 64 lowercase hex characters (身份认证: '秘钥是apiSecret 的前16位，向量是后16位'). It is a fixed value, so compute it once with 360's official 'openAPI登录接口AES调试工具' or its code samples; the password itself is never needed. Five wrong logins lock the account until the next day.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

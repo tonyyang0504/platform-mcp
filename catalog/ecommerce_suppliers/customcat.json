@@ -1,0 +1,289 @@
+{
+ "id": "customcat",
+ "category": "ecommerce_suppliers",
+ "label": "CustomCat",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://help.customcat.com/getting-started-with-customcat-api",
+ "url": "https://customcat.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "none found",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key — read-only + read-write tokens generated per 'API Store' (Settings › Store › API)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "order_create",
+   "tracking",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Postman-style reference at customcat-beta.mylocker.net/api/v1/"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [
+   "https://customcat-beta.mylocker.net/api/v1/"
+  ],
+  "auth": [
+   "1. Sign up at app.customcat.com",
+   "2. Connect Store → Create API Order (store name + URL)",
+   "3. Settings › Store › API → read-only key + read-write key (most actions need read-write)"
+  ],
+  "endpoints": [
+   {
+    "call": "GET /catalog · /catalogCategories",
+    "purpose": "blank product catalogue with SKUs, images, weights, inventory status",
+    "notes": "filter by decoration method"
+   },
+   {
+    "call": "GET /product",
+    "purpose": "products created from uploaded designs (workflow 1)",
+    "notes": ""
+   },
+   {
+    "call": "GET /shipping",
+    "purpose": "available shipping methods (needed for orders)",
+    "notes": ""
+   },
+   {
+    "call": "POST /order · order status / cancel",
+    "purpose": "submit orders with catalog_sku + design_url + quantity",
+    "notes": ""
+   },
+   {
+    "call": "Webhook",
+    "purpose": "events such as Order Shipped (HTTP POST)",
+    "notes": ""
+   },
+   {
+    "call": "AVS · Status",
+    "purpose": "address validation, service status",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - API available on all plans - Merchant manages billing + support in the merchant-managed model - Design URLs must be direct downloads (S3 / GCS; no Google Drive)",
+  "mcp_sdk": [
+   "Postman-style reference at customcat-beta.mylocker.net/api/v1/"
+  ],
+  "sources": [
+   "https://help.customcat.com/getting-started-with-customcat-api",
+   "https://customcat-beta.mylocker.net/api/v1/",
+   "https://customcat-beta.mylocker.net/api/v1/;"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://customcat-beta.mylocker.net/api/v1",
+  "auth": {
+   "type": "query",
+   "params": {
+    "api_key": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "CustomCat API key (generated per 'API Custom Integrations' store; Settings in the app shows a read-only and a read-write key — create_order needs the read-write one), sent as the `api_key` parameter."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sandbox",
+    "required": false,
+    "help": "Set to 1 to send `sandbox: 1` with create_order and get_order (CustomCat's sandbox flag); left out when unset, so orders are real and charged."
+   }
+  ],
+  "rate_per_second": 2,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/catalogcategory",
+    "docs": "https://customcat-beta.mylocker.net/api/v1/",
+    "note": "CustomCat has no account endpoint; the probe lists the catalogue categories ([{category, category_url_slug, subcategories}]), so `account` is empty on success."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/product",
+    "params": {
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 250,
+    "result": {
+     "items": "products",
+     "key": "products",
+     "fields": {
+      "id": "product.product_id",
+      "title": "product.title",
+      "sku": "product.variants.0.sku",
+      "price": "product.variants.0.price",
+      "product_type": "product.product_type",
+      "description": "product.description"
+     }
+    },
+    "docs": "https://customcat-beta.mylocker.net/api/v1/",
+    "note": "GET /product: the products you set up in CustomCat ({products[{product{product_id, title, product_type, description, options, variants[{sku, title, price, cost, instock, option1, option2}]}}]}); `sku`/`price` are the first variant's. `query` and `category` are not accepted. The blank catalogue (GET /catalog) is not mapped."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/order/{order_id}",
+    "path_params": {
+     "order_id": "uuid"
+    },
+    "body": {
+     "shipping_first_name": "shipping_address.first_name",
+     "shipping_last_name": "shipping_address.last_name",
+     "shipping_email": "shipping_address.email",
+     "shipping_phone": "shipping_address.phone",
+     "shipping_address1": "shipping_address.address1",
+     "shipping_address2": "shipping_address.address2",
+     "shipping_city": "shipping_address.city",
+     "shipping_state": "shipping_address.state",
+     "shipping_zip": "shipping_address.zip",
+     "shipping_country": "shipping_address.country",
+     "shipping_method": "shipping_option",
+     "items": "items",
+     "sandbox": "@sandbox",
+     "api_key": "@api_key"
+    },
+    "result": {
+     "fields": {
+      "id": "ORDER_ID",
+      "customcat_order_id": "CUSTOMCAT_ORDER_ID",
+      "message": "MSG"
+     }
+    },
+    "docs": "https://customcat-beta.mylocker.net/api/v1/",
+    "note": "POST /order/{order_id} submits a real, charged order (unless the sandbox setting is 1) under a fresh UUID order id, which get_order and track take. `shipping_address` is {first_name, last_name, email, phone, address1, address2, city, state, zip, country (ISO-2)} (all but address2 required); `items` are [{sku, quantity}] for products made in CustomCat or [{catalog_sku, design_url, design_url_back, quantity}]; `shipping_option` is the shipping_method name from GET /shipping (required by CustomCat)."
+   },
+   "get_order": {
+    "method": "GET",
+    "path": "/order/status/{order_id}",
+    "path_params": {
+     "order_id": "id"
+    },
+    "params": {
+     "sandbox": "@sandbox"
+    },
+    "result": {
+     "fields": {
+      "id": "ORDER_ID",
+      "status": "ORDER_STATUS",
+      "total": "ORDER_TOTAL",
+      "created_at": "ORDER_DATE",
+      "tracking_number": "SHIPMENTS.0.TRACKING_ID",
+      "customcat_order_id": "CUSTOMCAT_ORDER_ID"
+     }
+    },
+    "docs": "https://customcat-beta.mylocker.net/api/v1/",
+    "note": "GET /order/status/{order_id} (your order id): {ORDER_ID, CUSTOMCAT_ORDER_ID, ORDER_STATUS (Pending, Verified, Shipped), ORDER_TOTAL, ORDER_DATE, SHIPMENTS[{TRACKING_ID, METHOD, VENDOR}], LINE_ITEMS[{STATUS, PRODUCT_NAME}]}. ORDER_DATE is a text date such as 'March, 27 2018 12:14:45'."
+   },
+   "track": {
+    "method": "GET",
+    "path": "/order/status/{order_id}",
+    "path_params": {
+     "order_id": "order_id"
+    },
+    "params": {
+     "sandbox": "@sandbox"
+    },
+    "result": {
+     "items": "SHIPMENTS",
+     "key": "events",
+     "fields": {
+      "tracking_number": "TRACKING_ID",
+      "method": "METHOD",
+      "carrier": "VENDOR",
+      "number_items": "NUMBER_ITEMS"
+     }
+    },
+    "docs": "https://customcat-beta.mylocker.net/api/v1/",
+    "note": "The SHIPMENTS[{TRACKING_ID, METHOD, VENDOR, NUMBER_ITEMS}] of GET /order/status/{order_id}; one event per shipment."
+   }
+  },
+  "not_offered": {
+   "get_product": "GET /product/{product_id} is listed but its response is not documented (only the /product list response is), so no field mapping can be grounded in the docs.",
+   "quote_shipping": "GET /shipping lists methods for a country and POST /shipping/{shipping_id} prices items[{catalog_sku, quantity}] for one method, but neither response shape is documented, so no options list can be mapped."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host customcat-beta.mylocker.net: DNS ok, TLSv1.2 (DigiCert Inc)",
+   "probe: 4/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "inconclusive: create_order: server_error 500"
+ }
+}

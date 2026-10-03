@@ -1,0 +1,44 @@
+{
+ "id": "otomoto",
+ "category": "automotive",
+ "label": "Otomoto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.otomoto.pl",
+ "domain": "otomoto.pl",
+ "country": "Poland",
+ "official_api": true,
+ "docs_url": "https://www.otomoto.pl/api/doc/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key + OAuth user credentials (register as API partner, test account via api@otomoto.pl)",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload",
+   "get_listing"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). OTOMOTO offers a free, documented REST API (register as API partner) for dealers/integrators to manage their own adverts; no public cross-market search endpoint; also a car catalog API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.otomoto.pl/api/doc/",
+   "https://www.otomoto.pl/news/jak-uzyskac-dostep-do-api",
+   "https://www.otomoto.pl/news/przeglad-funkcji-api"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Upload-only official API (https://www.otomoto.pl/api/doc/): OTOMOTO offers a free, documented REST API (register as API partner) for dealers/integrators to manage their own adverts; no public cross-market search endpoint; also a car catalog API. It manages the account's own adverts (create/update/delete) and has no public listing search, VIN decode or valuation; the automotive vocabulary is read-only (no write verbs), so it is recorded, not served."
+}

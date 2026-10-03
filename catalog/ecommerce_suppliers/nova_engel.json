@@ -1,0 +1,281 @@
+{
+ "id": "nova_engel",
+ "category": "ecommerce_suppliers",
+ "label": "Nova Engel (ES perfumery & cosmetics dropshipping)",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "europe"
+ ],
+ "docs_url": "https://www.novaengel.com/dropshipping_productos",
+ "url": "https://www.novaengel.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "not stated",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "feed"
+  ],
+  "auth": "dropshipping web access after approval (API details in the account)",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "price_feed",
+   "order_create"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the vendor pages opened describe the API but the endpoint reference itself was not",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Business only; €500 deposit; €30k annual target; EU shipping; prices ex-VAT.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://www.novaengel.com/dropshipping_productos"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://drop.novaengel.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/api/login",
+    "body": {
+     "User": "@user",
+     "Password": "@password"
+    }
+   },
+   "token_path": "Token",
+   "header": "",
+   "token_ttl_seconds": 1800,
+   "fields": [
+    {
+     "name": "user",
+     "required": true,
+     "help": "Your Nova Engel dropshipping web-service user (issued with the approved dropshipping account)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "The password of that web-service user."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "language",
+    "required": true,
+    "help": "Language code for product texts in the URL path, e.g. es, en, fr, it, pt or de (the {language} segment of /api/products/…)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "path": "/api/products/paging/{access_token}/1/1/{language}",
+    "docs": "https://drop.novaengel.com/swagger/docs/v1",
+    "note": "Logs in (POST /api/login {User, Password} → Token) and reads one catalogue product with the session token in the path: verifies the credentials.",
+    "path_params": {
+     "language": "@language"
+    }
+   },
+   "list_products": {
+    "path": "/api/products/paging/{access_token}/{pages}/{elements}/{language}",
+    "path_params": {
+     "pages": "page",
+     "elements": "limit",
+     "language": "@language"
+    },
+    "max_limit": 500,
+    "default_limit": 50,
+    "result": {
+     "items": "$",
+     "key": "products",
+     "fields": {
+      "id": "Id",
+      "title": "Description",
+      "price": "Price",
+      "rrp": "PVR",
+      "stock": "Stock",
+      "brand": "BrandName",
+      "ean": "EANs.0",
+      "category": "Families.0",
+      "vat": "IVA",
+      "on_offer": "EsOferta"
+     }
+    },
+    "docs": "https://drop.novaengel.com/swagger/docs/v1",
+    "note": "GET /api/products/paging/{token}/{pages}/{elements}/{language}: one page of the catalogue (Id, EANs, Description, Price = your cost ex-VAT, PVR = recommended retail price, Stock, brand, families). `query`/`category` are not applied — the API has no search; brands are listed with /api/products/brand."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/api/orders/sendv2/{access_token}",
+    "body": {
+     "0.OrderNumber": "shipping_address.order_number",
+     "0.Valoration": "shipping_address.valoration",
+     "0.CarrierNotes": "shipping_address.carrier_notes",
+     "0.Name": "shipping_address.name",
+     "0.SecondName": "shipping_address.second_name",
+     "0.Telephone": "shipping_address.telephone",
+     "0.Mobile": "shipping_address.mobile",
+     "0.Street": "shipping_address.street",
+     "0.City": "shipping_address.city",
+     "0.County": "shipping_address.county",
+     "0.PostalCode": "shipping_address.postal_code",
+     "0.Country": "shipping_address.country",
+     "0.Lines.0.ProductId": "int:items.0.product_id",
+     "0.Lines.0.Units": "int:items.0.quantity",
+     "0.Lines.1.ProductId": "int:items.1.product_id",
+     "0.Lines.1.Units": "int:items.1.quantity",
+     "0.Lines.2.ProductId": "int:items.2.product_id",
+     "0.Lines.2.Units": "int:items.2.quantity",
+     "0.Lines.3.ProductId": "int:items.3.product_id",
+     "0.Lines.3.Units": "int:items.3.quantity",
+     "0.Lines.4.ProductId": "int:items.4.product_id",
+     "0.Lines.4.Units": "int:items.4.quantity",
+     "0.Lines.5.ProductId": "int:items.5.product_id",
+     "0.Lines.5.Units": "int:items.5.quantity",
+     "0.Lines.6.ProductId": "int:items.6.product_id",
+     "0.Lines.6.Units": "int:items.6.quantity",
+     "0.Lines.7.ProductId": "int:items.7.product_id",
+     "0.Lines.7.Units": "int:items.7.quantity",
+     "0.Lines.8.ProductId": "int:items.8.product_id",
+     "0.Lines.8.Units": "int:items.8.quantity",
+     "0.Lines.9.ProductId": "int:items.9.product_id",
+     "0.Lines.9.Units": "int:items.9.quantity"
+    },
+    "result": {
+     "root": "0",
+     "fields": {
+      "id": "OrderNumber",
+      "booking_code": "BookingCode",
+      "status": "Message",
+      "errors": "Errors"
+     }
+    },
+    "docs": "https://drop.novaengel.com/swagger/docs/v1",
+    "note": "POST /api/orders/sendv2/{token} with one ClientOrderModel. `items`: up to 10 lines [{product_id: Nova Engel product Id, quantity}]; `shipping_address`: {order_number (your unique reference), name, second_name, street, city, county, postal_code, country, telephone, mobile, carrier_notes?, valoration? (declared value)}. Answers OrderNumber, BookingCode, Message and Errors[]. `shipping_option` is not applied."
+   },
+   "get_order": {
+    "path": "/api/orders/orderbyid/{access_token}/{id}",
+    "result": {
+     "fields": {
+      "id": "OrderNumber",
+      "status": "str:Status",
+      "total": "Total",
+      "created_at": "Date",
+      "tracking_number": "SendInfo.Tracking",
+      "carrier": "SendInfo.Carrier",
+      "tracking_url": "SendInfo.TrackingURL",
+      "invoice": "Invoice"
+     }
+    },
+    "docs": "https://drop.novaengel.com/swagger/docs/v1",
+    "note": "GET /api/orders/orderbyid/{token}/{id}: OrderModel (Status code 0–12, Total, Date, Invoice, SendInfo tracking, Lines). `status` is the numeric Status code as a string (the vocabulary types status as a string)."
+   },
+   "track": {
+    "path": "/api/orders/orderbyid/{access_token}/{order_id}",
+    "result": {
+     "items": "SendInfo",
+     "key": "events",
+     "fields": {
+      "tracking_number": "Tracking",
+      "carrier": "Carrier",
+      "tracking_url": "TrackingURL",
+      "expedition": "Expedition"
+     }
+    },
+    "docs": "https://drop.novaengel.com/swagger/docs/v1",
+    "note": "The order's SendInfo (TrackingModel: Tracking, Carrier, Expedition, TrackingURL) as the single entry of `events` (the vocabulary requires an events array); the API has no tracking-event history, and the order Status code stays in raw of get_order."
+   }
+  },
+  "not_offered": {
+   "get_product": "The Swagger (https://drop.novaengel.com/swagger/docs/v1) has no single-product call: products come only in lists (/api/products/paging, /availables, /offers, /brand/{id}) and /api/products/image/{token}/{id} returns just an image.",
+   "quote_shipping": "No shipping-quote operation exists in the Swagger (https://drop.novaengel.com/swagger/docs/v1); orders are sent with /api/orders/sendv2 and charges appear afterwards on the OrderModel (Charge1, Charge2)."
+  },
+  "terms": "Nova Engel dropshipping Web API (Swagger 'eCommerce.DropShipping.WebApi' v1). Every call except /api/login carries the session Token as a URL path segment; the runtime logs in again on 401. Business accounts only (deposit and yearly purchase target, per https://www.novaengel.com/dropshipping_productos)."
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host drop.novaengel.com: DNS ok, TLSv1.3 (GoDaddy.com, Inc.)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "login drop.novaengel.com/api/login: 200",
+   "spec https://drop.novaengel.com/swagger/docs/v1: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "The token travels in the path; an invalid token gets HTTP 200 with empty data rather than an error, and create_order reports 'Unrecognized user, please login again' inside a 200 array, which no envelope rule can catch. Fixed: get_order status as a string and track events as an array (vocabulary)."
+ }
+}

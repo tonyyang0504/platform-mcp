@@ -1,0 +1,137 @@
+{
+ "id": "torre",
+ "category": "deals",
+ "label": "Torre",
+ "lane": "assist",
+ "kind": "board",
+ "regions": [
+  "latam",
+  "global"
+ ],
+ "docs_url": "https://torre.ai/ (official search API / MCP surface)",
+ "url": "https://torre.ai/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Torre sanctions automated applying through its own API/MCP; ToS forbids scraping the product (jobs-tab audit quote).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "api_key / MCP (Torre API for professionals)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details",
+   "submit_proposal",
+   "webhooks",
+   "profile_sync"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Torre MCP server (torre.ai/apiforprofessionals)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Torre API for professionals + MCP — apply on your behalf, job-match webhooks). Lane `assist` → **api**. Confidence high (official pages via r.jina.ai).",
+  "base_urls": [],
+  "auth": [
+   "1. Torre account → API/MCP access (beta sign-up on torre.ai/apiforprofessionals)."
+  ],
+  "endpoints": [
+   {
+    "call": "job search endpoints",
+    "purpose": "search",
+    "notes": "matches by preferences"
+   },
+   {
+    "call": "apply endpoint",
+    "purpose": "submit_proposal",
+    "notes": "'Let AI apply on your behalf'"
+   },
+   {
+    "call": "webhooks",
+    "purpose": "new job matches",
+    "notes": "'ping your endpoints'"
+   }
+  ],
+  "limits": " - Automated applying is the product's purpose; scraping the site itself is forbidden by ToS.",
+  "mcp_sdk": [
+   "https://r.jina.ai/https://torre.ai/api",
+   "https://r.jina.ai/https://torre.ai/apiforprofessionals"
+  ],
+  "sources": []
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-opened 2026-09-25 in headless Chromium: https://torre.ai/apiforcompanies and /apiforprofessionals describe 'Endpoints and MCP server to discover professionals …' but state 'Torre API is in private beta' with a 'REQUEST ACCESS' form, and the developer page https://torre.ai/developer/api-keys redirects to the accounts.torre.ai sign-in. No endpoint, parameter or authentication reference is public."
+}

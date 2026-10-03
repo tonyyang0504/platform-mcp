@@ -1,0 +1,81 @@
+{
+ "id": "us_sec_edgar",
+ "category": "sales",
+ "label": "SEC EDGAR company search",
+ "lane": "api",
+ "kind": "register",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+ "url": "https://www.sec.gov/edgar/search/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free JSON APIs (submissions, company facts, full-text search) without a key; the SEC requires a declared User-Agent (company + contact e-mail) and ≤10 requests/s — anonymous fetch answered 'Request Rate Threshold Exceeded'. Public companies only.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://data.sec.gov",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "contact",
+    "required": true,
+    "help": "Company name and e-mail, required by SEC fair-access rules: 'Sample Company Name AdminContact@<sample company domain>.com' is appended to the User-Agent (https://www.sec.gov/os/accessing-edgar-data). Env: PLATFORM_MCP_US_SEC_EDGAR_CONTACT."
+   }
+  ],
+  "user_agent_field": "contact",
+  "rate_per_second": 10,
+  "rate_note": "'Our current maximum access rate is 10 requests per second' (https://www.sec.gov/os/webmaster-faq#developers); undeclared or excessive automated access is blocked (about ten minutes). 'Automated access must comply with SEC.gov's Privacy and Security Policy, as described in the Developer FAQs' (https://www.sec.gov/search-filings/edgar-application-programming-interfaces).",
+  "tools": {
+   "get_company": {
+    "method": "GET",
+    "path": "/submissions/CIK{id}.json",
+    "result": {
+     "fields": {
+      "id": "cik",
+      "name": "name",
+      "industry": "sicDescription",
+      "address": "addresses.business.street1",
+      "website": "website"
+     }
+    },
+    "docs": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+    "note": "`id` MUST be the 10-digit zero-padded CIK ('https://data.sec.gov/submissions/CIK##########.json, where ########## is the entity's 10-digit central index key (CIK), including leading zeros'), e.g. 0000320193 — the adapter does not pad it. `industry` is sicDescription (sic code under raw.sic); `address` is the business street line (city, stateOrCountry, zipCode under raw.addresses.business); tickers, exchanges, formerNames and the filings index stay under raw. `website` is often empty."
+   }
+  },
+  "not_offered": {
+   "me": "EDGAR is anonymous — there are no credentials and no account endpoint; only the User-Agent contact is declared (https://www.sec.gov/os/accessing-edgar-data).",
+   "search": "The documented JSON APIs are keyed by the 10-digit CIK and none accepts a company-name query; no name-search endpoint is documented on https://www.sec.gov/search-filings/edgar-application-programming-interfaces (the static company_tickers.json list would need client-side filtering the adapter cannot express)."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "needs operator config: SEC fair access requires a real company name + e-mail in the User-Agent (PLATFORM_MCP_US_SEC_EDGAR_CONTACT); without one data.sec.gov answers 403 from every egress, and live_verify never invents a contact; requires contact; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

@@ -1,0 +1,132 @@
+{
+ "id": "zendrop",
+ "category": "ecommerce_suppliers",
+ "label": "Zendrop",
+ "lane": "api",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://support.zendrop.com/en/articles/14461568-zendrop-mcp-developer-documentation",
+ "url": "https://www.zendrop.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "none found (AI-agent access is the sanctioned channel)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "mcp",
+   "rest",
+   "oauth"
+  ],
+  "auth": "access tokens created via Zendrop APIs (scoped) or OAuth 2.0 authorization code + PKCE; Bearer on POST https://app.zendrop.com/mcp/v1",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "variants",
+   "product_import",
+   "orders",
+   "tracking",
+   "stock_feed"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [
+  "Zendrop MCP server — POST https://app.zendrop.com/mcp/v1 (actions e.g. get_catalog_product; scopes catalog:read, orders:read, orders:write, stores:read, stores:write, my_products:write, billing:read)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (MCP action API) Confidence: **high** — official develop",
+  "base_urls": [],
+  "auth": [
+   "1. Create an access token in Zendrop (scoped) or register an OAuth 2.0 app (authorization code + PKCE)",
+   "2. Assign scopes (catalog:read, orders:read/write, stores:read/write, my_products:write, billing:read)",
+   "3. `Authorization: Bearer <token>` on each POST"
+  ],
+  "endpoints": [
+   {
+    "call": "catalog search / get_catalog_product",
+    "purpose": "search by keyword, trend, price; product detail with price, images, variants",
+    "notes": ""
+   },
+   {
+    "call": "my_products import / list / sync",
+    "purpose": "import into the user's Zendrop product pipeline",
+    "notes": ""
+   },
+   {
+    "call": "orders: counts, statuses, lifecycle, manage (orders:write)",
+    "purpose": "order insights + fulfilment actions",
+    "notes": ""
+   },
+   {
+    "call": "stores: details, settings, shipping estimates",
+    "purpose": "store operations",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published. - Scoped tokens; HTTPS - Plans per Zendrop pricing",
+  "mcp_sdk": [
+   "Zendrop MCP server — POST https://app.zendrop.com/mcp/v1 (actions e.g. get_catalog_product; scopes catalog:read, orders:read, orders:write, stores:read, stores:write, my_products:write, billing:read)"
+  ],
+  "sources": [
+   "https://support.zendrop.com/en/articles/14461568-zendrop-mcp-developer-documentation"
+  ]
+ },
+ "adapter_status": "official_mcp",
+ "official_mcp_url": "https://app.zendrop.com/mcp/v1",
+ "reason": "Zendrop publishes its own MCP server (https://support.zendrop.com/en/articles/14461568-zendrop-mcp-developer-documentation, opened 2026-09-25): POST https://app.zendrop.com/mcp/v1 with `Authorization: Bearer <access token>` (scoped tokens catalog:read, orders:read/write, stores:read/write, my_products:write, billing:read, or OAuth 2.0 authorization code + PKCE) covering catalogue search, product details, shipping estimates, orders and tracking. No separate public REST reference is documented, so use the official MCP endpoint rather than a generated adapter."
+}

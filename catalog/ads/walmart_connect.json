@@ -1,0 +1,162 @@
+{
+ "id": "walmart_connect",
+ "category": "ads",
+ "label": "Walmart Connect",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": "https://developer.walmart.com/advertising-partners/docs/introduction-to-walmart-connect-ads-apis",
+ "url": "https://www.walmartconnect.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "API access is restricted to Walmart Connect Partner Network partners (partner types: full-service, campaign-management, reporting-only, creative-only).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "oauth2 / partner credentials (Walmart Connect API partner or agency access to the advertiser account)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "creatives_upload",
+   "reports",
+   "recommendations",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Sponsored Search APIs + Display Ads APIs) Confidence: **high** — official developer portal read.",
+  "base_urls": [
+   "https://developer.api.walmart.com/api-proxy/service/WPA/Api/v1/…"
+  ],
+  "auth": [
+   "1. Apply as a Technology Provider / Technology-enabled Agency (partner onboarding); or as an agency with advertiser accounts; 'Reporting Only Access' is a lighter tier.",
+   "2. Advertiser grants the partner access to its Walmart Connect account ('Steps for API Partners to gain account access').",
+   "3. Authenticate with the partner credentials (token + WM_CONSUMER / signature headers — TODO(verify) on the Authentication page) and call per-advertiser endpoints."
+  ],
+  "endpoints": [
+   {
+    "call": "Sponsored Search: `POST /campaigns` · `GET /campaigns` · `PUT /campaigns` · `DELETE",
+    "purpose": "campaigns + budget + dates",
+    "notes": "name, campaignType sponsoredProducts/sba, targetingType, dailyBudget, totalBudget, startDate, endDate, status"
+   },
+   {
+    "call": "POST /adGroups` · `PUT` · `GET",
+    "purpose": "ad groups",
+    "notes": "campaignId, name, status"
+   },
+   {
+    "call": "POST /adItems` · `PUT` (bid) · `GET",
+    "purpose": "ad items (SKUs) + bids",
+    "notes": "adGroupId, itemId, bid, status"
+   },
+   {
+    "call": "GET /keywords/suggested` · `POST /keywords` · `PUT /keywords` (state, bid) · negative keywords · `GET /keywords/analytics",
+    "purpose": "keywords + bids",
+    "notes": "keywordText, matchType, bid, state"
+   },
+   {
+    "call": "POST /placements` · `PUT` (bid multipliers)",
+    "purpose": "placements",
+    "notes": "placement, multiplier"
+   },
+   {
+    "call": "Brand Asset Manager · Sponsored Brands profile (logo / custom image upload, review)",
+    "purpose": "creatives (SBA)",
+    "notes": "brandName, headline, logo, customImage"
+   },
+   {
+    "call": "Display Ads: campaigns, ad groups, targeting (keyword / contextual / behavioral / geo), itemsets, forecast (reach / delivery estimate), creative v1/v2 upload + preview + moderation, video assets",
+    "purpose": "display campaigns",
+    "notes": "budget, pacing, flight, targeting objects, creativeId"
+   },
+   {
+    "call": "Snapshot reports · Statistics (`POST /snapshot/report`, `GET /snapshot`)",
+    "purpose": "reports",
+    "notes": "reportType, startDate, endDate, attributionWindow"
+   }
+  ],
+  "limits": " - Per-operation rate limits published per section; partner access review; free API; Walmart Connect advertiser terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://developer.walmart.com/advertising-partners/docs/introduction-to-walmart-connect-ads-apis",
+   "https://developer.walmart.com/advertising-partners-search/docs/partner-types-and-api-access"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Remaining gap: the signing recipe and credentials are not public. The runtime now has an rsa_sha256 header-signature mode, and the Display API reference is readable (https://developer.walmart.com/advertising-partners/docs/list-all-campaigns: POST /api/v1/campaigns/list), but every call also needs 'WM_SEC.AUTH_SIGNATURE' over a canonical string plus 'Authorization: Bearer <auth_token>', and the page that defines them (https://developer.walmart.com/advertising-partners/reference/authentication, re-read 2026-09-25) is a login-gated key page ('Log in to see your API keys') with no public description of the string to sign or how the auth token is issued. API access is limited to Walmart Connect Partner Network partners."
+}

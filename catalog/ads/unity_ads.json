@@ -1,0 +1,272 @@
+{
+ "id": "unity_ads",
+ "category": "ads",
+ "label": "Unity Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.unity.com/en-us/grow/acquire/management/acquire-rest-apis",
+ "url": "https://unity.com/products/unity-ads",
+ "verified_at": "2026-09-25",
+ "terms_note": "Unity Grow (Acquire) advertiser organization; API key from the dashboard (Organization → API management — TODO(verify)); Campaign Management API + Statistics API under docs.unity.com. Rate limits: not read. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Unity Grow organization API key; Bearer)",
+  "access": "signup",
+  "capabilities": [
+   "campaigns",
+   "budgets_bids",
+   "creatives_upload",
+   "targeting_search",
+   "reports"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Acquire campaign management + statistics REST APIs).",
+  "base_urls": [
+   "https://services.api.unity.com/advertise/v1/…"
+  ],
+  "auth": [
+   "1. Unity Grow organization → API key (Organization API management).",
+   "2. `Authorization: Bearer <api key>` (TODO(verify)).",
+   "3. Campaign Management API + Statistics API."
+  ],
+  "endpoints": [
+   {
+    "call": "campaigns (list / create / update)",
+    "purpose": "campaigns + budgets + bids",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "targeting",
+    "purpose": "targeting",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "creative packs / assets",
+    "purpose": "creatives",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "statistics API",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Not read (TODO(verify)); free.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://docs.unity.com/en-us/grow/acquire/management/acquire-rest-apis"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://services.api.unity.com/advertise/v1/organizations/{organization_id}",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "basic",
+   "username_field": "key_id",
+   "password_field": "secret_key",
+   "fields": [
+    {
+     "name": "key_id",
+     "required": true,
+     "help": "Key ID of a Unity service account (Unity Cloud dashboard > Administration > Service accounts) with an Advertise API role (Viewer for reads, Campaigns Editor or Admin for budget changes); the HTTP Basic username."
+    },
+    {
+     "name": "secret_key",
+     "required": true,
+     "help": "The service account's secret key, the HTTP Basic password."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "organization_id",
+    "required": true,
+    "help": "Unity organization id (core id) that owns the Unity Ads advertiser apps; part of every path."
+   },
+   {
+    "name": "campaign_set_id",
+    "required": false,
+    "help": "App (campaign set) id used by update_budget, since budget calls are addressed as /apps/{campaignSetId}/campaigns/{campaignId}/budget. Take it from list_accounts."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/apps",
+    "fixed_params": {
+     "limit": "1"
+    },
+    "docs": "https://services.docs.unity.com/advertise/v1/#tag/Apps/operation/advertise-listApps",
+    "note": "There is no account endpoint; the probe is GET /advertise/v1/organizations/{organization_id}/apps?limit=1, which verifies the service account and its Advertise role on the organization."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/apps",
+    "params": {
+     "limit": "=1000"
+    },
+    "result": {
+     "items": "results",
+     "key": "accounts",
+     "total": "total",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "store": "store",
+      "store_id": "storeId"
+     }
+    },
+    "docs": "https://services.docs.unity.com/advertise/v1/#tag/Apps/operation/advertise-listApps",
+    "note": "GET /apps: the organization's advertised apps (campaign sets). Unity Ads groups campaigns per app, so each app `id` (campaignSetId) is what list_campaigns takes as account_id. Budgets are in USD."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/apps/{account_id}/campaigns",
+    "params": {
+     "filter[enabled]": "map:status:active=true,paused=false,enabled=true,disabled=false"
+    },
+    "result": {
+     "items": "results",
+     "key": "campaigns",
+     "total": "total",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "enabled": "enabled",
+      "start": "scheduleStart",
+      "end": "scheduleEnd",
+      "goal": "goal"
+     }
+    },
+    "docs": "https://services.docs.unity.com/advertise/v1/#tag/Campaigns/operation/advertise-listCampaigns",
+    "note": "GET /apps/{campaignSetId}/campaigns[?filter[enabled]=true|false]: the app's campaigns. status accepts active/enabled (enabled=true) or paused/disabled (enabled=false); the `enabled` boolean is returned in its own field (no string status exists). Budgets are a separate resource (GET …/campaigns/{campaignId}/budget), so `budget` is not mapped. `page`/`limit` are not sent."
+   },
+   "update_budget": {
+    "method": "PATCH",
+    "path": "/apps/{campaign_set_id}/campaigns/{campaign_id}/budget",
+    "path_params": {
+     "campaign_set_id": "@campaign_set_id"
+    },
+    "body": {
+     "daily": "str:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated",
+      "daily": "daily",
+      "total": "total"
+     }
+    },
+    "docs": "https://services.docs.unity.com/advertise/v1/#tag/Campaigns/operation/advertise-updateCampaignBudget",
+    "note": "PATCH /apps/{campaign_set_id}/campaigns/{campaign_id}/budget {daily: \"<USD, up to 2 decimals>\"} (a partial update: the total budget is unchanged; 0 disables the daily cap). This spends money. Unity recommends at least $500 per country daily for CPI campaigns. Campaigns using per-country daily budgets (dailyPerCountry) are not changed by this call. Needs the campaign_set_id config field (the app the campaign belongs to). `currency` is ignored (USD)."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/apps/{campaign_set_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "campaign_set_id": "@campaign_set_id"
+    },
+    "body": {
+     "enabled": "map:action:pause=json:false,resume=json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated",
+      "campaign_id": "id",
+      "enabled": "enabled"
+     }
+    },
+    "docs": "https://services.docs.unity.com/advertise/v1/#tag/Campaigns/operation/advertise-updateCampaign",
+    "note": "PATCH /apps/{campaign_set_id}/campaigns/{campaign_id} {\"enabled\": false|true} (a partial campaign update). Needs the campaign_set_id config field (the app the campaign belongs to). Unity limits updates to one per second and 100 per 30 minutes per campaign."
+   }
+  },
+  "not_offered": {
+   "get_report": "Acquisition statistics come from the separate Advertising Statistics API, which returns CSV ('retrieve acquisition statistics data in a CSV format', https://docs.unity.com/en-us/grow/acquire/management/acquire-rest-apis); the runtime reads JSON only."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host services.api.unity.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/5 tool paths found verbatim on their docs pages; names not found on the page: list_campaigns:filter, pause_resume:enabled, update_budget:daily"
+  ],
+  "notes": "-"
+ }
+}

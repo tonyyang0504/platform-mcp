@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/instagram_dm-mcp",
+ "description": "Instagram DM (messaging): me, list_inbound, get_thread, send. Every tool maps to a documented endpoi",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "instagram_dm"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ACCESS_TOKEN",
+     "description": "Page access token of the Facebook Page linked to the Instagram professional account, requested by a person who can perform the MESSAGE task on that Page, with instagram_basic, instagram_manage_messages and pages_manage_metadata (Messenger Platform > Instagram Messaging, https://developers.facebook.com/docs/messenger-platform/instagram/features/send-message); sent as `Authorization: Bearer`.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID",
+     "description": "Numeric id of the Facebook Page linked to the Instagram professional account; conversations are listed with /<page_id>/conversations?platform=instagram and messages sent with /<page_id>/messages. Env: PLATFORM_MCP_INSTAGRAM_DM_PAGE_ID.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

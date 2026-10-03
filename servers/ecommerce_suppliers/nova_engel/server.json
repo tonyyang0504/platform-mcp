@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/nova_engel-mcp",
+ "description": "Nova Engel (ES perfumery & cosmetics dropshipping) (ecommerce suppliers): me, list_products, create_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.novaengel.com/dropshipping_productos",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "nova_engel"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NOVA_ENGEL_USER",
+     "description": "Your Nova Engel dropshipping web-service user (issued with the approved dropshipping account).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NOVA_ENGEL_PASSWORD",
+     "description": "The password of that web-service user.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NOVA_ENGEL_LANGUAGE",
+     "description": "Language code for product texts in the URL path, e.g. es, en, fr, it, pt or de (the {language} segment of /api/products/…).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

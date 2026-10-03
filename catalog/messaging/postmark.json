@@ -1,0 +1,289 @@
+{
+ "id": "postmark",
+ "category": "messaging",
+ "label": "Postmark",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://postmarkapp.com/developer",
+ "url": "https://postmarkapp.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed: base https://api.postmarkapp.com, X-Postmark-Server-Token for server-level calls (send, templates, bounces, messages, stats), X-Postmark-Account-Token for account-level (servers, sender signatures, domains); 401 on a missing header; 429 when rate-limited (no published number). Email API: POST /email — From must be a confirmed Sender Signature / verified domain, max 50 recipients To + Cc + Bcc combined, 10 MB per message; Batch API 500 messages / 50 MB per call; Bulk API for broadcast streams (newsletters, announcements) bounded by the 50 MB payload; MessageStream selects transactional ('outbound' default) vs broadcast streams. Inbound: a per-server inbound address or an inbound forwarding domain → JSON webhook (From/To/Cc/Bcc + Full variants, Subject, TextBody, HtmlBody, StrippedTextReply, Headers incl. X-Spam-*, Attachments base64, MessageID, MailboxHash for plus-addressing); retries up to 10 times over 1 min → 6 h, a 403 stops retries.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks",
+   "cli",
+   "smtp"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "send",
+   "batch_send",
+   "broadcasts",
+   "templates",
+   "read_inbox",
+   "media",
+   "webhooks",
+   "analytics",
+   "suppressions",
+   "message_search",
+   "bounces"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Official libraries: TypeScript / Node.js, Python, Ruby gem + Rails, .NET, Java, PHP, CLI, WordPress (postmarkapp.com/developer/api/overview)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 100000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "Inbound webhook (parsed JSON) + GET /messages/inbound (search) / GET /messages/inbound/{id}/details",
+   "docs": "https://postmarkapp.com/developer/api/messages-api"
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST https://api.postmarkapp.com/email (`X-Postmark-Server-Token`, `Accept: application/json`)",
+   "docs": "https://postmarkapp.com/developer/api/email-api"
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "—",
+   "docs": "https://postmarkapp.com/developer/api/overview"
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.postmarkapp.com"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /email` `{From, To, Cc, Bcc, Subject, HtmlBody",
+    "purpose": "TextBody, ReplyTo, Headers[{Name,Value}], Tag, Metadata, TrackOpens, TrackLinks, Attachments, MessageStream}` → `{MessageID, ErrorCode 0, SubmittedAt}`",
+    "notes": "send / reply"
+   },
+   {
+    "call": "POST /email/batch",
+    "purpose": "transactional batch",
+    "notes": "500 messages / 50 MB"
+   },
+   {
+    "call": "POST /email/withTemplate` · `POST /email/batchWithTemplates` · `/templates` CRUD",
+    "purpose": "templates",
+    "notes": ""
+   },
+   {
+    "call": "Bulk Email API (broadcast streams)",
+    "purpose": "newsletters / announcements",
+    "notes": "any recipient count within 50 MB"
+   },
+   {
+    "call": "Inbound webhook (per-server inbound address or inbound forwarding domain → JSON POST)",
+    "purpose": "read inbox",
+    "notes": "fields From/To/Cc/Bcc (+Full), Subject, TextBody, HtmlBody, StrippedTextReply, Headers (X-Spam-*), Attachments (base64), MessageID, MailboxHash; retries 10× over 1 min → 6 h, 403 stops retries"
+   },
+   {
+    "call": "Webhooks API (delivery, bounce, open, click, spam complaint, subscription change)",
+    "purpose": "events",
+    "notes": ""
+   },
+   {
+    "call": "GET /bounces` · `PUT /bounces/{id}/activate` · suppressions",
+    "purpose": "bounce handling",
+    "notes": ""
+   },
+   {
+    "call": "GET /messages/outbound` · `/messages/inbound` (search) · `/stats/outbound…",
+    "purpose": "search + analytics",
+    "notes": ""
+   }
+  ],
+  "limits": " - Rate limiting exists (429) — no published request-per-second number. - Transactional vs Broadcast **message streams** are separate; broadcast sends must go to a broadcast stream (the unsubscribe requirement for broadcasts was not re-read today because the page 404'd — keep RFC 8058 headers on every follow-up / broadcast regardless, per messaging.md). - Automation is the intended use; Postmark's content policy applies (no purchased lists).",
+  "mcp_sdk": [],
+  "sources": [
+   "https://postmarkapp.com/developer/api/overview",
+   "https://postmarkapp.com/developer/api/email-api",
+   "https://postmarkapp.com/developer/webhooks/inbound-webhook",
+   "https://postmarkapp.com/developer/api/bulk-email"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.postmarkapp.com",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://postmarkapp.com/developer/api/overview",
+    "verified_at": "2026-09-27",
+    "notes": "Postmark test mode is a token, not a host: 'passing the POSTMARK_API_TEST value in the X-Postmark-Server-Token header field' validates a send without delivering it. Set PLATFORM_MCP_POSTMARK_SERVER_TOKEN=POSTMARK_API_TEST; reads (message streams, stats) need a real server token."
+   }
+  },
+  "auth": {
+   "type": "header",
+   "header": "X-Postmark-Server-Token",
+   "field": "server_token",
+   "fields": [
+    {
+     "name": "server_token",
+     "required": true,
+     "help": "Postmark server API token, sent as the X-Postmark-Server-Token header ('requests that require server level privileges'; 401 'Missing or incorrect API token in header', https://postmarkapp.com/developer/api/overview)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "sender",
+    "required": true,
+    "help": "Sender address used as `From` on every send: 'Sender email address. Registered and confirmed Sender Signature is required' (https://postmarkapp.com/developer/api/email-api). Env: PLATFORM_MCP_POSTMARK_SENDER."
+   }
+  ],
+  "rate_per_second": 2,
+  "rate_note": "No request-per-second number is published; 429 'We have detected that you are making requests at a rate that exceeds acceptable use of the API' (https://postmarkapp.com/developer/api/overview). Client-side bucket kept at the runtime default of 2/s.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/server",
+    "docs": "https://postmarkapp.com/developer/api/server-api",
+    "note": "GET /server ('requires server level privileges') describes the server the token belongs to (ID, Name, DeliveryType, InboundAddress, ...)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/email",
+    "body": {
+     "From": "@sender",
+     "To": "to",
+     "Subject": "subject",
+     "TextBody": "text",
+     "MessageStream": "channel"
+    },
+    "result": {
+     "fields": {
+      "message_id": "MessageID",
+      "status": "Message"
+     }
+    },
+    "docs": "https://postmarkapp.com/developer/api/email-api",
+    "note": "`From` comes from the per-install `sender` config field; `to` may be a comma-separated list (max 50 recipients); `text` is sent as TextBody; `channel`, when given, is the MessageStream id. status is Postmark's `Message` ('OK'); 422 on invalid fields → isError."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/messages/inbound",
+    "params": {
+     "count": "limit",
+     "offset": "offset"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "InboundMessages",
+     "key": "messages",
+     "total": "TotalCount",
+     "fields": {
+      "id": "MessageID",
+      "from": "From",
+      "to": "To",
+      "sent_at": "Date"
+     }
+    },
+    "docs": "https://postmarkapp.com/developer/api/messages-api",
+    "note": "Inbound message search (`count` 'Number of messages to return per request. Max 500', `offset` 'Number of messages to skip'; status defaults to processed). The search list carries no body: `text` is unset (subject under raw.Subject; TextBody on GET /messages/inbound/{messageid}/details). `since` and `channel` are not sent."
+   }
+  },
+  "not_offered": {
+   "reply": "Threading on POST /email needs Headers[{Name, Value}] (In-Reply-To / References), an array the adapter's flat body map cannot express (https://postmarkapp.com/developer/api/email-api).",
+   "get_thread": "GET /messages/inbound/{messageid}/details returns one message, not a conversation; no thread listing is documented (https://postmarkapp.com/developer/api/messages-api).",
+   "mark_read": "No read-state endpoint exists in the Postmark API (https://postmarkapp.com/developer/api/overview)."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.postmarkapp.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Postmark's published test token POSTMARK_API_TEST is accepted only on /email ('The Postmark Test API Token may only be used on the /email endpoint'), so no read could be verified with it; send was not called (write)."
+ }
+}

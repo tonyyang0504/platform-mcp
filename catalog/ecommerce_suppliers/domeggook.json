@@ -1,0 +1,236 @@
+{
+ "id": "domeggook",
+ "category": "ecommerce_suppliers",
+ "label": "Domeggook (B2B wholesale) + Domeggook Open API",
+ "lane": "assist",
+ "kind": "regional",
+ "regions": [
+  "korea"
+ ],
+ "docs_url": "https://openapi.domeggook.com/ko/",
+ "url": "https://domeggook.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Open/Private key issuance via mobile.domeggook.com/APIs/gate; techsupport@ggook.com; Private API needs permission approval",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key — Open API key (모든 사용자) for product lookup; Private API key issued after 권한승인 for login / 주문수집 / 발주처리",
+  "access": "apply",
+  "capabilities": [
+   "catalog",
+   "stock_feed",
+   "order_create",
+   "orders",
+   "returns"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Issue an Open API key on mobile.domeggook.com/APIs/gate (any user)",
+   "2. Apply for Private API rights (권한승인) for order collection / 발주",
+   "3. Send the key with each call (per article docs)"
+  ],
+  "endpoints": [
+   {
+    "call": "Open API — 상품조회 / 상품정보 동기화 / 전체품절확인목록 v1.1",
+    "purpose": "product lookup, product sync, sold-out list",
+    "notes": "4 articles"
+   },
+   {
+    "call": "Private API — 로그인, 구매관리, 주문관련, 판매관리, 상품관련, 반품교환, 상품문의, 이머니",
+    "purpose": "order collection, placing orders, returns / exchanges, e-money",
+    "notes": "30 articles, approval required"
+   }
+  ],
+  "limits": " Not read. - Private API requires approval - techsupport@ggook.com for issues",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://openapi.domeggook.com/ko/",
+   "https://openapi.domeggook.com/ko/categories/API-문서",
+   "https://openapi.domeggook.com/ko/categories/API-키-발급관리"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://www.domeggook.com",
+  "auth": {
+   "type": "query",
+   "params": {
+    "aid": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Domeggook Open API key (openapi.domeggook.com > API 키 발급/관리), sent as the `aid` query parameter. The same key serves 도매꾹 and 도매매."
+    }
+   ]
+  },
+  "envelope": {
+   "ok_field": "errors",
+   "ok_value": null,
+   "error_field": "errors"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/ssl/api/",
+    "fixed_params": {
+     "ver": "4.1",
+     "mode": "getItemList",
+     "market": "dome",
+     "om": "json",
+     "sz": 1,
+     "kw": "마스크"
+    },
+    "docs": "https://openapi.domeggook.com/ko/articles/%EC%83%81%ED%92%88%EB%A6%AC%EC%8A%A4%ED%8A%B8-43780628",
+    "note": "No account endpoint; the probe runs a one-item 도매꾹 (Domeggook) search. An invalid key answers HTTP 200 with {errors{code: 401, dcode: UNAUTHORIZED}}, reported as a tool error."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/ssl/api/",
+    "params": {
+     "kw": "query",
+     "ca": "category",
+     "pg": "page",
+     "sz": "limit"
+    },
+    "fixed_params": {
+     "ver": "4.1",
+     "mode": "getItemList",
+     "market": "dome",
+     "om": "json"
+    },
+    "default_limit": 20,
+    "max_limit": 200,
+    "result": {
+     "items": "domeggook.list.item",
+     "key": "products",
+     "total": "domeggook.header.numberOfItems",
+     "fields": {
+      "id": "no",
+      "title": "title",
+      "price": "price",
+      "currency": "=KRW",
+      "url": "url",
+      "image_url": "thumb",
+      "moq": "unitQty",
+      "seller_id": "id",
+      "shipping_payer": "deli.who",
+      "shipping_fee": "deli.fee"
+     }
+    },
+    "docs": "https://openapi.domeggook.com/ko/articles/%EC%83%81%ED%92%88%EB%A6%AC%EC%8A%A4%ED%8A%B8-43780628",
+    "note": "getItemList v4.1 on 도매꾹 (Domeggook) (market=dome): items on sale only. Domeggook requires at least one condition: `query` (kw) or `category` (ca, five two-digit pairs such as 01_11_00_00_00; a top-level-only code is not searchable). Prices are KRW integers; unitQty is the minimum order quantity. Errors arrive as HTTP 200 {errors{code, message, dcode, dmessage}} and are reported as tool errors."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/ssl/api/",
+    "params": {
+     "no": "id"
+    },
+    "fixed_params": {
+     "ver": "4.6",
+     "mode": "getItemView",
+     "om": "json"
+    },
+    "result": {
+     "root": "domeggook",
+     "fields": {
+      "id": "basis.no",
+      "title": "basis.title",
+      "stock": "qty.inventory",
+      "currency": "=KRW",
+      "status": "basis.status",
+      "dome_price": "price.dome",
+      "moq": "qty.domeMoq",
+      "shipping_method": "deli.method"
+     }
+    },
+    "docs": "https://openapi.domeggook.com/ko/articles/%EC%83%81%ED%92%88%EC%83%81%EC%84%B8%EC%A0%95%EB%B3%B4-933abc24",
+    "note": "getItemView v4.6: basis{no, status, title, dateReg}, price, qty{inventory, domeMoq, domeUnit}, deli (shipping rules), seller info and options in `raw`. price.dome is an integer, or a tier string such as \"1+3800|20+3500|50+3300\" (quantity+unit price), so it is returned as `dome_price` instead of the numeric `price`."
+   }
+  },
+  "not_offered": {
+   "quote_shipping": "No shipping-rate call: shipping rules are part of the product record (deli.method, deli.pay, deli.dome{type, fee, tbl} quantity tables, see get_product), not quoted per destination.",
+   "create_order": "Ordering (주문서 생성) is a Private API: 'Private API는 권한 신청 및 승인 후 사용할 수 있습니다' and needs a setLogin session (member id/password, client ip, device 'Third Party' -> sId, https://openapi.domeggook.com/ko/articles/%EB%A1%9C%EA%B7%B8%EC%9D%B8-e4aaf7c2); not mapped for this Open-API key adapter.",
+   "get_order": "Order lookup (구매 주문서 상세 조회) is a Private API requiring approval and a setLogin session id (sId); not mapped for this Open-API key adapter.",
+   "track": "Delivery information is part of the Private API purchase-order record (approval + setLogin session required); not mapped."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host www.domeggook.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 302 (redirect), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/arbeitsagentur-mcp",
+ "description": "Bundesagentur für Arbeit Jobsuche (jobs): search, get_posting. Every tool maps to a documented endpo",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://jobsuche.api.bund.dev/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "arbeitsagentur"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ARBEITSAGENTUR_API_KEY",
+     "description": "The fixed public client id from https://jobsuche.api.bund.dev/ ('X-API-Key ist die clientId jobboerse-jobsuche'): set PLATFORM_MCP_ARBEITSAGENTUR_API_KEY=jobboerse-jobsuche. No registration exists; the BA publishes no developer terms of its own.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

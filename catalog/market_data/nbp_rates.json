@@ -1,0 +1,83 @@
+{
+ "id": "nbp_rates",
+ "category": "market_data",
+ "label": "Narodowy Bank Polski - kursy walut",
+ "lane": "api",
+ "country": "PL",
+ "docs_url": "https://api.nbp.pl/",
+ "url": "https://nbp.pl",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Open API, no key; documentation in Polish (and English) at api.nbp.pl, HTML only. Docs vs live 2026-10-01: the docs say a single query 'nie może obejmować przedziału dłuższego, niż 93 dni' (93 days), but the service accepts up to 367 days and answers '400 BadRequest - Przekroczony limit 367 dni / Limit of 367 days has been exceeded' beyond that. Errors are plain text: '404 NotFound - Not Found - Brak danych' for an unknown currency or a range without data. JSON is requested with format=json (the default follows the Accept header).",
+ "adapter": {
+  "base_url": "https://api.nbp.pl/api",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search_symbols": {
+    "method": "GET",
+    "path": "/exchangerates/tables/A/",
+    "params": {
+     "format": "=json"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "0.rates",
+     "slice": true,
+     "sort": "symbol",
+     "key": "results",
+     "filter": [
+      {
+       "arg": "query",
+       "fields": [
+        "symbol",
+        "name"
+       ]
+      }
+     ],
+     "fields": {
+      "symbol": "fmt:A/{code}",
+      "name": "currency",
+      "type": "=table A (mid rate)"
+     }
+    },
+    "docs": "https://api.nbp.pl/#kursyWalut",
+    "note": "Currencies of table A (average rates), with Polish names (dolar amerykański, euro ...); symbol is 'A/<code>' as get_series takes it. Table B (less common currencies) and C (bid/ask) series also work in get_series ('B/<code>', 'C/<code>')."
+   },
+   "get_series": {
+    "method": "GET",
+    "path": "/exchangerates/rates/{series_id}/{window}/",
+    "path_params": {
+     "window": "fmt:{date:start}/{date:end}"
+    },
+    "params": {
+     "format": "=json"
+    },
+    "result": {
+     "items": "rates",
+     "key": "points",
+     "fields": {
+      "time": "effectiveDate",
+      "value": "mid|ask"
+     }
+    },
+    "docs": "https://api.nbp.pl/#kursyWalut",
+    "note": "PLN per unit of a currency for every fixing day from start to end (both REQUIRED, YYYY-MM-DD, at most 367 days apart). series_id is '<table>/<code>': A/USD, A/EUR, B/AED; table C gives the ask rate."
+   }
+  },
+  "not_offered": {
+   "me": "Open API: no accounts.",
+   "get_candles": "No OHLC data (gold prices and fixings only).",
+   "get_news": "No news endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

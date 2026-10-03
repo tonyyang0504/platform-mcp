@@ -1,0 +1,274 @@
+{
+ "id": "applovin",
+ "category": "ads",
+ "label": "AppLovin Ads (AXON)",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://support.applovin.com/en/growth/promoting-your-apps/api/reporting-api",
+ "url": "https://www.applovin.com/advertisers/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Report Key from the dashboard account menu; GET https://r.applovin.com/report with api_key, start / end, columns, format; rate limits not stated. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest",
+   "reporting_only"
+  ],
+  "auth": "api_key (Report Key from the AppLovin dashboard, api_key query parameter)",
+  "access": "signup",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Reporting API only) Confidence: **high**.",
+  "base_urls": [
+   "https://r.applovin.com/report"
+  ],
+  "auth": [
+   "1. AppLovin advertiser account → dashboard account menu → Report Key.",
+   "2. `GET https://r.applovin.com/report?api_key=…&start=YYYY-MM-DD&end=…&columns=day,campaign,…&format=json|csv`.",
+   "3. Campaign changes: AXON dashboard (no API)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /report",
+    "purpose": "reports",
+    "notes": "api_key, start, end, columns (day, campaign, ad, ad_creative_type, country, ad_rev_«x», ad_roas_«x»…), format, report_type advertiser"
+   },
+   {
+    "call": "campaigns · bids · budgets · creatives",
+    "purpose": "not in API (dashboard)",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated; free; AppLovin advertiser terms.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://support.applovin.com/en/growth/promoting-your-apps/api/reporting-api",
+   "https://support.applovin.com/en/growth/promoting-your-apps/api/management-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.ads.axon.ai/manage/v1",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "header",
+   "headers": {
+    "Authorization": "campaign_api_key"
+   },
+   "fields": [
+    {
+     "name": "campaign_api_key",
+     "required": true,
+     "help": "Campaign Management API key (AppLovin dashboard > your account, top right > Keys; not the Ad Unit Management key), sent as the raw `Authorization` header value on api.ads.axon.ai."
+    },
+    {
+     "name": "report_key",
+     "required": false,
+     "help": "Report Key (dashboard > account > Keys), sent as the api_key query parameter of GET https://r.applovin.com/report; needed only for get_report."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "account_id",
+    "required": true,
+    "help": "Numeric AppLovin account id (dashboard > account > Go to settings: the number after the account name); every Campaign Management call carries it as ?account_id=."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/campaign/list",
+    "params": {
+     "account_id": "@account_id"
+    },
+    "fixed_params": {
+     "page": 1,
+     "size": 1
+    },
+    "docs": "https://support.applovin.com/en/growth/promoting-your-apps/api/axon-campaign-management-api",
+    "note": "There is no account endpoint; the probe is GET /campaign/list?account_id=…&size=1, which verifies the Campaign Management key against the configured account."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/campaign/list",
+    "params": {
+     "account_id": "account_id",
+     "page": "page",
+     "size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "$",
+     "key": "campaigns",
+     "fields": {
+      "id": "id",
+      "name": "name",
+      "status": "status",
+      "budget": "budget.daily_budget_for_all_countries",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://support.applovin.com/en/growth/promoting-your-apps/api/axon-campaign-management-api",
+    "note": "GET /campaign/list?account_id=…&page=…&size=… (a JSON array of Campaign objects, at most 100 per page). status is LIVE or PAUSED. `budget` is the global daily budget (a decimal string); campaigns with per-country budgets have it in raw.budget.country_code_to_daily_budget. `status` is not sent (no status filter is documented)."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "https://r.applovin.com/report",
+    "params": {
+     "api_key": "@report_key",
+     "start": "date:date_from",
+     "end": "date:date_to"
+    },
+    "fixed_params": {
+     "report_type": "advertiser",
+     "format": "json",
+     "columns": "day,campaign,campaign_id_external,impressions,clicks,conversions,cost"
+    },
+    "result": {
+     "items": "results",
+     "key": "rows",
+     "fields": {
+      "date": "day",
+      "campaign": "campaign",
+      "campaign_external_id": "campaign_id_external",
+      "impressions": "impressions",
+      "clicks": "clicks",
+      "conversions": "conversions",
+      "spend": "cost"
+     }
+    },
+    "docs": "https://support.applovin.com/en/growth/promoting-your-apps/api/reporting-api",
+    "note": "GET https://r.applovin.com/report?api_key=<Report Key>&start&end&columns=day,campaign,campaign_id_external,impressions,clicks,conversions,cost&format=json&report_type=advertiser (UTC; the request window is the last 45 days). Rows are read from `results`. `account_id` is not sent (the Report Key selects the account) and `campaign_id` is not applied: the report identifies campaigns by campaign_id_external (the campaign's hashed_id), not the numeric id list_campaigns returns."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/campaign/update",
+    "params": {
+     "account_id": "@account_id"
+    },
+    "body": {
+     "id": "campaign_id",
+     "type": "=APP",
+     "budget.daily_budget_for_all_countries": "str:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://support.applovin.com/en/growth/promoting-your-apps/api/axon-campaign-management-api",
+    "note": "POST /campaign/update?account_id=… {id, type: APP, budget: {daily_budget_for_all_countries}} sets one uniform daily budget (account currency, USD) across all targeted countries; this spends money and replaces any per-country budgets. `currency` is ignored."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/campaign/update",
+    "params": {
+     "account_id": "@account_id"
+    },
+    "body": {
+     "id": "campaign_id",
+     "type": "=APP",
+     "status": "map:action:pause=PAUSED,resume=LIVE"
+    },
+    "result": {
+     "fields": {
+      "campaign_id": "id",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://support.applovin.com/en/growth/promoting-your-apps/api/axon-campaign-management-api",
+    "note": "POST /campaign/update?account_id=… {id, type: APP, status: PAUSED|LIVE} (pause → PAUSED, resume → LIVE). Resuming restarts spend."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The Campaign Management API works on one account given as the account_id query parameter and has no account-listing endpoint (https://support.applovin.com/en/growth/promoting-your-apps/api/axon-campaign-management-api: 'You also must add the account_id query parameter to each request')."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.ads.axon.ai: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "id": "emilfrey_de",
+ "category": "automotive",
+ "label": "Emilfrey",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.emilfrey.de",
+ "domain": "emilfrey.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Germany); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://emilfrey.de/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

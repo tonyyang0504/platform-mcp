@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/feishu-mcp",
+ "description": "Feishu / Lark (messaging): me, list_inbound, get_thread, send, reply. Every tool maps to a documente",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://open.feishu.cn/document/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "feishu"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_FEISHU_APP_ID",
+     "description": "App ID of a Feishu custom (self-built) app with the bot capability (cli_…); exchanged with app_secret at POST /open-apis/auth/v3/tenant_access_token/internal for a tenant_access_token (max 2 hours).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FEISHU_APP_SECRET",
+     "description": "App Secret of the same app (developer console, Credentials & Basic Info).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_FEISHU_RECEIVE_ID_TYPE",
+     "description": "How `send`'s `to` is interpreted (receive_id_type query parameter): chat_id (group or p2p chat oc_…, the usual choice), open_id, union_id, user_id or email. Set it to chat_id unless you address users directly.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

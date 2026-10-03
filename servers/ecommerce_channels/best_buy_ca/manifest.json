@@ -1,0 +1,65 @@
+{
+ "manifest_version": "0.2",
+ "name": "best_buy_ca-mcp",
+ "display_name": "Best Buy Canada Marketplace MCP",
+ "version": "0.1.0",
+ "description": "Best Buy Canada Marketplace (ecommerce channels): me, list_orders, mark_shipped. Every tool maps to ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "best_buy_ca"
+   ],
+   "env": {
+    "PLATFORM_MCP_BEST_BUY_CA_API_KEY": "${user_config.platform_mcp_best_buy_ca_api_key}",
+    "PLATFORM_MCP_BEST_BUY_CA_INSTANCE_HOST": "${user_config.platform_mcp_best_buy_ca_instance_host}",
+    "PLATFORM_MCP_BEST_BUY_CA_SHOP_ID": "${user_config.platform_mcp_best_buy_ca_shop_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_best_buy_ca_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BEST_BUY_CA_API_KEY",
+   "description": "Shop API key generated in the Best Buy Canada (Mirakl) seller portal once the seller account is approved; sent verbatim as the Authorization header (no Bearer prefix).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_best_buy_ca_instance_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BEST_BUY_CA_INSTANCE_HOST",
+   "description": "Host of Best Buy Canada's Mirakl marketplace without scheme, as shown in your Best Buy Canada seller portal (e.g. marketplace.bestbuy.ca); every call goes to https://<instance_host>/api/...",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_best_buy_ca_shop_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BEST_BUY_CA_SHOP_ID",
+   "description": "Numeric shop id, only when your API key's user has access to several shops (sent as ?shop_id= on every call; the default shop is used otherwise).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "A01 GET /api/account returns the shop {shop_id, shop_name, shop_state, currency_iso_code, channels, contact_informations, ...}. Mirakl's documented maximum usage for A01 is once per day."
+  },
+  {
+   "name": "list_orders",
+   "description": "OR11 GET /api/orders?order_state_codes&start_date(ISO-8601 creation date)&offset&max(default 10, max 100). `status` is a comma-separated list of STAGING|WAITING_ACCEPTANCE|WAITING_DEBIT|WAITING_DEBIT_PAYMENT|SHIPPING|SHIPPED|TO_COLLECT|RECEIVED|CLOSED|REFUSED|CANCELED. Returns {orders[], total_count}; the order lines, customer and shipping address are in raw."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "OR23 PUT /api/orders/{order_id}/tracking {carrier_code, tracking_number} records the carrier tracking of the order. `carrier` must be a carrier code registered on the marketplace (see CH11/SH21 carriers). Confirming the shipment itself is a separate call (OR24 PUT /api/orders/{order_id}/ship) that this tool does not make, so the order stays in SHIPPING until it is validated."
+  }
+ ]
+}

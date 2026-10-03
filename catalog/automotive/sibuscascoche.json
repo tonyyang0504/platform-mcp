@@ -1,0 +1,35 @@
+{
+ "id": "sibuscascoche",
+ "category": "automotive",
+ "label": "Sibuscascoche",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.sibuscascoche.com",
+ "domain": "sibuscascoche.com",
+ "country": "Spain",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). /api is the site's own API Platform (Hydra) backend entrypoint, not a documented third-party API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://sibuscascoche.com/api"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

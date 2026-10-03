@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "avito_ads-mcp",
+ "display_name": "Avito Advertising (Авито Реклама) MCP",
+ "version": "0.1.0",
+ "description": "Avito Advertising (Авито Реклама) (ads): me, list_accounts, list_campaigns, get_report. Every tool m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "avito_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_AVITO_ADS_CLIENT_ID": "${user_config.platform_mcp_avito_ads_client_id}",
+    "PLATFORM_MCP_AVITO_ADS_CLIENT_SECRET": "${user_config.platform_mcp_avito_ads_client_secret}",
+    "PLATFORM_MCP_AVITO_ADS_ACCOUNT_ID": "${user_config.platform_mcp_avito_ads_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_avito_ads_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AVITO_ADS_CLIENT_ID",
+   "description": "Client Key created by an Admin in the Avito Advertising cabinet settings (API keys); exchanged at POST https://api.avito.ru/token (grant_type=client_credentials, form body) for a bearer token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_avito_ads_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AVITO_ADS_CLIENT_SECRET",
+   "description": "The matching Client Secret. Tokens are re-requested automatically on expiry or 401.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_avito_ads_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_AVITO_ADS_ACCOUNT_ID",
+   "description": "Numeric Avito Advertising account id (every path is /ads/v1/account/{account_id}/…); used by `me`.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /ads/v1/account/{account_id}: legal details of the configured account (inn, shortName, longName, contact, manager). Endpoint per Avito's official SDK (linked from https://ads-help.avito.com/external/api; the developers.avito.ru reference blocks non-Russian IPs)."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /ads/v1/account/{account_id}/children: the child (nested) accounts on the configured account's contract (agencies). The parent account itself is `me`. Balances are in raw only on the /children-with-balances variant, which is not called; currency is RUB."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "POST /ads/v1/account/{account_id}/campaigns {filter: {statuses: [status]}, limit (1–100), page}. status values: draft, in_moderation, moderation_failed, partial_moderation, active, paused, stopped, finished, archived. `budget` is an integer as returned (RUB). Endpoint and body per Avito's official SDK (the developers.avito.ru reference blocks non-Russian IPs)."
+  },
+  {
+   "name": "get_report",
+   "description": "POST /ads/v1/account/{account_id}/campaigns/{campaign_id}/stats {dateFrom, dateTo} (YYYY-MM-DD; the help page allows 1–90 days): daily points of one campaign (views → impressions, clicks, ctr, spend and spendBonus in RUB, cpm, cpc). campaign_id is REQUIRED (statistics are per campaign; the same response also carries per-group and per-creative breakdowns, left in the platform response and not mapped). Each call costs API points (weekly balance)."
+  }
+ ]
+}

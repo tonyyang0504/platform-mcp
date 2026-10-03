@@ -1,0 +1,86 @@
+{
+ "manifest_version": "0.2",
+ "name": "lemon_squeezy-mcp",
+ "display_name": "Lemon Squeezy MCP",
+ "version": "0.1.0",
+ "description": "Lemon Squeezy (marketplaces): me, list_products, get_product, list_sales, get_sales_stats, refund. E",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lemon_squeezy"
+   ],
+   "env": {
+    "PLATFORM_MCP_LEMON_SQUEEZY_API_KEY": "${user_config.platform_mcp_lemon_squeezy_api_key}",
+    "PLATFORM_MCP_LEMON_SQUEEZY_STORE_ID": "${user_config.platform_mcp_lemon_squeezy_store_id}",
+    "PLATFORM_MCP_LEMON_SQUEEZY_ENV": "${user_config.platform_mcp_lemon_squeezy_env}",
+    "PLATFORM_MCP_LEMON_SQUEEZY_BASE_URL": "${user_config.platform_mcp_lemon_squeezy_base_url}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lemon_squeezy_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMON_SQUEEZY_API_KEY",
+   "description": "Lemon Squeezy API key (Settings > API > create key; 'Generated API keys are valid for a year'), sent as 'Authorization: Bearer {api_key}'. Test-mode keys only see test-mode data (https://docs.lemonsqueezy.com/api/getting-started/requests).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lemon_squeezy_store_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMON_SQUEEZY_STORE_ID",
+   "description": "Numeric store id (GET /v1/stores). Filters list_products / list_sales with filter[store_id] and is required by get_sales_stats.",
+   "sensitive": false,
+   "required": false
+  },
+  "platform_mcp_lemon_squeezy_env": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMON_SQUEEZY_ENV",
+   "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+   "sensitive": false,
+   "required": false,
+   "default": "production"
+  },
+  "platform_mcp_lemon_squeezy_base_url": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEMON_SQUEEZY_BASE_URL",
+   "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /v1/users/me returns the key's user {data: {type: users, id, attributes: {name, email, color, avatar_url, ...}}}."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /v1/products?page[number]&page[size] (max 100) [&filter[store_id]=config store_id]. `price` is an INTEGER in cents of the store currency (999 = 9.99; price_formatted in raw); status is draft or published; `status` input is not a documented filter and is not sent; currency is not on the product (see the store)."
+  },
+  {
+   "name": "get_product",
+   "description": "GET /v1/products/:id; `price` is an integer in cents (see list_products)."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /v1/orders (newest first) [&filter[store_id]]. `amount` is total as an INTEGER in cents of `currency` (total_usd, refunded_amount and *_formatted in raw); status is pending, failed, paid, refunded, partial_refund or fraudulent. `product_id` and `since` are not sent (not documented order filters) - filter the rows by created_at / product_id yourself."
+  },
+  {
+   "name": "get_sales_stats",
+   "description": "Store totals from GET /v1/stores/{config store_id}: revenue = total_revenue ('A positive integer in cents representing the total all-time revenue of the store in USD'), sales = total_sales (all-time count), plus thirty_day_revenue / thirty_day_sales. The API has no date-range report, so since / until / product_id are ignored and period is 'all_time'; refunds are not reported."
+  },
+  {
+   "name": "refund",
+   "description": "MOVES MONEY - DESTRUCTIVE: POST /v1/orders/:id/refund issues a FULL refund when `amount` is omitted, otherwise a partial refund of `amount` as an INTEGER in cents of the order currency (100 = 1.00; a non-integer amount is rejected before sending). `reason` is not accepted. Returns the order with updated refunded / refunded_amount."
+  }
+ ]
+}

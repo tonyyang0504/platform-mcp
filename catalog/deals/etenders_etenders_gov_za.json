@@ -1,0 +1,195 @@
+{
+ "id": "etenders_etenders_gov_za",
+ "category": "deals",
+ "label": "eTenders Portal",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "za"
+ ],
+ "docs_url": "https://ocds-api.etenders.gov.za/",
+ "url": "https://www.etenders.gov.za/",
+ "verified_at": "2026-09-25",
+ "terms_note": "PDDL open data; keyless; paging PageNumber/PageSize; bids submitted per tender document.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "export"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (OCDS releases API). Lane `assist` → **keep**. Confidence high.",
+  "base_urls": [
+   "https://ocds-api.etenders.gov.za/api/OCDSReleases"
+  ],
+  "auth": [
+   "1. None."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/OCDSReleases?PageNumber=&PageSize=&dateFrom=&dateTo=",
+    "purpose": "search",
+    "notes": "OCDS 1.1 releases: tender.title, description, value, tenderPeriod, buyer, documents"
+   }
+  ],
+  "limits": " - PDDL 1.0; no rate limit stated. - PDDL open data; keyless; paging PageNumber/PageSize; bids submitted per tender document.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://ocds-api.etenders.gov.za/api/OCDSReleases?PageNumber=1&PageSize=1&dateFrom=2026-09-01&dateTo=2026-09-05"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://ocds-api.etenders.gov.za",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "rate_note": "No rate limit is published in the swagger; a one-month page answered in ~6 s on 2026-09-25. One request per second.",
+  "terms": "eTenders OCDS Public API (National Treasury, South Africa); publication licence per https://data.etenders.gov.za//Home/LearnMore. Bids are submitted to the procuring entity as each tender's documents instruct.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api/OCDSReleases",
+    "params": {
+     "PageNumber": "page",
+     "PageSize": "limit",
+     "dateFrom": "fmt:{year:now}-{month:now}-01T00:00:00Z",
+     "dateTo": "now"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "releases",
+     "key": "postings",
+     "fields": {
+      "id": "ocid",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "posted_at": "tender.tenderPeriod.startDate",
+      "deadline": "tender.tenderPeriod.endDate"
+     }
+    },
+    "docs": "https://ocds-api.etenders.gov.za/swagger/v1/swagger.json",
+    "note": "GET /api/OCDSReleases (PageNumber, PageSize, dateFrom, dateTo — 'dateFrom and dateTo fields are required'). The window is fixed to releases dated from the 1st of the current month (UTC) until now; the API has NO keyword, category or value filter, so query, category and min_budget are not sent — page through and filter on title/description/raw.tender.category/raw.tender.province yourself. OCDS releases: title = tender.title (often the bid number, e.g. NB124/2026), description = tender.description (the subject), buyer = buyer.name, budget_max = tender.value.amount (frequently 0 = not disclosed) in tender.value.currency, posted_at/deadline = tender.tenderPeriod start/end; raw.tender.status tells active from awarded/cancelled, raw.tender.documents link the bid documents and raw.tender.contactPerson the contact."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/api/OCDSReleases/release/{id}",
+    "result": {
+     "fields": {
+      "id": "ocid",
+      "title": "tender.title",
+      "description": "tender.description",
+      "buyer": "buyer.name",
+      "budget_max": "tender.value.amount",
+      "currency": "tender.value.currency",
+      "posted_at": "tender.tenderPeriod.startDate",
+      "deadline": "tender.tenderPeriod.endDate"
+     }
+    },
+    "docs": "https://ocds-api.etenders.gov.za/swagger/v1/swagger.json",
+    "note": "GET /api/OCDSReleases/release/{ocid} ('Get OCDS releases by ocid'), id = the ocid from search (e.g. ocds-9t57fa-171582)."
+   }
+  },
+  "not_offered": {
+   "me": "Anonymous public API; no account.",
+   "submit_bid": "Read-only OCDS publication API; bids are delivered to the procuring entity (hand delivery or its own channel per tender.specialConditions and the bid documents).",
+   "withdraw_bid": "Read-only OCDS publication API (see submit_bid).",
+   "bid_status": "Read-only OCDS publication API; award outcomes appear later as raw.awards on the release.",
+   "list_messages": "No messaging; the API has only the two OCDSReleases GET operations.",
+   "send_message": "No messaging; enquiries go to raw.tender.contactPerson.",
+   "credits": "No account or credit endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

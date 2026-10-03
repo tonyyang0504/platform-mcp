@@ -1,0 +1,42 @@
+{
+ "id": "farpost",
+ "category": "automotive",
+ "label": "Farpost",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.farpost.ru",
+ "domain": "farpost.ru",
+ "country": "Russia",
+ "official_api": false,
+ "docs_url": "https://www.farpost.ru/help/API",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "feed"
+  ],
+  "auth": "sha512 auth hash of account password + packet id",
+  "access": "signup",
+  "capabilities": [
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **feed_only** (confidence high). FarPost documents a price-list sync API (XLS/CSV/XML packet upload) and sister Drom.ru an XML autoload feed for dealers; no search API.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://www.farpost.ru/help/API",
+   "https://www.drom.ru/misc/autoload/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Feed/import interface only (audit 2026-09-25): FarPost documents a price-list sync API (XLS/CSV/XML packet upload) and sister Drom.ru an XML autoload feed for dealers; no search API. No request/response API to serve."
+}

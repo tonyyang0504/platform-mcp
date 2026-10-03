@@ -1,0 +1,35 @@
+{
+ "id": "khodro45",
+ "category": "automotive",
+ "label": "Khodro45",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://khodro45.com",
+ "domain": "khodro45.com",
+ "country": "Iran",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). khodro45.com/api/ is the site backend (robots-blocked); no developer docs. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://khodro45.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

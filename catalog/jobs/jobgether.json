@@ -1,0 +1,143 @@
+{
+ "id": "jobgether",
+ "category": "jobs",
+ "label": "Jobgether",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://jobgether.com/developers",
+ "url": "https://jobgether.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Remote/flexible aggregator with AI matching; apply via profile or external link.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search",
+   "job_details (listing URL)"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://jobgether.com/developers (OpenAPI 3.1 + llms.txt written for language models)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — Jobgether 'Job Search API for developers and AI agents': GET or POST https://jobgether.com/api/v1/jobs (no API key, no signup) with keyword, jobReferences[], locations[] (country / co",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " No key, no published rate limit. Public API 'intended for AI agents/assistants answering user job-search queries'; each job's url is the Jobgether listing page, not an external apply link; results capped at 25 per page / 10 pages. No key, no published rate limit. Terms of use and legal notices opened — no bot clause surfaced in the extracted text; robots.txt 8 rules. Jobgether's own 'Auto Apply' is a paid premium feature for its users, not an API.",
+  "mcp_sdk": [
+   "https://jobgether.com/developers (OpenAPI 3.1 + llms.txt written for language models)"
+  ],
+  "sources": [
+   "https://jobgether.com/",
+   "https://jobgether.com/robots.txt",
+   "https://jobgether.com/developers",
+   "https://jobgether.com/terms-of-use",
+   "https://jobgether.com/legal-notices"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://jobgether.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/api/v1/jobs",
+    "params": {
+     "keyword": "query",
+     "locations": "location",
+     "page": "page",
+     "limit": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 25,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "company",
+      "location": "location",
+      "url": "url",
+      "posted_at": "postedAt"
+     }
+    },
+    "docs": "https://jobgether.com/developers",
+    "note": "Job Search API 'for developers and AI agents' (OpenAPI at https://jobgether.com/openapi.json): keyword = free text; locations = 'Location slugs — country, continent, or city (e.g. \"spain\", \"europe\", \"worldwide\"). Unknown values return a 400 error', so pass a lowercase slug as location; page (max 10) and limit (max 25). remoteType/contractType/experience filters are not sent. Hits: id, title, company, url (the Jobgether listing page, not an external apply link), location, remote, contractType, experience, salaryRange, jobFunctions[], postedAt; pagination.hasMore only (no total), so next_page is derived from the page size. Errors are RFC 9457 problem+json."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('No API key No signup') and no account endpoint.",
+   "get_posting": "The OpenAPI lists only GET/POST /api/v1/jobs (and the /astroapi/ai/jobs.json alias); there is no single-job endpoint — url is the Jobgether listing page.",
+   "apply": "Page: Jobgether's own 'Auto Apply' is a paid premium feature for its users, not an API; listings link on to the employer.",
+   "list_messages": "No messaging API; the OpenAPI documents the job search only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "upstream result sets alternate between identical requests, so py/ts first ids can differ; all read tools answered, schema-valid, pagination advances"
+ }
+}

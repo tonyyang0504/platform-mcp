@@ -1,0 +1,242 @@
+{
+ "id": "xiaomi_getapps_ads",
+ "category": "ads",
+ "label": "小米营销 Xiaomi Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+ "url": "https://e.mi.com/",
+ "verified_at": "2026-09-25",
+ "version": "0.1.0",
+ "terms_note": "'1、联系对应AM，提供需开通Marketing API 的账户id和账户名称 2、AM进行申请 3、申请通过后，AM提供appId、appKey等应用信息'; token create / refresh endpoints; public parameters on every request. Rate limits: not stated. Free.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (appId / appKey issued by the account manager → token create / refresh; public parameters on each call)",
+  "access": "apply",
+  "capabilities": [
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "reports"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Mi Ads Marketing API + Reporting API) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://global.e.mi.com/…"
+  ],
+  "auth": [
+   "1. Contact the account manager (AM) with the account id + name to enable Marketing API; AM applies; on approval the AM provides `appId`, `appKey` and other app info.",
+   "2. Token: create (`token创建` endpoint with appId/appKey) and refresh (`更新token`).",
+   "3. Set the public parameters (公共参数) on each call, then call the ad interfaces."
+  ],
+  "endpoints": [
+   {
+    "call": "广告计划 interfaces (create / update / list)",
+    "purpose": "campaigns + budget + status",
+    "notes": "TODO(verify) field names from the guide's tables"
+   },
+   {
+    "call": "广告组 interfaces",
+    "purpose": "ad groups + bid + targeting",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "广告创意 interfaces",
+    "purpose": "creatives",
+    "notes": "TODO(verify)"
+   },
+   {
+    "call": "Reporting API (Reporting API接入说明)",
+    "purpose": "reports",
+    "notes": "account / campaign / group / creative level by day (TODO(verify))"
+   },
+   {
+    "call": "audiences · conversions upload",
+    "purpose": "not in the Marketing API guide",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits not stated. Access by AM application; free API; 小米广告政策 / 广告协议 apply.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+   "https://global.e.mi.com/doc/zh/reporting_api_guide.html"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://global.e.mi.com",
+  "rate_per_second": 2,
+  "envelope": {
+   "ok_field": "code",
+   "ok_value": 0,
+   "error_field": "message"
+  },
+  "auth": {
+   "type": "session",
+   "login": {
+    "method": "POST",
+    "path": "/foreign/token/createToken",
+    "body": {
+     "appId": "@app_id",
+     "appKey": "@app_key"
+    }
+   },
+   "token_path": "result.accessToken",
+   "token_ttl_seconds": 3000,
+   "header": "",
+   "cookies": {
+    "access_token": "{access_token}",
+    "timestamp": "{timestamp}",
+    "uid": "{nonce}"
+   },
+   "fields": [
+    {
+     "name": "app_id",
+     "required": true,
+     "help": "appId of the external application your Xiaomi account manager (AM) created when Marketing API access was approved ('申请通过后，AM提供appId、appKey等应用信息')."
+    },
+    {
+     "name": "app_key",
+     "required": true,
+     "help": "appKey of that application; exchanged for an access token with POST /foreign/token/createToken."
+    }
+   ]
+  },
+  "terms": "小米营销 (Xiaomi Ads global) Marketing API (https://global.e.mi.com/doc/zh/marketing_api_guide.html): an access token is created with POST /foreign/token/createToken {appId, appKey} (result.accessToken, expireDate); every call sends the common parameters access_token, timestamp and a per-request unique uid in the Cookie ('参数位置: Cookie'). Answers {code (0 = 成功), message, result}; code 10004 = accountId未授权, 20002 = 接口调用频率过高. Access is opened per account through the Xiaomi AM.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/foreign/marketing/region/countryList",
+    "docs": "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+    "note": "2.4 获取国家列表 (GET /foreign/marketing/region/countryList, no parameters) returns {code, result:[{geoType, id, name}]} for a valid token, so it verifies the app credentials without an account id. The earlier probe (campaign/list with page/pageSize only) is refused before authentication with code 100500 \"Required List parameter 'accountIds' is not present\" (auth audit 2026-09-26)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/foreign/marketing/campaign/list",
+    "params": {
+     "page": "page",
+     "pageSize": "limit",
+     "accountIds": "account_id"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "result.records",
+     "key": "campaigns",
+     "total": "result.total",
+     "fields": {
+      "id": "campaignId",
+      "name": "name"
+     }
+    },
+    "docs": "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+    "note": "1.1 获取广告计划 (GET /foreign/marketing/campaign/list with page, pageSize, accountIds): records {accountId, campaignId, name, dayBudget (美元×100000, left in raw), campaignType (1 应用下载, 2 H5, 3 再营销)}; result.total/pages give the paging. account_id is sent as accountIds. No status or dates are returned."
+   },
+   "update_budget": {
+    "method": "POST",
+    "path": "/foreign/marketing/group/update",
+    "body": {
+     "groupIds.0": "int:campaign_id",
+     "dayBudget": "mul:100000:daily_budget"
+    },
+    "result": {
+     "fields": {
+      "status": "=updated"
+     }
+    },
+    "docs": "https://global.e.mi.com/doc/zh/marketing_api_guide.html",
+    "note": "The API has no campaign update call; budgets are edited on 广告组 (ad groups) with 2.3 修改广告组 (POST /foreign/marketing/group/update {groupIds, dayBudget}), so campaign_id here is a groupId (from 2.1 获取广告组, GET /foreign/marketing/group/list). daily_budget is in US dollars and sent as dayBudget in 美元×100000. This spends money; currency is ignored (USD)."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "No account-listing call is documented: the guide covers token creation, common parameters, 广告计划 (list/add), 广告组 (list/add/update, regions, media) and 广告创意 (list/add/update, upload) (https://global.e.mi.com/doc/zh/marketing_api_guide.html); accounts are those the AM enabled for the app.",
+   "get_report": "No reporting endpoint is documented in the Marketing API guide (sections 一 申请创建外部应用 … 四 广告接口介绍: 广告计划, 广告组, 广告创意; https://global.e.mi.com/doc/zh/marketing_api_guide.html).",
+   "pause_resume": "No status field or pause/resume call is documented: 2.3 修改广告组 accepts only groupIds, regions, dayBudget and bid, and campaigns have only list/add (https://global.e.mi.com/doc/zh/marketing_api_guide.html)."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host global.e.mi.com: DNS ok, TLSv1.2 (DigiCert, Inc.)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 200 (public), so the answers are path-specific",
+   "login global.e.mi.com/foreign/token/createToken: 200 10002",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "Fixed: the me probe used campaign/list without accountIds, which the API refuses before authentication (code 100500 MissingServletRequestParameterException); it now reads countryList."
+ }
+}

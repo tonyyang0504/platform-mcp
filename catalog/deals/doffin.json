@@ -1,0 +1,197 @@
+{
+ "id": "doffin",
+ "category": "deals",
+ "label": "Doffin",
+ "lane": "assist",
+ "kind": "tender",
+ "regions": [
+  "no"
+ ],
+ "docs_url": "https://www.doffin.no/info",
+ "url": "https://www.doffin.no/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Norwegian public procurement; open notices; bids on the buyer's KGV system.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (Azure APIM developer portal)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (Doffin notices API behind an Azure APIM developer portal). Lane `assist` → **keep**. Confidence low (portal reachable, docs not read).",
+  "base_urls": [
+   "https://dof-notices-prod-api.developer.azure-api.net/"
+  ],
+  "auth": [
+   "1. Sign up on the portal → subscription key."
+  ],
+  "endpoints": [
+   {
+    "call": "notices search (TODO(verify))",
+    "purpose": "search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Public procurement open data; bids via buyer KGV. - Norwegian public procurement; open notices; bids on the buyer's KGV system.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://dof-notices-prod-api.developer.azure-api.net/",
+   "https://www.doffin.no/info"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.doffin.no/public",
+  "auth": {
+   "type": "header",
+   "headers": {
+    "Ocp-Apim-Subscription-Key": "subscription_key"
+   },
+   "fields": [
+    {
+     "name": "subscription_key",
+     "required": true,
+     "help": "Subscription key for the 'Public API' product from the Doffin API developer portal (https://dof-notices-prod-api.developer.azure-api.net/, sign up → Products → subscribe), sent as the Ocp-Apim-Subscription-Key header."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "The developer portal publishes no rate limit for the Public API product; Azure APIM answers 429 when a product quota applies. Two requests per second.",
+  "terms": "Norwegian public procurement notices (DFØ); tenders are submitted on the buyer's own tendering system (KGV) linked from the notice.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/v2/search",
+    "params": {
+     "searchString": "query",
+     "cpvCode": "category",
+     "estimatedValueFrom": "int:min_budget",
+     "page": "page",
+     "numHitsPerPage": "limit"
+    },
+    "fixed_params": {
+     "status": "ACTIVE"
+    },
+    "default_limit": 20,
+    "max_limit": 100,
+    "result": {
+     "items": "hits",
+     "key": "postings",
+     "total": "numHitsTotal",
+     "fields": {
+      "id": "id",
+      "title": "heading",
+      "description": "description",
+      "buyer": "buyer.0.name",
+      "budget_max": "estimatedValue.amount",
+      "currency": "estimatedValue.currencyCode",
+      "posted_at": "publicationDate",
+      "deadline": "deadline",
+      "skills": "cpvCodes"
+     }
+    },
+    "docs": "https://dof-notices-prod-api.developer.azure-api.net/api-details#api=651eeff38be0c56022ac741d&operation=65015b9b566f983bdcfcaee8",
+    "note": "GET https://api.doffin.no/public/v2/search (Public API 'search': numHitsPerPage ≤ 100, page, searchString, cpvCode, status, type, location, issueDateFrom/To, estimatedValueFrom/To, sortBy). `query` → searchString; `category` → one cpvCode; `min_budget` → estimatedValueFrom (an integer amount, NOK); status is fixed to ACTIVE (open notices). Response PagedPublicNoticeDto {numHitsTotal, hits[]}: title = heading, buyer = buyer[0].name, budget_max = estimatedValue.amount (the estimate, a single value) in estimatedValue.currencyCode, skills = cpvCodes, deadline as published (null on some notice types). The notice page is https://www.doffin.no/notices/<id>; notice type, lots and locations stay in raw."
+   }
+  },
+  "not_offered": {
+   "me": "The Public API has only search and download; there is no account or subscription endpoint.",
+   "get_posting": "The only per-notice call, GET /v2/download/{doffinId} ('Download notice'), returns the notice document itself; the portal publishes no response schema for it (only for search), so it cannot be mapped to fields. Use search_postings with the Doffin id in `query`, or open https://www.doffin.no/notices/<id>.",
+   "submit_bid": "Doffin is a notice board; tenders are delivered on the buyer's tendering system, and the Notices API (eform-api) only publishes notices for buyers.",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging in the Public API (search and download only).",
+   "send_message": "No messaging in the Public API (search and download only).",
+   "credits": "No credit or quota endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.doffin.no: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 1/1 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check: the docs pages did not render (login wall, SPA or bot wall)"
+  ],
+  "notes": "-"
+ }
+}

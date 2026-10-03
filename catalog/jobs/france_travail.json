@@ -1,0 +1,172 @@
+{
+ "id": "france_travail",
+ "category": "jobs",
+ "label": "France Travail",
+ "lane": "assist",
+ "kind": "government",
+ "regions": [
+  "fr"
+ ],
+ "docs_url": "https://francetravail.io/",
+ "url": "https://candidat.francetravail.fr/offres/recherche",
+ "verified_at": "2026-09-24",
+ "terms_note": "French PES (ex-Pôle emploi) with an open Offres d'emploi API on francetravail.io (OAuth client) — no client yet.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth2"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "reference_data"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": " Official metadata on data.gouv.fr (published by France Travail): access type open, availability 99.8 %, rate limit '10 appels / seconde', authorisation via https://francetravail.io/inscription; Official metadata on data.gouv.fr (published by France Travail): access type open, availability 99.8 %, rate limit '10 appels / seconde', authorisation via https://francetravail.io/inscription; the API 'restitue en temps réel les offres d'emploi actives' and is meant for 'particuliers, entreprises & startups et collectivités territoriales' building job- search solutions (loi pour une République numériq",
+  "mcp_sdk": [],
+  "sources": [
+   "https://francetravail.io/",
+   "https://francetravail.io/robots.txt",
+   "https://francetravail.io/data/api/offres-emploi",
+   "https://francetravail.io/data/documentation/conditions-utilisation",
+   "https://www.data.gouv.fr/dataservices/api-offres-demploi",
+   "https://www.data.gouv.fr/api/1/dataservices/?q=offres%20emploi"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.francetravail.io/partenaire/offresdemploi",
+  "auth": {
+   "type": "oauth2_client_credentials",
+   "token_url": "https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire",
+   "client_auth": "body",
+   "scope": "api_offresdemploiv2 o2dsoffre",
+   "token_path": "access_token",
+   "expires_path": "expires_in",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Identifiant client of a francetravail.io application subscribed to the 'Offres d'emploi' API (create it at https://francetravail.io/inscription, then add the API to the application)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Clé secrète of the same francetravail.io application."
+    }
+   ]
+  },
+  "rate_per_second": 5,
+  "rate_note": "The API's technical sheet on francetravail.io sets nombreAppelMax 100; data.gouv.fr (published by France Travail) lists '10 appels / seconde'. Kept at 5 per second.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/v2/offres/search",
+    "params": {
+     "motsCles": "query"
+    },
+    "default_limit": 150,
+    "max_limit": 150,
+    "result": {
+     "items": "resultats",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "intitule",
+      "company": "entreprise.nom",
+      "location": "lieuTravail.libelle",
+      "url": "origineOffre.urlOrigine",
+      "posted_at": "dateCreation",
+      "description": "description"
+     }
+    },
+    "docs": "https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation",
+    "note": "GET /v2/offres/search ('Rechercher par critères'). motsCles is the keyword filter (each keyword at least 2 characters, several separated by commas). The place filters take INSEE codes (commune, departement, region), so location/country are not sent. Paging is the `range` parameter 'p-d' (first-last index, at most 150 per call); the runtime cannot compute the end index, so `range` is not sent and the platform's default window (the first 150 offers) is returned — `page` and `limit` are ignored. The total is only in the Content-Range header, so total is null. HTTP 206 (partial list) is a success; an empty search answers 204 (no postings). Salary is a label (salaire.libelle, in raw), not numbers."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/v2/offres/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "intitule",
+      "company": "entreprise.nom",
+      "location": "lieuTravail.libelle",
+      "url": "origineOffre.urlOrigine",
+      "posted_at": "dateCreation",
+      "description": "description"
+     }
+    },
+    "docs": "https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation",
+    "note": "GET /v2/offres/{offerId} ('Consulter une offre', offerId is the 7-character offer id, e.g. 048KLTP). origineOffre.urlOrigine is the offer's page on francetravail.fr; e-mail contacts are masked by the platform (apply through that page). salaire.libelle, typeContrat and the rest stay in raw."
+   }
+  },
+  "not_offered": {
+   "me": "No account endpoint: the application authenticates with the client credentials grant ('Cinématique OAuth: client credentials grant', https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token) and the API only documents search, offer details and référentiels.",
+   "apply": "No application endpoint: the offer detail says 'Pour postuler, utiliser le lien suivant: https://candidat.pole-emploi.fr/offres/recherche/detail/…' — candidates apply on the France Travail site.",
+   "list_messages": "No messaging API is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.francetravail.io: DNS ok, TLSv1.3 (Sectigo Limited)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token entreprise.francetravail.fr/connexion/oauth2/access_token: 400 Client authentication failed",
+   "HTML docs spot-check (render-doc): 0/2 tool paths found verbatim on their docs pages; names not found on the page: search:motsCles"
+  ],
+  "notes": "-"
+ }
+}

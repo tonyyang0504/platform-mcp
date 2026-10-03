@@ -1,0 +1,139 @@
+{
+ "id": "himalayas",
+ "category": "jobs",
+ "label": "Himalayas",
+ "lane": "api",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://himalayas.app/api",
+ "url": "https://himalayas.app/jobs",
+ "verified_at": "2026-09-04",
+ "terms_note": "Public jobs API; apply through the company's link.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "job_search (feed with cursor pagination)",
+   "job_details",
+   "company_info"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "api for search — public, keyless GET https://himalayas.app/jobs/api?limit=N&cursor=<nextCursor> (offset deprecated) → {totalCount (103,219 today), nextCursor, jobs[{title, excerpt, description, compan",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " The documentation page (himalayas.app/api) sits behind a Cloudflare bot-verification wall for the audit host and r.jina.ai, so the written terms / rate limits were not read; The documentation page (himalayas.app/api) sits behind a Cloudflare bot-verification wall for the audit host and r.jina.ai, so the written terms / rate limits were not read; the endpoint itself answered and carries a 'comments' changelog (cursor pagination preferred since 21/08/2026, companySlug added 13/03/2026). No key required.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://himalayas.app/api",
+   "https://himalayas.app/jobs/api",
+   "https://himalayas.app/jobs/api?limit=1"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://himalayas.app",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/jobs/api",
+    "params": {
+     "limit": "limit",
+     "offset": "offset"
+    },
+    "default_limit": 25,
+    "result": {
+     "items": "jobs",
+     "key": "postings",
+     "total": "totalCount",
+     "fields": {
+      "id": "guid",
+      "title": "title",
+      "company": "companyName",
+      "location": "locationRestrictions.0",
+      "url": "applicationLink",
+      "salary_min": "minSalary",
+      "salary_max": "maxSalary",
+      "currency": "currency",
+      "description": "description"
+     }
+    },
+    "docs": "https://himalayas.app/api",
+    "note": "Keyless feed with no keyword parameter documented, so query is not sent — filter client-side. Paging uses the documented offset parameter (marked deprecated in favour of cursor=<nextCursor>, which the page/limit vocabulary cannot carry). location is the first locationRestrictions entry; pubDate/expiryDate (type not documented) stay in raw. The docs page sat behind a bot-verification wall at verification, so terms and rate limits were not read."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "Only the feed endpoint is documented; re-read the record (id = guid) from the search hit.",
+   "apply": "Page: 'apply stays assist (applicationLink → Himalayas / employer)'.",
+   "list_messages": "No messaging API; the page documents the jobs feed only."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid, pagination advances"
+ }
+}

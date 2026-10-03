@@ -1,0 +1,35 @@
+{
+ "id": "dubizzle_om",
+ "category": "automotive",
+ "label": "Dubizzle",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.dubizzle.com.om",
+ "domain": "dubizzle.com.om",
+ "country": "Oman",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). Dubizzle Group publishes no public listings API; dealer tools are account-based only.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://dubizzle.com.om/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

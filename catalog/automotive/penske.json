@@ -1,0 +1,35 @@
+{
+ "id": "penske",
+ "category": "automotive",
+ "label": "Penskeautomotive",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.penskeautomotive.com",
+ "domain": "penskeautomotive.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence low). cars_marketplace site (homepage HTTP 403 to probe); no developer/API/partner-feed presence known or found. Note: low confidence — the audit could not read the site or exhausted its search budget; re-check before relying on it.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://penskeautomotive.com/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

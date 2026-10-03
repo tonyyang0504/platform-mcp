@@ -1,0 +1,37 @@
+{
+ "id": "danawa_kr",
+ "category": "automotive",
+ "label": "Auto",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://auto.danawa.com",
+ "domain": "auto.danawa.com",
+ "country": "South Korea",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). No official Danawa Auto API; only third-party reseller access (APIFuse).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://auto.danawa.com/"
+  ],
+  "unofficial": [
+   "https://platform.apifuse.com/providers/danawa"
+  ]
+ },
+ "official_mcp": []
+}

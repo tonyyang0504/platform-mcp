@@ -1,0 +1,42 @@
+{
+ "id": "germany_g7_pkw",
+ "category": "automotive",
+ "label": "Pkw",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://www.pkw.de",
+ "domain": "pkw.de",
+ "country": "Germany",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": null,
+  "access": "partner_only",
+  "capabilities": [
+   "search_listings",
+   "get_listing"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence low). pkw.de announced (2010) an XML API giving contracted dealers access to their own vehicle data and search on their websites; no current public docs.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [],
+  "unofficial": [
+   "https://www.adzine.de/2010/03/pkw-de-bietet-haendlern-neue-schnittstelle-online-publishing/"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "Partner-only access (audit 2026-09-25): pkw.de announced (2010) an XML API giving contracted dealers access to their own vehicle data and search on their websites; no current public docs."
+}

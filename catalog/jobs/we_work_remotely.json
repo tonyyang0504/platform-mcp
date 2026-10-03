@@ -1,0 +1,131 @@
+{
+ "id": "we_work_remotely",
+ "category": "jobs",
+ "label": "We Work Remotely",
+ "lane": "assist",
+ "kind": "remote",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://weworkremotely.com/remote-jobs.rss",
+ "url": "https://weworkremotely.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Public RSS feeds per category; apply on the employer's page or by e-mail.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rss"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "feed_xml (all jobs + per-category feeds)"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial**.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "the public RSS feeds (application/rss+xml: all jobs and per-category) are usable public feeds",
+    "purpose": "see verdict",
+    "notes": "from the docs / live response read on 2026-09-05"
+   }
+  ],
+  "limits": " Not published on the pages opened. HTML pages sit behind a Cloudflare interstitial (403) for the audit host; the RSS endpoints answer normally. Terms page not readable (also via r.jina.ai) — no automation clause read; robots.txt 7 rules. No developer API.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://weworkremotely.com/",
+   "https://weworkremotely.com/robots.txt",
+   "https://weworkremotely.com/remote-jobs.rss",
+   "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+   "https://weworkremotely.com/terms"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://weworkremotely.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.2,
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/remote-jobs.rss",
+    "default_limit": 100,
+    "result": {
+     "items": "rss.channel.item",
+     "key": "postings",
+     "fields": {
+      "id": "link",
+      "title": "title",
+      "url": "link",
+      "posted_at": "pubDate",
+      "description": "description",
+      "location": "region"
+     }
+    },
+    "docs": "https://weworkremotely.com/remote-jobs.rss",
+    "note": "We Work Remotely all-jobs RSS 2.0 feed (~80 current remote jobs, ~800 KB). query is not sent (the feed documents no search parameter) - filter the returned postings client-side; the feed answers its whole current list in one response, so ignore next_page (page 2 is the same list). title is '<company>: <job title>'; location is the WWR region ('Anywhere in the World'); country, skills, category, type and expires_at stay in raw. description is HTML. id is the job link."
+   }
+  },
+  "not_offered": {
+   "me": "No credentials to verify ('auth: none'): the feed is public and has no account endpoint.",
+   "get_posting": "The feed has no per-item endpoint (each posting's url is an HTML page); search returns the whole record in raw.",
+   "apply": "No application endpoint: the feed only lists postings; candidates apply on each posting's url (employer page / e-mail).",
+   "list_messages": "No messaging API; the only machine-readable interface is the public job feed."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

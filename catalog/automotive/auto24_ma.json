@@ -1,0 +1,39 @@
+{
+ "id": "auto24_ma",
+ "category": "automotive",
+ "label": "Auto24",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://auto24.ma",
+ "domain": "auto24.ma",
+ "country": "Morocco",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Morocco); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://auto24.ma/"
+  ],
+  "unofficial": [
+   "https://github.com/ArtArsen/Auto24-API",
+   "https://github.com/ArtArsen/Auto24-API/blob/main/README.md",
+   "https://parse.bot/marketplace/99d1b768-c7c0-4035-b97b-f95fd66cfcc8/eng-auto24-lv-api"
+  ]
+ },
+ "official_mcp": []
+}

@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "lever-mcp",
+ "display_name": "Lever MCP",
+ "version": "0.1.0",
+ "description": "Lever (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lever"
+   ],
+   "env": {
+    "PLATFORM_MCP_LEVER_SITE": "${user_config.platform_mcp_lever_site}",
+    "PLATFORM_MCP_LEVER_API_HOST": "${user_config.platform_mcp_lever_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lever_site": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEVER_SITE",
+   "description": "The company's Lever site name (usually the company name without spaces), e.g. 'leverdemo' in https://jobs.lever.co/leverdemo.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_lever_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LEVER_API_HOST",
+   "description": "Lever postings host for the site's instance: api.lever.co (global) or api.eu.lever.co (EU).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "search",
+   "description": "Lever Postings API for ONE company's site (config site): GET /v0/postings/SITE?mode=json&skip=X&limit=Y 'Fetch[es] published job postings'. location is Lever's exact location filter (case sensitive, matched against the posting's location category); the API does not 'Let you do full-text searches over open jobs', so query is not sent — filter client-side. id is the posting id (use it with get_posting); applyUrl, categories (commitment, team, department, allLocations), country (alpha-2), workplaceType, lists[], salaryRange.interval and createdAt (epoch milliseconds) are in raw."
+  },
+  {
+   "name": "get_posting",
+   "description": "GET /v0/postings/SITE/POSTING-ID: 'Get the named job posting by id. The fields which are available are the same as the fields exposed by the list API'."
+  }
+ ]
+}

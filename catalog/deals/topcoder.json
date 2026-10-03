@@ -1,0 +1,172 @@
+{
+ "id": "topcoder",
+ "category": "deals",
+ "label": "Topcoder",
+ "lane": "api",
+ "kind": "programming",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.topcoder.com/v6/challenges",
+ "url": "https://www.topcoder.com",
+ "verified_at": "2026-09-24",
+ "terms_note": "Public challenge list (anonymous); member actions (register, submit) need a Topcoder JWT and their docs were unreachable — UI actions until documented. Policy page: no automation clause matched.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none for the challenge list (JWT for member endpoints, undocumented)",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null,
+ "adapter": {
+  "base_url": "https://api.topcoder.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 2,
+  "rate_note": "No rate limit published (docs.topcoder.com unreachable; the API overview article is a 404). Two requests per second.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/v6/challenges",
+    "params": {
+     "page": "page",
+     "perPage": "limit"
+    },
+    "fixed_params": {
+     "status": "Active"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "posted_at": "startDate",
+      "deadline": "submissionEndDate",
+      "skills": "tags",
+      "budget_max": "prizeSets.0.prizes.0.value",
+      "currency": "prizeSets.0.prizes.0.type"
+     }
+    },
+    "docs": "https://api.topcoder.com/v6/challenges",
+    "note": "Live public endpoint (no reachable reference page — confidence medium): `GET /v6/challenges?status=Active&page=&perPage=`; status=Active is fixed. No documented keyword parameter, so `query`, `category` and `min_budget` are not sent. The response is a bare array; the total comes only in X-Total / X-Total-Pages headers the runtime does not read, so `total` is null and `next_page` is derived from the page size. `budget_max`/`currency` are the first prize of the first prizeSet (prizeSets[0].prizes[0].value/type); `description` is markdown; phases, track, type, numOfRegistrants and numOfSubmissions stay in `raw`."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/v6/challenges/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "description": "description",
+      "posted_at": "startDate",
+      "deadline": "submissionEndDate",
+      "skills": "tags",
+      "budget_max": "prizeSets.0.prizes.0.value",
+      "currency": "prizeSets.0.prizes.0.type"
+     }
+    },
+    "docs": "https://api.topcoder.com/v6/challenges",
+    "note": "`GET /v6/challenges/{id}` (challenge UUID) returns the full challenge spec; same mapping as search_postings."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'Registration / submission are UI actions until member APIs are documented' (member endpoints need a Topcoder JWT; docs unreachable).",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

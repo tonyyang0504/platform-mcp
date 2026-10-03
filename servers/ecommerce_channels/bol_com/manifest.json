@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "bol_com-mcp",
+ "display_name": "bol.com MCP",
+ "version": "0.1.0",
+ "description": "bol.com (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders, mark_ship",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "bol_com"
+   ],
+   "env": {
+    "PLATFORM_MCP_BOL_COM_CLIENT_ID": "${user_config.platform_mcp_bol_com_client_id}",
+    "PLATFORM_MCP_BOL_COM_CLIENT_SECRET": "${user_config.platform_mcp_bol_com_client_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_bol_com_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOL_COM_CLIENT_ID",
+   "description": "Client ID of Retailer API credentials created in the bol Seller Dashboard (Settings > API settings); exchanged at POST https://login.bol.com/token (grant_type=client_credentials, HTTP Basic) for a short-lived (~5 minute) JWT.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_bol_com_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BOL_COM_CLIENT_SECRET",
+   "description": "The matching client secret. The token is cached until expiry (bol blocks clients that request a token for every call).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "No account endpoint without the retailer id; the probe obtains a token and reads page 1 of open orders ({orders[]}) to verify the credentials."
+  },
+  {
+   "name": "update_listing",
+   "description": "PUT /retailer/offers/{offer-id}/price {pricing: {bundlePrices: [{quantity: 1, unitPrice}]}} replaces the LIVE price of the offer with a single unit price (EUR, any volume/bundle prices are removed). `price` is required; stock is set_inventory; the product title is catalogue data. Returns a process status (status PENDING at first)."
+  },
+  {
+   "name": "set_inventory",
+   "description": "PUT /retailer/offers/{offer-id}/stock {amount, managedByRetailer: false} sets the stock of one offer (listing_id = bol offer id, required; offers are not addressed by SKU here). managedByRetailer false means bol deducts sold items from the amount. Asynchronous process status."
+  },
+  {
+   "name": "end_listing",
+   "description": "DELETE /retailer/offers/{offer-id} deletes the offer (not reversible; a new offer must be created). To pause it instead, set stock 0. Asynchronous process status."
+  },
+  {
+   "name": "list_orders",
+   "description": "GET /retailer/orders?page(50 per page)&status(OPEN|SHIPPED|ALL, default OPEN)&latest-change-date(YYYY-MM-DD, up to 3 months back) for orders fulfilled by the retailer (FBR). The list carries no amounts; `status` is the first order item's fulfilmentStatus (OPEN|HANDLED). raw.orderItems[].orderItemId is what mark_shipped needs."
+  },
+  {
+   "name": "mark_shipped",
+   "description": "POST /retailer/shipments {orderItems: [{orderItemId}], transport: {transporterCode, trackAndTrace}} ships ONE ORDER ITEM with your own transporter: `order_id` must be the orderItemId (raw.orderItems[].orderItemId of list_orders), called once per item. `carrier` is a bol transporterCode from the transporters list in the Retailer API docs (e.g. TNT for PostNL, DHL, DPD-NL). Asynchronous process status."
+  }
+ ]
+}

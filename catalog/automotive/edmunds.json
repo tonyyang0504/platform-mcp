@@ -1,0 +1,48 @@
+{
+ "id": "edmunds",
+ "category": "automotive",
+ "label": "Edmunds",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.edmunds.com",
+ "domain": "edmunds.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": "https://developer.edmunds.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "API key issued via Edmunds account executive",
+  "access": "partner_only",
+  "capabilities": [
+   "search_listings",
+   "decode_vin",
+   "get_valuation",
+   "list_dealers"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **partner_only** (confidence high). Edmunds closed its open API in 2018; the documented API (inventory, VIN/specs, TMV pricing, dealers) is now only for existing partners/dealers/advertisers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.edmunds.com/",
+   "https://developer.edmunds.com/faq.html",
+   "https://help.edmunds.com/hc/en-us/articles/4414038118679-Edmunds-Developer-API"
+  ],
+  "unofficial": [
+   "vehicledatabases.com Edmunds alternative"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "blocked",
+ "reason": "Partner-only access (audit 2026-09-25): Edmunds closed its open API in 2018; the documented API (inventory, VIN/specs, TMV pricing, dealers) is now only for existing partners/dealers/advertisers."
+}

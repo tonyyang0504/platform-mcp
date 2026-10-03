@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/whop-mcp",
+ "description": "Whop (marketplaces): me, list_products, get_product, create_product, update_price, list_sales, list_",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://docs.whop.com",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "whop"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_WHOP_API_KEY",
+     "description": "Whop Account API key (dashboard > Developer > API keys; server-side only) sent as Authorization: Bearer. Permissions used: access_pass:basic:read/manage (products), plan:basic:read/manage (update_price), payment:basic:read (sales, refunds) and payment:manage (refund). Sandbox keys use https://sandbox-api.whop.com/api/v1, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_WHOP_COMPANY_ID",
+     "description": "The company's account id (biz_..., shown in the dashboard URL/settings). Sent as account_id on list_products, create_product, update_price, list_sales and list_refunds; without it GET /products would search the public marketplace.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

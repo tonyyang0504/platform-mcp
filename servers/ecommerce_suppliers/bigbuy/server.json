@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/bigbuy-mcp",
+ "description": "BigBuy (ecommerce suppliers): me, list_products, get_product, create_order, get_order, track. Every ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://api.bigbuy.eu/rest/doc",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "bigbuy"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_BIGBUY_API_KEY",
+     "description": "BigBuy API key from the control panel (API access is part of BigBuy's paid packs), sent as `Authorization: Bearer` (JWT bearer scheme in the OpenAPI spec). Sandbox keys need base https://api.sandbox.bigbuy.eu, which this server does not switch to.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_BIGBUY_ISO_CODE",
+     "description": "Two-letter language for product texts and tracking descriptions (the `isoCode` query parameter, e.g. en); BigBuy defaults to es when unset.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_BIGBUY_PAYMENT_METHOD",
+     "description": "paymentMethod for create_order: paypal, moneybox (prepaid purse, see GET /rest/user/purse) or bankwire; left out of the body when unset.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

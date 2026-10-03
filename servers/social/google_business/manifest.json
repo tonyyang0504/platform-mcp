@@ -1,0 +1,101 @@
+{
+ "manifest_version": "0.2",
+ "name": "google_business-mcp",
+ "display_name": "Google Business Profile MCP",
+ "version": "0.1.0",
+ "description": "Google Business Profile (social): me, publish_text, publish_image, read_mentions, reply_comment, del",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "google_business"
+   ],
+   "env": {
+    "PLATFORM_MCP_GOOGLE_BUSINESS_CLIENT_ID": "${user_config.platform_mcp_google_business_client_id}",
+    "PLATFORM_MCP_GOOGLE_BUSINESS_CLIENT_SECRET": "${user_config.platform_mcp_google_business_client_secret}",
+    "PLATFORM_MCP_GOOGLE_BUSINESS_REFRESH_TOKEN": "${user_config.platform_mcp_google_business_refresh_token}",
+    "PLATFORM_MCP_GOOGLE_BUSINESS_ACCOUNT_ID": "${user_config.platform_mcp_google_business_account_id}",
+    "PLATFORM_MCP_GOOGLE_BUSINESS_LOCATION_ID": "${user_config.platform_mcp_google_business_location_id}",
+    "PLATFORM_MCP_GOOGLE_BUSINESS_LANGUAGE_CODE": "${user_config.platform_mcp_google_business_language_code}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_google_business_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_business_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_CLIENT_SECRET",
+   "description": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_business_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/business.manage. 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_google_business_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_ACCOUNT_ID",
+   "description": "Business Profile account id (digits after accounts/ in GET https://mybusinessaccountmanagement.googleapis.com/v1/accounts).",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_business_location_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_LOCATION_ID",
+   "description": "Location id (digits after locations/) of the verified location that posts and reviews belong to.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_google_business_language_code": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GOOGLE_BUSINESS_LANGUAGE_CODE",
+   "description": "languageCode of new local posts, e.g. en-US (optional).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "accounts.list: the Business Profile accounts the user can manage (use the digits of `name` as account_id)."
+  },
+  {
+   "name": "publish_text",
+   "description": "localPosts.create with topicType STANDARD and summary = text; id is the post resource name accounts/…/locations/…/localPosts/…. `reply_to` is ignored."
+  },
+  {
+   "name": "publish_image",
+   "description": "localPosts.create with media [{mediaFormat: PHOTO, sourceUrl}] (https://developers.google.com/my-business/content/posts-data); only the first image URL is sent and Google fetches it."
+  },
+  {
+   "name": "read_mentions",
+   "description": "The location's customer REVIEWS are returned as mentions (newest first; starRating and reviewReply in raw). Valid only for verified locations; 'The maximum pageSize is 50'; pages by pageToken, so `page`/`since` are ignored."
+  },
+  {
+   "name": "reply_comment",
+   "description": "Replies to a REVIEW (`comment_id` = reviewId from read_mentions); 'A reply is created if one does not exist', otherwise it is replaced. A review has one reply, so `id` is a fixed marker."
+  },
+  {
+   "name": "delete",
+   "description": "`post_id` is the numeric local post id (the last segment of the post name)."
+  }
+ ]
+}

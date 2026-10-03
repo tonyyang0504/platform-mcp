@@ -1,0 +1,39 @@
+{
+ "id": "agrofy_ar",
+ "category": "automotive",
+ "label": "Agrofy",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://www.agrofy.com.ar",
+ "domain": "agrofy.com.ar",
+ "country": "Argentina",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Argentina); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://agrofy.com.ar/"
+  ],
+  "unofficial": [
+   "https://github.com/api-evangelist/agrofy/blob/main/apis.yml",
+   "https://github.com/api-evangelist/agrofy",
+   "https://github.com/api-evangelist/agrofy/blob/main/README.md"
+  ]
+ },
+ "official_mcp": []
+}

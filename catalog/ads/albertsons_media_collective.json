@@ -1,0 +1,115 @@
+{
+ "id": "albertsons_media_collective",
+ "category": "ads",
+ "label": "Albertsons Media Collective",
+ "lane": "human",
+ "kind": null,
+ "regions": [
+  "na",
+  "us"
+ ],
+ "docs_url": null,
+ "url": "https://www.albertsonsmediacollective.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Unknown (press: reporting API for advertisers; sponsored products via Criteo).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "token (partner API access — TODO(verify))",
+  "access": "partner_only",
+  "capabilities": [
+   "reports"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (reporting API access per press; sponsored products via Criteo) Confidence: **low**.",
+  "base_urls": [],
+  "auth": [
+   "1. AMC advertiser onboarding (sales).",
+   "2. Request API access for campaign data (per press).",
+   "3. Criteo Retail Media API for onsite sponsored products (TODO(verify) retailer availability)."
+  ],
+  "endpoints": [
+   {
+    "call": "campaign data pull",
+    "purpose": "reports",
+    "notes": "TODO(verify)"
+   }
+  ],
+  "limits": " - Unknown.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://www.albertsonsmediacollective.com/"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "No public API reference. Re-checked 2026-09-25 in headless Chromium: https://www.albertsonsmediacollective.com/ now renders (redirects to /overview/default.aspx) and links only offerings, results, news, 'Client Hub' (https://hub.albertsonsmediacollective.com/, a client login) and 'Ad Specs'; no developer, API or documentation link anywhere on the site. The only API evidence remains trade press (Digital Commerce 360, 2025-01), and onsite sponsored products run on Criteo's Retail Media API. No endpoint, auth scheme or response shape can be cited, so no adapter."
+}

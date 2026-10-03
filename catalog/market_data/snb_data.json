@@ -1,0 +1,79 @@
+{
+ "id": "snb_data",
+ "category": "market_data",
+ "label": "Swiss National Bank data portal",
+ "lane": "api",
+ "country": "CH",
+ "docs_url": "https://data.snb.ch/en/help",
+ "url": "https://data.snb.ch",
+ "verified_at": "2026-10-01",
+ "version": "0.1.0",
+ "terms_note": "Open data (SNB terms of use: source to be cited), no key. HTML help pages; the API serves each data cube as CSV: a UTF-8 BOM, a three-line preamble (CubeId, PublishingDate, blank), then semicolon-separated long-format rows Date;D0;D1;...;Value (one row per date x dimension items, an empty Value where there is no observation). Dimension ids are listed at /api/cube/{cube}/dimensions/en. Unknown cube: 404 {\"code\":\"404\",\"message\":\"Table nopecube not found\"} (live 2026-10-01).",
+ "adapter": {
+  "base_url": "https://data.snb.ch/api",
+  "auth": {
+   "type": "none"
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "get_series": {
+    "method": "GET",
+    "path": "/cube/{cube}/data/csv/en",
+    "path_params": {
+     "cube": "part:0:series_id"
+    },
+    "params": {
+     "fromDate": "datefmt:%Y-%m:start",
+     "toDate": "datefmt:%Y-%m:end"
+    },
+    "csv": {
+     "delimiter": ";",
+     "skip_lines": 3
+    },
+    "result": {
+     "items": "rows",
+     "key": "points",
+     "require": [
+      "value"
+     ],
+     "filter": [
+      {
+       "arg": "series_id",
+       "fields": [
+        "raw.D0"
+       ],
+       "match": "equals",
+       "value": "part:1:series_id"
+      },
+      {
+       "arg": "series_id",
+       "fields": [
+        "raw.D1"
+       ],
+       "match": "equals",
+       "value": "part:2:series_id"
+      }
+     ],
+     "fields": {
+      "time": "Date",
+      "value": "num:Value"
+     }
+    },
+    "docs": "https://data.snb.ch/en/help",
+    "note": "series_id is '<cube>/<D0 item>/<D1 item>' for two-dimensional cubes, e.g. 'devkum/M0/EUR1' (monthly average CHF per 1 EUR), 'devkum/M1/USD1' (end of month, USD). start/end are sent as YYYY-MM. Rows without a value are left out."
+   }
+  },
+  "not_offered": {
+   "me": "Open data: no accounts.",
+   "get_candles": "No OHLC data.",
+   "search_symbols": "There is no cube search API; cube ids are listed on the portal's topic pages and dimensions at /api/cube/{cube}/dimensions/en.",
+   "get_news": "No news endpoint."
+  }
+ },
+ "live_check": {
+  "date": "2026-10-01",
+  "status": "working",
+  "egress": "residential",
+  "notes": "all read tools answered, schema-valid"
+ }
+}

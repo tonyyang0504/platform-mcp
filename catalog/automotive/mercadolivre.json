@@ -1,0 +1,59 @@
+{
+ "id": "mercadolivre",
+ "category": "automotive",
+ "label": "Carros",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://carros.mercadolivre.com.br",
+ "domain": "carros.mercadolivre.com.br",
+ "country": "Brazil",
+ "official_api": true,
+ "docs_url": "https://developers.mercadolivre.com.br/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "mcp"
+  ],
+  "auth": "OAuth 2.0 (app registration)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_mcp** (confidence high). Mercado Libre has a documented OAuth REST API (items, vehicle classifieds publishing, search with restrictions) and an official remote MCP server (mainly devsite/docs tooling).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://mcp.mercadolibre.com/devsite/v1/mcp (github.com/mercadolibre/mercadolibre-mcp-server)"
+  ],
+  "sources": [
+   "https://developers.mercadolibre.com.ar/en_us/mcp-server",
+   "https://github.com/mercadolibre/mercadolibre-mcp-server"
+  ],
+  "unofficial": [
+   "github.com/MarcosNahuel/mercadolibre-mcp",
+   "github.com/lumile/mercadolibre-mcp"
+  ]
+ },
+ "official_mcp": [
+  {
+   "name": "Mercado Libre MCP Server",
+   "url": "https://mcp.mercadolibre.com/mcp",
+   "repo": "https://github.com/mercadolibre/mercadolibre-mcp-server",
+   "transport": "http",
+   "note": "Official remote MCP (Authorization: Bearer <app access token>); docs https://developers.mercadolibre.com.ar/en_us/mcp-server"
+  }
+ ],
+ "adapter_status": "official_mcp",
+ "reason": "Mercado Libre's official remote MCP (https://mcp.mercadolibre.com/mcp) plus the OAuth REST API. The item-read adapter (get_listing by MLB… item id, me) is served once as automotive/mercadolibre: item ids carry their site prefix, so the same server reads Brazilian listings. A keyword/category listing search is not documented (Items & Searches, updated 04/04/2025, documents /sites/{site}/search only by seller).",
+ "official_mcp_url": "https://mcp.mercadolibre.com/mcp"
+}

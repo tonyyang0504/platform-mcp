@@ -1,0 +1,217 @@
+{
+ "id": "sam_gov",
+ "category": "deals",
+ "label": "SAM",
+ "lane": "api",
+ "kind": "tender",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://open.gsa.gov/api/get-opportunities-public-api/",
+ "url": "https://sam.gov/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Free with a SAM.gov account; role-based daily request quota; US federal public data.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "partial",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key (personal public API key from SAM.gov Account Details)",
+  "access": "signup",
+  "capabilities": [
+   "search",
+   "details"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — local key presence check)",
+   "docs": "https://open.gsa.gov/api/get-opportunities-public-api/"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://api.sam.gov/opportunities/v2/search",
+   "docs": "https://open.gsa.gov/api/get-opportunities-public-api/"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /opportunities/v2/search?noticeid=",
+   "docs": "https://open.gsa.gov/api/get-opportunities-public-api/"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **partial** (read-only Get Opportunities Public API) Confidence high (official docs opened).",
+  "base_urls": [
+   "https://api.sam.gov/prod/opportunities/v2/search"
+  ],
+  "auth": [
+   "1. Create a SAM.gov account → Account Details → generate the public API key (enter the password to view it; visible until you leave the page)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /prod/opportunities/v2/search?api_key=&postedFrom=&postedTo=&limit=&offset=",
+    "purpose": "search",
+    "notes": "noticeId, title, solicitationNumber, type, postedDate, responseDeadLine, naicsCode, description link, pointOfContact — 'This API requires pagination'"
+   },
+   {
+    "call": "GET <description URL>",
+    "purpose": "details",
+    "notes": "full notice text"
+   }
+  ],
+  "limits": " - 'Request per day are limited based on the federal or non-federal or general roles'. - No offer-submission API — the notice states where to send offers (assist). - Free with a SAM.gov account; role-based daily request quota; US federal public data.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://open.gsa.gov/api/get-opportunities-public-api/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.sam.gov",
+  "auth": {
+   "type": "query",
+   "params": {
+    "api_key": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "SAM.gov public API key: sign in to SAM.gov → Account Details → generate the public API key (daily request limits depend on the account's role)."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "terms": "US federal public data; request limits per day depend on the federal/non-federal/general role. Offers go to the contracting office as each notice instructs.",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/opportunities/v2/search",
+    "params": {
+     "postedFrom": "datefmt:%m/%d/%Y:days_ago:364",
+     "postedTo": "datefmt:%m/%d/%Y:today",
+     "title": "query",
+     "ncode": "category",
+     "limit": "limit",
+     "offset": "page0"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "opportunitiesData",
+     "key": "postings",
+     "total": "totalRecords",
+     "fields": {
+      "id": "noticeId",
+      "title": "title",
+      "buyer": "fullParentPathName",
+      "url": "uiLink",
+      "posted_at": "postedDate",
+      "deadline": "responseDeadLine"
+     }
+    },
+    "docs": "https://open.gsa.gov/api/get-opportunities-public-api/",
+    "note": "Get Opportunities v2: notices posted in the last 364 days (postedFrom/postedTo are mandatory, MM/dd/yyyy, at most one year apart). query = title; category = NAICS code (ncode, up to 6 digits); offset is the page index ('Indicates the page index. Default offset starts with 0'). Award notices are included (type/baseType in raw); solicitationNumber, naicsCode, typeOfSetAside, pointOfContact, placeOfPerformance and the description link (raw.description, a URL needing the api_key) stay in raw. min_budget is not sent (no budget filter)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/opportunities/v2/search",
+    "params": {
+     "noticeid": "id",
+     "postedFrom": "datefmt:%m/%d/%Y:days_ago:364",
+     "postedTo": "datefmt:%m/%d/%Y:today",
+     "limit": "=1"
+    },
+    "result": {
+     "root": "opportunitiesData.0",
+     "fields": {
+      "id": "noticeId",
+      "title": "title",
+      "buyer": "fullParentPathName",
+      "url": "uiLink",
+      "posted_at": "postedDate",
+      "deadline": "responseDeadLine"
+     }
+    },
+    "docs": "https://open.gsa.gov/api/get-opportunities-public-api/",
+    "note": "The same search filtered by noticeid (only notices posted within the last 364 days can be found, since the posted-date window is mandatory)."
+   }
+  },
+  "not_offered": {
+   "me": "No key-introspection endpoint in the Opportunities API.",
+   "submit_bid": "No offer submission API; each notice says where to send offers (contracting office).",
+   "withdraw_bid": "No offer API (see submit_bid).",
+   "bid_status": "No offer API (see submit_bid).",
+   "list_messages": "No messaging API.",
+   "send_message": "No messaging API.",
+   "credits": "Daily limits depend on the account role; no quota endpoint."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "blocked",
+  "evidence": [
+   "host api.sam.gov: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 0/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "api.sam.gov answered an empty 404 (server istio-envoy) for every path tried, the documented /opportunities/v2/search, /prod/opportunities/v2/search and entity-information/v3 alike, from both audit hosts (a residential and a datacenter connection), with and without api.data.gov's DEMO_KEY; the path matches https://open.gsa.gov/api/get-opportunities-public-api/. Needs a US vantage point. path/method refused: search_postings: GET /opportunities/v2/search -> 404; get_posting: GET /opportunities/v2/search -> 404"
+ }
+}

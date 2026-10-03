@@ -1,0 +1,40 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/squarespace-mcp",
+ "description": "Squarespace Commerce (ecommerce channels): me, end_listing, list_orders. Every tool maps to a docume",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.squarespace.com/commerce-apis/overview",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "squarespace"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SQUARESPACE_API_KEY",
+     "description": "Developer API key (Commerce Advanced plan: Settings > Advanced > Developer API Keys; Orders read, Products read) sent as `Authorization: Bearer`; the docs also require a descriptive User-Agent, which the runtime sends.",
+     "isRequired": true,
+     "isSecret": true
+    }
+   ]
+  }
+ ]
+}

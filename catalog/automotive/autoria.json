@@ -1,0 +1,126 @@
+{
+ "id": "autoria",
+ "category": "automotive",
+ "label": "AUTO.RIA",
+ "vertical": "cars_marketplace",
+ "lane": "scrape",
+ "url": "https://auto.ria.com",
+ "domain": "auto.ria.com",
+ "country": "Ukraine",
+ "official_api": true,
+ "docs_url": "https://docs-developers.ria.com/en/used-cars/auto_search_and_info/auto_info",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "api_key query param issued in developer cabinet",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "get_valuation",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). RIA.com runs an official developer portal with freemium/paid JSON APIs for AUTO.RIA search, listing info, average price (valuation) and ad posting.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developers.ria.com/auto_ria",
+   "https://auto.ria.com/ (footer links developers.ria.com)",
+   "https://auto.ria.com/ (homepage + /developers,/developer,/api,/api-docs,/docs,/partners,/integrations probed; no developer/API docs)"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://developers.ria.com",
+  "auth": {
+   "type": "query",
+   "params": {
+    "api_key": "api_key"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Personal API key from the developers.ria.com cabinet (Особистий кабінет); sent as the api_key query parameter. auto/info is freemium, statistic-avarage-price is paid."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "user_id",
+    "required": false,
+    "help": "Your RIA user id (integer); required by get_valuation (auto/statistic-avarage-price takes user_id and api_key in the query)."
+   }
+  ],
+  "rate_per_second": 1,
+  "terms": "RIA.com developer API (developers.ria.com): freemium/paid limits per key; the phone number of the seller is never returned.",
+  "tools": {
+   "get_listing": {
+    "method": "GET",
+    "path": "/auto/info",
+    "params": {
+     "auto_id": "listing_id"
+    },
+    "result": {
+     "fields": {
+      "id": "autoData.autoId",
+      "title": "title",
+      "make": "markName",
+      "model": "modelName",
+      "year": "autoData.year",
+      "price": "USD",
+      "currency": "=USD",
+      "location": "locationCityName",
+      "posted_at": "addDate",
+      "description": "autoData.description"
+     }
+    },
+    "docs": "https://docs-developers.ria.com/en/used-cars/auto_search_and_info/auto_info",
+    "note": "GET https://developers.ria.com/auto/info?api_key&auto_id=<ad id> (freemium). price is the USD price (UAH and EUR are in raw); autoData holds year, race (mileage text), fuelName, gearboxName; stateData.regionName, photoData, seoLinkM and the VIN (only if the seller made it public) stay in raw. The seller's phone is always masked."
+   },
+   "get_valuation": {
+    "method": "POST",
+    "path": "/auto/statistic-avarage-price/",
+    "params": {
+     "user_id": "@user_id"
+    },
+    "body": {
+     "langId": "json:4",
+     "period": "json:365",
+     "params.omniId": "vin"
+    },
+    "result": {},
+    "docs": "https://docs-developers.ria.com/en/used-cars/average_price/statistic_average_price",
+    "note": "PAID. POST https://developers.ria.com/auto/statistic-avarage-price/?user_id&api_key {langId: 4, period: 365, params: {omniId: <VIN>}} — search by unique identifier ('available only if the car was advertised on the site'). Pass `vin` (a state plate or AUTO.RIA ad id also work as omniId). Returns a price history, not a band: raw.graphData[] = {date: 'YYYY-MM', price: {UAH, USD}} over the last 365 days; low/mid/high stay null."
+   }
+  },
+  "not_offered": {
+   "search_listings": "GET /auto/search returns only ad ids (search_result.ids is a list of strings) that each need an auto/info call; the runtime maps object rows only and does not fan out, so search is not served.",
+   "decode_vin": "No VIN decoder in the AUTO.RIA API (VIN is only a search filter / ad field).",
+   "list_dealers": "No dealer directory endpoint in the developers.ria.com used-cars reference.",
+   "me": "No identity endpoint for an API key."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host developers.ria.com: DNS ok, TLSv1.2 (GoDaddy.com, Inc.)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

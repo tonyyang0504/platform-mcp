@@ -1,0 +1,62 @@
+{
+ "id": "instamojo",
+ "category": "marketplaces",
+ "label": "Instamojo",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "in"
+ ],
+ "docs_url": "https://docs.instamojo.com",
+ "url": "https://www.instamojo.com",
+ "verified_at": "2026-09-25",
+ "terms_note": null,
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "payment_requests",
+   "payment_links",
+   "orders",
+   "refunds",
+   "payouts_read",
+   "webhooks",
+   "smart_pages"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/Instamojo"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "client_id",
+  "client_secret",
+  "delivery_url",
+  "default_price_cents?",
+  "currency?",
+  "sandbox?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": {
+  "verdict": "",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [
+   "https://github.com/Instamojo"
+  ],
+  "sources": []
+ },
+ "adapter_status": "blocked",
+ "reason": "Re-checked 2026-09-25: the public Instamojo API v2 reference index (https://docs.instamojo.com/llms.txt) still lists only the payment-gateway calls - client-credentials token (generate-access-token-application-based-authentication), create / get a payment request, create an order for the SDK, get payment details, create a refund, get a refund - with no product or listing endpoint, no list of payments or payment requests, no account endpoint for a probe and no totals. The marketplace verbs (list_products, get_product, create_product, update_price, list_sales, get_sales_stats, list_refunds) have nothing to map; a server exposing only the money-moving refund call (by payment id the model could not look up) is not provided."
+}

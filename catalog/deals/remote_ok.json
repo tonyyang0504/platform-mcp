@@ -1,0 +1,177 @@
+{
+ "id": "remote_ok",
+ "category": "deals",
+ "label": "Remote OK",
+ "lane": "api",
+ "kind": "board",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://remoteok.com/api",
+ "url": "https://remoteok.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Free keyless API conditioned on a follow link back + naming Remote OK as source; logo is trademarked.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none",
+  "access": "open",
+  "capabilities": [
+   "search",
+   "details",
+   "feed_json"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "(none — reports the configured feed list)",
+   "docs": "https://remoteok.com/api"
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET https://remoteok.com/api",
+   "docs": "https://remoteok.com/api"
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": "https://remoteok.com/api"
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (search) Confidence high (live API opened).",
+  "base_urls": [
+   "https://remoteok.com/api"
+  ],
+  "auth": [
+   "1. No account needed for the public feed; the tenant applies on the posting's own application page (assist card)."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api",
+    "purpose": "search + details",
+    "notes": "slug, id, epoch, date, company, company_logo, position, tags[], description (HTML), url, salary_min/max"
+   }
+  ],
+  "limits": " - API ToS (in-payload): link back with a FOLLOW link to the Remote OK URL and name Remote OK as source, or access is suspended; no logo use. - robots.txt carries Content-Signal directives.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://remoteok.com/api",
+   "https://remoteok.com/robots.txt"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://remoteok.com",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "rate_per_second": 0.5,
+  "rate_note": "No rate limit is published; the feed's in-payload terms only ask for attribution. Kept to one request every two seconds because a single call returns the whole board.",
+  "terms": "Element 0 of the feed carries the API Terms of Service: 'Please link back (with follow, and without nofollow!) to the URL on Remote OK and mention Remote OK as a source, so we get traffic back from your site. If you do not we'll have to suspend API access. Please don't use the Remote OK logo without written permission as it's a registered trademark, please DO use our name Remote OK though.' (https://remoteok.com/api, opened 2026-09-24).",
+  "tools": {
+   "search_postings": {
+    "method": "GET",
+    "path": "/api",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "result": {
+     "items": "$",
+     "key": "postings",
+     "fields": {
+      "id": "id",
+      "title": "position",
+      "buyer": "company",
+      "url": "url",
+      "posted_at": "date",
+      "description": "description",
+      "skills": "tags",
+      "budget_min": "salary_min",
+      "budget_max": "salary_max"
+     },
+     "require": [
+      "id"
+     ]
+    },
+    "docs": "https://remoteok.com/api",
+    "note": "Single keyless JSON array with no documented query, page or limit parameters: `query`, `category`, `min_budget`, `page` and `limit` are not sent and the whole feed (a few hundred rows) is returned; filter client-side. Element 0 of the feed is the legal notice (id null) and is dropped by the runtime (`require: [id]`). Fields per the feed: slug, id, epoch, date, company, company_logo, position, tags[], description (HTML), location, apply_url, salary_min, salary_max, url; currency is not stated. Attribution: link back (follow) to the Remote OK URL and name Remote OK as the source."
+   }
+  },
+  "not_offered": {
+   "submit_bid": "Page: 'no proposal / message / contract surface exists on this venue' — applicants use the posting's own application page (apply_url).",
+   "withdraw_bid": "No bid API (see submit_bid).",
+   "bid_status": "No bid API (see submit_bid).",
+   "list_messages": "No messaging API; the page documents the public listing feed only.",
+   "send_message": "No messaging API; the page documents the public listing feed only.",
+   "credits": "No account or credit endpoint; the feed is keyless.",
+   "me": "No credentials to verify ('auth: none') and no account endpoint.",
+   "get_posting": "No per-id endpoint is documented; re-read the record from the search hit (`url` / `apply_url`)."
+  }
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed (runtime): the feed sends no page parameter but advertised next_page and repeated page 1; next_page is now null; all read tools answered, schema-valid"
+ }
+}

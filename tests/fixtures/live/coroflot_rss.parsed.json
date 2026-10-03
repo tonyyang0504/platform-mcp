@@ -1,0 +1,28 @@
+{
+ "rss": {
+  "@version": "2.0",
+  "channel": {
+   "title": "Job Postings from Coroflot.com",
+   "link": "https://www.coroflot.com",
+   "description": "",
+   "copyright": "2026 Coroflot.com",
+   "ttl": "720",
+   "item": [
+    {
+     "title": "The Wild Collective is seeking a Graphic Designer Licensed Entertainment/Lifestyle",
+     "link": "https://www.coroflot.com/design-jobs/Graphic-Designer-Licensed-EntertainmentLifestyle-The-Wild-Collective--683630",
+     "description": ",",
+     "pubDate": "Fri, 25 Sep 2026 11:30:00 GMT",
+     "guid": "https://www.coroflot.com/design-jobs/Graphic-Designer-Licensed-EntertainmentLifestyle-The-Wild-Collective--683630"
+    },
+    {
+     "title": "InVue is seeking a Senior Industrial Designer",
+     "link": "https://www.coroflot.com/design-jobs/Senior-Industrial-Designer-InVue-Charlotte-NC-683580",
+     "description": "Charlotte, NC",
+     "pubDate": "Thu, 24 Sep 2026 08:06:00 GMT",
+     "guid": "https://www.coroflot.com/design-jobs/Senior-Industrial-Designer-InVue-Charlotte-NC-683580"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,93 @@
+{
+ "manifest_version": "0.2",
+ "name": "x_ads-mcp",
+ "display_name": "X Ads MCP",
+ "version": "0.1.0",
+ "description": "X Ads (ads): me, list_accounts, list_campaigns, get_report, update_budget, pause_resume. Every tool ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "x_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_X_ADS_CONSUMER_KEY": "${user_config.platform_mcp_x_ads_consumer_key}",
+    "PLATFORM_MCP_X_ADS_CONSUMER_SECRET": "${user_config.platform_mcp_x_ads_consumer_secret}",
+    "PLATFORM_MCP_X_ADS_ACCESS_TOKEN": "${user_config.platform_mcp_x_ads_access_token}",
+    "PLATFORM_MCP_X_ADS_ACCESS_TOKEN_SECRET": "${user_config.platform_mcp_x_ads_access_token_secret}",
+    "PLATFORM_MCP_X_ADS_ACCOUNT_ID": "${user_config.platform_mcp_x_ads_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_x_ads_consumer_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_ADS_CONSUMER_KEY",
+   "description": "API Key (consumer key) of an X developer app approved for Ads API access (Ads API Access Form, https://docs.x.com/forms/ads-api-access).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_ads_consumer_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_ADS_CONSUMER_SECRET",
+   "description": "API Key Secret (consumer secret) of the same app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_ads_access_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_ADS_ACCESS_TOKEN",
+   "description": "OAuth 1.0a user access token of an X user with access to the ads account (app management UI or the 3-legged OAuth flow).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_ads_access_token_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_ADS_ACCESS_TOKEN_SECRET",
+   "description": "OAuth 1.0a access token secret belonging to that access token.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_x_ads_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_X_ADS_ACCOUNT_ID",
+   "description": "Ads account id (e.g. 18ce54d4x5t) used by update_budget and pause_resume, whose inputs carry only the campaign id; list_accounts shows the ids.",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /12/accounts?count=1: the advertising accounts the authenticating user can access."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /12/accounts (count ≤ 1000, cursor pagination via next_cursor). Each account has id, name, timezone, business_id, approval_status, deleted."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /12/accounts/:account_id/campaigns (count ≤ 1000, cursor pagination). Each campaign has id, name, entity_status (ACTIVE/PAUSED/DRAFT), effective_status, daily_budget_amount_local_micro and total_budget_amount_local_micro (micro units: $5.50 = 5500000, left in raw), currency, funding_instrument_id. status is not sent (no status filter is documented)."
+  },
+  {
+   "name": "get_report",
+   "description": "Synchronous analytics: GET /12/stats/accounts/:account_id?entity=CAMPAIGN&entity_ids=<campaign_id>&start_time&end_time&granularity=DAY&metric_groups=ENGAGEMENT,BILLING&placement=ALL_ON_TWITTER. campaign_id is required in practice (entity_ids is required, up to 20 comma-separated ids) and the window may span at most 7 days. Each row is {id, id_data: [{segment, metrics: {impressions: [...], clicks, billed_charge_local_micro, …}}]} with one array element per day; spend is in micro units. X Audience Platform placements need a separate request."
+  },
+  {
+   "name": "update_budget",
+   "description": "PUT /12/accounts/:account_id/campaigns/:campaign_id?daily_budget_amount_local_micro=… (the configured account_id; micro units of the funding instrument's currency, 'For USD, $5.50 is represented as 5500000'; must not exceed the total budget). This spends money. currency is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /12/accounts/:account_id/campaigns/:campaign_id?entity_status=ACTIVE|PAUSED (the configured account_id). Resuming restarts spend."
+  }
+ ]
+}

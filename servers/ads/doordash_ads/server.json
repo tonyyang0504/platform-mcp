@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/doordash_ads-mcp",
+ "description": "DoorDash Ads (ads): me, list_campaigns, update_budget, pause_resume. Every tool maps to a documented",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.doordash.com/en-US/api/ads/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "doordash_ads"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_DOORDASH_ADS_API_KEY",
+     "description": "DoorDash Ads API key; the Ads API reference's security scheme 'Ads API Key Authentication' reads: 'We will be using stateful token based API keys to authenticate clients, passed in the Authorization header as Bearer {API_KEY}' (https://developer.doordash.com/en-US/redocusaurus/plugin-redoc-11.yaml). Issued to onboarded DoorDash Ads (CPG) advertisers and partners.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_DOORDASH_ADS_CAMPAIGN_TYPE",
+     "description": "Campaign type path segment of every campaign call: 'sp' (Sponsored Products) or 'sb' (Sponsored Brand).",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

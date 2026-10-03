@@ -1,0 +1,233 @@
+{
+ "id": "yelp",
+ "category": "ads",
+ "label": "Yelp Ads",
+ "lane": "assist",
+ "kind": null,
+ "regions": [
+  "na",
+  "us",
+  "ca"
+ ],
+ "docs_url": "https://docs.developer.yelp.com/docs/ads-api",
+ "url": "https://business.yelp.com/products/yelp-ads/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Ads API is partner-gated (request access via the Yelp account team); console ToS not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "graphql",
+   "webhooks"
+  ],
+  "auth": "oauth2 (Yelp Partner APIs: OAuth authorization code / refresh tokens or Basic HTTP auth on partner-api.yelp.com)",
+  "access": "partner_only",
+  "capabilities": [
+   "campaigns",
+   "budgets_bids",
+   "creatives_upload",
+   "reports",
+   "account_management"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Yelp Partner Ads API + Reporting API v3) Confidence: **high** — official docs read.",
+  "base_urls": [
+   "https://partner-api.yelp.com/…"
+  ],
+  "auth": [
+   "1. Onboard to Yelp Partner APIs (partner agreement; 'Manage API Access').",
+   "2. OAuth authorization code → access + refresh tokens (or Basic HTTP auth on partner-api.yelp.com).",
+   "3. Create / update ad programs asynchronously (job ids), poll job status, pull Reporting v3."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /programs` (create program) · `POST /programs/{id}/…` (update budget / features / pause / end)",
+    "purpose": "campaigns (ad programs) + budgets",
+    "notes": "business_id, budget, max_bid, start/end, program_type"
+   },
+   {
+    "call": "Program features: CTAs, enhanced profile, business highlights, verified license",
+    "purpose": "creatives / profile features",
+    "notes": "feature type, values"
+   },
+   {
+    "call": "GET /jobs/{job_id}",
+    "purpose": "async job status",
+    "notes": "job id"
+   },
+   {
+    "call": "Reporting API v3 (`POST /reporting/v3/…` → download)",
+    "purpose": "reports",
+    "notes": "metrics, date range, business ids"
+   },
+   {
+    "call": "Leads API · Partner Support API · Listing Management · Data Ingestion",
+    "purpose": "leads, support tickets, listings",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Partner-only onboarding; async processing; Reporting v2 deprecated; API Terms of Use; free.",
+  "mcp_sdk": [
+   "GraphQL API for Places; webhooks (reviews, leads)."
+  ],
+  "sources": [
+   "https://docs.developer.yelp.com/docs/ads-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://partner-api.yelp.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "basic",
+   "username_field": "username",
+   "password_field": "password",
+   "fields": [
+    {
+     "name": "username",
+     "required": true,
+     "help": "Yelp Partner API username (the same Basic-auth credentials as the Data Ingestion API; issued by your Yelp account team, access is disabled by default: https://docs.developer.yelp.com/docs/ads-api)."
+    },
+    {
+     "name": "password",
+     "required": true,
+     "help": "Yelp Partner API password (Basic HTTP authentication on partner-api.yelp.com)."
+    }
+   ]
+  },
+  "terms": "Yelp Ads API is a Partner API ('Access is disabled by default'; request access through your Yelp account team). Program writes are asynchronous jobs; budgets are monthly and in cents.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/programs/v1",
+    "fixed_params": {
+     "limit": 1
+    },
+    "docs": "https://docs.developer.yelp.com/reference/get_program_list_all",
+    "note": "There is no account endpoint; the probe is GET /programs/v1?limit=1 (Program List All), which checks the Basic-auth partner credentials against the payment account."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/programs/v1",
+    "params": {
+     "offset": "offset",
+     "limit": "limit",
+     "program_status": "map:status:current=CURRENT,active=CURRENT,paused=PAUSED,past=PAST,ended=PAST,future=FUTURE,scheduled=FUTURE,all=ALL"
+    },
+    "default_limit": 20,
+    "max_limit": 40,
+    "result": {
+     "items": "payment_programs",
+     "key": "campaigns",
+     "total": "total",
+     "fields": {
+      "id": "program_id",
+      "name": "program_type",
+      "status": "program_status",
+      "budget": "program_metrics.budget",
+      "currency": "program_metrics.currency",
+      "start": "start_date",
+      "end": "end_date"
+     }
+    },
+    "docs": "https://docs.developer.yelp.com/reference/get_program_list_all",
+    "note": "GET /programs/v1?offset&limit (max 40)&program_status: every advertising program (CPC, EP, BP, …) under the credentials' payment account; `account_id` is not sent (the credentials select the account). `status` is one of current/active, paused, past/ended, future/scheduled, all (Yelp's default is CURRENT). `name` is the program type; `budget` is the MONTHLY budget in cents (program_metrics.budget); raw.program_pause_status says NOT_PAUSED/PAUSED and raw.businesses lists the Yelp business ids."
+   },
+   "pause_resume": {
+    "method": "POST",
+    "path": "/program/{campaign_id}/{op}/v1",
+    "path_params": {
+     "op": "map:action:pause=pause,resume=resume"
+    },
+    "result": {
+     "fields": {
+      "status": "=accepted"
+     }
+    },
+    "docs": "https://docs.developer.yelp.com/docs/ads-api#pause-program",
+    "note": "POST /program/{program_id}/pause/v1 or /resume/v1 (HTTP 202, empty body) for a running CPC program. Yelp marks this 'This feature is coming soon — Please get in touch if you would like to get early access', so partners without early access get an error."
+   }
+  },
+  "not_offered": {
+   "list_accounts": "The credentials are bound to one payment account; the Ads API has no account listing (https://docs.developer.yelp.com/docs/ads-api lists only create, edit, end, status, pause and resume).",
+   "get_report": "Reporting API v3 is asynchronous (POST https://api.yelp.com/v3/reporting/businesses/daily 'Requests a report … Use get_daily_reports_v3 to poll for report completion', https://docs.developer.yelp.com/reference/create_daily_reports_v3), keyed by business ids rather than programs, and authenticated with a Bearer API key on a different host from the Basic-auth partner API.",
+   "update_budget": "Yelp CPC budgets are monthly, not daily: POST /v1/reseller/program/{program_id}/edit?budget= takes 'Monthly budget in cents' and answers with an async job_id (https://docs.developer.yelp.com/docs/ads-api#modify-program); a daily budget cannot be set."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host partner-api.yelp.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 3/3 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

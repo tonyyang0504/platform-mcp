@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "gmail-mcp",
+ "display_name": "Gmail MCP",
+ "version": "0.1.0",
+ "description": "Gmail (messaging): me, list_inbound, get_thread, mark_read. Every tool maps to a documented endpoint",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "gmail"
+   ],
+   "env": {
+    "PLATFORM_MCP_GMAIL_CLIENT_ID": "${user_config.platform_mcp_gmail_client_id}",
+    "PLATFORM_MCP_GMAIL_CLIENT_SECRET": "${user_config.platform_mcp_gmail_client_secret}",
+    "PLATFORM_MCP_GMAIL_REFRESH_TOKEN": "${user_config.platform_mcp_gmail_refresh_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_gmail_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMAIL_CLIENT_ID",
+   "description": "OAuth 2.0 client id (Google Cloud console, Clients page) of the app the user consented to.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_gmail_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMAIL_CLIENT_SECRET",
+   "description": "The OAuth client's secret; sent with client_id, refresh_token and grant_type=refresh_token in the form body of POST https://oauth2.googleapis.com/token (https://developers.google.com/identity/protocols/oauth2/web-server#offline).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_gmail_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_GMAIL_REFRESH_TOKEN",
+   "description": "Refresh token from a one-time authorization-code consent with access_type=offline and the scopes https://www.googleapis.com/auth/gmail.modify (or gmail.readonly for reading only). 'Refresh tokens are valid until the user revokes access or the refresh token expires'; the runtime mints 1-hour access tokens from it.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "users.getProfile: account carries emailAddress, messagesTotal, threadsTotal, historyId."
+  },
+  {
+   "name": "list_inbound",
+   "description": "users.messages.list with labelIds=INBOX: 'each message resource contains only an id and a threadId' — read the text with get_thread. Gmail pages by pageToken, so `page` is ignored (first `limit` messages only); `since` is not sent; total is Gmail's resultSizeEstimate."
+  },
+  {
+   "name": "get_thread",
+   "description": "users.threads.get?format=metadata: every message of the thread with `snippet` ('a short part of the message text') as text and internalDate (epoch milliseconds) as sent_at; From/To/Subject are in raw.payload.headers. `page`/`limit` are ignored (the whole thread is returned)."
+  },
+  {
+   "name": "mark_read",
+   "description": "users.messages.modify with removeLabelIds [\"UNREAD\"]; `message_id` is required, `thread_id` and `channel` are not used."
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "manifest_version": "0.2",
+ "name": "crisp-mcp",
+ "display_name": "Crisp MCP",
+ "version": "0.1.0",
+ "description": "Crisp (messaging): me, list_inbound, get_thread, reply, mark_read. Every tool maps to a documented e",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "crisp"
+   ],
+   "env": {
+    "PLATFORM_MCP_CRISP_IDENTIFIER": "${user_config.platform_mcp_crisp_identifier}",
+    "PLATFORM_MCP_CRISP_KEY": "${user_config.platform_mcp_crisp_key}",
+    "PLATFORM_MCP_CRISP_WEBSITE_ID": "${user_config.platform_mcp_crisp_website_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_crisp_identifier": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRISP_IDENTIFIER",
+   "description": "Identifier half of the Crisp token keypair (plugin token from the Marketplace, or a website token), sent as the HTTP Basic username — 'Authorization: Basic BASE64(identifier:key)' (https://docs.crisp.chat/guides/rest-api/authentication/plugin-token/, https://docs.crisp.chat/guides/rest-api/authentication/website-token/).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_crisp_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRISP_KEY",
+   "description": "Key half of the Crisp token keypair, sent as the HTTP Basic password ('--user \"{identifier}:{key}\"' in the official curl examples).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_crisp_website_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_CRISP_WEBSITE_ID",
+   "description": "Crisp website (workspace) identifier that prefixes every route (/website/{website_id}/...). Env: PLATFORM_MCP_CRISP_WEBSITE_ID.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "'Resolves an existing website information' (the official curl example for both token types); account carries the envelope {error, reason, data{website_id, name, domain, logo}}."
+  },
+  {
+   "name": "list_inbound",
+   "description": "'Lists conversations for website' (scope website:conversation:sessions), one row per conversation: `id` = `thread_id` = session_id, `text` is 'Last message excerpt (from visitor)', `from` the visitor email (meta.email; nickname under raw.meta, unread counters under raw.unread). `page` is the page_number path segment; per_page must be 'between 20 and 50, defaults to 20' — the runtime caps `limit` at 50 but does not raise values below 20 (UNCONFIRMED how Crisp treats them). `since` is sent as filter_date_start ('date, ISO 8601, eg. 2018-03-01T17:00:00.000Z'); `channel` is not sent. updated_at / created_at are Unix ms under raw."
+  },
+  {
+   "name": "get_thread",
+   "description": "'Resolves messages in an existing conversation. Returns the last batch of messages if there are many messages in the conversation' (scope website:conversation:messages): there is no page-size parameter, so `limit` and `page` are ignored (older batches need timestamp_before, not sent) and `channel` is ignored. `thread_id` is the session_id; `id` is the numeric message fingerprint; `from` is the sending user id (user.user_id, 'may be operator user identifier or session identifier'; direction user/operator under raw.from); `text` is `content`, 'string if type is text or note, object if type is file, animation, audio, picker, field, carousel or event' — so non-text rows carry the content object; timestamp is Unix ms under raw."
+  },
+  {
+   "name": "reply",
+   "description": "'Sends a message in an existing conversation' as the operator (type text, from operator, origin chat; scope website:conversation:messages): `thread_id` is the session_id, `text` is `content` ('string if type is text'), `channel` is ignored. status is the envelope `reason`; message_id is data.fingerprint, the fingerprint Crisp assigns (UNCONFIRMED: the reference renders the response example dynamically, so the exact response body was not read)."
+  },
+  {
+   "name": "mark_read",
+   "description": "'Marks messages as read in conversation. Either using given message fingerprints, or all messages' (scope website:conversation:messages): with from=user and origin=chat this marks all visitor chat messages of the conversation as read ('fingerprints ... if not set, this marks all messages as read in conversation'). `thread_id` is the session_id and is required; `message_id` and `channel` are not sent (fingerprints is an array the flat body map cannot express). status is the envelope `reason`."
+  }
+ ]
+}

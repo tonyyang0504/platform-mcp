@@ -1,0 +1,35 @@
+{
+ "id": "belgium_g12_arval_autoselect",
+ "category": "automotive",
+ "label": "Arval Prod Euw Appservice Portalapi",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://arval-prod-euw-appservice-portalapi.azurewebsites.net",
+ "domain": "arval-prod-euw-appservice-portalapi.azurewebsites.net",
+ "country": "Italy",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). cars_marketplace (Italy); no developer/API/partner-feed pages on the domain or common dev paths and no official API found in search.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://arval-prod-euw-appservice-portalapi.azurewebsites.net/"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": []
+}

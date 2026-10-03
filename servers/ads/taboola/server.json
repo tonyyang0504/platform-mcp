@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/taboola-mcp",
+ "description": "Taboola Realize (Taboola Ads) (ads): me, list_accounts, list_campaigns, get_report, update_budget. E",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.taboola.com/backstage-api/reference/welcome",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "taboola"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_TABOOLA_CLIENT_ID",
+     "description": "Backstage API client_id provided by your Taboola account manager.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TABOOLA_CLIENT_SECRET",
+     "description": "The matching client_secret; client-credentials tokens last 12 hours (no refresh token) and are re-requested automatically.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_TABOOLA_ACCOUNT_ID",
+     "description": "Taboola account_id (the string id, e.g. demo-advertiser, from list_accounts) used by update_budget and pause_resume, whose paths are /backstage/api/1.0/{account_id}/campaigns/{campaign_id}.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

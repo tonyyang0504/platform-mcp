@@ -1,0 +1,205 @@
+{
+ "id": "hyperliquid_spot",
+ "category": "trading",
+ "label": "Hyperliquid Spot (public info)",
+ "lane": "api",
+ "kind": "spot",
+ "docs_url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+ "url": "https://app.hyperliquid.xyz/",
+ "verified_at": "2026-09-24",
+ "auth_fields": null,
+ "sandbox": true,
+ "base_urls": {
+  "rest": "https://api.hyperliquid.xyz",
+  "ws": "wss://api.hyperliquid.xyz/ws",
+  "ccxt_exchange_id": "hyperliquid (defaultType=spot)",
+  "sandbox": "ccxt set_sandbox_mode(True) (testnet)"
+ },
+ "notes": "Reads need only the public wallet address; the private key of an agent wallet is never used by this server (writes are not offered).",
+ "regions": [
+  "global"
+ ],
+ "terms_note": "Public POST /info endpoint, no credentials (a wallet address is enough to read its balances and orders). Orders need an EIP-712 wallet signature and are not mapped.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "none (public info); signed exchange endpoint not mapped",
+  "access": "open",
+  "capabilities": [
+   "markets",
+   "ticker",
+   "balances",
+   "orders"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "rate_limits": "aggregated REST weight 1200 per minute per IP; l2Book, spotClearinghouseState weight 2; spotMeta and openOrders weight 20",
+ "adapter": {
+  "base_url": "https://api.hyperliquid.xyz",
+  "auth": {
+   "type": "none",
+   "fields": []
+  },
+  "config_fields": [
+   {
+    "name": "wallet_address",
+    "required": false,
+    "help": "Public 0x address (42 hex characters) of the MAIN wallet whose orders/balances to read. Not a secret; no private key is needed or accepted. Only list_orders/get_balances use it."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=spotMeta"
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+    "note": "Public info endpoint, no credentials: the probe posts {\"type\": \"spotMeta\"} (weight 20)."
+   },
+   "list_markets": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=spotMeta"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "universe",
+     "key": "markets",
+     "fields": {
+      "symbol": "name",
+      "index": "index",
+      "canonical": "isCanonical"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+    "note": "Spot pairs in one response (`query` is not sent). Canonical pairs are named like PURR/USDC; others are @<index> (e.g. @107), which is also the coin name get_ticker expects. `raw.tokens` holds token indices, resolved in spotMeta.tokens."
+   },
+   "get_ticker": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=l2Book",
+     "coin": "symbol"
+    },
+    "result": {
+     "fields": {
+      "symbol": "coin",
+      "bid": "num:levels.0.0.px",
+      "ask": "num:levels.1.0.px",
+      "bid_size": "num:levels.0.0.sz",
+      "ask_size": "num:levels.1.0.sz",
+      "time": "time"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "note": "Top of the spot L2 book (weight 2); `symbol` is PURR/USDC or @<index>. No last price or 24h volume per symbol (spotMetaAndAssetCtxs is a positional array)."
+   },
+   "get_balances": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=spotClearinghouseState",
+     "user": "@wallet_address"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "balances",
+     "key": "balances",
+     "fields": {
+      "asset": "coin",
+      "total": "total",
+      "hold": "hold",
+      "entry_notional": "entryNtl"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+    "note": "Spot balances of PLATFORM_MCP_HYPERLIQUID_SPOT_WALLET_ADDRESS (weight 2)."
+   },
+   "list_orders": {
+    "method": "POST",
+    "path": "/info",
+    "body": {
+     "type": "=openOrders",
+     "user": "@wallet_address"
+    },
+    "default_limit": 10000,
+    "max_limit": 10000,
+    "result": {
+     "items": "$",
+     "key": "orders",
+     "fields": {
+      "order_id": "oid",
+      "symbol": "coin",
+      "side": "side",
+      "price": "limitPx",
+      "quantity": "sz",
+      "time": "timestamp"
+     }
+    },
+    "docs": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "note": "Open orders of the configured wallet (perp and spot alike; spot coins appear as PURR/USDC or @<index>); `side` is B (buy) or A (sell)."
+   }
+  },
+  "not_offered": {
+   "get_candles": "candleSnapshot requires req.startTime and req.endTime in milliseconds (docs: both required); the vocabulary carries no time range and the runtime has no millisecond clock expression.",
+   "place_order": "orders and cancels go through POST /exchange with an EIP-712 typed-data signature produced by the wallet's secp256k1 private key (docs: 'signing … is done with the private key of the agent or main wallet'); the runtime only has HMAC request signing, so writes are not offered",
+   "cancel_order": "orders and cancels go through POST /exchange with an EIP-712 typed-data signature produced by the wallet's secp256k1 private key (docs: 'signing … is done with the private key of the agent or main wallet'); the runtime only has HMAC request signing, so writes are not offered"
+  }
+ },
+ "reference": {
+  "verdict": "has_api: yes (public info endpoint).",
+  "base_urls": [
+   "https://api.hyperliquid.xyz/info (mainnet)"
+  ],
+  "auth": [
+   "1. /info is unauthenticated: POST JSON {\"type\": ...}.",
+   "2. /exchange requires an EIP-712 signature from the wallet (not mapped)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /info {\"type\": \"spotMeta\"}",
+    "purpose": "spot pairs and tokens",
+    "notes": "universe[{name, tokens, index, isCanonical}], tokens[{name, szDecimals, weiDecimals, index, tokenId, isCanonical}]"
+   },
+   {
+    "call": "POST /info {\"type\": \"l2Book\", \"coin\": \"PURR/USDC\"}",
+    "purpose": "order book",
+    "notes": "levels[0] bids, levels[1] asks"
+   },
+   {
+    "call": "POST /info {\"type\": \"spotClearinghouseState\", \"user\": \"0x…\"}",
+    "purpose": "spot balances",
+    "notes": "balances[{coin, token, hold, total, entryNtl}]"
+   },
+   {
+    "call": "POST /info {\"type\": \"openOrders\", \"user\": \"0x…\"}",
+    "purpose": "open orders",
+    "notes": "[{coin, limitPx, oid, side, sz, timestamp}]"
+   }
+  ],
+  "limits": "REST weight 1200/minute per IP.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+   "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint"
+  ]
+ },
+ "version": "0.1.0",
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "working",
+  "egress": "datacenter",
+  "notes": "fixed: ticker bid/ask were decimal strings (schema-invalid); now numbers. Account tools verified with the public zero address (empty lists); also: next_page now null (no page parameter); all read tools answered, schema-valid"
+ }
+}

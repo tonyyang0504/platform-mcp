@@ -1,0 +1,39 @@
+{
+ "id": "offerup",
+ "category": "automotive",
+ "label": "Offerup",
+ "vertical": "cars_marketplace",
+ "lane": "api",
+ "url": "https://offerup.com",
+ "domain": "offerup.com",
+ "country": "USA",
+ "official_api": false,
+ "docs_url": null,
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "no",
+  "kinds": [],
+  "auth": null,
+  "access": null,
+  "capabilities": [],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **no_api** (confidence medium). OfferUp has no public API; only unofficial wrappers.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://offerup.com/"
+  ],
+  "unofficial": [
+   "https://github.com/planetzero/offerup",
+   "https://rapidapi.com/collection/offerup-api",
+   "https://webscraping.cc/blog/offerup-api/"
+  ]
+ },
+ "official_mcp": []
+}

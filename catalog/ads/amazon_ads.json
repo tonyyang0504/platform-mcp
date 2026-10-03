@@ -1,0 +1,359 @@
+{
+ "id": "amazon_ads",
+ "category": "ads",
+ "label": "Amazon Ads (Sponsored Products / Brands / Display)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://advertising.amazon.com/API/docs/en-us/",
+ "url": "https://advertising.amazon.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Amazon Ads API access requires an approved Login-with-Amazon application (docs portal); advertiser terms not read this session",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "bulk_csv"
+  ],
+  "auth": "oauth2 (Login with Amazon; Amazon-Advertising-API-ClientId + Amazon-Advertising-API-Scope profile header)",
+  "access": "apply",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "keywords",
+   "targeting_search",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "recommendations",
+   "bulk",
+   "sandbox"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/amzn/ads-advanced-tools-docs (official Postman collection + Amazon Marketing Stream CloudFormation)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Amazon Ads API: Sponsored Products / Brands / Display / TV, reporting v3, DSP reports, creative",
+  "base_urls": [
+   "https://advertising-api.amazon.com"
+  ],
+  "auth": [
+   "1. Create a **Login with Amazon** security profile and apply for Amazon Ads API access (approval by Amazon; the user's advertiser account must be in an Amazon Ads-supported marketplace).",
+   "2. Authorization-code grant: `https://www.amazon.com/ap/oa?client_id=…&scope=advertising::campaign_management&response_type=code&redirect_uri=…` (environment: `permission_scope = advertising::campaign_management`, `auth_grant_url`, `token_url = https://api.amazon.com/auth/o2/token`).",
+   "3. Exchange the code / refresh token at `https://api.amazon.com/auth/o2/token` → `access_token` (short-lived; environment tracks `token_expires_at`) + `refresh_token`.",
+   "4. `GET /v2/profiles` → pick the advertiser profile; every subsequent call sends `Authorization: Bearer`, `Amazon-Advertising-API-ClientId: <client_id>`, `Amazon-Advertising-API-Scope: <profileId>`; DSP uses `dspAccountId`, manager accounts `manager_account_id`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v2/profiles",
+    "purpose": "advertiser profiles / marketplaces",
+    "notes": "`profileId, countryCode, currencyCode, accountInfo`"
+   },
+   {
+    "call": "POST /sp/campaigns/list` · `POST /sp/campaigns` · `PUT /sp/campaigns` · `POST /sp/campaigns/delete",
+    "purpose": "SP campaigns",
+    "notes": "`campaigns[]{name, state, budget{budget, budgetType}, targetingType, startDate, dynamicBidding}`"
+   },
+   {
+    "call": "POST /sp/adGroups` · `PUT /sp/adGroups` · `/list` · `/delete",
+    "purpose": "SP ad groups + default bid",
+    "notes": "`adGroups[]{campaignId, name, state, defaultBid}`"
+   },
+   {
+    "call": "POST /sp/productAds` · `PUT` · `/list` · `/delete",
+    "purpose": "product ads (ASIN / SKU)",
+    "notes": "`productAds[]{adGroupId, sku / asin, state}`"
+   },
+   {
+    "call": "POST /sp/keywords` · `PUT` · `/list` · `/delete`; `POST /sp/negativeKeywords…`; `POST /sp/campaigns/budgetRules/recommendations",
+    "purpose": "keywords, negatives, bid / budget recommendations",
+    "notes": "`keywords[]{adGroupId, keywordText, matchType, bid, state}`"
+   },
+   {
+    "call": "POST /sb/v4/campaigns` · `PUT` · `/list` · `/delete`; SB ads + `Ad creatives` folder",
+    "purpose": "Sponsored Brands",
+    "notes": "`campaigns[]{name, budget, budgetType, bidding}`; creatives via asset ids"
+   },
+   {
+    "call": "POST /sd/campaigns` · `GET /sd/campaigns`; SD ad groups / product ads / creatives",
+    "purpose": "Sponsored Display",
+    "notes": "`budget, budgetType, tactic, costType`"
+   },
+   {
+    "call": "POST /assets/upload` → `POST /assets/register` · `GET /assets?assetId=` · `POST /assets/search",
+    "purpose": "creative asset library",
+    "notes": "`assetType, fileName, url (upload location), assetSubTypeList`"
+   },
+   {
+    "call": "POST /reporting/reports` → `GET /reporting/reports/{reportId}",
+    "purpose": "reports v3 (async, gz JSON)",
+    "notes": "`configuration{adProduct, reportTypeId, groupBy[], columns[], timeUnit}, startDate, endDate`"
+   },
+   {
+    "call": "POST /accounts/{dspAccountId}/dsp/reports` → `GET …/{reportId}",
+    "purpose": "DSP reports",
+    "notes": "`startDate, endDate, format, dimensions[], metrics[]`"
+   },
+   {
+    "call": "POST /sp/campaigns/budget/usage` (SP/SB/SD) · budget rules `POST /sp/campaigns/{id}/budgetRules",
+    "purpose": "budgets",
+    "notes": "`campaignIds[]`, rule `{ruleType, recurrence, budgetIncreaseBy}`"
+   },
+   {
+    "call": "POST /audiences/list` · `POST /audiences/taxonomy/list",
+    "purpose": "audience discovery (targeting)",
+    "notes": "`adType, filters[]` — first-party audience upload is DSP-only (not in the SP/SB/SD collection)"
+   },
+   {
+    "call": "Amazon Marketing Stream (SQS / Firehose subscriptions), AMC (`/amc/*`), Exports (`/exports`)",
+    "purpose": "near-real-time metrics, clean room, bulk",
+    "notes": "see collection folders"
+   }
+  ],
+  "limits": " - Access is gated on Amazon approving the LWA application for the Ads API; Amazon publishes per-endpoint throttling (429 with `Retry-After`) in the Advanced Tools Center (TODO(verify): exact numbers, JS-only page). - Free API; the advertiser pays for ads only. Test accounts (\"Test accounts\" folder) exist for development. - Conversions upload: not in the sponsored-ads API (attribution is native to Amazon); AMC handles advanced measurement.",
+  "mcp_sdk": [
+   "Official: Postman collection + environment, Amazon Marketing Stream CloudFormation template — https://github.com/amzn/ads-advanced-tools-docs. No official SDK or MCP server found there."
+  ],
+  "sources": [
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/README.md",
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/postman/Amazon_Ads_API.postman_collection.json",
+   "https://raw.githubusercontent.com/amzn/ads-advanced-tools-docs/main/postman/Amazon_Ads_API_Environment.postman_environment.json",
+   "https://advertising.amazon.com/API/docs/en-us/"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}",
+  "environments": {
+   "sandbox": {
+    "same_host": true,
+    "docs": "https://advertising.amazon.com/API/docs/en-us/guides/account-management/test-accounts/overview",
+    "verified_at": "2026-09-27",
+    "notes": "Amazon Ads documents no separate sandbox host (the old /API/docs/guides/sandbox page answers 'The requested document was not found'; the API overview lists only advertising-api, -eu and -fe). Testing uses test accounts on the production hosts: create one with the test account API (scope advertising::test:create_account), then use its profileId as Amazon-Advertising-API-Scope (config profile_id). Test accounts serve no ads, so reports and performance data are empty."
+   }
+  },
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.amazon.com/auth/o2/token",
+   "client_auth": "body",
+   "extra_headers": {
+    "Amazon-Advertising-API-ClientId": "client_id",
+    "Amazon-Advertising-API-Scope": "profile_id"
+   },
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Login with Amazon client id of the app approved for the Amazon Ads API; also sent as the Amazon-Advertising-API-ClientId header."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The LWA client secret (form body of the refresh_token grant)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "LWA refresh token from the advertiser's consent (scope advertising::campaign_management); the runtime mints hourly access tokens from it at https://api.amazon.com/auth/o2/token."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "Regional Amazon Ads API host: advertising-api.amazon.com (North America), advertising-api-eu.amazon.com (Europe) or advertising-api-fe.amazon.com (Far East)."
+   },
+   {
+    "name": "profile_id",
+    "required": true,
+    "help": "Advertising profile id (one per advertiser and marketplace, from GET /v2/profiles), sent as the Amazon-Advertising-API-Scope header."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/v2/profiles/{profile_id}",
+    "path_params": {
+     "profile_id": "@profile_id"
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/reference/profiles",
+    "note": "GET /v2/profiles/{profileId}: the configured profile {profileId, countryCode, currencyCode, timezone, accountInfo {id, type, name, marketplaceStringId}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/v2/profiles",
+    "result": {
+     "items": "$",
+     "key": "accounts",
+     "fields": {
+      "id": "profileId",
+      "name": "accountInfo.name",
+      "currency": "currencyCode"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/reference/profiles",
+    "note": "GET /v2/profiles (apiProgram=campaign, accessLevel=edit by default): one profile per advertiser and marketplace in the configured region. `id` is the profileId used as the Amazon-Advertising-API-Scope; country is raw.countryCode."
+   },
+   "list_campaigns": {
+    "method": "POST",
+    "path": "/sp/campaigns/list",
+    "headers": {
+     "Content-Type": "application/vnd.spCampaign.v3+json",
+     "Accept": "application/vnd.spCampaign.v3+json"
+    },
+    "body": {
+     "maxResults": "limit",
+     "stateFilter.include.0": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "total": "totalResults",
+     "fields": {
+      "id": "campaignId",
+      "name": "name",
+      "status": "state",
+      "budget": "budget.budget",
+      "start": "startDate",
+      "end": "endDate"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Campaigns/operation/ListSponsoredProductsCampaigns",
+    "note": "Sponsored Products v3 POST /sp/campaigns/list with Content-Type/Accept application/vnd.spCampaign.v3+json and {maxResults, stateFilter: {include: [status]}} (ENABLED, PAUSED, ARCHIVED). The advertiser is the configured profile_id (Amazon-Advertising-API-Scope header): account_id is not sent and should be that profile id. `budget` is budget.budget in the profile currency (budgetType DAILY). Paging is by nextToken; only the first page is returned."
+   },
+   "update_budget": {
+    "method": "PUT",
+    "path": "/sp/campaigns",
+    "headers": {
+     "Content-Type": "application/vnd.spCampaign.v3+json",
+     "Accept": "application/vnd.spCampaign.v3+json"
+    },
+    "result": {
+     "root": "campaigns.success.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "=updated"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Campaigns/operation/UpdateSponsoredProductsCampaigns",
+    "body": {
+     "campaigns.0.campaignId": "campaign_id",
+     "campaigns.0.budget.budget": "daily_budget",
+     "campaigns.0.budget.budgetType": "=DAILY"
+    },
+    "note": "PUT /sp/campaigns {campaigns: [{campaignId, budget: {budget, budgetType: DAILY}}]} in the profile's currency (`currency` is ignored). The API answers 207 Multi-Status with campaigns.success[] / campaigns.error[]; a rejected update (error only) is reported as invalid_input."
+   },
+   "pause_resume": {
+    "method": "PUT",
+    "path": "/sp/campaigns",
+    "headers": {
+     "Content-Type": "application/vnd.spCampaign.v3+json",
+     "Accept": "application/vnd.spCampaign.v3+json"
+    },
+    "result": {
+     "root": "campaigns.success.0",
+     "fields": {
+      "campaign_id": "campaignId",
+      "status": "campaign.state"
+     }
+    },
+    "docs": "https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Campaigns/operation/UpdateSponsoredProductsCampaigns",
+    "body": {
+     "campaigns.0.campaignId": "campaign_id",
+     "campaigns.0.state": "map:action:pause=PAUSED,resume=ENABLED"
+    },
+    "note": "PUT /sp/campaigns {campaigns: [{campaignId, state: PAUSED|ENABLED}]}; 207 Multi-Status, the success item carries the updated campaign (status = its state); a rejected update is reported as invalid_input."
+   }
+  },
+  "not_offered": {
+   "get_report": "Reporting v3 is asynchronous: POST /reporting/reports creates a report, GET /reporting/reports/{reportId} is polled until COMPLETED, and the rows are a gzipped JSON file at a pre-signed URL; the runtime makes one call per tool."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host advertising-api.amazon.com: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 403 too, so the host authenticates before routing",
+   "token api.amazon.com/auth/o2/token: 401 Client authentication failed",
+   "authorize https://www.amazon.com/ap/oa: 200",
+   "spec https://d1y2lf8k3vrkfu.cloudfront.net/openapi/en-us/dest/Profiles_prod_3p.json, https://d1y2lf8k3vrkfu.cloudfront.net/openapi/en-us/dest/SponsoredProducts_prod_3p.json: 3/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "me: spec says \"path not in spec: GET /v2/profiles/X1X\"; waived: Amazon's published Profiles OpenAPI (Profiles_prod_3p.json) lists GET /profiles; the adapter uses GET /v2/profiles, the path on Amazon's reference page and in its SDKs. Both answer 401 with a dummy token while an unknown route answers 403 'Invalid key=value pair … in Authorization header', so both routes exist. list_accounts: spec says \"path not in spec: GET /v2/profiles\"; waived: Amazon's published Profiles OpenAPI (Profiles_prod_3p.json) lists GET /profiles; the adapter uses GET /v2/profiles, the path on Amazon's reference page and in its SDKs. Both answer 401 with a dummy token while an unknown route answers 403 'Invalid key=value pair … in Authorization header', so both routes exist."
+ }
+}

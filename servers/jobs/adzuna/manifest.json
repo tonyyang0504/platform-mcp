@@ -1,0 +1,53 @@
+{
+ "manifest_version": "0.2",
+ "name": "adzuna-mcp",
+ "display_name": "Adzuna MCP",
+ "version": "0.1.0",
+ "description": "Adzuna (jobs): me, search. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "adzuna"
+   ],
+   "env": {
+    "PLATFORM_MCP_ADZUNA_APP_ID": "${user_config.platform_mcp_adzuna_app_id}",
+    "PLATFORM_MCP_ADZUNA_APP_KEY": "${user_config.platform_mcp_adzuna_app_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_adzuna_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADZUNA_APP_ID",
+   "description": "Adzuna app_id from https://developer.adzuna.com/ (register with username, e-mail, organisation name + website); mandatory app_id query parameter on every call.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_adzuna_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_ADZUNA_APP_KEY",
+   "description": "Adzuna app_key from https://developer.adzuna.com/; mandatory app_key query parameter on every call.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Verified with a one-result UK search (Adzuna has no account endpoint)."
+  },
+  {
+   "name": "search",
+   "description": "The country is a path segment (gb, us, de, fr, ... per the Adzuna site); this server is pinned to gb (UK). description is cropped by Adzuna and redirect_url opens the ad on the original board. Rate limits are not published (plans are managed by the 3scale portal)."
+  }
+ ]
+}

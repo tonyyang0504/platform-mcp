@@ -1,0 +1,271 @@
+{
+ "id": "whop",
+ "category": "marketplaces",
+ "label": "Whop",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.whop.com",
+ "url": "https://whop.com/dashboard",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed with an Account API key; free; 600 req/min default (429 with retry hint); keys server-side only; MoR only in 'Whop Collects and Remits' (+2 %)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp",
+   "webhooks"
+  ],
+  "auth": "api_key",
+  "access": "signup",
+  "capabilities": [
+   "create_product",
+   "update_product",
+   "set_price",
+   "publish",
+   "upload_file",
+   "experiences_attach",
+   "orders",
+   "sales_stats",
+   "webhooks",
+   "refunds",
+   "checkout_links",
+   "apps",
+   "app_builds"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://github.com/whopio/whopsdk-python",
+   "https://github.com/whopio/whopsdk-typescript",
+   "https://www.npmjs.com/package/@whop/sdk"
+  ]
+ },
+ "official_mcp": [
+  "https://mcp.whop.com/mcp",
+  "https://docs.whop.com/mcp",
+  "https://www.npmjs.com/package/@whop/mcp",
+  "https://github.com/furkankoykiran/whop-mcp"
+ ],
+ "auth_fields": [
+  "api_key",
+  "company_id",
+  "default_price_cents?",
+  "currency?",
+  "webhook_secret?"
+ ],
+ "rate_limits": null,
+ "tools": [],
+ "reference": null,
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.whop.com/api/v1",
+  "auth": {
+   "type": "bearer",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Whop Account API key (dashboard > Developer > API keys; server-side only) sent as Authorization: Bearer. Permissions used: access_pass:basic:read/manage (products), plan:basic:read/manage (update_price), payment:basic:read (sales, refunds) and payment:manage (refund). Sandbox keys use https://sandbox-api.whop.com/api/v1, which this server does not switch to."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "company_id",
+    "required": true,
+    "help": "The company's account id (biz_..., shown in the dashboard URL/settings). Sent as account_id on list_products, create_product, update_price, list_sales and list_refunds; without it GET /products would search the public marketplace."
+   }
+  ],
+  "rate_per_second": 10,
+  "terms": "Requests are versioned by the optional Api-Version-Date header; unset, the key's stored pin or the 2025-01-01 behaviour applies (this server sends none). Default rate limit 600 requests/minute (429 with a retry hint).",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/accounts/me",
+    "docs": "https://docs.whop.com/api-reference/beta/accounts/retrieve-account",
+    "note": "GET /accounts/me returns the account (biz_...) associated with the Account API key: {id, title, route, business_name, balances[], ...}. It verifies the key and identifies the company."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products",
+    "params": {
+     "account_id": "@company_id",
+     "first": "limit",
+     "visibilities": "status"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "products",
+     "fields": {
+      "id": "id",
+      "name": "title",
+      "description": "description",
+      "status": "visibility",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/products/list-products",
+    "note": "GET /products?account_id (the company_id setting; required, otherwise the public marketplace is searched)&first=limit&visibilities=status (visible|hidden|archived|quick_link; a single value of the documented array filter). Rows are {id, title, headline, visibility, route, created_at, updated_at, member_count, ...}; `status` is the visibility. Prices live on plans (GET /plans?product_ids=..., see update_price), so `price`/`currency` are null. Cursor paging (`after` = page_info.end_cursor) cannot be carried by page/limit: `page` is ignored and only the first page is returned."
+   },
+   "get_product": {
+    "method": "GET",
+    "path": "/products/{product_id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "name": "title",
+      "description": "description",
+      "status": "visibility",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/products/retrieve-product",
+    "note": "GET /products/{id} (product id prod_... or its route slug) returns the Product {id, title, description, headline, visibility, route, company{id, route, title}, created_at, updated_at, member_count, ...}. Prices are on the product's plans, so `price`/`currency` are null."
+   },
+   "create_product": {
+    "method": "POST",
+    "path": "/products",
+    "body": {
+     "account_id": "@company_id",
+     "title": "name",
+     "description": "description",
+     "plan_options.initial_price": "price",
+     "plan_options.base_currency": "currency",
+     "plan_options.plan_type": "=one_time"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "name": "title",
+      "description": "description",
+      "status": "visibility",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/products/create-product",
+    "note": "POST /products {account_id (company_id setting), title (required, max 80 chars), description, plan_options{initial_price (decimal major units, e.g. 10.43), base_currency, plan_type: one_time}} creates the product together with one auto-generated one-time plan carrying the price. `base_currency` is Whop's lowercase currency enum (usd, eur, gbp, ...): pass `currency` in lowercase. The product is created with Whop's default visibility (visible unless the request says otherwise). `url` is not accepted (route is a slug, not a URL)."
+   },
+   "update_price": {
+    "method": "POST",
+    "path": "/plans",
+    "body": {
+     "account_id": "@company_id",
+     "product_id": "product_id",
+     "initial_price": "price",
+     "currency": "currency",
+     "plan_type": "=one_time"
+    },
+    "result": {
+     "fields": {
+      "id": "product.id",
+      "name": "title",
+      "price": "initial_price",
+      "currency": "currency",
+      "status": "visibility",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/beta/plans/create-plan",
+    "note": "Whop prices live on plans, so this CREATES a new one-time plan with POST /plans {account_id, product_id, initial_price (decimal major units, e.g. 10.43 for $10.43), currency (ISO code; defaults to USD when omitted), plan_type: one_time}; existing plans stay on sale until archived (PATCH /plans/{id} visibility=archived, not mapped). The result's `id` is the product id; the new plan id is raw.id (plan_...)."
+   },
+   "list_sales": {
+    "method": "GET",
+    "path": "/payments",
+    "params": {
+     "account_id": "@company_id",
+     "first": "limit",
+     "created_after": "since",
+     "product_ids": "product_id"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "sales",
+     "fields": {
+      "id": "id",
+      "product_id": "product.id",
+      "product_name": "product.title",
+      "amount": "total",
+      "currency": "currency",
+      "status": "status",
+      "customer_email": "user.email",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/payments/list-payments",
+    "note": "GET /payments?account_id&first=limit&created_after=since (date-time)&product_ids=product_id (single value of the documented array filter), newest first. Rows carry {id (pay_...), status (draft|open|paid|void|...), substatus, total (creator total in decimal major units), subtotal, currency, product{id, title}, user{id, name, username, email}, created_at, paid_at, refunded_amount, refunded_at}. `refunded` is not a boolean field (see raw.refunded_amount). Cursor paging: `page` is ignored, first page only."
+   },
+   "list_refunds": {
+    "method": "GET",
+    "path": "/refunds",
+    "params": {
+     "account_id": "@company_id",
+     "first": "limit",
+     "created_after": "since"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "refunds",
+     "fields": {
+      "id": "id",
+      "sale_id": "payment.id",
+      "amount": "amount",
+      "currency": "currency",
+      "status": "status",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/refunds/list-refunds",
+    "note": "GET /refunds?account_id&first=limit&created_after=since, newest first: {id, amount (decimal major units), currency, status (pending|requires_action|succeeded|failed|canceled), payment{id}, provider, created_at}. No reason field exists. Cursor paging: `page` is ignored, first page only."
+   },
+   "refund": {
+    "method": "POST",
+    "path": "/payments/{sale_id}/refund",
+    "body": {
+     "partial_amount": "amount"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "sale_id": "id",
+      "amount": "refunded_amount",
+      "currency": "currency",
+      "status": "status",
+      "created_at": "refunded_at"
+     }
+    },
+    "docs": "https://docs.whop.com/api-reference/payments/refund-payment",
+    "note": "DESTRUCTIVE: POST /payments/{id}/refund {partial_amount} refunds the payment (pay_...) — in FULL when `amount` is omitted, or partially by `amount` in decimal major units of the charge currency (e.g. 6.9). `reason` is not accepted by the endpoint and is dropped. The result is the updated Payment: `amount` is refunded_amount and `created_at` is refunded_at; the refund records are raw.refunds[]."
+   }
+  },
+  "not_offered": {
+   "get_sales_stats": "No revenue-totals endpoint in the Whop API: payments, refunds and invoices are listed individually (GET /payments, /refunds, /invoices) and analytics live in the dashboard."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "verified_live",
+  "evidence": [
+   "host api.whop.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 8/8 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 1/1 tool paths found verbatim on their docs pages; every parameter and body key named on the page",
+   "live read without credentials: get_product returned data that validates against the vocabulary"
+  ],
+  "notes": "-"
+ }
+}

@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "lazada_sponsored_solutions-mcp",
+ "display_name": "Lazada Sponsored Solutions MCP",
+ "version": "0.1.0",
+ "description": "Lazada Sponsored Solutions (ads): me, list_campaigns, get_report, update_budget, pause_resume. Every",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "lazada_sponsored_solutions"
+   ],
+   "env": {
+    "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_KEY": "${user_config.platform_mcp_lazada_sponsored_solutions_app_key}",
+    "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_SECRET": "${user_config.platform_mcp_lazada_sponsored_solutions_app_secret}",
+    "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_REFRESH_TOKEN": "${user_config.platform_mcp_lazada_sponsored_solutions_refresh_token}",
+    "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_API_DOMAIN": "${user_config.platform_mcp_lazada_sponsored_solutions_api_domain}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_lazada_sponsored_solutions_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_KEY",
+   "description": "App Key of your Lazada Open Platform app with the Sponsored Solutions API permission (App Console).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_sponsored_solutions_app_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_APP_SECRET",
+   "description": "App Secret of the same app; signs every call and the token refresh (uppercase hex HMAC-SHA256 over the API name + sorted name/value pairs). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_sponsored_solutions_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_REFRESH_TOKEN",
+   "description": "Seller refresh_token from /auth/token/create after the seller authorised the app; the runtime mints access tokens with the signed /auth/token/refresh (https://auth.lazada.com/rest) and keeps the refresh_token it returns ('The refresh token cannot be refreshed': when refresh_expires_in runs out the seller must re-authorise). Set PLATFORM_MCP_STATE_DIR so the newest one survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_lazada_sponsored_solutions_api_domain": {
+   "type": "string",
+   "title": "PLATFORM_MCP_LAZADA_SPONSORED_SOLUTIONS_API_DOMAIN",
+   "description": "Regional API host of the seller's venture: api.lazada.sg, api.lazada.com.my, api.lazada.com.ph, api.lazada.co.th, api.lazada.co.id or api.lazada.vn (Service Endpoints of each Sponsored Solutions API).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getAccountSignInfo: whether the seller has signed the Sponsored Solutions agreement (result boolean); verifies the app key, signature and seller token."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "searchCampaignList (bizCode sponsoredSearch = Sponsored Discovery) with the last 7 days as the metrics window: campaignId, campaignName, dailyBudget, startDate, endDate, status (combined on/off), campaignSwitchStatus (1 online, 0 offline — mapped to status), budget/balance/schedule flags and the window's impressions, clicks, ctr, cpc, spend, store orders and revenue (strings, '-' = no data; all in raw). totalCount is the number of campaigns. account_id and status are not sent (the seller token selects the shop)."
+  },
+  {
+   "name": "get_report",
+   "description": "getDiscoveryReportCampaign (Sponsored Discovery, campaign level, startDate/endDate yyyy-MM-dd, first 100 rows): per campaign impressions, clicks, ctr, cpc, spend, store/product orders, units, revenue, ROI and dayBudget. campaign_id filters to one campaign; useRtTable (realtime data for today) is not sent."
+  },
+  {
+   "name": "update_budget",
+   "description": "updateCampaign {campaignId, bizCode sponsoredSearch, dayBudget} — 'the maximum amount you're willing to pay each day' in the shop currency. This spends money; currency is ignored."
+  },
+  {
+   "name": "pause_resume",
+   "description": "updateCampaign {campaignId, bizCode sponsoredSearch, switchStatus: 1 online | 0 offline} (pause → 0, resume → 1). Resuming restarts spend."
+  }
+ ]
+}

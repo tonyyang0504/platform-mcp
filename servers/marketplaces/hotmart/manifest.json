@@ -1,0 +1,81 @@
+{
+ "manifest_version": "0.2",
+ "name": "hotmart-mcp",
+ "display_name": "Hotmart MCP",
+ "version": "0.1.0",
+ "description": "Hotmart (marketplaces): me, list_products, get_product, list_sales, get_sales_stats, list_refunds, r",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hotmart"
+   ],
+   "env": {
+    "PLATFORM_MCP_HOTMART_CLIENT_ID": "${user_config.platform_mcp_hotmart_client_id}",
+    "PLATFORM_MCP_HOTMART_CLIENT_SECRET": "${user_config.platform_mcp_hotmart_client_secret}",
+    "PLATFORM_MCP_HOTMART_BASIC_TOKEN": "${user_config.platform_mcp_hotmart_basic_token}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_hotmart_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HOTMART_CLIENT_ID",
+   "description": "Client ID from Hotmart Tools > Developer Credentials.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_hotmart_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HOTMART_CLIENT_SECRET",
+   "description": "Client Secret from the same credential.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_hotmart_basic_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_HOTMART_BASIC_TOKEN",
+   "description": "The 'Basic' value shown with the credential (without the 'Basic ' prefix).",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /user/api/v1/me: the account (id, name, email, ucode, locale, currency_code_commission, time_zone)."
+  },
+  {
+   "name": "list_products",
+   "description": "GET /products/api/v1/products: max_results ('Default value for this endpoint is 50'), page_token = the previous page_info.next_page_token (pass next_cursor back as cursor; page is not used), status one of DRAFT, ACTIVE, PAUSED, NOT_APPROVED, IN_REVIEW, DELETED, CHANGES_PENDING_ON_PRODUCT. Products carry no price (prices live in offers/plans); ucode, format, is_subscription and warranty_period are in raw; created_at (epoch ms) stays in raw because the output field is a string."
+  },
+  {
+   "name": "get_product",
+   "description": "The product list filtered by id ('Unique identifier (ID) of the product (7-digit number)'); an unknown id returns no record (invalid_input)."
+  },
+  {
+   "name": "list_sales",
+   "description": "GET /payments/api/v1/sales/history: start_date in epoch ms from since; 'if you do not set up the transaction or transaction_status filters for this endpoint, it'll only return the \"APPROVED\" and \"COMPLETE\" statuses'. id is the transaction code (use it with refund); amount is purchase.price.value in major units ('Total amount paid by the buyer, including taxes and interest'); the order date (purchase.order_date, epoch ms) stays in raw. Pass next_cursor back as cursor."
+  },
+  {
+   "name": "get_sales_stats",
+   "description": "GET /payments/api/v1/sales/summary 'displays the total commission values per currency' for APPROVED and COMPLETE sales in the window (start_date / end_date epoch ms). revenue / currency / sales are the FIRST currency bucket (items[0]: total_value, total_items = 'Number of commissions paid'); other currencies are in raw.items. refunds is not reported."
+  },
+  {
+   "name": "list_refunds",
+   "description": "Sales history filtered to transaction_status=REFUNDED (PARTIALLY_REFUNDED and CHARGEBACK are separate statuses, not included). Hotmart has no refund object, so id and sale_id are both the transaction code; since filters by order date; purchase.order_date (epoch ms) is in raw."
+  },
+  {
+   "name": "refund",
+   "description": "PUT /payments/api/v1/sales/{transaction_code}/refund refunds the whole sale; 'The return from this route is empty. Consider only HTTP codes.' Only Approved/Completed, non-trial, non-BACS/SEPA sales qualify. amount and reason are not sent (no partial refunds)."
+  }
+ ]
+}

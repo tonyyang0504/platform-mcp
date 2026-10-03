@@ -1,0 +1,324 @@
+{
+ "id": "snapchat",
+ "category": "ads",
+ "label": "Snapchat Ads (Snapchat Ads Manager)",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developers.snap.com/api/marketing-api/Ads-API/introduction",
+ "url": "https://forbusiness.snapchat.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Marketing API used through a Snap developer-portal app with OAuth authorization",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "mcp"
+  ],
+  "auth": "oauth2 (accounts.snapchat.com/login/oauth2/authorize; scope snapchat-marketing-api; 60-minute access token + refresh token)",
+  "access": "signup",
+  "capabilities": [
+   "account_management",
+   "campaigns",
+   "ad_groups",
+   "ads",
+   "creatives_upload",
+   "budgets_bids",
+   "reports",
+   "audiences",
+   "conversions_upload",
+   "targeting_search",
+   "catalog_products"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Java Business SDK (developers.snap.com Marketing API navigation)"
+  ]
+ },
+ "official_mcp": [
+  "Snap 'Ads MCP' (listed in the Marketing API navigation: Introduction / Connect an agent — page URL not resolved this pass)"
+ ],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_accounts",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_campaigns",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_report",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_campaign",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_budget",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "pause_resume",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "upload_creative",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Snapchat Marketing API).",
+  "base_urls": [
+   "https://adsapi.snapchat.com/v1/"
+  ],
+  "auth": [
+   "1. Organization Admin: Snap Business Manager → Business Details → create an OAuth app (name + `redirect_uri`); `client_id` shown, `client_secret` only at creation.",
+   "2. `GET https://accounts.snapchat.com/login/oauth2/authorize?client_id&redirect_uri&response_type=code&scope=snapchat-marketing-api[ snapchat-offline-conversions-api]&state`.",
+   "3. Exchange the code at the token endpoint → access token (3600 s) + refresh token; `Authorization: Bearer <token>`; 401 when expired → refresh."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /v1/me/organizations` · `GET /v1/organizations/{id}/adaccounts",
+    "purpose": "accounts",
+    "notes": "id, name, currency, timezone, type"
+   },
+   {
+    "call": "GET/POST /v1/adaccounts/{id}/campaigns` · `PUT /v1/campaigns/{id}",
+    "purpose": "campaigns",
+    "notes": "name, status ACTIVE/PAUSED, objective, start_time, end_time, daily_budget_micro, lifetime_spend_cap_micro"
+   },
+   {
+    "call": "GET/POST /v1/campaigns/{id}/adsquads` · `PUT /v1/adsquads/{id}",
+    "purpose": "ad squads: bid, budget, targeting, placement",
+    "notes": "name, type, targeting{geos, demographics, interests, segments}, bid_micro, auto_bid, daily_budget_micro, optimization_goal, placement_v2"
+   },
+   {
+    "call": "POST /v1/adaccounts/{id}/media` → `POST /v1/media/{id}/upload` · `POST /v1/adaccounts/{id}/creatives` · `POST /v1/adsquads/{id}/ads",
+    "purpose": "media upload, creatives, ads",
+    "notes": "media type IMAGE/VIDEO, file; creative type SNAP_AD, headline, brand_name, top_snap_media_id, call_to_action, web_view_properties; ad creative_id, status"
+   },
+   {
+    "call": "GET /v1/{entity}/{id}/stats?granularity=DAY&fields=impressions,swipes,spend…",
+    "purpose": "reports (hourly / daily / total)",
+    "notes": "start_time, end_time, granularity HOUR/DAY/TOTAL, breakdown"
+   },
+   {
+    "call": "POST /v1/adaccounts/{id}/segments` · `POST /v1/segments/{id}/users",
+    "purpose": "audiences from hashed first-party data (SAM)",
+    "notes": "name, source_type FIRST_PARTY, schema EMAIL_SHA256 / MOBILE_AD_ID_SHA256, data[]"
+   },
+   {
+    "call": "Conversions API `POST https://tr.snapchat.com/v3/{pixel_id}/events` (Getting Started / Using the API pages)",
+    "purpose": "conversions upload",
+    "notes": "event_name, event_time, user_data{em, ph, madid}, custom_data"
+   },
+   {
+    "call": "GET /v1/targeting/{type}/…` (interests, geos, devices)",
+    "purpose": "targeting search",
+    "notes": "—"
+   }
+  ],
+  "limits": " - Rate limits are not stated on the pages read (TODO(verify) — API Reference). Free API; Snap Developer Terms + Snap Business Tools Terms accepted when creating the app. - Money fields are in micro-currency (Monetary Values page).",
+  "mcp_sdk": [
+   "Official Java Business SDK (Migration Guide in the docs). The docs navigation lists an official **Ads MCP** (\"Introduction / Connect an agent\") — its URL did not resolve this pass."
+  ],
+  "sources": [
+   "https://developers.snap.com/api/marketing-api/Ads-API/introduction",
+   "https://developers.snap.com/api/marketing-api/Ads-API/authentication",
+   "https://developers.snap.com/api/marketing-api/Ads-API/api-patterns"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://adsapi.snapchat.com/v1",
+  "rate_per_second": 2,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://accounts.snapchat.com/login/oauth2/access_token",
+   "client_auth": "body",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth client id of your Snap Business Manager app (Business Details > OAuth apps)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "The OAuth app's client secret (form body of the refresh request)."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from one authorization-code consent with scope snapchat-marketing-api (https://developers.snap.com/api/marketing-api/Ads-API/authentication); 60-minute access tokens are minted from it."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "organization_id",
+    "required": false,
+    "help": "Snap organization id whose ad accounts list_accounts returns (GET /v1/me/organizations)."
+   },
+   {
+    "name": "ad_account_id",
+    "required": false,
+    "help": "Ad account id used by pause_resume (the campaign PATCH path is /v1/adaccounts/{ad_account_id}/campaigns/{campaign_id})."
+   },
+   {
+    "name": "tz_offset",
+    "required": false,
+    "help": "UTC offset of the ad account time zone, e.g. -07:00 or +01:00, used to build day-aligned start_time/end_time for get_report (Snap requires daily boundaries in the account time zone)."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/me",
+    "docs": "https://developers.snap.com/api/marketing-api/Ads-API/user",
+    "note": "GET /v1/me: the authenticated Snap user {me: {id, email, organization_id, display_name}}."
+   },
+   "list_accounts": {
+    "method": "GET",
+    "path": "/organizations/{organization_id}/adaccounts",
+    "path_params": {
+     "organization_id": "@organization_id"
+    },
+    "result": {
+     "items": "adaccounts",
+     "key": "accounts",
+     "fields": {
+      "id": "adaccount.id",
+      "name": "adaccount.name",
+      "currency": "adaccount.currency"
+     }
+    },
+    "docs": "https://developers.snap.com/api/marketing-api/Ads-API/ad-accounts",
+    "note": "GET /v1/organizations/{organization_id config}/adaccounts: the organization's ad accounts (currency and timezone per account)."
+   },
+   "list_campaigns": {
+    "method": "GET",
+    "path": "/adaccounts/{account_id}/campaigns",
+    "params": {
+     "limit": "limit"
+    },
+    "default_limit": 50,
+    "max_limit": 1000,
+    "result": {
+     "items": "campaigns",
+     "key": "campaigns",
+     "fields": {
+      "id": "campaign.id",
+      "name": "campaign.name",
+      "status": "campaign.status",
+      "budget_micros": "campaign.daily_budget_micro",
+      "start": "campaign.start_time",
+      "end": "campaign.end_time"
+     }
+    },
+    "docs": "https://developers.snap.com/api/marketing-api/Ads-API/campaigns",
+    "note": "GET /v1/adaccounts/{ad_account_id}/campaigns?limit= (50-1000; first page only, paging.next_link). Budgets are micro-currency: budget_micros is daily_budget_micro (1,000,000 = 1 unit of the account currency). `status` (ACTIVE, PAUSED) is not a filter."
+   },
+   "get_report": {
+    "method": "GET",
+    "path": "/campaigns/{campaign_id}/stats",
+    "params": {
+     "start_time": "fmt:{date:date_from}T00:00:00.000{@tz_offset}",
+     "end_time": "fmt:{date:date_to}T00:00:00.000{@tz_offset}"
+    },
+    "fixed_params": {
+     "granularity": "DAY",
+     "fields": "impressions,swipes,spend"
+    },
+    "result": {
+     "items": "timeseries_stats.0.timeseries_stat.timeseries",
+     "key": "rows",
+     "fields": {
+      "date": "start_time",
+      "impressions": "stats.impressions",
+      "swipes": "stats.swipes",
+      "spend_micros": "stats.spend"
+     }
+    },
+    "docs": "https://developers.snap.com/api/marketing-api/Ads-API/measurement",
+    "note": "GET /v1/campaigns/{campaign_id}/stats?granularity=DAY&fields=impressions,swipes,spend with start_time/end_time at midnight in the account time zone (tz_offset config). campaign_id is required. end_time is an exclusive day boundary: pass date_to as the day AFTER the last day wanted. spend is micro-currency; metrics are final 48 hours after the day ends."
+   },
+   "pause_resume": {
+    "method": "PATCH",
+    "path": "/adaccounts/{ad_account_id}/campaigns/{campaign_id}",
+    "path_params": {
+     "ad_account_id": "@ad_account_id"
+    },
+    "headers": {
+     "Content-Type": "application/json-patch+json"
+    },
+    "body": {
+     "0.op": "=replace",
+     "0.path": "=/status",
+     "0.value": "map:action:pause=PAUSED,resume=ACTIVE"
+    },
+    "result": {
+     "root": "campaigns.0.campaign",
+     "fields": {
+      "campaign_id": "id",
+      "status": "status"
+     }
+    },
+    "docs": "https://developers.snap.com/api/marketing-api/Ads-API/campaigns",
+    "note": "PATCH /v1/adaccounts/{ad_account_id config}/campaigns/{campaign_id} (application/json-patch+json) [{op: replace, path: /status, value: PAUSED|ACTIVE}]. Resuming restarts spending."
+   }
+  },
+  "not_offered": {
+   "update_budget": "Snap budgets are micro-currency integers (\"daily_budget_micro: Daily Spend Cap (micro-currency)\", minimum 20,000,000, https://developers.snap.com/api/marketing-api/Ads-API/campaigns); the adapter cannot scale a daily_budget into micros."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host adsapi.snapchat.com: DNS ok, TLSv1.3 (DigiCert Inc)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 401 too, so the host authenticates before routing",
+   "token accounts.snapchat.com/login/oauth2/access_token: 400 invalid_client",
+   "authorize https://accounts.snapchat.com/login/oauth2/authorize: 302",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

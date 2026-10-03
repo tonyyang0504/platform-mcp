@@ -1,0 +1,89 @@
+{
+ "manifest_version": "0.2",
+ "name": "trendyol-mcp",
+ "display_name": "Trendyol MCP",
+ "version": "0.1.0",
+ "description": "Trendyol (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Every to",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "trendyol"
+   ],
+   "env": {
+    "PLATFORM_MCP_TRENDYOL_API_KEY": "${user_config.platform_mcp_trendyol_api_key}",
+    "PLATFORM_MCP_TRENDYOL_API_SECRET": "${user_config.platform_mcp_trendyol_api_secret}",
+    "PLATFORM_MCP_TRENDYOL_SELLER_ID": "${user_config.platform_mcp_trendyol_seller_id}",
+    "PLATFORM_MCP_TRENDYOL_USER_AGENT": "${user_config.platform_mcp_trendyol_user_agent}",
+    "PLATFORM_MCP_TRENDYOL_API_HOST": "${user_config.platform_mcp_trendyol_api_host}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_trendyol_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRENDYOL_API_KEY",
+   "description": "API KEY from Seller Center > Hesap Bilgilerim / Account Information > Entegrasyon Bilgileri / Integration Information (visible to the master/admin user only; PROD and STAGE differ); HTTP Basic username.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trendyol_api_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRENDYOL_API_SECRET",
+   "description": "API SECRET KEY from the same page; HTTP Basic password.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_trendyol_seller_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRENDYOL_SELLER_ID",
+   "description": "Your Trendyol seller (supplier) ID from the same Integration Information page; used in every path.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_trendyol_user_agent": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRENDYOL_USER_AGENT",
+   "description": "Mandatory User-Agent (requests without it get 403): '<sellerId> - SelfIntegration' for your own software, or '<sellerId> - <IntegratorName>' (alphanumeric, max 30 characters) when an integrator company runs it, e.g. '1234 - SelfIntegration'.",
+   "sensitive": false,
+   "required": true
+  },
+  "platform_mcp_trendyol_api_host": {
+   "type": "string",
+   "title": "PLATFORM_MCP_TRENDYOL_API_HOST",
+   "description": "apigw.trendyol.com (PROD) or stageapigw.trendyol.com (STAGE, IP-authorised test environment).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "getSuppliersAddresses returns your shipment/return/invoice addresses ({supplierAddresses[], defaultShipmentAddress...}) — used as the credential check."
+  },
+  {
+   "name": "update_listing",
+   "description": "updatePriceAndInventory {items: [{barcode, salePrice, listPrice, quantity}]} changes the LIVE sale price and/or sellable stock of an approved product; `listing_id` is the product barcode. listPrice (the crossed-out original price) is sent equal to salePrice, so no discount is displayed. Asynchronous: raw.batchRequestId → getBatchRequestResult. Re-sending an identical body within 15 minutes is rejected. Titles/descriptions go through product update services, not here."
+  },
+  {
+   "name": "set_inventory",
+   "description": "updatePriceAndInventory {items: [{barcode, quantity}]} sets the sellable stock (max 20,000). `sku` must be the product BARCODE Trendyol knows it by. Asynchronous batch (raw.batchRequestId)."
+  },
+  {
+   "name": "end_listing",
+   "description": "archiveProducts {items: [{barcode, archived: true}]} archives the product: it becomes invisible on Trendyol but is not deleted (reversible with archived: false). `listing_id` is the barcode. Asynchronous batch."
+  },
+  {
+   "name": "list_orders",
+   "description": "getShipmentPackages (v2, mandatory from 15 Oct 2026): one row per SHIPMENT PACKAGE (raw.id is the package id; a split order has several packages with the same orderNumber). status: Created|Picking|Invoiced|Shipped|Cancelled|Delivered|UnDelivered|Returned|AtCollectionPoint|UnPacked|UnSupplied|Awaiting|Verified. Without a date window the endpoint returns the last week; `since` is not sent because startDate must be epoch milliseconds (GMT+3). orderDate is epoch ms; total is packageTotalPrice (net of discounts)."
+  }
+ ]
+}

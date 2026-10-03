@@ -1,0 +1,69 @@
+{
+ "manifest_version": "0.2",
+ "name": "daum_ads-mcp",
+ "display_name": "Daum search ads (now Kakao 키워드광고) MCP",
+ "version": "0.1.0",
+ "description": "Daum search ads (now Kakao 키워드광고) (ads): me, list_accounts, list_campaigns, get_report, update_budge",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "daum_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_DAUM_ADS_BUSINESS_TOKEN": "${user_config.platform_mcp_daum_ads_business_token}",
+    "PLATFORM_MCP_DAUM_ADS_AD_ACCOUNT_ID": "${user_config.platform_mcp_daum_ads_ad_account_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_daum_ads_business_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DAUM_ADS_BUSINESS_TOKEN",
+   "description": "Kakao business token (비즈니스 토큰) issued by POST https://kauth.kakao.com/oauth/business/token after the advertiser consents to the keyword_management scope in your biz app (https://developers.kakao.com/docs/latest/ko/business-auth/rest-api). It has no refresh flow; it expires after long non-use.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_daum_ads_ad_account_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_DAUM_ADS_AD_ACCOUNT_ID",
+   "description": "Kakao keyword ad account id (numeric, without the K prefix), sent as the `adAccountId` header that every campaign and report call requires.",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET https://kapi.kakao.com/v1/business/tokeninfo: validates the business token ({id, token_user_id, biz_agreements [{group, scope, ad_account_ids}], status})."
+  },
+  {
+   "name": "list_accounts",
+   "description": "GET /openapi/v1/adAccounts/pages (page is 0-based upstream): keyword ad accounts (ON and OFF) with raw.memberType and raw.config. Amounts are KRW."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /openapi/v1/campaigns for the account in the ad_account_id config (adAccountId header; account_id is not sent). `status` filters config: ON, OFF or DEL. `budget` is the daily budget in KRW (null when unset); raw.status lists the serving states. No paging."
+  },
+  {
+   "name": "get_report",
+   "description": "GET /openapi/v1/campaigns/report?metricsGroups=BASIC&start=&end= for every campaign of the configured account (campaign_id is not a filter here). Kakao expects dates as yyyyMMdd: pass date_from/date_to like 20260901 (up to two years back). spend is KRW."
+  },
+  {
+   "name": "update_budget",
+   "description": "PATCH /openapi/v1/campaigns/{id}/dailyBudget {dailyBudgetAmount}: a whole number of KRW (`currency` is ignored); spends money. The campaign must belong to the configured ad account."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PATCH /openapi/v1/campaigns/{id}/onOff {id, config: OFF|ON} (only campaigns currently ON or OFF). Resuming restarts spending. Kakao answers an empty 200."
+  }
+ ]
+}

@@ -1,0 +1,135 @@
+{
+ "id": "thumbtack_partner_api",
+ "category": "deals",
+ "label": "Thumbtack Pro",
+ "lane": "assist",
+ "kind": "agency_rfp",
+ "regions": [
+  "us"
+ ],
+ "docs_url": "https://developers.thumbtack.com/docs",
+ "url": "https://www.thumbtack.com/pro",
+ "verified_at": "2026-09-25",
+ "terms_note": "Partner Platform application; pros pay per lead on Thumbtack; API terms apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "oauth2 (partner platform)",
+  "access": "apply",
+  "capabilities": [
+   "leads",
+   "messages",
+   "profile_sync",
+   "negotiations"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search_postings",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "submit_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "withdraw_bid",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_message",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "bid_status",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "credits",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Pro integrations: leads, negotiations, messages, profiles). Lane `assist` → **api** after partner approval. Confidence high (docs via r.jina.ai).",
+  "base_urls": [
+   "https://api.thumbtack.com/"
+  ],
+  "auth": [
+   "1. Apply to the Partner Platform → OAuth client → pro authorizes the integration."
+  ],
+  "endpoints": [
+   {
+    "call": "Leads / Negotiations webhooks + API",
+    "purpose": "receive incoming leads in real time",
+    "notes": "lead, customer, request details"
+   },
+   {
+    "call": "Messages API",
+    "purpose": "reply to homeowners",
+    "notes": "text"
+   },
+   {
+    "call": "Profile API",
+    "purpose": "profile_sync",
+    "notes": "business profile"
+   }
+  ],
+  "limits": " - Partner approval; per-lead pricing paid by pros. - Partner Platform application; pros pay per lead on Thumbtack; API terms apply.",
+  "mcp_sdk": [
+   "None official found this pass."
+  ],
+  "sources": [
+   "https://r.jina.ai/https://developers.thumbtack.com/docs"
+  ]
+ },
+ "adapter_status": "blocked",
+ "reason": "Partner-only: https://developers.thumbtack.com/docs documents pro integrations (Leads = negotiations, Messages, Pro profiles) for approved Partner Platform integrations authorised by each pro, with new leads delivered by webhooks. There is no marketplace listing to search and no bid verb. Missing: Thumbtack partner approval, plus an inbound webhook receiver (the adapter runtime only makes outbound requests)."
+}

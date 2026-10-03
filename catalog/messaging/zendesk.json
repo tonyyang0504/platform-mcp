@@ -1,0 +1,319 @@
+{
+ "id": "zendesk",
+ "category": "messaging",
+ "label": "Zendesk",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.zendesk.com/documentation/",
+ "url": "https://www.zendesk.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Automation allowed: https://{subdomain}.zendesk.com/api/v2/ with API-token Basic auth (email/token:token) or OAuth. POST /api/v2/tickets {ticket{comment{body|html_body, public}, requester_id|requester{name,email}, subject, …}}; PUT /api/v2/tickets/{id} with comment adds a reply (public true) or an internal note (public false); safe_update + updated_stamp prevent collisions; GET /api/v2/tickets (cursor pagination), /api/v2/search. Rate limits per plan: Team 200, Growth / Professional 400, Enterprise 700, Enterprise Plus 2,500 requests / minute (High Volume add-on 2,500); ticket update endpoint 30 updates per 10 minutes per user per ticket and 100 RPM account-wide (300 with High Volume); X-Rate-Limit header, 429 + Retry-After; Zendesk may enforce 100,000 RPM account cap on spikes.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "sdk",
+   "webhooks"
+  ],
+  "auth": "api_token_or_oauth2",
+  "access": "signup",
+  "capabilities": [
+   "send (ticket comment)",
+   "reply",
+   "read_inbox",
+   "threads (tickets)",
+   "search",
+   "assign_status",
+   "notes (private comments)",
+   "media",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Zendesk API client libraries (Ruby zendesk_api, Python zenpy community, Node node-zendesk) — developer.zendesk.com"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 65000,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_inbound",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_thread",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "reply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "send_dm",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_read",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "react",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_group",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "invite",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "verify_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "parse_webhook",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (Ticketing API v2).",
+  "base_urls": [
+   "https://{subdomain}.zendesk.com/api/v2/"
+  ],
+  "auth": [],
+  "endpoints": [
+   {
+    "call": "POST /api/v2/tickets` `{ticket{subject, comment{body",
+    "purpose": "html_body, public}, requester{name,email}",
+    "notes": "requester_id, tags, custom_fields}}`"
+   },
+   {
+    "call": "PUT /api/v2/tickets/{id}` `{ticket{comment{body",
+    "purpose": "html_body, public: true}, status, assignee_id, safe_update: true, updated_stamp}}`",
+    "notes": "reply"
+   },
+   {
+    "call": "GET /api/v2/tickets?sort_by=updated_at` (cursor pagination) · `GET /api/v2/tickets/{id}/comments` · `GET /api/v2/search?query=type:ticket status:open updated>…",
+    "purpose": "read inbox / thread",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/v2/uploads` → `token` → comment `uploads[]",
+    "purpose": "media",
+    "notes": ""
+   },
+   {
+    "call": "Webhooks (Admin Center) fired by triggers / automations on ticket events → our endpoint",
+    "purpose": "inbound push",
+    "notes": "signed"
+   },
+   {
+    "call": "GET /api/v2/users/search?query=` · `POST /api/v2/users",
+    "purpose": "requesters",
+    "notes": ""
+   },
+   {
+    "call": "PUT /api/v2/tickets/{id}` `{status: solved}` · `/tickets/{id}/merge",
+    "purpose": "manage",
+    "notes": ""
+   }
+  ],
+  "limits": " - Account-wide per plan: Team 200, Growth / Professional 400, Enterprise 700, Enterprise Plus 2,500 requests / minute (High Volume add-on 2,500); `X-Rate-Limit` header; 429 + `Retry-After`; possible 100,000 RPM protective cap. - Tickets endpoint: **100 RPM (300 with High Volume)** and **30 updates per 10 minutes per user per ticket**. - Automation of the user's own instance is normal Zendesk usage; API token = agent seat's rights.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/",
+   "https://developer.zendesk.com/api-reference/introduction/rate-limits/",
+   "https://developer.zendesk.com/api-reference/conversations/introduction/"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://{subdomain}.zendesk.com/api/v2",
+  "rate_per_second": 3,
+  "rate_note": "Account-wide limits by plan (Team 200/min … Enterprise 700/min); Update Ticket has its own limit; HTTP 429 + Retry-After (https://developer.zendesk.com/api-reference/introduction/rate-limits/).",
+  "auth": {
+   "type": "basic",
+   "username_field": "email_token",
+   "password_field": "api_token",
+   "fields": [
+    {
+     "name": "email_token",
+     "required": true,
+     "help": "Agent email followed by /token, e.g. jdoe@example.com/token: API-token auth is Basic '{email_address}/token:{api_token}' (https://developer.zendesk.com/api-reference/introduction/security-and-auth/)."
+    },
+    {
+     "name": "api_token",
+     "required": true,
+     "help": "API token from Admin Center > Apps and integrations > APIs > Zendesk API."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "subdomain",
+    "required": true,
+    "help": "Zendesk subdomain: the `acme` of acme.zendesk.com."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/users/me",
+    "docs": "https://developer.zendesk.com/api-reference/ticketing/users/users/#show-self",
+    "note": "Show Self: account.user is the authenticated agent (an anonymous user without id means the credentials were not accepted)."
+   },
+   "list_inbound": {
+    "method": "GET",
+    "path": "/tickets",
+    "params": {
+     "page": "page",
+     "per_page": "limit"
+    },
+    "fixed_params": {
+     "sort_by": "updated_at",
+     "sort_order": "desc"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "tickets",
+     "key": "messages",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "thread_id": "id",
+      "from": "requester_id",
+      "to": "recipient",
+      "text": "description",
+      "sent_at": "updated_at"
+     }
+    },
+    "docs": "https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/#list-tickets",
+    "note": "Tickets (one row per ticket, most recently updated first; offset pagination, max 100 per page). text is the ticket description (first comment); thread_id is the ticket id for get_thread / reply. `since` is not sent."
+   },
+   "get_thread": {
+    "method": "GET",
+    "path": "/tickets/{thread_id}/comments",
+    "params": {
+     "page": "page",
+     "per_page": "limit"
+    },
+    "max_limit": 100,
+    "default_limit": 25,
+    "result": {
+     "items": "comments",
+     "key": "messages",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "from": "author_id",
+      "text": "plain_body",
+      "sent_at": "created_at"
+     }
+    },
+    "docs": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_comments/#list-comments",
+    "note": "Comments of ticket `thread_id`, oldest first (public replies and internal notes; raw.public tells them apart)."
+   },
+   "send": {
+    "method": "POST",
+    "path": "/tickets",
+    "body": {
+     "ticket.subject": "subject",
+     "ticket.comment.body": "text",
+     "ticket.requester.email": "to"
+    },
+    "result": {
+     "root": "ticket",
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/#create-ticket",
+    "note": "Creates a ticket with requester `to` (email; Zendesk creates the user if unknown) and `text` as the first comment, which notifies the requester per the account's triggers. message_id is the ticket id."
+   },
+   "reply": {
+    "method": "PUT",
+    "path": "/tickets/{thread_id}",
+    "body": {
+     "ticket.comment.body": "text",
+     "ticket.comment.public": "json:true"
+    },
+    "result": {
+     "root": "audit",
+     "fields": {
+      "message_id": "id",
+      "status": "=sent"
+     }
+    },
+    "docs": "https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/#update-ticket",
+    "note": "Adds a PUBLIC comment to ticket `thread_id` (Update Ticket with ticket.comment); message_id is the id of the audit the update produced."
+   }
+  },
+  "not_offered": {
+   "mark_read": "Tickets and comments have no per-agent read state in the Ticketing API (https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/); only ticket status can be changed."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host support.zendesk.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://developer.zendesk.com/zendesk/oas.yaml: 5/5 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "list_inbound: spec says \"response path total='count' is not in the response schema\"; waived: offset-paginated list responses carry count/next_page/previous_page (Zendesk pagination docs); the OAS omits that envelope get_thread: spec says \"response path total='count' is not in the response schema\"; waived: offset-paginated list responses carry count/next_page/previous_page (Zendesk pagination docs); the OAS omits that envelope"
+ }
+}

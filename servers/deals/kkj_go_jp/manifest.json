@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "kkj_go_jp-mcp",
+ "display_name": "Kankojyu Information Portal MCP",
+ "version": "0.1.0",
+ "description": "Kankojyu Information Portal (deals): search_postings. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "kkj_go_jp"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search_postings",
+   "description": "GET /api/?Query=…&Count=…&CFT_Issue_Date=<60 days ago>/ (XML; guide §3). `query` is required in practice (Query is the one mandatory search string; AND/OR/ANDNOT operators allowed; a single kana character is rejected). Count is the maximum number of results (the API has no offset or page parameter, so page is not sent — ignore next_page); results are limited to notices dated in the last 60 days. posted_at is 公告日 (CftIssueDate), deadline 入札開始日 (TenderSubmissionDeadline, often absent); category (物品/工事/役務), prefecture, OpeningTendersEvent and Attachments are in raw. A malformed query answers <Results><Error>…</Error></Results> with no results (postings is then empty)."
+  }
+ ]
+}

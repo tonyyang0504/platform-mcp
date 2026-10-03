@@ -1,0 +1,375 @@
+{
+ "id": "x",
+ "category": "social",
+ "label": "X",
+ "lane": "api",
+ "kind": null,
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://docs.x.com/x-api/posts/create-post",
+ "url": "https://x.com/",
+ "verified_at": "2026-09-24",
+ "terms_note": "PAID — X API v2 is pay-per-usage with prepaid credits (no subscription tiers): Post create $0.015 per request ($0.200 when the post carries a URL), DM create $0.015, interaction delete $0.010, Posts read $0.005 per resource (Owned Reads of your own posts / mentions $0.001), webhook events billed per delivery; resources deduplicated per 24 h UTC day; spending limits + auto-recharge in the Developer Console. Rate limits: POST /2/tweets 100 per 15 min per user / 10,000 per 24 h per app; DELETE 50/15 min; mentions 300/15 min; DMs 15/15 min and 1,440/24 h; recent search 300/15 min (user). Quote posts are Enterprise-only. Automation is allowed under the Developer Agreement / automation rules (no unsolicited @-mentions, no duplicate posting across accounts). Caution (docs read 2026-09-24): paid access - 'The X API uses pay-per-usage pricing. No subscriptions—pay only for what you use' (https://docs.x.com/x-api/getting-started/pricing): Post: Create $0.015 per request ($0.200 with a URL), Posts: Read $0.005 per resource, Interaction: Delete $0.010; buy credits in the Developer Console before any call succeeds.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sdk"
+  ],
+  "auth": "oauth2",
+  "access": "paid",
+  "capabilities": [
+   "post",
+   "upload_media",
+   "reply",
+   "read_comments",
+   "inbox_dm",
+   "search",
+   "analytics",
+   "delete",
+   "webhooks"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official X Developer Console + xdk (docs.x.com SDK section)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": 280,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "publish_text",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /2/tweets (operationId `createPosts`)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "publish_image",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /2/media/upload/initialize → POST /2/media/upload/{id}/append → POST /2/media/upload/{id}/finalize → POST /2/tweets (media.media_ids)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "publish_video",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "same v2 chunked media flow (+ processing status)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "read_comments",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/tweets/search/recent?query=conversation_id:{id} (7-day window)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "reply_comment",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /2/tweets with `reply.in_reply_to_tweet_id`",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "read_mentions",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/users/{id}/mentions (operationId `getUsersMentions`)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "dm_send",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": "POST /2/dm_conversations/with/{participant_id}/messages (`createDirectMessagesByParticipantId`)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "dm_read",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/dm_events (`getDirectMessagesEvents`) · GET /2/dm_conversations/{id}/dm_events",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "delete",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": "DELETE /2/tweets/{id} (`deletePosts`)",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "analytics_post",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/tweets?ids=&tweet.fields=public_metrics,non_public_metrics,organic_metrics — the dedicated GET /2/tweets/analytics (`getPostsAnalytics`) exists and is unused",
+   "docs": "https://api.x.com/2/openapi.json"
+  },
+  {
+   "name": "analytics_account",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": "GET /2/users/me?user.fields=public_metrics (followers) · GET /2/usage/tweets (consumption)",
+   "docs": "https://api.x.com/2/openapi.json"
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.",
+  "base_urls": [
+   "https://api.x.com/2/"
+  ],
+  "auth": [
+   "1. Developer Console app → OAuth 2.0 with PKCE (user context): scopes `tweet.read`, `tweet.write`, `users.read`,",
+   "2. Buy prepaid credits in the console (pay-per-usage, no subscription); set a spending limit / auto-recharge."
+  ],
+  "endpoints": [
+   {
+    "call": "Method + path",
+    "purpose": "Limits (user / app)",
+    "notes": "Cost"
+   },
+   {
+    "call": "POST /2/tweets` {text, media.media_ids[≤4], reply.in_reply_to_tweet_id, poll, reply_settings}",
+    "purpose": "100 / 15 min · 10,000 / 24 h app",
+    "notes": "$0.015; **$0.200 if the text contains a URL**"
+   },
+   {
+    "call": "DELETE /2/tweets/:id",
+    "purpose": "50 / 15 min",
+    "notes": "$0.010"
+   },
+   {
+    "call": "POST /2/media/upload` (chunked INIT / APPEND / FINALIZE)",
+    "purpose": "",
+    "notes": "metadata $0.005"
+   },
+   {
+    "call": "GET /2/users/:id/mentions",
+    "purpose": "300 / 15 min",
+    "notes": "Owned Read $0.001 per post"
+   },
+   {
+    "call": "GET /2/users/:id/tweets",
+    "purpose": "",
+    "notes": "$0.001 per post"
+   },
+   {
+    "call": "GET /2/tweets/search/recent` (7 days)",
+    "purpose": "300 / 15 min",
+    "notes": "$0.005 per post returned"
+   },
+   {
+    "call": "POST /2/dm_conversations/with/:participant_id/messages`, `GET …/dm_events",
+    "purpose": "15 / 15 min, 1,440 / 24 h",
+    "notes": "$0.015 per send; $0.010 per event read"
+   },
+   {
+    "call": "X Activity API (post.create, dm.received, follow.follow …)",
+    "purpose": "",
+    "notes": "$0.005–0.010 per event"
+   },
+   {
+    "call": "tweet.fields=public_metrics,non_public_metrics,organic_metrics` on own posts",
+    "purpose": "",
+    "notes": "read pricing"
+   }
+  ],
+  "limits": " - Rate windows 15 min or 24 h, headers `x-rate-limit-limit / -remaining / -reset`. - Quote posts are Enterprise-only; video caps depend on Premium status. - Deduplication: the same resource fetched twice in a UTC day is billed once. - Developer Agreement + automation rules: no unsolicited mentions / duplicate posts across accounts; disclosure of automated accounts.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://docs.x.com/x-api/posts/create-post",
+   "https://docs.x.com/x-api/getting-started/about-x-api",
+   "https://docs.x.com/x-api/getting-started/pricing",
+   "https://docs.x.com/x-api/fundamentals/rate-limits"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.x.com",
+  "rate_per_second": 1,
+  "auth": {
+   "type": "oauth2_refresh_token",
+   "token_url": "https://api.x.com/2/oauth2/token",
+   "client_auth": "basic",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "OAuth 2.0 Client ID of the X app (Developer Console > Keys and tokens). Sent as the HTTP Basic username on POST https://api.x.com/2/oauth2/token (grant_type=refresh_token)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "OAuth 2.0 Client Secret of a CONFIDENTIAL client ('Web App and Automated App or bots are confidential clients'; 'You don't need client id for confidential clients with a valid Authorization Header'); HTTP Basic password on the token request. Public clients (Native App, Single page App) are not supported by this entry."
+    },
+    {
+     "name": "refresh_token",
+     "required": true,
+     "help": "Refresh token from a one-time OAuth 2.0 Authorization Code Flow with PKCE consent with scopes tweet.read tweet.write users.read offline.access ('If the scope offline.access is applied an OAuth 2.0 refresh token will be issued', https://docs.x.com/resources/fundamentals/authentication/oauth-2-0/authorization-code). Access tokens (2 h) are minted from it; a new refresh token returned by the grant replaces the old one in memory (and in PLATFORM_MCP_STATE_DIR/x.json when that is set)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "user_id",
+    "required": true,
+    "help": "Numeric X user id of the authorizing account (data.id from the `me` tool, GET /2/users/me); read_mentions calls /2/users/<user_id>/mentions. Env: PLATFORM_MCP_X_USER_ID."
+   }
+  ],
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/2/users/me",
+    "fixed_params": {
+     "user.fields": "id,name,username,created_at,public_metrics"
+    },
+    "docs": "https://docs.x.com/x-api/users/get-my-user",
+    "note": "GET /2/users/me (users.read, tweet.read) answers {data: {id, name, username, public_metrics, ...}}; data.id is the user_id config value."
+   },
+   "publish_text": {
+    "method": "POST",
+    "path": "/2/tweets",
+    "body": {
+     "text": "text",
+     "reply.in_reply_to_tweet_id": "reply_to"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/posts/create-post",
+    "note": "POST /2/tweets {text, reply.in_reply_to_tweet_id} (operationId createPosts; tweet.write) answers 201 {data: {id, text}}. The URL is https://x.com/i/web/status/<id>. Billed per request (Post: Create $0.015, $0.200 with a URL)."
+   },
+   "read_comments": {
+    "method": "GET",
+    "path": "/2/tweets/search/recent",
+    "params": {
+     "query": "fmt:conversation_id:{post_id}",
+     "max_results": "limit"
+    },
+    "fixed_params": {
+     "post.fields": "author_id,created_at,conversation_id,in_reply_to_user_id"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "comments",
+     "fields": {
+      "id": "id",
+      "author": "author_id",
+      "text": "text",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/posts/search-recent-posts",
+    "note": "GET /2/tweets/search/recent?query=conversation_id:<post_id> returns replies in the post's conversation from the last 7 days ('Must be within the last 7 days'); max_results is 10-100 (a smaller `limit` is rejected by X). `author` is the author_id. Pagination uses next_token, so `page` is not sent. Billed per Post read."
+   },
+   "reply_comment": {
+    "method": "POST",
+    "path": "/2/tweets",
+    "body": {
+     "text": "text",
+     "reply.in_reply_to_tweet_id": "comment_id"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "id": "id"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/posts/create-post",
+    "note": "A reply is a Post with reply.in_reply_to_tweet_id set to the comment's post id."
+   },
+   "read_mentions": {
+    "method": "GET",
+    "path": "/2/users/{user_id}/mentions",
+    "path_params": {
+     "user_id": "@user_id"
+    },
+    "params": {
+     "max_results": "limit",
+     "start_time": "since"
+    },
+    "fixed_params": {
+     "post.fields": "author_id,created_at,conversation_id"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "data",
+     "key": "mentions",
+     "fields": {
+      "id": "id",
+      "author": "author_id",
+      "text": "text",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/users/get-mentions",
+    "note": "GET /2/users/{id}/mentions (operationId getUsersMentions; max_results 5-100). `since` is sent as start_time (RFC 3339 date-time, e.g. 2026-09-01T00:00:00Z). pagination_token paging, so `page` is not sent. Owned Reads pricing ($0.001 per Post) applies when id is the authenticated user."
+   },
+   "delete": {
+    "method": "DELETE",
+    "path": "/2/tweets/{post_id}",
+    "result": {
+     "root": "data",
+     "fields": {
+      "status": "=deleted",
+      "deleted": "deleted"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/posts/delete-post",
+    "note": "DELETE /2/tweets/{id} (operationId deletePosts; tweet.write) answers {data: {deleted: true}}. Billed as Interaction: Delete ($0.010)."
+   },
+   "analytics_post": {
+    "method": "GET",
+    "path": "/2/tweets/{post_id}",
+    "fixed_params": {
+     "post.fields": "public_metrics,created_at"
+    },
+    "result": {
+     "root": "data",
+     "fields": {
+      "post_id": "id",
+      "metrics": "public_metrics",
+      "created_at": "created_at"
+     }
+    },
+    "docs": "https://docs.x.com/x-api/posts/get-post-by-id",
+    "note": "GET /2/tweets/{id}?post.fields=public_metrics,created_at: `metrics` is PostPublicMetrics {repost_count, reply_count, like_count, quote_count, bookmark_count, impression_count} 'at the time of the request'."
+   }
+  },
+  "not_offered": {
+   "publish_image": "Media must be uploaded first: 'Upload media first with the chunked upload endpoints, then pass the returned media_id in media.media_ids' (https://docs.x.com/x-api/posts/create-post); the runtime has no file upload and makes one call per tool."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.x.com: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 7/7 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "token api.x.com/2/oauth2/token: 400 invalid_client",
+   "authorize https://x.com/i/oauth2/authorize: 200",
+   "spec https://api.x.com/2/openapi.json: 7/7 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

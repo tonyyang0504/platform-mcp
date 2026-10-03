@@ -1,0 +1,70 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/newegg-mcp",
+ "description": "Newegg Marketplace (ecommerce channels): me, update_listing, end_listing, set_inventory, list_orders",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developer.newegg.com/newegg_marketplace_api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "newegg"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_NEWEGG_API_KEY",
+     "description": "Newegg Marketplace API key assigned by the Newegg integration team (or your third-party developer key); sent verbatim as the Authorization header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NEWEGG_SECRET_KEY",
+     "description": "The seller's Secret Key (assigned to you, or to your third-party developer on the seller's authorization); sent as the SecretKey header.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_NEWEGG_SELLER_ID",
+     "description": "Your Newegg seller ID (e.g. A006); sent as ?sellerid= on every call.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_NEWEGG_COUNTRY_CODE",
+     "description": "ISO 3-letter ship-to country your prices target, e.g. USA; used in PriceList.Price[].CountryCode by update_listing/end_listing.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_NEWEGG_CURRENCY",
+     "description": "Currency matching country_code, e.g. USD for USA (wrong combinations are rejected).",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_NEWEGG_WAREHOUSE_LOCATION",
+     "description": "ISO 3-letter country of the warehouse whose stock set_inventory writes, e.g. USA.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

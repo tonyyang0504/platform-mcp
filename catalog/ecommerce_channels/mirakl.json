@@ -1,0 +1,280 @@
+{
+ "id": "mirakl",
+ "category": "ecommerce_channels",
+ "label": "Mirakl-powered marketplaces",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://developer.mirakl.com/",
+ "url": "https://www.mirakl.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "Each marketplace approves sellers individually and issues its own Mirakl host + shop API key; Mirakl guidelines: HTTPS only, tolerate new fields / enum values, 429 with Retry-After (limits set per operator, not published); official PHP SDK; no universal sandbox (operators may provide a test shop).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi",
+   "sdk"
+  ],
+  "auth": "api_key (per-seller shop API key generated in the marketplace's Mirakl back office — user menu › API key › Generate; `Authorization: <key>`)",
+  "access": "apply",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "reports",
+   "messages",
+   "invoices"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "official Mirakl PHP SDK for sellers — https://github.com/mirakl/sdk-php-shop",
+   "OpenAPI 3 spec per marketplace (developer.mirakl.com/content/product/mmp/rest/seller/openapi3)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.base_url",
+  "token",
+  "config.shop_id"
+ ],
+ "rate_limits": "operator-configured",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official",
+  "base_urls": [
+   "https://<marketplace-host>/api/..."
+  ],
+  "auth": [
+   "1. Seller is approved by the operator (marketplace-specific application).",
+   "2. Back office › user menu (top right) › API key tab › Generate — one key per seller user; regenerate invalidates the old one.",
+   "3. Send it as `Authorization` on every HTTPS call; scopes are shop roles (ROLE_SHOP_ADMIN, ROLE_PARTNER_OFFER_WRITE …)."
+  ],
+  "endpoints": [
+   {
+    "call": "POST /api/offers/imports (OF01) → GET /api/offers/imports/{import} (OF02) → …/error_report (OF03)",
+    "purpose": "file import of offers (create / update / delete)",
+    "notes": "file CSV/XML/XLSX, import_mode NORMAL"
+   },
+   {
+    "call": "POST /api/offers (OF24) · GET /api/offers (OF21) · GET /api/offers/{offer} (OF22)",
+    "purpose": "JSON offers create/update, list, read",
+    "notes": "sku, product_id (EAN), price, quantity, state, logistic_class, discount"
+   },
+   {
+    "call": "POST /api/offers/pricing/imports (PRI01) · POST /api/offers/stock/imports (STO01)",
+    "purpose": "price-only / stock-only imports (+ status PRI02/STO02, errors PRI03/STO03)",
+    "notes": ""
+   },
+   {
+    "call": "POST /api/offers/export/async (OF52) → OF53 → OF54",
+    "purpose": "offer export",
+    "notes": ""
+   },
+   {
+    "call": "P41 product import (+ P42/P43 status)",
+    "purpose": "create products in the operator catalogue",
+    "notes": ""
+   },
+   {
+    "call": "GET /api/orders (OR11) · PUT /api/orders/{order}/accept (OR21)",
+    "purpose": "orders; accept / refuse lines",
+    "notes": ""
+   },
+   {
+    "call": "PUT /api/orders/{order}/tracking (OR23) · PUT /api/orders/{order}/ship (OR24)",
+    "purpose": "tracking push, then ship",
+    "notes": "carrier_code"
+   },
+   {
+    "call": "OR41/OR42 messages · OR72 order documents · refunds / cancellations (operator-enabled)",
+    "purpose": "messages, documents, after-sales",
+    "notes": ""
+   },
+   {
+    "call": "IV01 invoices / accounting",
+    "purpose": "payout documents",
+    "notes": ""
+   }
+  ],
+  "limits": " 429 + Retry-After; per-operator limits (not published on the portal). - Per-marketplace seller agreement; API key is the seller's own. - Mirakl API guidelines (backward compatibility, status-code handling).",
+  "mcp_sdk": [
+   "SDK: official Mirakl PHP SDK for sellers — https://github.com/mirakl/sdk-php-shop",
+   "SDK: OpenAPI 3 spec per marketplace (developer.mirakl.com/content/product/mmp/rest/seller/openapi3)"
+  ],
+  "sources": [
+   "https://developer.mirakl.com/",
+   "https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3",
+   "https://r.jina.ai/https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3/offers/of01",
+   "https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3/orders/or21",
+   "https://github.com/mirakl/sdk-php-shop",
+   "https://documentation.despatchcloud.com/books/sales-channels/page/mirakl"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{instance_host}",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Shop API key generated in the marketplace's Mirakl seller back office (user menu > API key > Generate); sent verbatim as the Authorization header (no Bearer prefix)."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "instance_host",
+    "required": true,
+    "help": "Host of your marketplace's Mirakl instance without scheme, e.g. marketplace.example.com or <operator>.mirakl.net (the operator gives it with the API key); every call goes to https://<instance_host>/api/..."
+   },
+   {
+    "name": "shop_id",
+    "required": false,
+    "help": "Numeric shop id, only when your API key's user has access to several shops (sent as ?shop_id= on every call; the default shop is used otherwise)."
+   }
+  ],
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/api/account",
+    "params": {
+     "shop_id": "@shop_id"
+    },
+    "docs": "https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3/stores/a01",
+    "note": "A01 GET /api/account returns the shop {shop_id, shop_name, shop_state, currency_iso_code, channels, contact_informations, ...}. Mirakl's documented maximum usage for A01 is once per day."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/api/orders",
+    "params": {
+     "order_state_codes": "status",
+     "start_date": "since",
+     "offset": "offset",
+     "max": "limit",
+     "shop_id": "@shop_id"
+    },
+    "default_limit": 10,
+    "max_limit": 100,
+    "result": {
+     "items": "orders",
+     "key": "orders",
+     "total": "total_count",
+     "fields": {
+      "id": "order_id",
+      "status": "order_state",
+      "total": "total_price",
+      "currency": "currency_iso_code",
+      "created_at": "created_date",
+      "tracking_number": "shipping_tracking"
+     }
+    },
+    "docs": "https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3/orders/or11",
+    "note": "OR11 GET /api/orders?order_state_codes&start_date(ISO-8601 creation date)&offset&max(default 10, max 100). `status` is a comma-separated list of STAGING|WAITING_ACCEPTANCE|WAITING_DEBIT|WAITING_DEBIT_PAYMENT|SHIPPING|SHIPPED|TO_COLLECT|RECEIVED|CLOSED|REFUSED|CANCELED. Returns {orders[], total_count}; the order lines, customer and shipping address are in raw."
+   },
+   "mark_shipped": {
+    "method": "PUT",
+    "path": "/api/orders/{order_id}/tracking",
+    "params": {
+     "shop_id": "@shop_id"
+    },
+    "body": {
+     "carrier_code": "carrier",
+     "tracking_number": "tracking_number"
+    },
+    "result": {
+     "fields": {
+      "status": "=tracking_updated"
+     }
+    },
+    "docs": "https://developer.mirakl.com/content/product/mmp/rest/seller/openapi3/orders/or23",
+    "note": "OR23 PUT /api/orders/{order_id}/tracking {carrier_code, tracking_number} records the carrier tracking of the order. `carrier` must be a carrier code registered on the marketplace (see CH11/SH21 carriers). Confirming the shipment itself is a separate call (OR24 PUT /api/orders/{order_id}/ship) that this tool does not make, so the order stays in SHIPPING until it is validated."
+   }
+  },
+  "not_offered": {
+   "create_listing": "OF24 POST /api/offers requires product_id + product_id_type (the marketplace product the offer attaches to) and state_code for every offer ('Required at offer creation'); the vocabulary has no product reference or offer condition.",
+   "update_listing": "OF24 POST /api/offers is the only JSON offer write and replaces the whole offer: 'You must send all offer fields. Offer fields that are not sent are reset to their default value' (quantity 'if not provided, will be set to 0', description deleted), so a partial update would wipe the offer.",
+   "end_listing": "Offers are deleted through OF24 with update_delete=delete, whose schema still requires price, product_id, product_id_type and state_code for the offer; the vocabulary only carries the listing id.",
+   "set_inventory": "Stock-only updates are STO01 (multipart CSV stock file import) or a full OF24 offer replacement ('quantity ... if not provided, will be set to 0' and every other unsent field reset); neither is a single JSON stock call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host marketplace.bestbuy.ca: DNS ok, TLSv1.3 (Let's Encrypt)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

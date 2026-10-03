@@ -1,0 +1,87 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/google-mcp",
+ "description": "Google Ads (ads): me, list_accounts, list_campaigns, get_report, pause_resume. Every tool maps to a ",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://developers.google.com/google-ads/api/docs/start",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "google"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_GOOGLE_CLIENT_ID",
+     "description": "OAuth 2.0 client id (Google Cloud console > Credentials) of the app that the Google Ads user authorised with scope https://www.googleapis.com/auth/adwords.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_CLIENT_SECRET",
+     "description": "The OAuth client's secret; sent in the form body of the refresh_token grant.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_REFRESH_TOKEN",
+     "description": "Refresh token obtained once through Google's consent flow (offline access, scope https://www.googleapis.com/auth/adwords); the runtime mints hourly access tokens from it.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_DEVELOPER_TOKEN",
+     "description": "Google Ads API developer token (manager account > Admin > API Center), sent as the `developer-token` header on every call; Test-access tokens only work against test accounts.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_CUSTOMER_ID",
+     "description": "Google Ads customer id (10 digits, no dashes) of the account being managed: pause_resume mutates campaigns under it, and list_accounts reads its customer_client hierarchy (itself plus direct clients when it is a manager). When the user reaches it through a manager account, also set login_customer_id.",
+     "isRequired": true,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_LOGIN_CUSTOMER_ID",
+     "description": "Manager customer id (digits, no dashes) sent as `login-customer-id` when the user reaches client accounts through a manager account; leave unset for direct access.",
+     "isRequired": false,
+     "isSecret": false
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_ENV",
+     "description": "Vendor environment (default production): sandbox = production host with test accounts or test keys. Credentials are the environment's own; see adapter.environments in the catalog entry.",
+     "isRequired": false,
+     "isSecret": false,
+     "default": "production",
+     "choices": [
+      "production",
+      "sandbox"
+     ]
+    },
+    {
+     "name": "PLATFORM_MCP_GOOGLE_BASE_URL",
+     "description": "Optional https base URL override (a mock or a private gateway); replaces the selected environment's base_url. Never echoed in errors.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

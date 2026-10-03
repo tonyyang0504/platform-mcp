@@ -1,0 +1,46 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/swag_pro_printfection-mcp",
+ "description": "Swag Pro (formerly Printfection) (ecommerce suppliers): me, list_products, get_product, create_order",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.printfection.com/developers/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "swag_pro_printfection"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_API_KEY",
+     "description": "Swag Pro (Printfection) API key from https://app.printfection.com/account/api_keys.php, sent as the HTTP Basic username with an empty password.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_SWAG_PRO_PRINTFECTION_CAMPAIGN_ID",
+     "description": "Numeric id of the Collection campaign create_order places orders in (GET /campaigns, not mapped). Only Giveaway and Collection campaigns are supported by the API.",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

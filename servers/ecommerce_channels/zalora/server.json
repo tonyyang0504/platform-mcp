@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/zalora-mcp",
+ "description": "Zalora (ecommerce channels): me, update_listing, set_inventory, end_listing, list_orders. Every tool",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://sellercenter-api.zalora.com/docs/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "zalora"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_ZALORA_CLIENT_ID",
+     "description": "Application ID of an OAuth application created in ZALORA Seller Center (Settings > Integration Management > OAuth Applications > Add Application).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZALORA_CLIENT_SECRET",
+     "description": "Application Secret of the same application; sent with the id as HTTP Basic to /oauth/client-credentials (grant_type=client_credentials) for a 1-hour bearer token.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_ZALORA_COUNTRY",
+     "description": "Country code of the price row that update_listing / end_listing change (Seller Center country code of the venture, as used in PUT /v2/product/{productId}/prices/{country}).",
+     "isRequired": false,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}

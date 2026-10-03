@@ -1,0 +1,287 @@
+{
+ "id": "trendyol_gulf",
+ "category": "ecommerce_channels",
+ "label": "Trendyol Gulf",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "ae",
+  "sa",
+  "gcc"
+ ],
+ "docs_url": "https://developers.trendyol.com/en",
+ "url": "https://www.trendyol.com/en",
+ "verified_at": "2026-09-25",
+ "terms_note": "Trendyol international seller programme (Gulf / Azerbaijan); same credential model; international-specific onboarding not read (page 404).",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks",
+   "sandbox"
+  ],
+  "auth": "same Basic scheme as Trendyol (Supplier ID + API key + secret, User-Agent) on the EN international docs",
+  "access": "signup",
+  "capabilities": [
+   "listings_create_update",
+   "inventory_sync",
+   "price_sync",
+   "orders",
+   "fulfilment_tracking",
+   "returns",
+   "webhooks",
+   "sandbox"
+  ],
+  "confidence": "medium",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": [
+  "config.supplier_id",
+  "token",
+  "secret",
+  "config.market",
+  "config.stage"
+ ],
+ "rate_limits": "see trendyol",
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "update_listing",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "end_listing",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "set_inventory",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "listing_metrics",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_orders",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "mark_shipped",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **medium** — the shared developer portal was opened; the dedicated international page returned 404.",
+  "base_urls": [],
+  "auth": [
+   "1. Identical to Trendyol (international seller credentials)."
+  ],
+  "endpoints": [
+   {
+    "call": "see trendyol.md",
+    "purpose": "product / price-inventory / packages / claims / webhooks",
+    "notes": "plus Gulf + Azerbaijan address endpoints"
+   }
+  ],
+  "limits": " See trendyol.md. - International partner programme terms.",
+  "mcp_sdk": [
+   "none official found in the pages opened"
+  ],
+  "sources": [
+   "https://developers.trendyol.com/en",
+   "https://developers.trendyol.com/llms.txt",
+   "https://developers.trendyol.com/en/international-marketplace"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://{api_host}/integration",
+  "auth": {
+   "type": "basic",
+   "username_field": "api_key",
+   "password_field": "api_secret",
+   "extra_headers": {
+    "User-Agent": "user_agent"
+   },
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "API KEY from Seller Center > Hesap Bilgilerim / Account Information > Entegrasyon Bilgileri / Integration Information (visible to the master/admin user only; PROD and STAGE differ); HTTP Basic username."
+    },
+    {
+     "name": "api_secret",
+     "required": true,
+     "help": "API SECRET KEY from the same page; HTTP Basic password."
+    }
+   ]
+  },
+  "config_fields": [
+   {
+    "name": "seller_id",
+    "required": true,
+    "help": "Your Trendyol seller (supplier) ID from the same Integration Information page; used in every path."
+   },
+   {
+    "name": "user_agent",
+    "required": true,
+    "help": "Mandatory User-Agent (requests without it get 403): '<sellerId> - SelfIntegration' for your own software, or '<sellerId> - <IntegratorName>' (alphanumeric, max 30 characters) when an integrator company runs it, e.g. '1234 - SelfIntegration'."
+   },
+   {
+    "name": "api_host",
+    "required": true,
+    "help": "apigw.trendyol.com (PROD) or stageapigw.trendyol.com (STAGE, IP-authorised test environment)."
+   }
+  ],
+  "rate_per_second": 4,
+  "terms": "Trendyol Partner API: at most 50 requests per 10 seconds to the same endpoint (429 too.many.requests beyond); getShipmentPackages at most 1000 requests/minute. Price/stock and archive calls are asynchronous batches (check getBatchRequestResult with the returned batchRequestId). International (Gulf, Azerbaijan, CEE) sellers use the same endpoints as Trendyol Turkey per the English v2.0 documentation.",
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/sellers/{sid}/addresses",
+    "path_params": {
+     "sid": "@seller_id"
+    },
+    "docs": "https://developers.trendyol.com/v2.0/docs/return-and-shipping-address-information-getsuppliersaddresses",
+    "note": "getSuppliersAddresses returns your shipment/return/invoice addresses ({supplierAddresses[], defaultShipmentAddress...}) — used as the credential check."
+   },
+   "update_listing": {
+    "method": "POST",
+    "path": "/inventory/sellers/{sid}/products/price-and-inventory",
+    "path_params": {
+     "sid": "@seller_id"
+    },
+    "body": {
+     "items.0.barcode": "listing_id",
+     "items.0.salePrice": "price",
+     "items.0.listPrice": "price",
+     "items.0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=batch_submitted"
+     }
+    },
+    "docs": "https://developers.trendyol.com/v2.0/docs/stock-and-price-update-updatepriceandinventory-1",
+    "note": "updatePriceAndInventory {items: [{barcode, salePrice, listPrice, quantity}]} changes the LIVE sale price and/or sellable stock of an approved product; `listing_id` is the product barcode. listPrice (the crossed-out original price) is sent equal to salePrice, so no discount is displayed. Asynchronous: raw.batchRequestId → getBatchRequestResult. Re-sending an identical body within 15 minutes is rejected. Titles/descriptions go through product update services, not here."
+   },
+   "set_inventory": {
+    "method": "POST",
+    "path": "/inventory/sellers/{sid}/products/price-and-inventory",
+    "path_params": {
+     "sid": "@seller_id"
+    },
+    "body": {
+     "items.0.barcode": "sku",
+     "items.0.quantity": "quantity"
+    },
+    "result": {
+     "fields": {
+      "status": "=batch_submitted"
+     }
+    },
+    "docs": "https://developers.trendyol.com/v2.0/docs/stock-and-price-update-updatepriceandinventory-1",
+    "note": "updatePriceAndInventory {items: [{barcode, quantity}]} sets the sellable stock (max 20,000). `sku` must be the product BARCODE Trendyol knows it by. Asynchronous batch (raw.batchRequestId)."
+   },
+   "end_listing": {
+    "method": "PUT",
+    "path": "/product/sellers/{sid}/products/archive-state",
+    "path_params": {
+     "sid": "@seller_id"
+    },
+    "body": {
+     "items.0.barcode": "listing_id",
+     "items.0.archived": "json:true"
+    },
+    "result": {
+     "fields": {
+      "status": "=archive_submitted"
+     }
+    },
+    "docs": "https://developers.trendyol.com/v2.0/docs/product-archive",
+    "note": "archiveProducts {items: [{barcode, archived: true}]} archives the product: it becomes invisible on Trendyol but is not deleted (reversible with archived: false). `listing_id` is the barcode. Asynchronous batch."
+   },
+   "list_orders": {
+    "method": "GET",
+    "path": "/order/sellers/{sid}/v2/orders",
+    "path_params": {
+     "sid": "@seller_id"
+    },
+    "params": {
+     "status": "status",
+     "page": "page0",
+     "size": "limit"
+    },
+    "fixed_params": {
+     "orderByField": "PackageLastModifiedDate",
+     "orderByDirection": "DESC"
+    },
+    "default_limit": 50,
+    "max_limit": 200,
+    "result": {
+     "items": "content",
+     "key": "orders",
+     "total": "totalElements",
+     "fields": {
+      "id": "orderNumber",
+      "status": "status",
+      "total": "packageTotalPrice",
+      "currency": "currencyCode",
+      "created_at": "orderDate",
+      "tracking_number": "cargoTrackingNumber"
+     }
+    },
+    "docs": "https://developers.trendyol.com/v2.0/docs/get-order-packages-getshipmentpackages",
+    "note": "getShipmentPackages (v2, mandatory from 15 Oct 2026): one row per SHIPMENT PACKAGE (raw.id is the package id; a split order has several packages with the same orderNumber). status: Created|Picking|Invoiced|Shipped|Cancelled|Delivered|UnDelivered|Returned|AtCollectionPoint|UnPacked|UnSupplied|Awaiting|Verified. Without a date window the endpoint returns the last week; `since` is not sent because startDate must be epoch milliseconds (GMT+3). orderDate is epoch ms; total is packageTotalPrice (net of discounts)."
+   }
+  },
+  "not_offered": {
+   "create_listing": "Product creation (createProducts v2) needs categoryId, brandId, category attributes, cargo company and shipment/return address ids, VAT rate and images per barcode, and goes through Trendyol approval; the vocabulary has no category, brand or attribute inputs.",
+   "mark_shipped": "Shipping uses the Trendyol-contracted cargo provider assigned to the package (cargoTrackingNumber is created by Trendyol); the seller only reports package statuses with updatePackage (Picking, then Invoiced with lines[{lineId, quantity}] and an invoice number) — there is no seller call that submits a carrier and tracking number for an order."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host apigw.trendyol.com: DNS ok, TLSv1.3 (GlobalSign nv-sa)",
+   "probe: 5/5 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 556 (server_error), so the answers are path-specific",
+   "HTML docs spot-check (render-doc): 5/5 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

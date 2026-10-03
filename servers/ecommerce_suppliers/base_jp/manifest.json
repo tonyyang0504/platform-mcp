@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "base_jp-mcp",
+ "display_name": "BASE (store platform) + BASE Developers API + BASE Apps supplier connectors MCP",
+ "version": "0.1.0",
+ "description": "BASE (store platform) + BASE Developers API + BASE Apps supplier connectors (ecommerce suppliers): m",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "base_jp"
+   ],
+   "env": {
+    "PLATFORM_MCP_BASE_JP_CLIENT_ID": "${user_config.platform_mcp_base_jp_client_id}",
+    "PLATFORM_MCP_BASE_JP_CLIENT_SECRET": "${user_config.platform_mcp_base_jp_client_secret}",
+    "PLATFORM_MCP_BASE_JP_REFRESH_TOKEN": "${user_config.platform_mcp_base_jp_refresh_token}",
+    "PLATFORM_MCP_BASE_JP_REDIRECT_URI": "${user_config.platform_mcp_base_jp_redirect_uri}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_base_jp_client_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BASE_JP_CLIENT_ID",
+   "description": "Client ID of your app at https://developers.thebase.in/ (API application required).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_base_jp_client_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BASE_JP_CLIENT_SECRET",
+   "description": "Client secret of the same app.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_base_jp_refresh_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BASE_JP_REFRESH_TOKEN",
+   "description": "Refresh token from the one-time authorization-code exchange (GET /1/oauth/authorize with scope read_users read_items read_orders → POST /1/oauth/token, https://docs.thebase.in/api/oauth/access_token). Valid about 30 days and rotated on every refresh; set PLATFORM_MCP_STATE_DIR so the rotated token survives restarts.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_base_jp_redirect_uri": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BASE_JP_REDIRECT_URI",
+   "description": "The callback URL registered for your BASE Developers app; BASE requires it in every refresh-token request ('redirect_uri 登録したコールバックURL (必須)', https://docs.thebase.in/api/oauth/refresh_token).",
+   "sensitive": false,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "The connected shop: {user: {shop_id, shop_name, shop_url, …}} (scope read_users)."
+  },
+  {
+   "name": "list_products",
+   "description": "Items of the CONNECTED BASE SHOP (GET /1/items, scope read_items), in list_order; `category` is a BASE category_id. BASE is a storefront platform, so these are the merchant's own products, not a supplier catalogue; keyword search is not applied (GET /1/items/search needs its own q)."
+  },
+  {
+   "name": "get_product",
+   "description": "One item of the connected shop (GET /1/items/detail/:item_id); variations[{variation_id, variation, variation_stock, variation_identifier}] are in `raw`."
+  },
+  {
+   "name": "get_order",
+   "description": "An order received by the connected shop (GET /1/orders/detail/:unique_key, scope read_orders). dispatch_status: unshippable, ordered (未対応), unpaid, shipping, dispatched, cancelled; `created_at` is epoch seconds; order_items and order_receiver are in `raw`."
+  }
+ ]
+}

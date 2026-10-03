@@ -1,0 +1,35 @@
+{
+ "manifest_version": "0.2",
+ "name": "nhs_jobs-mcp",
+ "display_name": "NHS Jobs MCP",
+ "version": "0.1.0",
+ "description": "NHS Jobs (jobs): search, get_posting. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "nhs_jobs"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "search",
+   "description": "Keyless XML endpoint 'https://www.jobs.nhs.uk/api/v1/search_xml?' (spec v1.07). keyword matches 'the job title and job advert text'; page is 1-based ('Each page contains a maximum of 10 vacancies, unless specified otherwise by the \"limit\" parameter'; limit 'Maximum value 100'). location is not sent because the spec requires it together with distance and countryCode - filter locations client-side. id is the job reference (use it with get_posting); the numeric id, closeDate, salary (a text range such as '£20,000 to £30,000'), type and locations are in raw. totalPages / totalResults are in the response wrapper. The endpoint answers 406 Not Acceptable to the runtime's default Accept: application/json (live check 2026-09-26), so adapter.headers sends Accept: application/xml."
+  },
+  {
+   "name": "get_posting",
+   "description": "jobReference: 'limit responses to only those job adverts with a matching Job reference number. If provided, then no other filter parameters will be used. This is used for exact matching to a job advert.' Pass the id returned by search (the job reference, e.g. A3233-26-0001)."
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "id": "gulfood",
+ "category": "sales",
+ "label": "Gulfood exhibitors",
+ "lane": "public",
+ "kind": "tradeshow",
+ "regions": [
+  "ae",
+  "mena",
+  "global"
+ ],
+ "docs_url": null,
+ "url": "https://www.gulfood.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "robots.txt (2 Disallow) — exhibitor list allowed.",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

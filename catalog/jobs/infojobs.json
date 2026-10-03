@@ -1,0 +1,225 @@
+{
+ "id": "infojobs",
+ "category": "jobs",
+ "label": "InfoJobs",
+ "lane": "api",
+ "kind": "general",
+ "regions": [
+  "es"
+ ],
+ "docs_url": "https://developer.infojobs.net/documentation/operation-list/index.xhtml",
+ "url": "https://www.infojobs.net/",
+ "verified_at": "2026-09-24",
+ "terms_note": "Spain's main board (Adevinta); CV apply.",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "oauth2"
+  ],
+  "auth": "oauth2",
+  "access": "signup",
+  "capabilities": [
+   "job_search",
+   "job_details",
+   "apply_submit",
+   "application_status",
+   "cv_upload",
+   "profile_sync",
+   "cover_letters",
+   "screening_questions"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "https://developer.infojobs.net/documentation/quick-start/index.xhtml (test console + quick-start; no official SDK)"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_posting",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "apply",
+   "read_only": false,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_messages",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes** (candidate-side API: search, details, apply with questions, application tracking, CV editing).",
+  "base_urls": [
+   "https://api.infojobs.net/api/{version}/…"
+  ],
+  "auth": [
+   "1. **App authentication** on every call: `Authorization: Basic base64(client_id:client_secret)` (realm \"InfoJobs-API\").",
+   "2. **User authorization** (private data, applying): OAuth 2.0 authorization code — redirect to `https://www.infojobs.net/api/oauth/user-authorize/index.xhtml?scope=<comma list>&redirect_uri=<callback>&client_id=…&response_type=code`, receive the verification code on the callback (desktop apps may us",
+   "3. Scopes are listed per operation (e.g. `my_applications` for applying and reading applications, CV scopes for `/curriculum`); user role `role_candidate`."
+  ],
+  "endpoints": [
+   {
+    "call": "GET /api/9/offer",
+    "purpose": "job search (app auth)",
+    "notes": "`q`, `province` (repeatable, values from /dictionary/province), `category` / `subcategory`, `city`, `country`, `salaryMin`, `salaryMax`, contract / workday / study / experience filters, `teleworking`, `order`, `page`, `maxResults`, `sinceDate`; response offers[] + facets"
+   },
+   {
+    "call": "GET /api/7/offer/{offerId}",
+    "purpose": "job details",
+    "notes": "title, description, requirements, salary, contract, province, city, company, applications, link, hasKillerQuestions, questions"
+   },
+   {
+    "call": "GET /offer/{offerId}/killerquestion` · `/openquestion` · `/question",
+    "purpose": "screening questions to answer",
+    "notes": "question ids, answer options"
+   },
+   {
+    "call": "POST /api/4/offer/{offerId}/application` (scope `my_applications`)",
+    "purpose": "apply",
+    "notes": "body `{curriculumCode, coverLetter{name,key,main,text,doSave}, offerOpenQuestions[{id,answer}], offerKillerQuestions[{id,answerId}]}`"
+   },
+   {
+    "call": "GET /application`, `GET /application/{applicationId}`, `PUT /application/{applicationId}`, `GET /application/{applicationId}/timeline",
+    "purpose": "application tracking",
+    "notes": "list of the user's applications, status timeline (read / in process / discarded …)"
+   },
+   {
+    "call": "GET /candidate`, `GET /curriculum`, `GET/PUT /curriculum/{id}/cvtext`, `/education`, `/experience`, `/futurejob`, `/personaldata`, `/skill",
+    "purpose": "profile + CV sync",
+    "notes": "full CV read/write per section"
+   },
+   {
+    "call": "GET/PUT/DELETE /coverletter[/{id}]",
+    "purpose": "cover letters",
+    "notes": "name, text, main"
+   },
+   {
+    "call": "GET /dictionary/{dictionaryId}`, `/dictionary/type/{typeId}",
+    "purpose": "code lists",
+    "notes": "province, category, subcategory, contract types …"
+   }
+  ],
+  "limits": " Not published on the pages opened (the quick-start only says app credentials identify each call). - Free developer registration with an InfoJobs account; the API is explicitly for third-party candidate apps (\"Build a job app for >2.5 million users … Job search, Job application & tracking, CV content & edition\"). - Applying requires the user's OAuth consent (scope `my_applications`) — autopilot apply under the seeker's own token is the documented use. Killer questions must be answered from the profile (truth gate applies). - Site-wide \"Condiciones de uso\" and privacy terms apply; www.infojobs.",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.infojobs.net/",
+   "https://developer.infojobs.net/documentation/operation-list/index.xhtml",
+   "https://developer.infojobs.net/documentation/quick-start/index.xhtml",
+   "https://developer.infojobs.net/documentation/app-auth/index.xhtml",
+   "https://developer.infojobs.net/documentation/user-oauth2/index.xhtml",
+   "https://developer.infojobs.net/documentation/operation/offer-application-post-4.xhtml",
+   "https://developer.infojobs.net/documentation/operation/offer-list-9.xhtml"
+  ]
+ },
+ "adapter": {
+  "base_url": "https://api.infojobs.net/api",
+  "auth": {
+   "type": "basic",
+   "username_field": "client_id",
+   "password_field": "client_secret",
+   "fields": [
+    {
+     "name": "client_id",
+     "required": true,
+     "help": "Client ID of an application registered at https://developer.infojobs.net/ ('App authentication is done via HTTP basic access authentication' with Client ID and Client secret)."
+    },
+    {
+     "name": "client_secret",
+     "required": true,
+     "help": "Client secret of the same InfoJobs application."
+    }
+   ]
+  },
+  "rate_per_second": 2,
+  "rate_note": "No numeric rate limit is published on the operation pages. Two requests per second.",
+  "tools": {
+   "search": {
+    "method": "GET",
+    "path": "/9/offer",
+    "params": {
+     "q": "query",
+     "page": "page",
+     "maxResults": "limit"
+    },
+    "default_limit": 20,
+    "max_limit": 50,
+    "result": {
+     "items": "offers",
+     "key": "postings",
+     "total": "totalResults",
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "author.name",
+      "location": "city",
+      "url": "link",
+      "posted_at": "published"
+     }
+    },
+    "docs": "https://developer.infojobs.net/documentation/operation/offer-list-9.xhtml",
+    "note": "GET /api/9/offer (User role public, no scope): q keyword, page (the example answers currentPage 1), maxResults (default 20; 'We strongly recommend limiting to 50 or fewer'). province/city/country take dictionary keys (/dictionary/*), so location/country are not sent. salaryMin/salaryMax are dictionary items ({id, value} text), left in raw; the list hit has no full description (requirementMin in raw)."
+   },
+   "get_posting": {
+    "method": "GET",
+    "path": "/7/offer/{id}",
+    "result": {
+     "fields": {
+      "id": "id",
+      "title": "title",
+      "company": "profile.name",
+      "location": "city",
+      "url": "link",
+      "posted_at": "creationDate",
+      "description": "description"
+     }
+    },
+    "docs": "https://developer.infojobs.net/documentation/operation/offer-get-7.xhtml",
+    "note": "GET /api/7/offer/{offerId} (User role public). minPay/maxPay are Pay objects and stay in raw; externalUrlForm, when set, is where the application must be made."
+   }
+  },
+  "not_offered": {
+   "me": "The app credentials identify the developer application only; candidate data (/candidate…) needs a user token from the InfoJobs OAuth authorization-code flow.",
+   "apply": "Applying (POST /application with killer questions, CV and cover letter) needs an authenticated candidate's OAuth token with the my_applications scope, which basic app authentication cannot supply.",
+   "list_messages": "No messaging API is documented."
+  }
+ },
+ "version": "0.1.0",
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "reachable_unverified",
+  "evidence": [
+   "host api.infojobs.net: DNS ok, TLSv1.3 (Amazon)",
+   "probe: 2/2 tools answered on their documented path with an auth refusal, a validation error or data; control route answered 500 too, so the host authenticates before routing",
+   "HTML docs spot-check (render-doc): 2/2 tool paths found verbatim on their docs pages; every parameter and body key named on the page"
+  ],
+  "notes": "-"
+ }
+}

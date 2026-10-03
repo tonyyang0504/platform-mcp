@@ -1,0 +1,36 @@
+{
+ "id": "cn_baidu_place",
+ "category": "sales",
+ "label": "百度地图 地点检索 API",
+ "lane": "api",
+ "kind": "maps",
+ "regions": [
+  "cn"
+ ],
+ "docs_url": "https://lbsyun.baidu.com/faq/api?title=webapi/guide/webservice-placeapi",
+ "url": "https://lbsyun.baidu.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "Place API v2 on the user's Baidu LBS AK (real-name developer account, free daily quota).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

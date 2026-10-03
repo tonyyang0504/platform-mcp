@@ -1,0 +1,57 @@
+{
+ "manifest_version": "0.2",
+ "name": "xiaomi_getapps_ads-mcp",
+ "display_name": "小米营销 Xiaomi Ads MCP",
+ "version": "0.1.0",
+ "description": "小米营销 Xiaomi Ads (ads): me, list_campaigns, update_budget. Every tool maps to a documented endpoint.",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "xiaomi_getapps_ads"
+   ],
+   "env": {
+    "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_ID": "${user_config.platform_mcp_xiaomi_getapps_ads_app_id}",
+    "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_KEY": "${user_config.platform_mcp_xiaomi_getapps_ads_app_key}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_xiaomi_getapps_ads_app_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_ID",
+   "description": "appId of the external application your Xiaomi account manager (AM) created when Marketing API access was approved ('申请通过后，AM提供appId、appKey等应用信息').",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_xiaomi_getapps_ads_app_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_XIAOMI_GETAPPS_ADS_APP_KEY",
+   "description": "appKey of that application; exchanged for an access token with POST /foreign/token/createToken.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "2.4 获取国家列表 (GET /foreign/marketing/region/countryList, no parameters) returns {code, result:[{geoType, id, name}]} for a valid token, so it verifies the app credentials without an account id. The earlier probe (campaign/list with page/pageSize only) is refused before authentication with code 100500 \"Required List parameter 'accountIds' is not present\" (auth audit 2026-09-26)."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "1.1 获取广告计划 (GET /foreign/marketing/campaign/list with page, pageSize, accountIds): records {accountId, campaignId, name, dayBudget (美元×100000, left in raw), campaignType (1 应用下载, 2 H5, 3 再营销)}; result.total/pages give the paging. account_id is sent as accountIds. No status or dates are returned."
+  },
+  {
+   "name": "update_budget",
+   "description": "The API has no campaign update call; budgets are edited on 广告组 (ad groups) with 2.3 修改广告组 (POST /foreign/marketing/group/update {groupIds, dayBudget}), so campaign_id here is a groupId (from 2.1 获取广告组, GET /foreign/marketing/group/list). daily_budget is in US dollars and sent as dayBudget in 美元×100000. This spends money; currency is ignored (USD)."
+  }
+ ]
+}

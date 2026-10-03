@@ -1,0 +1,77 @@
+{
+ "manifest_version": "0.2",
+ "name": "binance-mcp",
+ "display_name": "Binance USD-M Futures MCP",
+ "version": "0.1.0",
+ "description": "Binance USD-M Futures (trading): me, list_markets, get_ticker, get_candles, get_balances, list_order",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "binance"
+   ],
+   "env": {
+    "PLATFORM_MCP_BINANCE_API_KEY": "${user_config.platform_mcp_binance_api_key}",
+    "PLATFORM_MCP_BINANCE_API_SECRET": "${user_config.platform_mcp_binance_api_secret}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_binance_api_key": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BINANCE_API_KEY",
+   "description": "Binance API key (sent as X-MBX-APIKEY). Create it under API Management with withdrawals OFF; restrict it to your IP. Futures testnet: create a key at https://testnet.binancefuture.com and point adapter.base_url there (testnet keys only work on the testnet host).",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_binance_api_secret": {
+   "type": "string",
+   "title": "PLATFORM_MCP_BINANCE_API_SECRET",
+   "description": "The key's HMAC secret: signs every request (HMAC-SHA256 hex over the exact query string, appended as `signature` after `timestamp`). Never sent on the wire.",
+   "sensitive": true,
+   "required": true
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "Signed GET /fapi/v1/accountConfig (weight 5): canTrade, canWithdraw, dualSidePosition (Hedge mode), multiAssetsMargin, feeTier."
+  },
+  {
+   "name": "list_markets",
+   "description": "Every contract in one response (no pagination; `query` is not sent). `raw` carries filters and precisions."
+  },
+  {
+   "name": "get_ticker",
+   "description": "24h rolling statistics; decimal strings passed through. Futures tickers carry no bid/ask (that is /ticker/bookTicker, not mapped)."
+  },
+  {
+   "name": "get_candles",
+   "description": "Intervals 1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M. Rows are positional arrays (oldest first); `time` is the open time in ms and prices are decimal strings. Rows carry prices as decimal strings (and Binance the open time as an integer); they are returned as numbers and `time` as a string, as the vocabulary types them (live check 2026-09-26: the raw values failed the output schema)."
+  },
+  {
+   "name": "get_balances",
+   "description": "Per-asset futures wallet balances (decimal strings)."
+  },
+  {
+   "name": "list_orders",
+   "description": "Open orders only; without `symbol` the call is heavy (weight 40). `status` is not sent."
+  },
+  {
+   "name": "place_order",
+   "description": "PLACES A REAL ORDER WITH REAL FUNDS on the configured host; it is not a simulation. Test with the futures testnet https://testnet.binancefuture.com first (edit adapter.base_url to point there), and never place an order the user has not explicitly confirmed. This opens or adds to a LEVERAGED position at the account's current leverage. `quantity` is in the base asset (e.g. BTC for BTCUSDT). Limit orders are sent with timeInForce=GTC and need `price`; omit `price` for market orders. positionSide is not sent (One-way mode); an account in Hedge mode rejects the order."
+  },
+  {
+   "name": "cancel_order",
+   "description": "Binance requires `symbol` together with the order id."
+  }
+ ]
+}

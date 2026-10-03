@@ -1,0 +1,144 @@
+{
+ "id": "trademe_nz",
+ "category": "automotive",
+ "label": "Trade Me Motors",
+ "vertical": "cars_marketplace",
+ "lane": "browser",
+ "url": "https://www.trademe.co.nz",
+ "domain": "trademe.co.nz",
+ "country": "New Zealand",
+ "official_api": true,
+ "docs_url": "https://developer.trademe.co.nz/api-reference/search-methods/used-motors-search",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "OAuth 1.0a (consumer key via application registration)",
+  "access": "signup",
+  "capabilities": [
+   "search_listings",
+   "get_listing",
+   "dealer_inventory_upload"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Trade Me has a public developer API including Used Motors search and listing detail; dealers/VMS integrators use a Motors REST API (motorsapi@trademe.co.nz).",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://developer.trademe.co.nz/",
+   "https://developer.trademe.co.nz/api-reference/search-methods/used-motors-search",
+   "https://help.trademe.co.nz/hc/en-us/articles/7498025705753-Using-the-Trade-Me-API"
+  ],
+  "unofficial": []
+ },
+ "official_mcp": [],
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.trademe.co.nz/v1",
+  "auth": {
+   "type": "none",
+   "fields": [
+    {
+     "name": "consumer_key",
+     "required": true,
+     "help": "Trade Me API consumer key of your registered application (My Trade Me → Developer options; API access is granted after Trade Me reviews the application)."
+    },
+    {
+     "name": "consumer_secret",
+     "required": true,
+     "help": "The application's consumer secret: sent as the OAuth 1.0a PLAINTEXT signature '<consumer secret>&' over HTTPS (Trade Me's documented PLAINTEXT workflow)."
+    }
+   ],
+   "sign": {
+    "mode": "hash",
+    "payload": "{method}",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "headers": {
+     "Authorization": "OAuth oauth_consumer_key={@consumer_key}, oauth_signature_method=PLAINTEXT, oauth_signature={@consumer_secret}%26"
+    }
+   }
+  },
+  "rate_per_second": 1,
+  "terms": "Trade Me API terms (https://developer.trademe.co.nz/api-terms): applications are reviewed before keys work; calls are rate-limited. Prices in NZD, odometer in km.",
+  "tools": {
+   "search_listings": {
+    "method": "GET",
+    "path": "/Search/Motors/Used.json",
+    "params": {
+     "search_string": "query",
+     "make": "make",
+     "model": "model",
+     "year_min": "year_min",
+     "year_max": "year_max",
+     "price_min": "price_min",
+     "price_max": "price_max",
+     "odometer_max": "mileage_max",
+     "condition": "map:condition:new=New,used=Used,New=New,Used=Used",
+     "page": "page",
+     "rows": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 25,
+    "result": {
+     "items": "List",
+     "key": "listings",
+     "total": "TotalCount",
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "price": "StartPrice",
+      "currency": "=NZD",
+      "mileage": "Odometer",
+      "mileage_unit": "=km",
+      "location": "Region",
+      "dealer": "DealerName",
+      "posted_at": "StartDate"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/search-methods/used-motors-search",
+    "note": "GET /v1/Search/Motors/Used.json ('filtered keyword search in the Used cars section of Trade Me Motors') with the application-level OAuth 1.0a PLAINTEXT header; rows ≤ 25 without a member token. make is a Trade Me Used-cars subcategory name (e.g. Toyota), model a model name; condition New|Used; location is not a search filter here (user_region takes a numeric motors region id, not mapped). price is StartPrice (NZD; for classifieds the asking price, see raw.PriceDisplay and raw.BuyNowPrice); StartDate uses Trade Me's '/Date(ms)/' format. Listing page: https://www.trademe.co.nz/a/<ListingId>."
+   },
+   "get_listing": {
+    "method": "GET",
+    "path": "/Listings/{listing_id}.json",
+    "result": {
+     "fields": {
+      "id": "ListingId",
+      "title": "Title",
+      "price": "StartPrice",
+      "currency": "=NZD",
+      "location": "Region",
+      "posted_at": "StartDate",
+      "description": "Body"
+     }
+    },
+    "docs": "https://developer.trademe.co.nz/api-reference/listing-methods/retrieve-the-details-of-a-single-listing",
+    "note": "GET /v1/Listings/<ListingId>.json (ListedItemDetail): title, StartPrice/BuyNowPrice/PriceDisplay, Region, Body, Attributes (make, model, year, odometer … as name/value pairs) and Photos stay in raw."
+   }
+  },
+  "not_offered": {
+   "decode_vin": "No VIN lookup in the Trade Me API reference (MotorWeb reports are seller-purchased extras on a listing).",
+   "get_valuation": "No valuation method in the Trade Me API reference.",
+   "list_dealers": "No dealer directory method for motors in the Trade Me API reference.",
+   "me": "Member endpoints (/v1/MyTradeMe/Summary) need a member access token from the OAuth 1.0a flow; this adapter signs as the application only."
+  }
+ },
+ "live_check": {
+  "date": "2026-09-26",
+  "status": "needs_credentials",
+  "egress": "datacenter",
+  "notes": "requires consumer_key, consumer_secret; started, listed tools and answered a clean auth_error naming the variables"
+ }
+}

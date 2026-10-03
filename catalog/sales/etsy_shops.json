@@ -1,0 +1,38 @@
+{
+ "id": "etsy_shops",
+ "category": "sales",
+ "label": "Etsy Open API v3",
+ "lane": "api",
+ "kind": "marketplace",
+ "regions": [
+  "global",
+  "us",
+  "gb"
+ ],
+ "docs_url": "https://developers.etsy.com/",
+ "url": "https://developers.etsy.com/",
+ "verified_at": "2026-09-05",
+ "terms_note": "findShops / getShop endpoints on the user's Etsy API key (app approval, API terms forbid re-selling data).",
+ "forbids_automation": false,
+ "discovery": {},
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "search",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": null
+}

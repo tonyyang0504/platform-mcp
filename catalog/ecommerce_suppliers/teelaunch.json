@@ -1,0 +1,109 @@
+{
+ "id": "teelaunch",
+ "category": "ecommerce_suppliers",
+ "label": "teelaunch",
+ "lane": "assist",
+ "kind": "global",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://api.teelaunch.com/api/documentation",
+ "url": "https://teelaunch.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "n/s (Swagger \"teelaunch API 1.0.0\" is public; no ToS wording read)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "openapi"
+  ],
+  "auth": "not readable (Swagger UI shell; spec path not resolvable from this host)",
+  "access": "signup",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "store_app_only"
+  ],
+  "confidence": "low",
+  "sdks": []
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **low** — the vendor pages opened describe the API but the endpoint reference itself was not readable from this host.",
+  "base_urls": [],
+  "auth": [
+   "1. see the vendor's developer page (no readable step list)"
+  ],
+  "endpoints": [
+   {
+    "call": "(endpoint list not readable from this host)",
+    "purpose": "",
+    "notes": ""
+   }
+  ],
+  "limits": " Not published on the pages opened. - Not read.",
+  "mcp_sdk": [
+   "none found (official or community)"
+  ],
+  "sources": [
+   "https://api.teelaunch.com/api/documentation"
+  ]
+ },
+ "adapter_status": "unconfirmed",
+ "reason": "Re-read the teelaunch OpenAPI 3 spec on 2026-09-25 (https://api.teelaunch.com/api-docs.json behind https://api.teelaunch.com/api/documentation; Bearer JWT, base /api/v1): every mappable operation (GET /blanks, /blanks/{id}, /blanks/country/shipping/cost/{id}, POST /orders, GET /orders/{id}, /orders/{id}/shipments, /account) still declares only a 200 'description' with no content schema or example (only /products and the variant unlink/ignore calls carry content), so no result field can be mapped without guessing."
+}

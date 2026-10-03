@@ -1,0 +1,47 @@
+{
+ "id": "che300",
+ "category": "automotive",
+ "label": "M",
+ "vertical": "dealer",
+ "lane": "scrape",
+ "url": "https://m.che300.com",
+ "domain": "m.che300.com",
+ "country": "China",
+ "official_api": true,
+ "docs_url": "https://cloud.che300.com/",
+ "verified_at": "2026-09-25",
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest"
+  ],
+  "auth": "account + paid per-call API",
+  "access": "paid",
+  "capabilities": [
+   "get_valuation",
+   "vehicle_history",
+   "vehicle_specs",
+   "market_prices"
+  ],
+  "confidence": "high",
+  "sdks": []
+ },
+ "reference": {
+  "verdict": "Audit 2026-09-25: verdict **official_api** (confidence high). Che300 cloud open platform sells used-car valuation, vehicle history, price-trend and model-archive APIs per call; official model library on github.com/che300.",
+  "base_urls": [],
+  "auth": [],
+  "endpoints": [],
+  "limits": "",
+  "mcp_sdk": [],
+  "sources": [
+   "https://cloud.che300.com/"
+  ],
+  "unofficial": [
+   "https://github.com/che300/che300_model_lib/blob/master/README.md",
+   "https://github.com/che300"
+  ]
+ },
+ "official_mcp": [],
+ "adapter_status": "unconfirmed",
+ "reason": "cloud.che300.com (rendered 2026-09-25) is a paid per-call API marketplace (VIN valuation 300元/100次, VIN model recognition, condition pricing, accident history …) with purchase buttons only; no public API reference is linked from the catalogue, so endpoints could not be read."
+}

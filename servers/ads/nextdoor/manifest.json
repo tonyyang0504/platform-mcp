@@ -1,0 +1,61 @@
+{
+ "manifest_version": "0.2",
+ "name": "nextdoor-ads-mcp",
+ "display_name": "Nextdoor Ads MCP",
+ "version": "0.1.0",
+ "description": "Nextdoor Ads (ads): me, list_accounts, list_campaigns, pause_resume. Every tool maps to a documented",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "ads/nextdoor"
+   ],
+   "env": {
+    "PLATFORM_MCP_NEXTDOOR_API_TOKEN": "${user_config.platform_mcp_nextdoor_api_token}",
+    "PLATFORM_MCP_NEXTDOOR_ADVERTISER_ID": "${user_config.platform_mcp_nextdoor_advertiser_id}"
+   }
+  }
+ },
+ "user_config": {
+  "platform_mcp_nextdoor_api_token": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEXTDOOR_API_TOKEN",
+   "description": "Nextdoor Ads Manager API token (NAM > settings > API, https://ads.nextdoor.com/v2/manage/api) for an account granted Ads API access; one token per user, valid for one year, acting for every advertiser tied to the NAM account.",
+   "sensitive": true,
+   "required": true
+  },
+  "platform_mcp_nextdoor_advertiser_id": {
+   "type": "string",
+   "title": "PLATFORM_MCP_NEXTDOOR_ADVERTISER_ID",
+   "description": "Nextdoor advertiser id used by pause_resume (the status path is /api/v3/advertisers/{advertiserId}/campaigns/{campaignId}/status).",
+   "sensitive": false,
+   "required": false
+  }
+ },
+ "tools": [
+  {
+   "name": "me",
+   "description": "GET /api/v3/me: {profile {id, name, is_ad_agency}, user {id, email, advertisers_with_access [{id, role}]}}."
+  },
+  {
+   "name": "list_accounts",
+   "description": "The advertisers the token's user can reach, from GET /api/v3/me (user.advertisers_with_access: id and role only; names and currency come from GET /api/v3/advertisers/{id})."
+  },
+  {
+   "name": "list_campaigns",
+   "description": "GET /api/v3/advertisers/{advertiserId}/campaigns?pageSize= (archived excluded). `status` is the computed status (ACTIVE, PAUSED, NO_ACTIVE_AD_GROUPS, PAUSED_FOR_BILLING…; raw.data.user_status is the user setting) and is not a filter here. Budgets live on ad groups. Cursor paging: only the first page is returned."
+  },
+  {
+   "name": "pause_resume",
+   "description": "PUT /api/v3/advertisers/{advertiser_id config}/campaigns/{campaign_id}/status {user_status: PAUSED|ACTIVE}; returns the updated campaign. Resuming restarts spending on its ad groups."
+  }
+ ]
+}

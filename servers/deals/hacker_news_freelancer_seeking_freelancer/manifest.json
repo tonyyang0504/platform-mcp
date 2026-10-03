@@ -1,0 +1,31 @@
+{
+ "manifest_version": "0.2",
+ "name": "hacker_news_freelancer_seeking_freelancer-mcp",
+ "display_name": "Hacker News — Freelancer? Seeking freelancer? MCP",
+ "version": "0.1.0",
+ "description": "Hacker News — Freelancer? Seeking freelancer? (deals): get_posting. Every tool maps to a documented ",
+ "author": {
+  "name": "platform-mcp contributors"
+ },
+ "license": "Apache-2.0",
+ "server": {
+  "type": "python",
+  "entry_point": "platform-mcp-hub",
+  "mcp_config": {
+   "command": "uvx",
+   "args": [
+    "platform-mcp-hub",
+    "serve",
+    "hacker_news_freelancer_seeking_freelancer"
+   ],
+   "env": {}
+  }
+ },
+ "user_config": {},
+ "tools": [
+  {
+   "name": "get_posting",
+   "description": "GET /v0/item/<id>.json for one 'Freelancer? Seeking freelancer?' comment (ids are the monthly thread's kids[]). Comments have no title, so title and description both carry the HTML text; buyer is the poster's HN username; time (Unix) stays in raw. A missing item answers null (invalid_input)."
+  }
+ ]
+}

@@ -1,0 +1,213 @@
+{
+ "id": "blanka",
+ "category": "ecommerce_suppliers",
+ "label": "Blanka",
+ "lane": "api",
+ "kind": "vertical",
+ "regions": [
+  "global"
+ ],
+ "docs_url": "https://documenter.getpostman.com/view/10905449/2sA35LWzqV",
+ "url": "https://blankabrand.com/",
+ "verified_at": "2026-09-25",
+ "terms_note": "api_by_approval (VIP plan + key from merchant-success team; ToS bans spiders/malicious code)",
+ "forbids_automation": false,
+ "discovery": {
+  "has_api": "yes",
+  "kinds": [
+   "rest",
+   "webhooks"
+  ],
+  "auth": "api_key issued by the merchant-success team (hello@blankabrand.com) to VIP-plan merchants",
+  "access": "paid",
+  "capabilities": [
+   "catalog",
+   "order_create",
+   "tracking",
+   "webhooks",
+   "store_app_only"
+  ],
+  "confidence": "high",
+  "sdks": [
+   "Postman reference https://documenter.getpostman.com/view/10905449/2sA35LWzqV"
+  ]
+ },
+ "official_mcp": [],
+ "auth_fields": null,
+ "rate_limits": null,
+ "tools": [
+  {
+   "name": "me",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "list_products",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_product",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "quote_shipping",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "create_order",
+   "read_only": false,
+   "destructive": true,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "get_order",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  },
+  {
+   "name": "track",
+   "read_only": true,
+   "destructive": false,
+   "endpoint": null,
+   "docs": null
+  }
+ ],
+ "reference": {
+  "verdict": "**Verdict** — has_api: **yes**.Confidence: **high** — official developer documentation opened by the auditor.",
+  "base_urls": [],
+  "auth": [
+   "1. Tenant subscribes to Blanka VIP",
+   "2. Tenant e-mails hello@blankabrand.com for a unique API key",
+   "3. Send the key on each call; give Blanka a URL for order-status pushes"
+  ],
+  "endpoints": [
+   {
+    "call": "products (list)",
+    "purpose": "'Get a full list of products'",
+    "notes": ""
+   },
+   {
+    "call": "orders (create)",
+    "purpose": "order syncs into the Blanka dashboard",
+    "notes": ""
+   },
+   {
+    "call": "order updates → your URL",
+    "purpose": "order id, tracking code, status",
+    "notes": "webhook push"
+   }
+  ],
+  "limits": " Not specified. - VIP plan only - Merchant builds and supports the integration - No scraping (site ToS)",
+  "mcp_sdk": [
+   "Postman reference https://documenter.getpostman.com/view/10905449/2sA35LWzqV"
+  ],
+  "sources": [
+   "https://blankabrand.com/pages/integrate-with-blanka-via-blanka-api",
+   "https://faq.blankabrand.com/en/articles/8896232-does-blanka-have-a-public-api"
+  ]
+ },
+ "version": "0.1.0",
+ "adapter": {
+  "base_url": "https://api.blankabrand.com/api/v1",
+  "auth": {
+   "type": "header",
+   "header": "Authorization",
+   "field": "api_key",
+   "fields": [
+    {
+     "name": "api_key",
+     "required": true,
+     "help": "Blanka API key (VIP membership; request it from the merchant success team, hello@blankabrand.com). Blanka's Postman reference sends it as the Authorization header value, exactly as issued."
+    }
+   ]
+  },
+  "rate_per_second": 1,
+  "tools": {
+   "me": {
+    "kind": "probe",
+    "method": "GET",
+    "path": "/products/",
+    "fixed_params": {
+     "page_size": "1"
+    },
+    "docs": "https://documenter.getpostman.com/view/10905449/2sA35LWzqV#get-products",
+    "note": "No account endpoint; the probe reads one catalogue row (GET /api/v1/products/?page_size=1 -> {count, next, previous, results[...]})."
+   },
+   "list_products": {
+    "method": "GET",
+    "path": "/products/",
+    "params": {
+     "page": "page",
+     "page_size": "limit"
+    },
+    "default_limit": 25,
+    "max_limit": 100,
+    "result": {
+     "items": "results",
+     "key": "products",
+     "total": "count",
+     "fields": {
+      "id": "id",
+      "title": "name",
+      "sku": "sku",
+      "image_url": "image",
+      "cost": "cost",
+      "suggested_retail": "suggested_cost",
+      "product_type": "product_type"
+     }
+    },
+    "docs": "https://documenter.getpostman.com/view/10905449/2sA35LWzqV#get-products",
+    "note": "GET /api/v1/products/?page=&page_size= (page_size has a server-side default and maximum): {count, next, previous, results[{id, name, sku, cost, suggested_cost (decimal strings, USD), available_inventory, weight, product_type (e.g. BLANK), image, categories[], description, benefits, ingredients, branded_box_available, is_expiring}]}. `cost`/`suggested_retail` are returned as the platform's decimal strings, so the numeric `price` is null; no filtering parameters are documented (query/category are ignored). Order by `sku`."
+   },
+   "create_order": {
+    "method": "POST",
+    "path": "/orders/",
+    "body": {
+     "order_id": "uuid",
+     "line_items": "items",
+     "shipping_address": "shipping_address"
+    },
+    "result": {
+     "fields": {
+      "id": "id",
+      "status": "status",
+      "tracking_number": "tracking_code",
+      "external_order_id": "order_id"
+     }
+    },
+    "docs": "https://documenter.getpostman.com/view/10905449/2sA35LWzqV#create-order",
+    "note": "POST /api/v1/orders/ {order_id (your reference; a fresh UUID is sent), line_items, shipping_address}. Pass `items` as [{sku, quantity}] and `shipping_address` in Blanka's shape {first_name, last_name, company, address_1, address_2, city, state, postcode, country (ISO-2), phone}; both are sent as given. Returns 201 {id, order_id, status (e.g. PAYMENT_REQUIRED), tracking_code, line_items, shipping_address}; the order appears in https://app.blankabrand.com/orders/customer-orders."
+   }
+  },
+  "not_offered": {
+   "get_product": "The reference (Blanka API (Beta)) documents only Get Products (the paged list), Create Order and a webhook; there is no single-product endpoint.",
+   "quote_shipping": "No shipping-rate endpoint in the reference; only Get Products, Create Order and the order-status webhook are documented.",
+   "get_order": "No order-read endpoint: 'Webhook - update order status ... This webhook will fire when an order is shipped. Please provide us with a webhook endpoint to send the POST to.' ({order_id, tracking_code, status: SHIPPED}).",
+   "track": "Tracking arrives only through the shipping webhook ({order_id, tracking_code, status: SHIPPED}) POSTed to an endpoint you give Blanka; there is no tracking call."
+  }
+ },
+ "auth_audit": {
+  "date": "2026-09-26",
+  "status": "spec_conformant",
+  "evidence": [
+   "host api.blankabrand.com: DNS ok, TLSv1.3 (Google Trust Services)",
+   "probe: 3/3 tools answered on their documented path with an auth refusal, a validation error or data; control route -> 404 (not_found), so the answers are path-specific",
+   "spec https://documenter.gw.postman.com/api/collections/10905449/2sA35LWzqV?segregateAuth=true&versionTag=latest: 3/3 tools match (path, method, parameters, body keys, response paths)"
+  ],
+  "notes": "-"
+ }
+}

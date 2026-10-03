@@ -1,0 +1,52 @@
+{
+ "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+ "name": "io.github.tonyyang0504/reddit-social-mcp",
+ "description": "Reddit (social): read_comments, analytics_post. Every tool maps to a documented endpoint.",
+ "version": "0.1.0",
+ "repository": {
+  "url": "https://github.com/tonyyang0504/platform-mcp",
+  "source": "github"
+ },
+ "websiteUrl": "https://www.reddit.com/dev/api/",
+ "packages": [
+  {
+   "registryType": "pypi",
+   "identifier": "platform-mcp-hub",
+   "version": "0.1.0",
+   "runtimeHint": "uvx",
+   "transport": {
+    "type": "stdio"
+   },
+   "packageArguments": [
+    {
+     "type": "positional",
+     "value": "serve"
+    },
+    {
+     "type": "positional",
+     "value": "social/reddit"
+    }
+   ],
+   "environmentVariables": [
+    {
+     "name": "PLATFORM_MCP_REDDIT_CLIENT_ID",
+     "description": "Client id of a `script` or `web` app registered at https://www.reddit.com/prefs/apps; sent as the HTTP Basic username to POST https://www.reddit.com/api/v1/access_token (grant_type=client_credentials).",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REDDIT_CLIENT_SECRET",
+     "description": "The app's secret (HTTP Basic password on the token request). The resulting app-only bearer expires after `expires_in` seconds and is re-requested automatically; it carries no user context, so only read endpoints are offered.",
+     "isRequired": true,
+     "isSecret": true
+    },
+    {
+     "name": "PLATFORM_MCP_REDDIT_USER_AGENT",
+     "description": "Reddit requires a unique, descriptive User-Agent of the form \"<platform>:<app ID>:<version string> (by /u/<reddit username>)\", e.g. \"server:com.example.myapp:v1.0 (by /u/you)\"; default or misrepresented agents are throttled or blocked (https://github.com/reddit-archive/reddit/wiki/API). The runtime appends it to its own platform-mcp/reddit token.",
+     "isRequired": true,
+     "isSecret": false
+    }
+   ]
+  }
+ ]
+}
