@@ -40,6 +40,7 @@ jobs:
           cd runtime/typescript
           npm ci --ignore-scripts --no-audit --no-fund
           npm run build
+          mkdir -p ../../dist/npm
           npm pack --pack-destination ../../dist/npm
       - uses: actions/upload-artifact@v7
         with: { name: dist, path: dist/, retention-days: 30 }
