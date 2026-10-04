@@ -22,10 +22,8 @@ None.
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve fl_ru   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve fl_ru
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve fl_ru   # TypeScript
+    uvx platform-mcp-hub serve fl_ru          # Python
+    npx -y platform-mcp-hub serve fl_ru       # TypeScript
+    claude mcp add fl_ru -- uvx platform-mcp-hub serve fl_ru
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/fl_ru-mcp`. Python and TypeScript serve identical tools.

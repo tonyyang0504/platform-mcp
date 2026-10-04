@@ -30,9 +30,9 @@ test("list, describe and search agree with the snapshot", async () => {
   assert.ok(list.total >= 9 && list.items.length === 3 && list.items.every((i) => i.served && i.category === "jobs"));
   const reed = (await call(client, "describe_platform", { platform_id: "reed" })).payload;
   assert.deepEqual(reed.tools, ["get_posting", "me", "search"]);
-  assert.equal(reed.install.status, "unpublished"); assert.equal(reed.install.npx, undefined); // platform-mcp-hub is not published yet
+  assert.equal(reed.install.status, undefined); assert.equal(reed.install.from_source, undefined); // platform-mcp-hub is published
   assert.equal(reed.install.serve, "platform-mcp-hub serve reed");
-  assert.equal(reed.install.from_source.python, "uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve reed");
+  assert.equal(reed.install.npx, "npx -y platform-mcp-hub serve reed"); assert.equal(reed.install.uvx, "uvx platform-mcp-hub serve reed");
   assert.equal(reed.serve, "reed"); assert.equal(reed.registry_name, "io.github.tonyyang0504/reed-mcp");
   assert.equal(reed.credentials[0].env, "PLATFORM_MCP_REED_API_KEY");
   const missing = await call(client, "describe_platform", { platform_id: "nope" });

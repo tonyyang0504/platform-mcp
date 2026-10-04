@@ -5,7 +5,7 @@ All notable changes to platform-mcp-hub are recorded here. The format follows
 
 ## [Unreleased]
 
-## [0.1.0] - unreleased
+## [0.1.0] - 2026-10-04
 
 First public release.
 

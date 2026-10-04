@@ -1,4 +1,4 @@
 {
- "_comment": "Set published to true only after the npm organisation `platform-mcp` and every PyPI name the servers use are claimed by the project (docs/RELEASE_CHECKLIST.md). While false, generated READMEs and the directory server tell users to install from source, never from a registry name someone else could register.",
- "published": false
+ "_comment": "published = true since v0.1.0 (2026-10-04): platform-mcp-hub is on PyPI and npm. While false, generated READMEs and the directory server tell users to install from source.",
+ "published": true
 }

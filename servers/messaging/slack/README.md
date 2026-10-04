@@ -19,10 +19,8 @@ Served by [platform-mcp-hub](https://github.com/tonyyang0504/platform-mcp) from 
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve slack   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve slack
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve slack   # TypeScript
+    uvx platform-mcp-hub serve slack          # Python
+    npx -y platform-mcp-hub serve slack       # TypeScript
+    claude mcp add slack -- uvx platform-mcp-hub serve slack
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/slack-mcp`. Python and TypeScript serve identical tools.

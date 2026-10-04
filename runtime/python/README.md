@@ -1,7 +1,5 @@
 # platform-mcp-hub
 
-> **Unpublished.** This is the README PyPI will show once platform-mcp-hub is published; until then, run it from source (`uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub ...`).
-
 MCP servers for 455 platform APIs from one evidence-only catalog: job boards, freelance marketplaces, ad networks, e-commerce channels and suppliers, messaging, social networks, sales data, trading venues, market data and automotive. Every tool maps to an endpoint documented on the platform's own pages.
 
 ```bash

@@ -45,12 +45,12 @@ async def test_list_platforms_filters_and_pages(server):
 async def test_describe_served_platform_has_install(server):
     out = _payload(await server.call_tool("describe_platform", {"platform_id": "reed"}))
     assert out["served"] and out["tools"] == ["get_posting", "me", "search"]
-    # platform-mcp-hub is not published yet (catalog/schema/release.json): run from source, never `uvx <name>`
+    # platform-mcp-hub is published (catalog/schema/release.json): registry install commands, no source fallback
     inst = out["install"]
-    assert inst["status"] == "unpublished" and not {"pip", "uvx", "npx", "claude_desktop"} & set(inst)
+    assert "status" not in inst and "from_source" not in inst
     assert inst["serve"] == "platform-mcp-hub serve reed"
-    assert inst["from_source"]["python"] == "uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve reed"
-    assert inst["from_source"]["typescript"].endswith("node dist/cli.js serve reed")
+    assert inst["uvx"] == "uvx platform-mcp-hub serve reed" and inst["npx"] == "npx -y platform-mcp-hub serve reed"
+    assert inst["claude_desktop"]["mcpServers"]["reed"]["args"] == ["platform-mcp-hub", "serve", "reed"]
     assert out["serve"] == "reed" and out["registry_name"] == "io.github.tonyyang0504/reed-mcp"
     assert out["credentials"][0]["env"] == "PLATFORM_MCP_REED_API_KEY" and inst["env"] == {"PLATFORM_MCP_REED_API_KEY": "<value>"}
     assert out["verbs"]["search"]["read_only"] is True

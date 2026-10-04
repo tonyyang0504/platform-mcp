@@ -24,10 +24,8 @@ Served by [platform-mcp-hub](https://github.com/tonyyang0504/platform-mcp) from 
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve aws_partner_network   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve aws_partner_network
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve aws_partner_network   # TypeScript
+    uvx platform-mcp-hub serve aws_partner_network          # Python
+    npx -y platform-mcp-hub serve aws_partner_network       # TypeScript
+    claude mcp add aws_partner_network -- uvx platform-mcp-hub serve aws_partner_network
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/aws_partner_network-mcp`. Python and TypeScript serve identical tools.

@@ -20,10 +20,8 @@ None.
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve openligadb   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve openligadb
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve openligadb   # TypeScript
+    uvx platform-mcp-hub serve openligadb          # Python
+    npx -y platform-mcp-hub serve openligadb       # TypeScript
+    claude mcp add openligadb -- uvx platform-mcp-hub serve openligadb
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/openligadb-mcp`. Python and TypeScript serve identical tools.

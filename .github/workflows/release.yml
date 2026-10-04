@@ -75,7 +75,16 @@ jobs:
       - name: npm with trusted publishing (11.5.1 or later)
         run: npm install -g --ignore-scripts npm@11
       - name: Publish the packed tarball (no lifecycle scripts run here)
-        run: npm publish dist/npm/platform-mcp-hub-*.tgz --provenance --access public --ignore-scripts
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # 0.1.0 was published by hand (the first publish creates the package that the trusted publisher attaches
+          # to), so skip a version that is already on the registry instead of failing the release.
+          if npm view "platform-mcp-hub@${TAG#v}" version >/dev/null 2>&1; then
+            echo "platform-mcp-hub@${TAG#v} is already on npm; skipping"
+          else
+            npm publish dist/npm/platform-mcp-hub-*.tgz --provenance --access public --ignore-scripts
+          fi
 
   github-release:
     needs: [publish-pypi, publish-npm]

@@ -21,10 +21,8 @@ Served by [platform-mcp-hub](https://github.com/tonyyang0504/platform-mcp) from 
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve trademe_jobs   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve trademe_jobs
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve trademe_jobs   # TypeScript
+    uvx platform-mcp-hub serve trademe_jobs          # Python
+    npx -y platform-mcp-hub serve trademe_jobs       # TypeScript
+    claude mcp add trademe_jobs -- uvx platform-mcp-hub serve trademe_jobs
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/trademe_jobs-mcp`. Python and TypeScript serve identical tools.

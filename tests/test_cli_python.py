@@ -44,7 +44,7 @@ def test_describe_lists_credentials_and_run_commands():
     d = json.loads(run_cli("describe", "reed").stdout)
     assert d["env"][0]["name"] == "PLATFORM_MCP_REED_API_KEY" and d["env"][0]["isSecret"] is True
     assert d["serve"] == "reed" and d["registry_name"] == "io.github.tonyyang0504/reed-mcp"
-    assert d["run"]["status"] == "unpublished" and d["run"]["python"] == "uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve reed"
+    assert d["run"]["uvx"] == "uvx platform-mcp-hub serve reed" and d["run"]["npx"] == "npx -y platform-mcp-hub serve reed"
     assert set(d["tools"]) == {"me", "search", "get_posting"} and "apply" in d["not_offered"]
 
 

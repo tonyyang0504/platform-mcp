@@ -22,10 +22,8 @@ None.
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve roblox_devforum_collaboration   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve roblox_devforum_collaboration
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve roblox_devforum_collaboration   # TypeScript
+    uvx platform-mcp-hub serve roblox_devforum_collaboration          # Python
+    npx -y platform-mcp-hub serve roblox_devforum_collaboration       # TypeScript
+    claude mcp add roblox_devforum_collaboration -- uvx platform-mcp-hub serve roblox_devforum_collaboration
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/roblox_devforum_collaboration-mcp`. Python and TypeScript serve identical tools.

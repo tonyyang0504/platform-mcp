@@ -6,13 +6,9 @@ listings. One evidence-only **catalog** (`catalog/`) describes each platform; on
 serves any of them: `platform-mcp-hub serve <id>`. The Python package (PyPI) and the TypeScript package (npm) ship the
 same runtime contract, the whole catalog and the same CLI.
 
-> **Not published yet.** `platform-mcp-hub` is not on PyPI or npm yet (`catalog/schema/release.json` says
-> `"published": false`). Until it is, run it from source as shown below; do not install the name from a registry
-> (anyone could register it first). The operator's steps are in `docs/RELEASE_CHECKLIST.md`.
-
 ## Quick start
 
-Once published:
+From PyPI (`uvx` / `pip install platform-mcp-hub`) or npm (`npx platform-mcp-hub`):
 
 ```bash
 uvx platform-mcp-hub list                    # every served platform (455), with its tools
@@ -24,7 +20,7 @@ npx platform-mcp-hub serve reed              # the TypeScript build: identical t
 uvx platform-mcp-hub directory               # one server that searches the whole catalog (3,500 platforms)
 ```
 
-Today, from source:
+From source:
 
 ```bash
 uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve reed
@@ -82,7 +78,6 @@ text is sanitised before an MCP client sees it, and `--http` binds 127.0.0.1 unl
 - **APIs change.** Entries cite the docs as they were on `verified_at`; vendors move endpoints and limits.
 - **Terms are yours to respect.** Using a server means using the platform's API under its terms with your
   credentials. The catalog notes known restrictions; it is not legal advice.
-- **Unpublished.** Until the release, installs are from source and registry metadata (`servers/`) is not live.
 - **TypeScript CLI** serves (`list`, `describe`, `serve`, `directory`); the authoring tools (`lint`, `try`, `smoke`,
   `verify`) are in the Python package.
 

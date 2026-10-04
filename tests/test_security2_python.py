@@ -161,11 +161,11 @@ def test_lint_refuses_hostile_catalog_text(tmp_path):
 
 # ---------------------------------------------------------------- SR-17: unclaimed registry names — install from source
 
-def test_generated_run_docs_say_unpublished_until_the_hub_is_published(tmp_path):
+def test_generated_run_docs_follow_the_release_flag(tmp_path):
     import shutil
     import subprocess
     release = json.loads((ROOT / "catalog" / "schema" / "release.json").read_text(encoding="utf-8"))
-    assert release["published"] is False  # flip only after docs/RELEASE_CHECKLIST.md
+    assert release["published"] is True  # flipped at v0.1.0 (docs/RELEASE_CHECKLIST.md)
     for published in (False, True):
         ws = tmp_path / str(published)
         (ws / "catalog" / "schema").mkdir(parents=True)

@@ -22,10 +22,8 @@ None.
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve superteam_earn   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve superteam_earn
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve superteam_earn   # TypeScript
+    uvx platform-mcp-hub serve superteam_earn          # Python
+    npx -y platform-mcp-hub serve superteam_earn       # TypeScript
+    claude mcp add superteam_earn -- uvx platform-mcp-hub serve superteam_earn
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/superteam_earn-mcp`. Python and TypeScript serve identical tools.

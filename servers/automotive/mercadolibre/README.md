@@ -23,10 +23,8 @@ Served by [platform-mcp-hub](https://github.com/tonyyang0504/platform-mcp) from 
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve mercadolibre   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve mercadolibre
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve mercadolibre   # TypeScript
+    uvx platform-mcp-hub serve mercadolibre          # Python
+    npx -y platform-mcp-hub serve mercadolibre       # TypeScript
+    claude mcp add mercadolibre -- uvx platform-mcp-hub serve mercadolibre
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/mercadolibre-mcp`. Python and TypeScript serve identical tools.

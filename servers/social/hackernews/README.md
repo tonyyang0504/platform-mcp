@@ -21,10 +21,8 @@ None.
 
 ## Run
 
-**Unpublished — run from source.** platform-mcp-hub is not on PyPI or npm yet; do not install the name from a registry until it is (anyone could register it first).
-
-    uvx --from git+https://github.com/tonyyang0504/platform-mcp platform-mcp-hub serve hackernews   # Python, stdio
-    git clone https://github.com/tonyyang0504/platform-mcp && cd platform-mcp && uv run platform-mcp-hub serve hackernews
-    cd runtime/typescript && npm ci --ignore-scripts && npm run build && node dist/cli.js serve hackernews   # TypeScript
+    uvx platform-mcp-hub serve hackernews          # Python
+    npx -y platform-mcp-hub serve hackernews       # TypeScript
+    claude mcp add hackernews -- uvx platform-mcp-hub serve hackernews
 
 Add `--http --port 8000` for Streamable HTTP on 127.0.0.1. Registry name: `io.github.tonyyang0504/hackernews-mcp`. Python and TypeScript serve identical tools.
